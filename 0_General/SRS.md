@@ -1,4 +1,4 @@
-# Software Requirements Specification - Cofe Shop Management App
+# Software Requirements Specification - Coffee Shop Management App
 
 ## Mục tiêu
 -	Giao tiếp giữa nhân viên và hệ thống đặt món
