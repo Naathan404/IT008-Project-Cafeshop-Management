@@ -1,6 +1,6 @@
 # CODING CONVENTION  
 
-Thống nhất sử dụng tiếng Anh.
+Thống nhất sử dụng các từ tiếng Anh trong code. Comment code hay commit vẫn có thể tiếng Việt bình thường
 ### Đặt tên biến:
 Là danh từ, nếu là kiểu bool phải có từ is ở trước
 - Private: _tenBien, ví dụ _isInteractable
