@@ -1,14 +1,14 @@
-# IT008-Project-Cafeshop-Management
+## IT008-Project-Cafeshop-Management
 
-## APP DESCRIPTION
+# APP DESCRIPTION
 
-# Những đối tượng cần quản lý
+### Những đối tượng cần quản lý
 - Nhân viên
 - Menu
 - Order
 - Kho
 - Bàn
-# Chức năng chính cơ bản
+### Chức năng chính cơ bản
 - Đăng nhập (đăng nhập, lấy lại mật khẩu qua email) và phân quyền (quản lý / nhân viên).
 - Hiển thị danh sách bàn (bàn số mấy, trạng thái <trống, đang sử dụng>,...)
 - Menu (Thêm, cập nhật, xóa món; chia món theo danh mục; mỗi món có 3 size)
