@@ -11,10 +11,10 @@
 ## Các đối tượng cần quản lý
 -	Table: Danh sách các bàn trong quán, hiển thị trực quan. 3 trạng thái: Trống, đang phục vụ, đã đặt trước
 -	Menu: Các món nước, thức ăn theo từng phân mục (Cà phê, Trà, Sinh tố, Ăn nhẹ,...)
--	Order/Bill: Thông tin order theo bàn, các món, thời gian xuất hd, loại khách, trạng thái thanh toán
+-	Order/Bill: Thông tin order theo bàn, các món, thời gian xuất hóa đơn, loại khách, trạng thái thanh toán
 -	Inventory: Quản lý được nguyên liệu, số lượng tồn, nhập, xuất kho
 -   Staff: Thông tin cá nhân, tài khoản, phân quyền
-- Thống kê doanh thu: Theo ca, ngày, tháng, băn, món best seller
+- Thống kê doanh thu: Theo ca, ngày, tháng, năm, món best seller
 -   Khách hàng: Vãng lai hay thành viên, tích điểm, giảm giá
 - Lịch sử giao dịch:
 
