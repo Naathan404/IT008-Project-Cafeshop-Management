@@ -22,6 +22,37 @@ namespace CoffeeShop
         public LoginWindow()
         {
             InitializeComponent();
+            txtUsername.Focus();
+        }
+
+
+        private void txtUsername_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                e.Handled = true;
+                pwdBox.Focus();
+            }
+        }
+
+        private void pwdBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                btnLogin.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            }
+        }
+
+        private void btnLogin_Click(object sender, RoutedEventArgs e)
+        {
+            if (txtUsername.Text == "admin" && pwdBox.Password == "123")
+            {
+                this.DialogResult = true;
+            }
+            else
+            {
+                MessageBox.Show("Sai tai khoan hoac mat khau!");
+            }
         }
     }
 }
