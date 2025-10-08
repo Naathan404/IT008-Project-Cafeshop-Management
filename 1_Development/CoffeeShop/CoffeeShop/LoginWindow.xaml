@@ -6,9 +6,76 @@
         xmlns:local="clr-namespace:CoffeeShop"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
-        Title="LoginWindow" Height="600" Width="1000"
+        Title="LoginWindow" Height="500" Width="850"
         FontFamily="{DynamicResource MaterialDesignFont}" >
-    <Grid>
-        
+    <Grid Background="#FFE5D4AE" >
+        <Border Background="White"
+        CornerRadius="30"
+        Height="450" Width="800">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition Width="450"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0">
+                    <StackPanel Margin="0,50,0,0">
+                        <TextBlock Text="WELCOME"
+                               FontSize="50"
+                               FontWeight="Bold"
+                               HorizontalAlignment="Center"/>
+                        <TextBlock Text="This is the funniest coffee shop"
+                               FontSize="13"
+                               HorizontalAlignment="Center"/>
+                    </StackPanel>
+
+                    <StackPanel Width="270" Margin="0,50,0,0">
+                        <Grid Height="35" Width="240" Margin="7">
+                            <Border Background="#FFE2E2DF" CornerRadius="6">
+                                <TextBlock Text="Username" FontSize="8"
+                                       Padding="8,10,0,0"/>
+                            </Border>
+                        </Grid>
+                        <Grid Height="35" Width="240" Margin="7">
+                            <Border Background="#FFE2E2DF" CornerRadius="6">
+                                <TextBlock Text="Password" FontSize="8"
+                                       Padding="8,10,0,0"/>
+                            </Border>
+                        </Grid>
+
+                        <StackPanel>
+                            <TextBlock Text="Forgot pasword?"
+                                   HorizontalAlignment="Right"/>
+                            <Grid Height="35" Width="240" Margin="8">
+                                <Border Background="Black" CornerRadius="6">
+                                    <TextBlock Text="NEXT" FontSize="8"
+                                           Foreground="White"
+                                           TextAlignment="Center"
+                                           Padding="0,12,0,0"/>
+                                </Border>
+                            </Grid>
+                        </StackPanel>
+
+                        <TextBlock Text="Contact us" FontSize="13"
+                               TextAlignment="Center"
+                               Margin="7"/>
+                    </StackPanel>
+
+                    <Canvas>
+                        <Image Source="/Assets/Images/cuteCoffeeCup.jpg" Height="70" Width="70"
+                           HorizontalAlignment="Left" Panel.ZIndex="0"
+                           Canvas.Right="-20"/>
+                    </Canvas>
+                </StackPanel>
+
+                <StackPanel Grid.Column="1" Height="415" Width="415">
+                    <Image Source="/Assets/Images/Coffee.png">
+                        <Image.Clip>
+                            <RectangleGeometry RadiusX="25" RadiusY="20" Rect="0,0,415,415"/>
+                        </Image.Clip>
+                    </Image>
+                </StackPanel>
+            </Grid>
+        </Border>
     </Grid>
 </Window>

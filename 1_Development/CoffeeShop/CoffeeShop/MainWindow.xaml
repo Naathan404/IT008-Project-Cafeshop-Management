@@ -9,6 +9,8 @@
         DataContext="{StaticResource MainVM}"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-
+        <TextBlock Text="Welcome to XOXO Coffee"
+                   FontSize="65">
+        </TextBlock>
     </Grid>
 </Window>
