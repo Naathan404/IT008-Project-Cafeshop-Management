@@ -11,8 +11,7 @@ namespace CoffeeShop.ViewModel
     {
         public MainViewModel()
         {
-            LoginWindow loginWindow = new LoginWindow();
-            loginWindow.Show();
+           
         }
     }
 }
