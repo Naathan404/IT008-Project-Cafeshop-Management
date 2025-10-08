@@ -6,10 +6,8 @@
         xmlns:local="clr-namespace:CoffeeShop"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
-        Title="LoginWindow" Height="1080" Width="1920"
-        FontFamily="{DynamicResource MaterialDesignFont}" 
-
-        >
+        Title="LoginWindow" Height="600" Width="1000"
+        FontFamily="{DynamicResource MaterialDesignFont}" >
     <Grid>
         
     </Grid>
