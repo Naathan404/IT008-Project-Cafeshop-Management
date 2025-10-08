@@ -9,11 +9,21 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Assets\Images\Coffee.png" />
+    <None Remove="Assets\Images\cuteCoffeeCup.jpg" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="MaterialDesignThemes" Version="5.2.1" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Model\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\Images\Coffee.png" />
+    <Resource Include="Assets\Images\cuteCoffeeCup.jpg" />
   </ItemGroup>
 
 </Project>

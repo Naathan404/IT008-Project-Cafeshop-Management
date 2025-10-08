@@ -30,25 +30,46 @@
                     </StackPanel>
 
                     <StackPanel Width="270" Margin="0,50,0,0">
-                        <Grid Height="35" Width="240" Margin="7">
+                        <Grid Height="40" Width="240" Margin="7">
                             <Border Background="#FFE2E2DF" CornerRadius="6">
-                                <TextBlock Text="Username" FontSize="8"
-                                       Padding="8,10,0,0"/>
+                                <!--<TextBlock Text="Username" FontSize="8"
+                                       Padding="8,10,0,0"/>-->
+                                <TextBox
+                                    VerticalAlignment="Center"
+                                    materialDesign:HintAssist.Hint="Tên tài khoản"
+                                    materialDesign:HintAssist.Foreground="#B18252"
+                                    materialDesign:TextFieldAssist.UnderlineBrush="#B18252"
+                                    Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                                    Margin="1,0,1,0" Height="39"
+                                    Padding="5,10,0,0"
+                                    />
+
                             </Border>
                         </Grid>
-                        <Grid Height="35" Width="240" Margin="7">
+                        <Grid Height="40" Width="240" Margin="7">
                             <Border Background="#FFE2E2DF" CornerRadius="6">
-                                <TextBlock Text="Password" FontSize="8"
-                                       Padding="8,10,0,0"/>
+                                <!--<TextBlock Text="Password" FontSize="8"
+                                       Padding="8,10,0,0"/>-->
+                                <PasswordBox
+                                  x:Name="FloatingPasswordBox"
+                                  materialDesign:HintAssist.Foreground="#B18252"
+                                  materialDesign:TextFieldAssist.UnderlineBrush="#B18252"
+                                  Margin="1,0,1,0" Height="39"
+                                  Padding="5,10,0,0"
+                                  materialDesign:HintAssist.Hint="Mật khẩu"
+                                  Style="{StaticResource MaterialDesignFloatingHintPasswordBox}"
+                                  />
                             </Border>
                         </Grid>
 
                         <StackPanel>
-                            <TextBlock Text="Forgot pasword?"
+                            <TextBlock Text="Quên mật khẩu?"
                                    HorizontalAlignment="Right"/>
                             <Grid Height="35" Width="240" Margin="8">
-                                <Border Background="Black" CornerRadius="6">
-                                    <TextBlock Text="NEXT" FontSize="8"
+                                <Border Background="#340D05" CornerRadius="6">
+                                    <TextBlock Text="NEXT" 
+                                           FontSize="10"
+                                           FontWeight="ExtraBold"
                                            Foreground="White"
                                            TextAlignment="Center"
                                            Padding="0,12,0,0"/>
@@ -62,14 +83,14 @@
                     </StackPanel>
 
                     <Canvas>
-                        <Image Source="/Assets/Images/cuteCoffeeCup.jpg" Height="70" Width="70"
+                        <Image Source="Assets/Images/cuteCoffeeCup.jpg" Height="70" Width="70"
                            HorizontalAlignment="Left" Panel.ZIndex="0"
                            Canvas.Right="-20"/>
                     </Canvas>
                 </StackPanel>
 
                 <StackPanel Grid.Column="1" Height="415" Width="415">
-                    <Image Source="/Assets/Images/Coffee.png">
+                    <Image Source="Assets/Images/Coffee.png">
                         <Image.Clip>
                             <RectangleGeometry RadiusX="25" RadiusY="20" Rect="0,0,415,415"/>
                         </Image.Clip>
