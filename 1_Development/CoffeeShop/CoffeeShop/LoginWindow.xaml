@@ -6,9 +6,18 @@
         xmlns:local="clr-namespace:CoffeeShop"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
-        Title="LoginWindow" Height="500" Width="850"
+        Title="Coffee Shop" 
+        Icon="/CoffeeShop;component/Assets/icoCoffee.ico"
+        Height="520" Width="850"
+        MinHeight="520" MinWidth="850"
         FontFamily="{DynamicResource MaterialDesignFont}" >
-    <Grid Background="#FFE5D4AE" >
+    <Grid >
+        <Grid.Background>
+            <LinearGradientBrush EndPoint="0.5,0.5" StartPoint="0.5,1">
+                <GradientStop Color="#FFB18252"/>
+                <GradientStop Color="#FFE0CEB5" Offset="1"/>
+            </LinearGradientBrush>
+        </Grid.Background>
         <Border Background="White"
         CornerRadius="30"
         Height="450" Width="800">
@@ -24,12 +33,18 @@
                                FontSize="50"
                                FontWeight="Bold"
                                HorizontalAlignment="Center"/>
-                        <TextBlock Text="This is the funniest coffee shop"
+                        <TextBlock x:Name="txblQuote"
+                               Text="This is the funniest coffee shop"
                                FontSize="13"
                                HorizontalAlignment="Center"/>
+                        <TextBlock x:Name="txblAuthor"
+                               Text="Ta'c gia?"
+                               HorizontalAlignment="Right"
+                               Margin="0 5 15 0"
+                               VerticalAlignment="Bottom"></TextBlock>
                     </StackPanel>
 
-                    <StackPanel Width="270" Margin="0,50,0,0">
+                    <StackPanel Width="270" Margin="0,35,0,0">
                         <Grid Height="40" Width="240" Margin="7">
                             <Border Background="#FFE2E2DF" CornerRadius="6">
                                 <!--<TextBlock Text="Username" FontSize="8"
@@ -37,42 +52,45 @@
                                 <TextBox
                                     VerticalAlignment="Center"
                                     materialDesign:HintAssist.Hint="Tên tài khoản"
-                                    materialDesign:HintAssist.Foreground="#B18252"
+                                    materialDesign:HintAssist.Foreground="#392805"
                                     materialDesign:TextFieldAssist.UnderlineBrush="#B18252"
                                     Style="{StaticResource MaterialDesignFloatingHintTextBox}"
-                                    Margin="1,0,1,0" Height="39"
-                                    Padding="5,10,0,0"
+                                    Height="39"
+                                    Margin="3 0 2.7 0.5"
+                                    Padding="5,5,0,0"
                                     />
 
                             </Border>
                         </Grid>
-                        <Grid Height="40" Width="240" Margin="7">
+                        <Grid Height="40" Width="240" >
                             <Border Background="#FFE2E2DF" CornerRadius="6">
                                 <!--<TextBlock Text="Password" FontSize="8"
                                        Padding="8,10,0,0"/>-->
                                 <PasswordBox
                                   x:Name="FloatingPasswordBox"
-                                  materialDesign:HintAssist.Foreground="#B18252"
+                                  materialDesign:HintAssist.Foreground="#392805"
                                   materialDesign:TextFieldAssist.UnderlineBrush="#B18252"
-                                  Margin="1,0,1,0" Height="39"
-                                  Padding="5,10,0,0"
+                                  Height="39"
+                                  Margin="3 0 2.7 0.5"
+                                  Padding="5,5,0,0"
                                   materialDesign:HintAssist.Hint="Mật khẩu"
                                   Style="{StaticResource MaterialDesignFloatingHintPasswordBox}"
                                   />
                             </Border>
                         </Grid>
 
-                        <StackPanel>
+                        <StackPanel Margin="0,5,0,0">
                             <TextBlock Text="Quên mật khẩu?"
-                                   HorizontalAlignment="Right"/>
-                            <Grid Height="35" Width="240" Margin="8">
-                                <Border Background="#340D05" CornerRadius="6">
-                                    <TextBlock Text="NEXT" 
+                                   HorizontalAlignment="Right"
+                                   Margin="0 5 16 0"/>
+                            <Grid Height="35" Width="240" Margin="8 10 8 8">
+                                <Border CornerRadius="6">
+                                    <Button Content="NEXT" 
+                                           Background="#340D05"
                                            FontSize="10"
                                            FontWeight="ExtraBold"
                                            Foreground="White"
-                                           TextAlignment="Center"
-                                           Padding="0,12,0,0"/>
+                                           Padding="0,0,0,0" Margin="3,0,-3,0"/>
                                 </Border>
                             </Grid>
                         </StackPanel>
@@ -85,12 +103,14 @@
                     <Canvas>
                         <Image Source="Assets/Images/cuteCoffeeCup.jpg" Height="70" Width="70"
                            HorizontalAlignment="Left" Panel.ZIndex="0"
-                           Canvas.Right="-20"/>
+                           Canvas.Left="20"
+                           Canvas.Bottom="-60"/>
                     </Canvas>
                 </StackPanel>
 
                 <StackPanel Grid.Column="1" Height="415" Width="415">
-                    <Image Source="Assets/Images/Coffee.png">
+                    <Image x:Name="imgBanner"
+                        Source="/Assets/Images/imgBanner_1.png">
                         <Image.Clip>
                             <RectangleGeometry RadiusX="25" RadiusY="20" Rect="0,0,415,415"/>
                         </Image.Clip>
