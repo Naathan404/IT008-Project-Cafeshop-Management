@@ -85,17 +85,17 @@
                                    Margin="0 5 16 0"/>
                             <Grid Height="35" Width="240" Margin="8 10 8 8">
                                 <Border CornerRadius="6">
-                                    <Button Content="NEXT" 
+                                    <Button Content="ĐĂNG NHẬP" 
                                            Background="#340D05"
                                            FontSize="10"
                                            FontWeight="ExtraBold"
                                            Foreground="White"
-                                           Padding="0,0,0,0" Margin="3,0,-3,0"/>
+                                           />
                                 </Border>
                             </Grid>
                         </StackPanel>
 
-                        <TextBlock Text="Contact us" FontSize="13"
+                        <TextBlock Text="About us" FontSize="13"
                                TextAlignment="Center"
                                Margin="7"/>
                     </StackPanel>

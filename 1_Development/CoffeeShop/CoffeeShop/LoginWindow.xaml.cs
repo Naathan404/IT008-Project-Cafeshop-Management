@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CoffeeShop.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Microsoft.EntityFrameworkCore;
 
 namespace CoffeeShop
 {
@@ -46,10 +48,8 @@ namespace CoffeeShop
             InitializeComponent();
             GenerateRandomLoginUI();
         }
-
         private void GenerateRandomLoginUI()
         {
-
             var quote = quotes[new Random().Next(0, quotes.Count)];
             txblQuote.Text = "\"" + quote.Quote + "\"";
             txblAuthor.Text = "- " + quote.Author + " -";

@@ -18,6 +18,12 @@ CREATE TABLE Category
 	CategoryName NVARCHAR(40) NOT NULL,
 );
 
+INSERT INTO Category
+VALUES
+(N'Cà phê'),
+(N'Trà sữa'),
+(N'Đá xay');
+
 CREATE TABLE Item
 (
 	ItemID INT IDENTITY(1,1) PRIMARY KEY,
@@ -27,11 +33,25 @@ CREATE TABLE Item
 	CONSTRAINT FK_Item_Category FOREIGN KEY (CategoryID) REFERENCES Category(CategoryID),
 );
 
+insert into Item
+values
+(N'Cà phê sữa đá', 1, 1),
+(N'Đen đá không đường', 1, 1),
+(N'Trà sữa truyền thống', 2, 1);
+
+select * from item;
 CREATE TABLE Size
 (
 	SizeID INT IDENTITY(1,1) PRIMARY KEY,
 	SizeName NVARCHAR(5) NOT NULL,
 );
+
+-- Them vao 3 size mac dinh 
+INSERT INTO Size 
+VALUES
+('M'),
+('L'),
+('XL');
 
 CREATE TABLE ItemPrice (
     PriceID INT PRIMARY KEY IDENTITY(1,1),
@@ -41,6 +61,19 @@ CREATE TABLE ItemPrice (
     CONSTRAINT FK_ItemPrice_Item FOREIGN KEY (ItemID) REFERENCES Item(ItemID),
     CONSTRAINT FK_ItemPrice_Size FOREIGN KEY (SizeID) REFERENCES Size(SizeID)
 );
+
+insert into ItemPrice
+values
+(1, 1, 19000),
+(1, 2, 29000),
+(1, 3, 39000),
+(2, 1, 19000),
+(2, 2, 25000),
+(2, 3, 29000),
+(3, 1, 29000),
+(3, 2, 35000),
+(3, 3, 39000);
+
 
 CREATE TABLE Customer
 (
