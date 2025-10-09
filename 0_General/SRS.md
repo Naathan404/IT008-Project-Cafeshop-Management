@@ -71,7 +71,7 @@
 - WPF (MVVM model)
 - Entity Framework Core
 - Material Design Framework
-- MailKit (thư viện làm việc với mail cảu cs)
+- MailKit (thư viện làm việc với mail của cs)
 
 ## UI dự kiến
 - Màn hình đăng nhập
