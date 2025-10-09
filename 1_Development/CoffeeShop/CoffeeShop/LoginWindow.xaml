@@ -90,7 +90,7 @@
                                            FontSize="10"
                                            FontWeight="ExtraBold"
                                            Foreground="White"
-                                           Padding="0,0,0,0" Margin="3,0,-3,0"/>
+                                           Padding="0,0,0,0" Margin="-1,2,1,1"/>
                                 </Border>
                             </Grid>
                         </StackPanel>
