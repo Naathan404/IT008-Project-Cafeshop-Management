@@ -45,26 +45,9 @@ public partial class CoffeeShopContext : DbContext
     public virtual DbSet<StaffAttendance> StaffAttendances { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-    //=> optionsBuilder.UseSqlServer("Data Source=localhost;Initial Catalog=CoffeeShopDB;Integrated Security=True;TrustServerCertificate=True;");
-    {
-        // 1. Lấy đường dẫn thư mục GỐC (BaseDirectory) nơi ứng dụng đang chạy (bin\Debug\net8.0-windows\)
-        string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
-
-        // 2. Tạo đường dẫn tuyệt đối đến tệp CSDL trong thư mục con "Database"
-        // Kết quả sẽ là: ...bin\Debug\net8.0-windows\Database\CoffeeShopDB.mdf
-        string dbPath = Path.Combine(baseDirectory, "Database", "CoffeeShopDB.mdf");
-
-        // 3. Xây dựng Chuỗi Kết Nối mới
-        string connectionString =
-            $"Data Source=(LocalDB)\\MSSQLLOCALDB;" +
-            $"AttachDbFilename={dbPath};" + // <-- Sử dụng đường dẫn tuyệt đối
-            "Integrated Security=True;" +
-            "TrustServerCertificate=True;";
-
-        optionsBuilder.UseSqlServer(connectionString);
-    }
-
+//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+    => optionsBuilder.UseSqlServer("Data Source=localhost;Initial Catalog=CoffeeShopDB;Integrated Security=True;TrustServerCertificate=True;");
+    
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<ActionType>(entity =>

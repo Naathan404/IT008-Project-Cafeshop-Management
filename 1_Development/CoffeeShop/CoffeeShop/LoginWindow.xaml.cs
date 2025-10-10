@@ -15,6 +15,7 @@ using System.Windows.Shapes;
 using Microsoft.EntityFrameworkCore;
 using CoffeeShop.Helper;
 using System.Windows.Media.Animation;
+using System.Printing;
 
 namespace CoffeeShop.View
 {
@@ -86,13 +87,21 @@ namespace CoffeeShop.View
 
             using (var db = new CoffeeShopContext())
             {
-                var staff = db.Staff.FirstOrDefault(user => user.Username == username && user.PasswordHash == hashPasswd_sha256);
-                if(staff != null )
+                var account = db.Staff.FirstOrDefault(user => user.Username == username && user.PasswordHash == hashPasswd_sha256);
+                if (account != null) // Nếu không tìm thấy kết quả thì account == null
                 {
-                    
-                    MainWindow mainWindow = new MainWindow();
-                    mainWindow.Show();
-                    this.Close();
+                    switch(account.StaffRole)
+                    {
+                        case "Employee":
+                            LoginStaffWindow();
+                            break;
+                        case "Admin":
+                            LoginAdminWindow();
+                            break;
+                        default:
+                            MessageBox.Show("Unidentified user");
+                            break;
+                    }
                 }
                 else
                 {
@@ -103,6 +112,20 @@ namespace CoffeeShop.View
                 }
             }
         }
+
+        private void LoginAdminWindow()
+        {
+            AdminWindow adminWindow = new AdminWindow();
+            adminWindow.Show();
+            this.Close();
+        }
+        private void LoginStaffWindow()
+        {
+            StaffWindow staffWindow = new StaffWindow();
+            staffWindow.Show();
+            this.Close();
+        }
+
 
         private void btnEvt_LoginButtonClick(object sender, RoutedEventArgs e)
         {
