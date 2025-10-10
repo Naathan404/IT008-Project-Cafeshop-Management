@@ -35,26 +35,32 @@
                                FontSize="48"
                                FontStyle="Italic"
                                FontWeight="Bold"
+                               FontFamily="Elephant" 
                                HorizontalAlignment="Center"
-                               FontFamily="Elephant"/>
+                               />
                         <TextBlock x:Name="txblQuote"
                                Text="This is the funniest coffee shop."
-                               FontStyle="Oblique"  
+                               FontStyle="Oblique"
+                               FontFamily="Cascadia Code"
                                FontSize="13"
-                               HorizontalAlignment="Center"/>
+                               HorizontalAlignment="Center"
+                               MaxWidth="300"
+                               TextWrapping="Wrap"/>
                         <TextBlock x:Name="txblAuthor"
                                Text="- Author -"
                                FontStyle="Italic"
+                               FontFamily="Cascadia Code"
                                HorizontalAlignment="Right"
                                Margin="0 5 15 0"
                                VerticalAlignment="Bottom"></TextBlock>
                     </StackPanel>
 
-                    <StackPanel Width="270" Margin="0,25,0,0">
+                    <StackPanel Width="270" Margin="0,21,0,0">
                         <TextBlock 
                             x:Name="txblNotify"
                             Text="Sai tài khoản hoặc mật khẩu."
-                            FontSize="9"
+                            FontSize="11"
+                            FontWeight="Medium"
                             Foreground="Red"
                             HorizontalAlignment="Center"/>
                         <Grid Height="40" Width="240" Margin="7">
