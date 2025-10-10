@@ -56,13 +56,24 @@ namespace CoffeeShop.View
             txblQuote.Text = "\"" + quote.Quote + "\"";
             txblAuthor.Text = "- " + quote.Author + " -";
             imgBanner.Source = new BitmapImage(new Uri(_imgBannerSources[new Random().Next(0, _imgBannerSources.Count)], UriKind.Relative));
+
+            txblNotify.Visibility = Visibility.Hidden;
         }
 
         private void WarmUpDatabase()
         {
             using (var db = new CoffeeShopContext())
             {
-                db.Database.Migrate();
+                try
+                {
+                    db.Staff.Take(1).Any();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Lỗi kết nối cơ sở dữ liệu! Vui lòng kiểm tra lại kết nối.\n" + ex.Message, "Lỗi kết nối", MessageBoxButton.OK, MessageBoxImage.Error);
+                    Application.Current.Shutdown();
+
+                }
             }
         }
 
@@ -78,13 +89,14 @@ namespace CoffeeShop.View
                 var staff = db.Staff.FirstOrDefault(user => user.Username == username && user.PasswordHash == hashPasswd_sha256);
                 if(staff != null )
                 {
+                    
                     MainWindow mainWindow = new MainWindow();
                     mainWindow.Show();
                     this.Close();
                 }
                 else
                 {
-                    MessageBox.Show("Sai tài khoản hoặc mật khẩu! \n" /*+ txbFloatingPasswordBox.Password + " \n" +  hashPasswd_sha256*/);
+                    txblNotify.Visibility = Visibility.Visible;
                     txbFloatingUsernameBox.Text = "";
                     txbFloatingPasswordBox.Password = "";
                     txbFloatingUsernameBox.Focus();

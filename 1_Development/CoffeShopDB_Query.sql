@@ -155,7 +155,8 @@ DROP STAFFID;
 
 insert into staff 
 values
-(N'Lê Thành Nghĩa', N'ltnghia', N'fa980dbf4533c98fa5ed792374bea691610dfaabc62558182f4cc814ef0d69db', N'Employee', 1, 20000, 0977778888, N'24521186@gm.uit.vn')
+(N'Lê Thành Nghĩa', N'ltnghia', N'fa980dbf4533c98fa5ed792374bea691610dfaabc62558182f4cc814ef0d69db', N'Employee', 1, 20000, 0977778888, N'24521143@gm.uit.vn'),
+(N'Nguyễn Chí Nguyên', N'ngnguyen', N'38d180985d1b2e7a6014190e2cbd3c967408837188354ec93d27bfd86d09a017', N'Admin', NULL, NULL, 0865320821, N'24521186@gm.uit.vn')
 
 select * from Staff;
 
