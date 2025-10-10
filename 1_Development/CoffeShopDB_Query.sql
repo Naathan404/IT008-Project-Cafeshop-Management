@@ -18,6 +18,7 @@ CREATE TABLE Category
 	CategoryName NVARCHAR(40) NOT NULL,
 );
 
+
 CREATE TABLE Item
 (
 	ItemID INT IDENTITY(1,1) PRIMARY KEY,
@@ -27,6 +28,13 @@ CREATE TABLE Item
 	CONSTRAINT FK_Item_Category FOREIGN KEY (CategoryID) REFERENCES Category(CategoryID),
 );
 
+insert into Item
+values
+(N'Cà phê sữa đá', 1, 1),
+(N'Đen đá không đường', 1, 1),
+(N'Trà sữa truyền thống', 2, 1);
+
+select * from item;
 CREATE TABLE Size
 (
 	SizeID INT IDENTITY(1,1) PRIMARY KEY,
@@ -41,6 +49,7 @@ CREATE TABLE ItemPrice (
     CONSTRAINT FK_ItemPrice_Item FOREIGN KEY (ItemID) REFERENCES Item(ItemID),
     CONSTRAINT FK_ItemPrice_Size FOREIGN KEY (SizeID) REFERENCES Size(SizeID)
 );
+
 
 CREATE TABLE Customer
 (
@@ -80,6 +89,7 @@ CREATE TABLE Shift (
     ShiftID INT PRIMARY KEY IDENTITY(1,1),
     ShiftName NVARCHAR(10) NOT NULL -- Sáng, Chiều, Tối
 );
+
 
 CREATE TABLE Staff
 (
@@ -130,3 +140,29 @@ CREATE TABLE InventoryHistory (
 
 ALTER TABLE Staff
 ADD CONSTRAINT CK_Staff_Role CHECK (StaffRole IN ('Admin','Employee'));
+
+ALTER TABLE STAFF
+ADD PHONENUMBER VARCHAR(20);
+
+ALTER TABLE STAFF
+ADD EMAIL VARCHAR(100);
+
+ALTER TABLE STAFF
+DROP STAFFID;
+
+insert into staff 
+values
+(N'Lê Thành Nghĩa', N'ltnghia', N'fa980dbf4533c98fa5ed792374bea691610dfaabc62558182f4cc814ef0d69db', N'Employee', 1, 20000, 0977778888, N'24521143@gm.uit.vn'),
+(N'Nguyễn Chí Nguyên', N'ngnguyen', N'38d180985d1b2e7a6014190e2cbd3c967408837188354ec93d27bfd86d09a017', N'Admin', NULL, NULL, 0865320821, N'24521186@gm.uit.vn')
+
+insert into shift
+values
+(N'Sáng'),
+(N'Chiều'),
+(N'Tối')
+
+select * from Shift;
+
+select * from Staff;
+
+delete from Staff;
