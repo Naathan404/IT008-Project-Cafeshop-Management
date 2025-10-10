@@ -1,5 +1,6 @@
 ﻿<Window x:Class="CoffeeShop.View.LoginWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:navigation="clr-namespace:System.Windows.Navigation;assembly=PresentationFramework"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -30,15 +31,20 @@
                 <StackPanel Grid.Column="0">
                     <StackPanel Margin="0,50,0,0">
                         <TextBlock Text="WELCOME"
-                               FontSize="50"
+                               Foreground="#340D05"
+                               FontSize="48"
+                               FontStyle="Italic"
                                FontWeight="Bold"
-                               HorizontalAlignment="Center"/>
+                               HorizontalAlignment="Center"
+                               FontFamily="Elephant"/>
                         <TextBlock x:Name="txblQuote"
-                               Text="This is the funniest coffee shop"
+                               Text="This is the funniest coffee shop."
+                               FontStyle="Oblique"  
                                FontSize="13"
                                HorizontalAlignment="Center"/>
                         <TextBlock x:Name="txblAuthor"
-                               Text="Ta'c gia?"
+                               Text="- Author -"
+                               FontStyle="Italic"
                                HorizontalAlignment="Right"
                                Margin="0 5 15 0"
                                VerticalAlignment="Bottom"></TextBlock>
@@ -108,9 +114,16 @@
                             </Grid>
                         </StackPanel>
 
-                        <TextBlock Text="About us" FontSize="13"
+                        <TextBlock FontSize="13"
                                TextAlignment="Center"
-                               Margin="7"/>
+                               Margin="7">
+                            <Hyperlink NavigateUri="https://hehed.carrd.co/"
+                                RequestNavigate="Hyperlink_RequestNavigate"
+                                Foreground="Black"
+                                TextDecorations="{x:Null}">
+                                - About us -
+                            </Hyperlink>
+                        </TextBlock>
                     </StackPanel>
 
                     <Canvas>
@@ -123,7 +136,7 @@
 
                 <StackPanel Grid.Column="1" Height="415" Width="415">
                     <Image x:Name="imgBanner"
-                        Source="/Assets/Images/imgBanner_1.png">
+                        Source="/Assets/Images/imgBanner_3.png">
                         <Image.Clip>
                             <RectangleGeometry RadiusX="25" RadiusY="20" Rect="0,0,415,415"/>
                         </Image.Clip>
