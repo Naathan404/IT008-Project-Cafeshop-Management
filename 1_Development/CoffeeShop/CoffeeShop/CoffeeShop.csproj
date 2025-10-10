@@ -9,6 +9,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Model\**" />
+    <EmbeddedResource Remove="Model\**" />
+    <None Remove="Model\**" />
+    <Page Remove="Model\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="Assets\icoCoffee.ico" />
     <None Remove="Assets\Images\cuteCoffeeCup.jpg" />
     <None Remove="Assets\Images\imgBanner_1.png" />
@@ -25,15 +32,17 @@
 
   <ItemGroup>
     <PackageReference Include="MaterialDesignThemes" Version="5.2.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.9" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.9" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.9">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Model\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Resource Include="Assets\Images\imgBanner_1.png" />
     <Resource Include="Assets\Images\cuteCoffeeCup.jpg" />
+    <Resource Include="Assets\Images\imgBanner_1.png" />
     <Resource Include="Assets\Images\imgBanner_2.png" />
     <Resource Include="Assets\Images\imgBanner_3.png" />
     <Resource Include="Assets\Images\imgBanner_5.jpg" />
