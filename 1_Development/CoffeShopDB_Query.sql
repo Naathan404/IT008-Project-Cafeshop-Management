@@ -155,10 +155,7 @@ DROP STAFFID;
 
 insert into staff 
 values
-(N'Lê Thành Nghĩa', N'ltnghia', N'bHRuZ2hpYQ==', N'Employee', 1, 20000, 977778888, N'24521186@gm.uit.vn')
-insert into staff 
-values
-(N'Lê Thành Nghĩa', N'ltn', N'bHRuZ2hpYQ=', N'Employee', 1, 20000, 977778888, N'24521186@gm.uit.vn')
+(N'Lê Thành Nghĩa', N'ltnghia', N'fa980dbf4533c98fa5ed792374bea691610dfaabc62558182f4cc814ef0d69db', N'Employee', 1, 20000, 0977778888, N'24521186@gm.uit.vn')
 
 select * from Staff;
 

@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Microsoft.EntityFrameworkCore;
 using CoffeeShop.Helper;
+using System.Windows.Media.Animation;
 
 namespace CoffeeShop.View
 {
@@ -46,6 +47,7 @@ namespace CoffeeShop.View
         public LoginWindow()
         {
             InitializeComponent();
+            WarmUpDatabase();
             GenerateRandomLoginUI();
         }
         private void GenerateRandomLoginUI()
@@ -56,16 +58,25 @@ namespace CoffeeShop.View
             imgBanner.Source = new BitmapImage(new Uri(_imgBannerSources[new Random().Next(0, _imgBannerSources.Count)], UriKind.Relative));
         }
 
+        private void WarmUpDatabase()
+        {
+            using (var db = new CoffeeShopContext())
+            {
+                db.Database.Migrate();
+            }
+        }
+
         private void ProcessLogin()
         {
             string username = txbFloatingUsernameBox.Text.Trim();
             string passwd = txbFloatingPasswordBox.Password.Trim();
-            string hashPasswd = HashHelper.Base64_Encode(passwd);
+            string hashPasswd_base64 = HashHelper.Base64_Encode(passwd);
+            string hashPasswd_sha256 = HashHelper.SHA256_Encode(hashPasswd_base64);
 
-            using(var db = new CoffeeShopContext())
+            using (var db = new CoffeeShopContext())
             {
-                var staff = db.Staff.FirstOrDefault(user => user.Username == username && user.PasswordHash == hashPasswd);
-                if(staff != null)
+                var staff = db.Staff.FirstOrDefault(user => user.Username == username && user.PasswordHash == hashPasswd_sha256);
+                if(staff != null )
                 {
                     MainWindow mainWindow = new MainWindow();
                     mainWindow.Show();
@@ -73,7 +84,10 @@ namespace CoffeeShop.View
                 }
                 else
                 {
-                    MessageBox.Show("Sai tài khoản hoặc mật khẩu! \n" + txbFloatingPasswordBox.Password + " \n" +  hashPasswd);
+                    MessageBox.Show("Sai tài khoản hoặc mật khẩu! \n" /*+ txbFloatingPasswordBox.Password + " \n" +  hashPasswd_sha256*/);
+                    txbFloatingUsernameBox.Text = "";
+                    txbFloatingPasswordBox.Password = "";
+                    txbFloatingUsernameBox.Focus();
                 }
             }
         }
