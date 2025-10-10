@@ -18,11 +18,6 @@ CREATE TABLE Category
 	CategoryName NVARCHAR(40) NOT NULL,
 );
 
-INSERT INTO Category
-VALUES
-(N'Cà phê'),
-(N'Trà sữa'),
-(N'Đá xay');
 
 CREATE TABLE Item
 (
@@ -46,13 +41,6 @@ CREATE TABLE Size
 	SizeName NVARCHAR(5) NOT NULL,
 );
 
--- Them vao 3 size mac dinh 
-INSERT INTO Size 
-VALUES
-('M'),
-('L'),
-('XL');
-
 CREATE TABLE ItemPrice (
     PriceID INT PRIMARY KEY IDENTITY(1,1),
     ItemID INT NOT NULL,
@@ -61,18 +49,6 @@ CREATE TABLE ItemPrice (
     CONSTRAINT FK_ItemPrice_Item FOREIGN KEY (ItemID) REFERENCES Item(ItemID),
     CONSTRAINT FK_ItemPrice_Size FOREIGN KEY (SizeID) REFERENCES Size(SizeID)
 );
-
-insert into ItemPrice
-values
-(1, 1, 19000),
-(1, 2, 29000),
-(1, 3, 39000),
-(2, 1, 19000),
-(2, 2, 25000),
-(2, 3, 29000),
-(3, 1, 29000),
-(3, 2, 35000),
-(3, 3, 39000);
 
 
 CREATE TABLE Customer
@@ -113,6 +89,8 @@ CREATE TABLE Shift (
     ShiftID INT PRIMARY KEY IDENTITY(1,1),
     ShiftName NVARCHAR(10) NOT NULL -- Sáng, Chiều, Tối
 );
+
+select * from shift
 
 CREATE TABLE Staff
 (
@@ -163,3 +141,25 @@ CREATE TABLE InventoryHistory (
 
 ALTER TABLE Staff
 ADD CONSTRAINT CK_Staff_Role CHECK (StaffRole IN ('Admin','Employee'));
+
+delete from ItemPrice
+
+ALTER TABLE STAFF
+ADD PHONENUMBER VARCHAR(20);
+
+ALTER TABLE STAFF
+ADD EMAIL VARCHAR(100);
+
+ALTER TABLE STAFF
+DROP STAFFID;
+
+insert into staff 
+values
+(N'Lê Thành Nghĩa', N'ltnghia', N'bHRuZ2hpYQ==', N'Employee', 1, 20000, 977778888, N'24521186@gm.uit.vn')
+insert into staff 
+values
+(N'Lê Thành Nghĩa', N'ltn', N'bHRuZ2hpYQ=', N'Employee', 1, 20000, 977778888, N'24521186@gm.uit.vn')
+
+select * from Staff;
+
+delete from Staff;
