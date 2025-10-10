@@ -26,13 +26,16 @@ namespace CoffeeShop.View
     {
         private List<(string Quote, string Author)> _quotes = new List<(string, string)>
         {
-            ("I orchestrate my mornings to the tune of coffee.", "Terri Guillemets"),
-            ("Even bad coffee is better than no coffee at all.", "David Lynch"),
-            ("Coffee is the balm of the heart and spirit.", "Cellini Caffe"),
-            ("There’s nothing sweeter than a cup of bitter coffee.", "Rian Aditia"),
-            ("Coffee is a kind of magic you can drink.", "Catherynne M. Valente"),
-            ("Life’s too short for bad coffee.", "Nescafe Australia"),
-            ("Everyone starts somewhere!", "Anonymous"),
+            ("Thà uống cà phê tồi, còn hơn không có giọt nào.", "David Lynch"),
+            ("Cà phê là liều thuốc chữa lành cho trái tim và tâm hồn.", "Cellini Caffe"),
+            ("Chẳng có gì ngọt ngào hơn một tách cà phê đắng.", "Rian Aditia"),
+            ("Cà phê là một thứ ma thuật có thể uống.", "Catherynne M. Valente"),
+            ("Cuộc đời quá ngắn để uống cà phê tồi.", "Nescafe Australia"),
+            ("Cứ mỗi phút bạn giận dữ là bạn đánh mất sáu mươi giây hạnh phúc.", "Ralph Waldo Emerson"),
+            ("Cà phê ngon phải đen như địa ngục, đắng như ác quỷ và ngọt ngào như tình yêu.", "Charles M. de Talleyrand"),
+            ("Cuộc đời cũng như một tách cà phê. Quan trọng không phải là cà phê ngon hay dở, mà là cách ta thưởng thức nó.", "Khuyết danh"),
+            ("Cà phê là người bạn đồng hành tuyệt vời trong những khoảnh khắc suy tư.", "Khuyết danh"),
+            ("Cà phê không chỉ là một thức uống, mà là một nghệ thuật sống.", "Khuyết danh")
         };
 
         private List<String> _imgBannerSources = new List<string>()
