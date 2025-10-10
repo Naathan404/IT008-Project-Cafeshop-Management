@@ -19,6 +19,13 @@ namespace CoffeeShop
                 mainWindow.Close();
             }
         }
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            base.OnStartup(e);
+            // Your startup code here
+
+        }
+
     }
 
 }

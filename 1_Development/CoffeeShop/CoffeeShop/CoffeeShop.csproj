@@ -48,4 +48,13 @@
     <Resource Include="Assets\Images\imgBanner_5.jpg" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Database\CoffeeShopDB.mdf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Database\CoffeeShopDB_log.ldf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

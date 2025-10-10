@@ -44,7 +44,13 @@
                                VerticalAlignment="Bottom"></TextBlock>
                     </StackPanel>
 
-                    <StackPanel Width="270" Margin="0,35,0,0">
+                    <StackPanel Width="270" Margin="0,25,0,0">
+                        <TextBlock 
+                            x:Name="txblNotify"
+                            Text="Sai tài khoản hoặc mật khẩu."
+                            FontSize="9"
+                            Foreground="Red"
+                            HorizontalAlignment="Center"/>
                         <Grid Height="40" Width="240" Margin="7">
                             <Border Background="#FFE2E2DF" CornerRadius="6">
                                 <!--<TextBlock Text="Username" FontSize="8"
