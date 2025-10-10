@@ -29,7 +29,7 @@
                 </Grid.ColumnDefinitions>
 
                 <StackPanel Grid.Column="0">
-                    <StackPanel Margin="0,50,0,0">
+                    <StackPanel Margin="0,40,0,0">
                         <TextBlock Text="WELCOME"
                                Foreground="#340D05"
                                FontSize="48"
@@ -43,8 +43,9 @@
                                FontStyle="Oblique"
                                FontFamily="Cascadia Code"
                                FontSize="13"
+                               Margin="10 0 0 0"
                                HorizontalAlignment="Center"
-                               MaxWidth="300"
+                               MaxWidth="340"
                                TextWrapping="Wrap"/>
                         <TextBlock x:Name="txblAuthor"
                                Text="- Author -"
@@ -132,12 +133,7 @@
                         </TextBlock>
                     </StackPanel>
 
-                    <Canvas>
-                        <Image Source="Assets/Images/cuteCoffeeCup.jpg" Height="70" Width="70"
-                           HorizontalAlignment="Left" Panel.ZIndex="0"
-                           Canvas.Left="20"
-                           Canvas.Bottom="-60"/>
-                    </Canvas>
+                    
                 </StackPanel>
 
                 <StackPanel Grid.Column="1" Height="415" Width="415">
@@ -148,6 +144,13 @@
                         </Image.Clip>
                     </Image>
                 </StackPanel>
+                <Canvas>
+                    <Image 
+                        Source="Assets/Images/cuteCoffeeCup.jpg" Height="70" Width="70"
+                        HorizontalAlignment="Left" Panel.ZIndex="0"
+                        Canvas.Left="20"
+                        Canvas.Bottom="5"/>
+                </Canvas>
             </Grid>
         </Border>
     </Grid>
