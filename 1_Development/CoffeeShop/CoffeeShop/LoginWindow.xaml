@@ -32,11 +32,11 @@
                     <StackPanel Margin="0,40,0,0">
                         <TextBlock Text="WELCOME"
                                Foreground="#340D05"
-                               FontSize="48"
+                               FontSize="55"
                                FontStyle="Italic"
                                FontWeight="Bold"
-                               FontFamily="Elephant" 
-                               HorizontalAlignment="Center"
+                               FontFamily="Segoe UI Black" 
+                               HorizontalAlignment="Center" Height="68"
                                />
                         <TextBlock x:Name="txblQuote"
                                Text="This is the funniest coffee shop."
