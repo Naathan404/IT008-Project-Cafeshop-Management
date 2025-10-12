@@ -6,130 +6,69 @@
         xmlns:local="clr-namespace:CoffeeShop"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
-        Title="StaffWindow" Height="450" Width="800"
-        WindowState="Maximized">
-    <Window.Resources>
-        <Style x:Key="RoundedTabItemStyle" TargetType="TabItem">
-            <Setter Property="Margin" Value="4,0"/>
-            <Setter Property="Padding" Value="12,6"/>
-            <Setter Property="Background" Value="#E0CEB5"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="BorderBrush" Value="#4A3F2A"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="TabItem">
-                        <Border x:Name="Bd"
-                                CornerRadius="10"
-                                Background="{TemplateBinding Background}"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}">
-                            <ContentPresenter
-                                ContentSource="Header"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Margin="{TemplateBinding Padding}"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsSelected" Value="True">
-                                <Setter TargetName="Bd" Property="Background" Value="#B18252"/>
-                                <Setter TargetName="Bd" Property="BorderBrush" Value="#340D05"/>
-                                <Setter Property="Foreground" Value="#340D05"/>
-                                <Setter Property="FontFamily" Value="Consolas"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-    </Window.Resources>
-    <Grid>
-        <Rectangle x:Name="recStaffAcc"
-           RadiusX="50"
-           RadiusY="50"
-           HorizontalAlignment="Right"
-           Fill="Black">
-        </Rectangle>
-        
-        <Rectangle x:Name="recStaffWindow"
-                   Fill="#B18252">
-        </Rectangle>
+        Title="Coffeeshop - Staff" Height="450" Width="800"
+        WindowState="Normal">
 
-        <Rectangle Fill="#F9F6F0"
-                   Margin="0,35,0,0"
-                   RadiusX="30"
-                   RadiusY="15" Height="422" VerticalAlignment="Top">
-        </Rectangle>
-        
-        <Border
-        Background="#D4BA98"
-        Margin="0,30,0,0"
-        CornerRadius="30,30,0,0"
-        Height="80"/>
-        <materialDesign:Card
-            Margin="0,70,0,0"
-            materialDesign:ColorZoneAssist.Background="#340D05"
-            Height="370">
+    <Grid Background="#FFD4BA98">
+        <Border Background="#B18252" 
+                Margin="0,30,0,0"/>
+
+        <materialDesign:Card x:Name="crdTableAndMenu"
+                             Margin="7 37 400 0"
+                             Background="Transparent">
             <TabControl
                 HorizontalContentAlignment="Left"
-                
-                materialDesign:ColorZoneAssist.Background="#F9F6F0"
                 TabStripPlacement="Top"
                 BorderThickness="0"
-                Padding="10"
-                SnapsToDevicePixels="True">
-                
+                Margin="0">
                 <TabControl.Resources>
-                    <!-- Style cho TabItem -->
-                    <Style TargetType="TabItem">
-                        <Setter Property="Margin" Value="4,0,4,0"/>
-                        <Setter Property="Padding" Value="12,6"/>
-                        <Setter Property="FontWeight" Value="SemiBold"/>
+                    <Style TargetType="{x:Type TabItem}">
+                        <Setter Property="Foreground" Value="Black"/>
+                        <Setter Property="Padding" Value="10"/>
+                        <Setter Property="Margin" Value="0,0,7,0"/>
+                        <Setter Property="Background" Value="#B18252"/>
+                        <Setter Property="FontSize" Value="12"/>
+                        <Setter Property="FontFamily" Value="Noto Sans SC Black"/>
                         <Setter Property="Template">
                             <Setter.Value>
-                                <ControlTemplate TargetType="TabItem">
-                                    <Border 
-                            x:Name="Border"
-                            Background="{TemplateBinding Background}"
-                            CornerRadius="12"
-                            BorderThickness="1"
-                            BorderBrush="#E0C9B7"
-                            Padding="{TemplateBinding Padding}">
-                                        <ContentPresenter 
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"/>
+                                <ControlTemplate TargetType="{x:Type TabItem}">
+                                    <Border x:Name="Border"
+                                            Background="{TemplateBinding Background}"
+                                            CornerRadius="10 10 0 0"
+                                            BorderBrush="#4A3F2A"
+                                            Padding="{TemplateBinding Padding}">
+                                        <ContentPresenter
+                                            ContentSource="Header"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            RecognizesAccessKey="True"/>
                                     </Border>
                                     <ControlTemplate.Triggers>
                                         <Trigger Property="IsSelected" Value="True">
-                                            <Setter TargetName="Border" Property="Background" Value="White"/>
-                                            <Setter TargetName="Border" Property="BorderBrush" Value="#D7BFAE"/>
+                                            <Setter TargetName="Border" Property="Background" Value="#F9F6F0"/>
+                                            <Setter Property="Foreground" Value="#340D05"/>
                                         </Trigger>
                                         <Trigger Property="IsMouseOver" Value="True">
                                             <Setter TargetName="Border" Property="Background" Value="#E0CEB5"/>
+                                            <Setter Property="Foreground" Value="#F9F6F0"/>
                                         </Trigger>
                                     </ControlTemplate.Triggers>
                                 </ControlTemplate>
                             </Setter.Value>
                         </Setter>
-                        <Setter Property="Background" Value="Transparent"/>
                     </Style>
                 </TabControl.Resources>
-                
-                <TabItem
-                    Header="Bàn"
-                    FontFamily="Consolas"
-                    Style="{StaticResource RoundedTabItemStyle}">
-                    <TextBox Text="Tab 1"></TextBox>
+                <TabItem Header="Bàn">
+                    <Border Background="#F9F6F0" 
+                            CornerRadius="0 15 0 0"/>
                 </TabItem>
-                <TabItem
-                    Header="Thực đơn"
-                    FontFamily="Consolas"
-                    Style="{StaticResource RoundedTabItemStyle}">
-                    <TextBox Text="Tab 2" Background="{x:Null}"
-                             ></TextBox>
+
+                <TabItem Header="Thực đơn">
+                    <Border Background="#F9F6F0" 
+                            CornerRadius="0 15 0 0"/>
                 </TabItem>
+
             </TabControl>
         </materialDesign:Card>
-
     </Grid>
 </Window>
