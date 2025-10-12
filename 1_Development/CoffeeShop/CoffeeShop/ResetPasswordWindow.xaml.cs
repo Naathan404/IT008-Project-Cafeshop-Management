@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CoffeeShop.View;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,12 +20,12 @@ namespace CoffeeShop
     /// </summary>
     public partial class ResetPasswordWindow : Window
     {
-        public ResetPasswordWindow()
+        private LoginWindow loginWindow;
+        public ResetPasswordWindow(LoginWindow loginWindow)
         {
             InitializeComponent();
-            ForgotPasswordFrame.Navigate(new ForgotPasswordStep1(ForgotPasswordFrame));
+            ForgotPasswordFrame.Navigate(new ForgotPasswordStep1(ForgotPasswordFrame, loginWindow));
+            this.loginWindow = loginWindow;
         }
-
-        
     }
 }

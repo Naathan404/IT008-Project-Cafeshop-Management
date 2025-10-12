@@ -7,6 +7,10 @@ namespace CoffeeShop.Models;
 
 public partial class CoffeeShopContext : DbContext
 {
+    // Lệnh để scaffold lại DbContext và các entity class từ cơ sở dữ liệu hiện có
+    // Scaffold-DbContext "Server=Your_Server_Name;Database=Your_Database_Name;Trusted_Connection=True;TrustServerCertificate=True;
+    // " Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models -ContextDir Data -Context CoffeeShopContext [-Force]
+    // Dòng -Force sẽ ghi đè các file đã tồn tại, nếu không có dòng này, các file đã tồn tại sẽ không bị ghi đè.
     public CoffeeShopContext()
     {
     }
@@ -43,6 +47,8 @@ public partial class CoffeeShopContext : DbContext
     public virtual DbSet<Staff> Staff { get; set; }
 
     public virtual DbSet<StaffAttendance> StaffAttendances { get; set; }
+
+    public virtual DbSet<OTPRequest> OTPRequests { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
@@ -263,6 +269,8 @@ public partial class CoffeeShopContext : DbContext
             entity.Property(e => e.StaffName).HasMaxLength(100);
             entity.Property(e => e.StaffRole).HasMaxLength(50);
             entity.Property(e => e.Username).HasMaxLength(100);
+            entity.Property(e => e.PhoneNumber).HasMaxLength(20);
+            entity.Property(e => e.Email).HasMaxLength(100);
 
             entity.HasOne(d => d.Shift).WithMany(p => p.Staff)
                 .HasForeignKey(d => d.ShiftId)
@@ -286,6 +294,16 @@ public partial class CoffeeShopContext : DbContext
                 .HasForeignKey(d => d.StaffId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Attendance_Staff");
+        });
+
+        modelBuilder.Entity<OTPRequest>(entity =>
+        {
+            entity.HasKey(e => e.RequestId).HasName("PK__OTPReque__33A8519A451A3CD8");
+            entity.ToTable("OTPRequest");
+            entity.Property(e => e.RequestId).HasColumnName("RequestID");
+            entity.Property(e => e.Email).HasMaxLength(100);
+            entity.Property(e => e.Code).HasMaxLength(10);
+            entity.Property(e => e.ExpireTime).HasColumnType("datetime");
         });
 
         OnModelCreatingPartial(modelBuilder);

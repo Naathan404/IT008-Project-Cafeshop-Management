@@ -1,19 +1,10 @@
-﻿using CoffeeShop.View;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Animation;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using CoffeeShop.Models;
+using CoffeeShop.View;
 
 namespace CoffeeShop
 {
@@ -23,11 +14,18 @@ namespace CoffeeShop
     public partial class ForgotPasswordStep1 : Page
     {
         private Frame parentFrame;
-        public ForgotPasswordStep1(Frame frame)
+        private LoginWindow loginWindow;
+        public ForgotPasswordStep1(Frame frame, LoginWindow loginWindow)
         {
             InitializeComponent();
             txbFloatingEmailBox.Focus();
             parentFrame = frame;
+
+            // Tham chiếu đến Login Window ban đầu
+            this.loginWindow = loginWindow;
+
+            // Ẩn thông báo Email chưa được đăng ký
+            txblNotify.Visibility = Visibility.Hidden;
         }
 
         private void txbFloatingEmailBox_KeyDown(object sender, KeyEventArgs e)
@@ -46,7 +44,35 @@ namespace CoffeeShop
 
         private void btnSendCode_Click(object sender, RoutedEventArgs e)
         {
-            var nextPage = new ForgotPasswordStep2(parentFrame);
+            using (var db = new CoffeeShopContext())
+            {
+                String emailFromInput = txbFloatingEmailBox.Text.Trim();
+                var email = db.Staff.FirstOrDefault(e => e.Email == emailFromInput.ToString());
+                if(email != null)
+                {
+                    MoveToNextPage(emailFromInput);
+                }
+                else
+                {
+                    txblNotify.Visibility = Visibility.Visible;
+                    txbFloatingEmailBox.Text = "";
+                    txbFloatingEmailBox.Focus();
+                }
+            }
+        }
+
+        private void btnBackToLogin_Click(object sender, RoutedEventArgs e)
+        {
+            Window parentWindow = Window.GetWindow(this);
+            if (parentWindow != null)
+            {
+                parentWindow.Close();
+            }
+        }
+
+        private void MoveToNextPage(string emailToSend)
+        {
+            var nextPage = new ForgotPasswordStep2(parentFrame, loginWindow, emailToSend);
 
             // đặt ban đầu ngoài màn hình phải
             nextPage.Margin = new Thickness(parentFrame.ActualWidth, 0, -parentFrame.ActualWidth, 0);
@@ -66,13 +92,10 @@ namespace CoffeeShop
             nextPage.BeginAnimation(MarginProperty, anim);
         }
 
-        private void btnBackToLogin_Click(object sender, RoutedEventArgs e)
+        private void txbFloatingEmailBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            Window parentWindow = Window.GetWindow(this);
-            if (parentWindow != null)
-            {
-                parentWindow.Close();
-            }
+            if (txbFloatingEmailBox.Text.Length == 1) 
+                txblNotify.Visibility = Visibility.Hidden;   
         }
     }
 }
