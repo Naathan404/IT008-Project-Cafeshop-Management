@@ -23,5 +23,15 @@ namespace CoffeeShop.View
         {
             InitializeComponent();
         }
+
+        private void cbxFilterTable_SuggestionChosen(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+
+        }
+
+        private void cbxFilterTable_ColorChanged(object sender, RoutedPropertyChangedEventArgs<Color> e)
+        {
+
+        }
     }
 }

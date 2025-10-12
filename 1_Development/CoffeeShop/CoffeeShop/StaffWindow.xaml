@@ -6,21 +6,27 @@
         xmlns:local="clr-namespace:CoffeeShop"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
-        Title="Coffeeshop - Staff" Height="450" Width="800"
-        WindowState="Maximized">
-
-    <Grid Background="#B18252">
-        <Border Background="#C7A57A" 
-                Margin="0,30,0,0"/>
+        Title="Coffeeshop - Staff"
+        WindowState="Normal"
+        Height="520" Width="850"
+        MinHeight="520" MinWidth="850">
+    <Grid>
+        <Grid.Background>
+            <SolidColorBrush Color="#FFB18252" 
+                             Opacity="0.95"/>
+        </Grid.Background>
+        <Border Background="#D7BF9F" 
+                Margin="0,36,0,0"
+                CornerRadius="20 20 0 0">
+        </Border>
 
         <materialDesign:Card x:Name="crdTableAndMenu"
-                             Margin="7 37 400 0"
+                             Margin="15 50 350 0"
                              Background="Transparent">
             <TabControl
                 HorizontalContentAlignment="Left"
                 TabStripPlacement="Top"
-                BorderThickness="0"
-                Margin="0">
+                BorderThickness="0">
                 <TabControl.Resources>
                     <Style TargetType="{x:Type TabItem}">
                         <Setter Property="Foreground" Value="#856539"/>
@@ -29,7 +35,7 @@
                         <Setter Property="Background" Value="Transparent"/>
                         <Setter Property="FontSize" Value="12"/>
                         <Setter Property="FontFamily" Value="Noto Sans SC Black"/>
-                        <Setter Property="Height" Value="45"/>
+                        <Setter Property="Height" Value="37"/>
                         <Setter Property="Width" Value="80"/>
                         <Setter Property="Template">
                             <Setter.Value>
@@ -50,9 +56,6 @@
                                             <Setter TargetName="Border" Property="Background" Value="#FFFFFF"/>
                                             <Setter Property="Foreground" Value="#340D05"/>
                                         </Trigger>
-                                        <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter TargetName="Border" Property="Background" Value="#E0CEB5"/>
-                                        </Trigger>
                                     </ControlTemplate.Triggers>
                                 </ControlTemplate>
                             </Setter.Value>
@@ -61,15 +64,61 @@
                 </TabControl.Resources>
                 <TabItem Header="Bàn">
                     <Border Background="#FFFFFF" 
-                            CornerRadius="0 15 0 0"/>
+                            CornerRadius="0 25 0 0">
+                        <Border CornerRadius="11" 
+                            BorderBrush="#B18252" 
+                            BorderThickness="1" 
+                            Padding="0"
+                            Background="Transparent"
+                            Margin="12 12 0 0"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Top">
+                            <ComboBox x:Name="cbxFilterTable"
+                                      FontFamily="Cascadia Code"
+                                      FontSize="12"
+                                      Foreground="#340D05"
+                                      BorderBrush="Transparent"
+                                      Margin="10 2 4 2"
+                                      Height="21"
+                                      materialDesign:HintAssist.Hint="Tất cả các loại bàn"
+                                      materialDesign:TextFieldAssist.UnderlineBrush="#856539">
+                                <ComboBox.Resources>
+                                    <SolidColorBrush x:Key="MaterialDesignOutlinedBorderBrush" Color="#B18252"/>
+                                    <SolidColorBrush x:Key="MaterialDesignTextBoxBorder" Color="#B18252"/>
+                                </ComboBox.Resources>
+
+                                <ComboBoxItem Content="Tất cả"/>
+                                <ComboBoxItem Content="Bàn 2"/>
+                                <ComboBoxItem Content="Bàn 4"/>
+                            </ComboBox>
+                        </Border>
+                    </Border>
                 </TabItem>
 
                 <TabItem Header="Thực đơn">
                     <Border Background="#FFFFFF" 
-                            CornerRadius="0 15 0 0"/>
+                            CornerRadius="0 25 0 0"/>
                 </TabItem>
-
             </TabControl>
         </materialDesign:Card>
+        <Border x:Name="recLogOut"
+                CornerRadius="10"
+                Background="#58481F"
+                Width="20"
+                Height="20" 
+                Margin="10,10,0,0"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top">
+            <materialDesign:PackIcon Kind="ChevronRight" 
+                                     Margin="2"
+                                     Foreground="#E7D8C4"/>
+        </Border>
+        <TextBlock Text="Coffee shop"
+                 FontFamily="Segoe UI Black"
+                 FontSize="15"
+                 Foreground="#FFE7D8C4"
+                 HorizontalAlignment="Left"
+                 VerticalAlignment="Top"
+                 Margin="40 9 0 0"/>
     </Grid>
 </Window>
