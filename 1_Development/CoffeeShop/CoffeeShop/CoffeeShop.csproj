@@ -49,15 +49,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Database\CoffeeShopDB.mdf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Database\CoffeeShopDB_log.ldf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
-  <ItemGroup>
     <Folder Include="Assets\Fonts\" />
   </ItemGroup>
 
