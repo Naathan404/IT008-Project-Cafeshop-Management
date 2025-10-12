@@ -7,10 +7,10 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
         Title="Coffeeshop - Staff" Height="450" Width="800"
-        WindowState="Normal">
+        WindowState="Maximized">
 
-    <Grid Background="#FFD4BA98">
-        <Border Background="#B18252" 
+    <Grid Background="#B18252">
+        <Border Background="#C7A57A" 
                 Margin="0,30,0,0"/>
 
         <materialDesign:Card x:Name="crdTableAndMenu"
@@ -23,19 +23,21 @@
                 Margin="0">
                 <TabControl.Resources>
                     <Style TargetType="{x:Type TabItem}">
-                        <Setter Property="Foreground" Value="Black"/>
+                        <Setter Property="Foreground" Value="#856539"/>
                         <Setter Property="Padding" Value="10"/>
                         <Setter Property="Margin" Value="0,0,7,0"/>
-                        <Setter Property="Background" Value="#B18252"/>
+                        <Setter Property="Background" Value="Transparent"/>
                         <Setter Property="FontSize" Value="12"/>
                         <Setter Property="FontFamily" Value="Noto Sans SC Black"/>
+                        <Setter Property="Height" Value="45"/>
+                        <Setter Property="Width" Value="80"/>
                         <Setter Property="Template">
                             <Setter.Value>
                                 <ControlTemplate TargetType="{x:Type TabItem}">
                                     <Border x:Name="Border"
                                             Background="{TemplateBinding Background}"
                                             CornerRadius="10 10 0 0"
-                                            BorderBrush="#4A3F2A"
+                                            BorderBrush="Transparent"
                                             Padding="{TemplateBinding Padding}">
                                         <ContentPresenter
                                             ContentSource="Header"
@@ -45,12 +47,11 @@
                                     </Border>
                                     <ControlTemplate.Triggers>
                                         <Trigger Property="IsSelected" Value="True">
-                                            <Setter TargetName="Border" Property="Background" Value="#F9F6F0"/>
+                                            <Setter TargetName="Border" Property="Background" Value="#FFFFFF"/>
                                             <Setter Property="Foreground" Value="#340D05"/>
                                         </Trigger>
                                         <Trigger Property="IsMouseOver" Value="True">
                                             <Setter TargetName="Border" Property="Background" Value="#E0CEB5"/>
-                                            <Setter Property="Foreground" Value="#F9F6F0"/>
                                         </Trigger>
                                     </ControlTemplate.Triggers>
                                 </ControlTemplate>
@@ -59,12 +60,12 @@
                     </Style>
                 </TabControl.Resources>
                 <TabItem Header="Bàn">
-                    <Border Background="#F9F6F0" 
+                    <Border Background="#FFFFFF" 
                             CornerRadius="0 15 0 0"/>
                 </TabItem>
 
                 <TabItem Header="Thực đơn">
-                    <Border Background="#F9F6F0" 
+                    <Border Background="#FFFFFF" 
                             CornerRadius="0 15 0 0"/>
                 </TabItem>
 
