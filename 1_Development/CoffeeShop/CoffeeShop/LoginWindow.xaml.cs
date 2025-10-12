@@ -51,6 +51,7 @@ namespace CoffeeShop.View
         public LoginWindow()
         {
             InitializeComponent();
+            txbFloatingUsernameBox.Focus();
             WarmUpDatabase();
             GenerateRandomLoginUI();
         }
@@ -171,6 +172,12 @@ namespace CoffeeShop.View
                 UseShellExecute = true
             });
             e.Handled = true;
+        }
+
+        private void ForgotPassword_Click(object sender, RoutedEventArgs e)
+        {
+            ResetPasswordWindow forgotPwdWindow = new ResetPasswordWindow();
+            forgotPwdWindow.ShowDialog();
         }
     }
 }
