@@ -11,6 +11,7 @@
         Icon="/CoffeeShop;component/Assets/icoCoffee.ico"
         Height="520" Width="850"
         MinHeight="520" MinWidth="850"
+        WindowStartupLocation="CenterScreen"
         FontFamily="{DynamicResource MaterialDesignFont}" >
     <Grid >
         <Grid.Background>
@@ -106,7 +107,9 @@
                             <TextBlock 
                                 Text="Quên mật khẩu?"
                                 HorizontalAlignment="Right"
-                                Margin="0 5 16 0"/>
+                                Margin="0 5 16 0"
+                                Cursor="Hand"
+                                MouseLeftButtonDown="ForgotPassword_Click"/>
                             <Grid Height="35" Width="240" Margin="8 10 8 8">
                                 <Border CornerRadius="6">
                                     <Button 
