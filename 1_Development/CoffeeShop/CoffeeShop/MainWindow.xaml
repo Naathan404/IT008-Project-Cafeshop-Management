@@ -6,7 +6,6 @@
         xmlns:local="clr-namespace:CoffeeShop"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
-        DataContext="{StaticResource MainVM}"
         Title="Coffee Shop" 
         Icon="/CoffeeShop;component/Assets/icoCoffee.ico"
         Height="1280" Width="720"
