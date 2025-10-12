@@ -81,6 +81,7 @@
                                     Margin="3 0 2.7 0.5"
                                     Padding="5,5,0,0"
                                     KeyDown="txbFloatingUsernameBox_KeyDown"
+                                    TextChanged="txbFloatingUsernameBox_TextChanged"
                                     />
 
                             </Border>
