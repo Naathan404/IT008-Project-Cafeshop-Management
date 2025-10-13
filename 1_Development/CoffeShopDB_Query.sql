@@ -174,3 +174,7 @@ Email varchar(100) not null,
 Code varchar(5) not null,
 ExpireTime datetime2 not null
 )
+
+insert into staff 
+values
+(N'Nguyễn Ngọc Lan Anh', N'ngnlananh', N'bf0dbd74174039131b667de9f31b5d8012baaf82011b934b2cc0e3bd53a02a1f', N'Employee', 2, 20000, 0793124539, N'24520109@gm.uit.vn')

@@ -23,15 +23,28 @@ namespace CoffeeShop.View
         {
             InitializeComponent();
         }
-
-        private void cbxFilterTable_SuggestionChosen(object sender, RoutedPropertyChangedEventArgs<object> e)
+        private void bdrOrder_MouseDown(object sender, MouseButtonEventArgs e)
         {
-
+            StaffFrame.Visibility = Visibility.Visible;
+            StaffFrame.NavigationService.Navigate(new CoffeeShop.Staff_Order());
         }
 
-        private void cbxFilterTable_ColorChanged(object sender, RoutedPropertyChangedEventArgs<Color> e)
+        private void bdrMenu_MouseDown(object sender, MouseButtonEventArgs e)
         {
+            StaffFrame.Visibility = Visibility.Visible;
+            StaffFrame.NavigationService.Navigate(new CoffeeShop.Staff_Menu());
+        }
 
+        private void bdrDepot_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            StaffFrame.Visibility = Visibility.Visible;
+            StaffFrame.NavigationService.Navigate(new CoffeeShop.Staff_Depot());
+        }
+
+        private void bdrStatistics_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            StaffFrame.Visibility = Visibility.Visible;
+            StaffFrame.NavigationService.Navigate(new CoffeeShop.Staff_Statistics());
         }
     }
 }

@@ -15,36 +15,114 @@
         BorderBrush="#FF340D05" 
         Foreground="#FFC7A57A">
     <Grid>
-        <Border Background="#C7A57A"
-                HorizontalAlignment="Stretch"
-                VerticalAlignment="Stretch">
+        <Border Background="#EDE2D3"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch">
             <Grid>
-                <Grid>
-                    <Border x:Name="bdrAccount"
-                            Background="#E7D8C4"
-                            Height="55"
-                            CornerRadius="27"
-                            HorizontalAlignment="Left"
+                <Border x:Name="bdrStaffWindowFunction"
+                        Background="#C7A57A"
+                        Width="185"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Stretch">
+                    <Grid>
+
+                        <!-- Hiện tên account nhân viên -->
+                        <Border x:Name="bdrAccount"
+                            Background="#B18252"
+                            Height="45"
+                            CornerRadius="24"
+                            HorizontalAlignment="Center"
                             VerticalAlignment="Top"
-                            Margin="12 12 0 0">
-                        <Grid>
-                            <materialDesign:PackIcon Kind="AccountCircle"
-                                Margin="12 12 0 0"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Top"
-                                Height="30" Width="30"
-                                Foreground="#58481F"/>
-                            <TextBlock x:Name="txblAccountName"
+                            Margin="0,12,0,0">
+                            <Grid>
+                                <materialDesign:PackIcon Kind="AccountCircle"
+                                    Margin="12 8 0 0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Height="30" Width="30"
+                                    Foreground="#391B05"/>
+                                <TextBlock x:Name="txblAccountName1"
                                     Text="Account Name"
-                                    Margin="45 17 12 0"
+                                    Margin="45 15 12 0"
                                     FontFamily="Cascadia Code"
-                                    FontSize="20"
-                                    Foreground="#58481F"></TextBlock>
-                        </Grid>
-                    </Border>
-                </Grid>
+                                    FontSize="15"
+                                    Foreground="#391B05" 
+                                    FontWeight="Bold"/>
+                            </Grid>
+                        </Border>
+                        <!-- Tab Order -->
+                        <Border x:Name="bdrOrder"
+                                Background="#766839"
+                                Height="45" Width="150"
+                                CornerRadius="24"
+                                HorizontalAlignment="Left"
+                                Margin="20,0,0,0"
+                                Mouse.MouseDown="bdrOrder_MouseDown">
+                            <TextBlock Text="Đặt đơn"
+                                        Margin="0 10 0 0"
+                                        FontFamily="Cascadia Code"
+                                        FontSize="20"
+                                        Foreground="#E0CEB5" 
+                                        FontWeight="Bold"
+                                        TextAlignment="Center"/>
+                        </Border>
+
+                        <!-- Tab Menu -->
+                        <Border x:Name="bdrMenu"
+                                Background="#766839"
+                                Height="45" Width="150"
+                                CornerRadius="24"
+                                HorizontalAlignment="Left"
+                                Margin="20, 110,0,0"
+                                Mouse.MouseDown="bdrMenu_MouseDown" Grid.RowSpan="2">
+                            <TextBlock Text="Thực đơn"
+                                       Margin="0 10 0 0"
+                                       FontFamily="Cascadia Code"
+                                       FontSize="20"
+                                       Foreground="#E0CEB5" 
+                                       FontWeight="Bold"
+                                       TextAlignment="Center"/>
+                        </Border>
+
+                        <!-- Tab Kho -->
+                        <Border x:Name="bdrDepot"
+                                Background="#766839"
+                                Height="45" Width="150"
+                                CornerRadius="24"
+                                HorizontalAlignment="Left"
+                                Margin="20,220,0,0"
+                                Mouse.MouseDown="bdrDepot_MouseDown" Grid.Row="1">
+                            <TextBlock Text="Kho hàng"
+                                       Margin="0 10 0 0"
+                                       FontFamily="Cascadia Code"
+                                       FontSize="20"
+                                       Foreground="#E0CEB5" 
+                                       FontWeight="Bold"
+                                       TextAlignment="Center"/>
+                        </Border>
+
+                        <!-- Tab Thống Kê -->
+                        <Border x:Name="bdrStatistics"
+                                Background="#766839"
+                                Height="45" Width="150"
+                                CornerRadius="24"
+                                HorizontalAlignment="Left"
+                                Margin="20,330,0,0"
+                                Mouse.MouseDown="bdrStatistics_MouseDown" Grid.Row="1">
+                            <TextBlock Text="Thống kê"
+                                       Margin="0 10 0 0"
+                                       FontFamily="Cascadia Code"
+                                       FontSize="20"
+                                       Foreground="#E0CEB5" 
+                                       FontWeight="Bold"
+                                       TextAlignment="Center"/>
+                        </Border>
+                    </Grid>
+                </Border>
             </Grid>
         </Border>
-        <Frame x:Name="StaffFrame" Visibility="Hidden"></Frame>
+        <Frame x:Name="StaffFrame"
+               Margin="185 0 0 0"
+               Visibility="Hidden"/>
     </Grid>
 </Window>
