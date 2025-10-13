@@ -6,7 +6,7 @@ using System.Windows.Media.Animation;
 using CoffeeShop.Models;
 using CoffeeShop.View;
 
-namespace CoffeeShop
+namespace CoffeeShop.View.Login
 {
     /// <summary>
     /// Interaction logic for ForgotPasswordStep1.xaml

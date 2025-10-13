@@ -11,7 +11,7 @@ namespace CoffeeShop
     {
         private void Application_Startup(object sender, StartupEventArgs e)
         {
-            View.LoginWindow loginWindow = new View.LoginWindow();
+            View.Login.LoginWindow loginWindow = new View.Login.LoginWindow();
             View.MainWindow mainWindow = new View.MainWindow();
             bool? dialog = loginWindow.ShowDialog();
             if(dialog == false)

@@ -10,16 +10,17 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace CoffeeShop.View
+namespace CoffeeShop.View.Staff
 {
     /// <summary>
-    /// Interaction logic for AdminWindow.xaml
+    /// Interaction logic for Staff_Menu.xaml
     /// </summary>
-    public partial class AdminWindow : Window
+    public partial class Staff_Menu : Page
     {
-        public AdminWindow()
+        public Staff_Menu()
         {
             InitializeComponent();
         }
