@@ -152,8 +152,8 @@ DROP STAFFID;
 
 insert into staff 
 values
-(N'Lê Thành Nghĩa', N'ltnghia', N'fa980dbf4533c98fa5ed792374bea691610dfaabc62558182f4cc814ef0d69db', N'Employee', 1, 20000, 0977778888, N'24521143@gm.uit.vn'),
-(N'Nguyễn Chí Nguyên', N'ngnguyen', N'38d180985d1b2e7a6014190e2cbd3c967408837188354ec93d27bfd86d09a017', N'Admin', NULL, NULL, 0865320821, N'24521186@gm.uit.vn')
+(N'Lê Thành Nghĩa', N'ltnghia', N'fa980dbf4533c98fa5ed792374bea691610dfaabc62558182f4cc814ef0d69db', N'Employee', 1, 20000, 0977778888, N'24521143@gm.uit.edu.vn'),
+(N'Nguyễn Chí Nguyên', N'ngnguyen', N'38d180985d1b2e7a6014190e2cbd3c967408837188354ec93d27bfd86d09a017', N'Admin', NULL, NULL, 0865320821, N'nathannguyen6002@gmail.com')
 
 insert into shift
 values
@@ -161,8 +161,16 @@ values
 (N'Chiều'),
 (N'Tối')
 
-select * from Shift;
 
 select * from Staff;
 
 delete from Staff;
+
+-- Đoạn lệnh tạo bảng mới cho chức năng đổi mật khẩu
+CREATE TABLE OTPRequest
+(
+RequestID int identity(1,1) primary key,
+Email varchar(100) not null,
+Code varchar(5) not null,
+ExpireTime datetime2 not null
+)

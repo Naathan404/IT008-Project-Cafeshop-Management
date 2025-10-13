@@ -24,6 +24,8 @@ namespace CoffeeShop.View
     /// </summary>
     public partial class LoginWindow : Window
     {
+        #region UI Fields
+        // Danh sách câu nói hay về cà phê và hình nền banner
         private List<(string Quote, string Author)> _quotes = new List<(string, string)>
         {
             ("Thà uống cà phê tồi, còn hơn không có giọt nào.", "David Lynch"),
@@ -33,11 +35,10 @@ namespace CoffeeShop.View
             ("Cuộc đời quá ngắn để uống cà phê tồi.", "Nescafe Australia"),
             ("Cứ mỗi phút bạn giận dữ là bạn đánh mất sáu mươi giây hạnh phúc.", "R.W.Emerson"),
             ("Cà phê ngon phải đen như địa ngục, đắng như ác quỷ và ngọt ngào như tình yêu.", "C.M. de Talleyrand"),
-            ("Cuộc đời cũng như một tách cà phê. Quan trọng không phải là cà phê ngon hay dở, mà là cách ta thưởng thức nó.", "Khuyết danh"),
+            ("Cuộc đời cũng như một tách cà phê. Quan trọng không phải là ngon hay dở, mà là cách ta thưởng thức nó.", "Khuyết danh"),
             ("Cà phê là người bạn đồng hành tuyệt vời trong những khoảnh khắc suy tư.", "Khuyết danh"),
             ("Cà phê không chỉ là một thức uống, mà là một nghệ thuật sống.", "Khuyết danh")
         };
-
         private List<String> _imgBannerSources = new List<string>()
         { 
             "/Assets/Images/imgBanner_1.png",
@@ -46,8 +47,9 @@ namespace CoffeeShop.View
             "/Assets/Images/imgBanner_4.png",
             "/Assets/Images/imgBanner_5.jpg",
         };
+        #endregion
 
-
+        // Constructor
         public LoginWindow()
         {
             InitializeComponent();
@@ -55,6 +57,8 @@ namespace CoffeeShop.View
             WarmUpDatabase();
             GenerateRandomLoginUI();
         }
+
+        // Tạo giao diện đăng nhập ngẫu nhiên
         private void GenerateRandomLoginUI()
         {
             var quote = _quotes[new Random().Next(0, _quotes.Count)];
@@ -65,6 +69,7 @@ namespace CoffeeShop.View
             txblNotify.Visibility = Visibility.Hidden;
         }
 
+        // Kiểm tra kết nối cơ sở dữ liệu khi khởi động ứng dụng
         private void WarmUpDatabase()
         {
             using (var db = new CoffeeShopContext())
@@ -82,6 +87,7 @@ namespace CoffeeShop.View
             }
         }
 
+        // Xử lý đăng nhập
         private void ProcessLogin()
         {
             string username = txbFloatingUsernameBox.Text.Trim();
@@ -117,12 +123,14 @@ namespace CoffeeShop.View
             }
         }
 
+        // Mở cửa sổ AdminWindow
         private void LoginAdminWindow()
         {
             AdminWindow adminWindow = new AdminWindow();
             adminWindow.Show();
             this.Close();
         }
+        // Mở cửa sổ StaffWindow
         private void LoginStaffWindow()
         {
             StaffWindow staffWindow = new StaffWindow();
@@ -130,12 +138,13 @@ namespace CoffeeShop.View
             this.Close();
         }
 
-
+        // Xử lý sự kiện khi nhấn nút Đăng nhập
         private void btnEvt_LoginButtonClick(object sender, RoutedEventArgs e)
         {
             ProcessLogin();
         }
 
+        // Xử lý sự kiện nhấn Enter trong TextBox để chuyển sang PasswordBox
         private void txbFloatingUsernameBox_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
@@ -150,6 +159,7 @@ namespace CoffeeShop.View
             }     
         }
 
+        // Xử lý sự kiện nhấn Enter trong PasswordBox để đăng nhập
         private void txbFloatingPasswordBox_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
@@ -164,6 +174,7 @@ namespace CoffeeShop.View
             }
         }
 
+        // Mở liên kết trang web khi bấm vào Hyperlink "About us"
         private void Hyperlink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
         {
             System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
@@ -174,10 +185,23 @@ namespace CoffeeShop.View
             e.Handled = true;
         }
 
+        // Mở cửa sổ Quên mật khẩu
         private void ForgotPassword_Click(object sender, RoutedEventArgs e)
         {
-            ResetPasswordWindow forgotPwdWindow = new ResetPasswordWindow();
+            ResetPasswordWindow forgotPwdWindow = new ResetPasswordWindow(this);
             forgotPwdWindow.ShowDialog();
+        }
+
+        // Ẩn thông báo Nhập sai mật khẩu
+        public void HideWrongPasswordNotify()
+        {
+            txblNotify.Visibility = Visibility.Hidden;
+        }
+
+        private void txbFloatingUsernameBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if(txbFloatingUsernameBox.Text.Length == 1)
+                txblNotify.Visibility = Visibility.Hidden;
         }
     }
 }

@@ -19,6 +19,10 @@ public partial class Staff
 
     public decimal? BaseSalary { get; set; }
 
+    public string PhoneNumber { get; set; } = null!;
+
+    public string Email { get; set; } = null!;
+
     public virtual ICollection<InventoryHistory> InventoryHistories { get; set; } = new List<InventoryHistory>();
 
     public virtual Shift? Shift { get; set; }
