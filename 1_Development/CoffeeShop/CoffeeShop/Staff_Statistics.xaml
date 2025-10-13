@@ -11,6 +11,6 @@
     <Grid>
         <TextBlock Text="This is Statistics tab"
                FontSize="100"
-               Background="White"/>\
+               Background="White"/>
     </Grid>
 </Page>

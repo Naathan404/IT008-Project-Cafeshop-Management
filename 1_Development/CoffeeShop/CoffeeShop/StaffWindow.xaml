@@ -123,6 +123,6 @@
         </Border>
         <Frame x:Name="StaffFrame"
                Margin="185 0 0 0"
-               Visibility="Hidden"/>
+               NavigationUIVisibility="Hidden"/>
     </Grid>
 </Window>

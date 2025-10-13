@@ -26,25 +26,25 @@ namespace CoffeeShop.View
         private void bdrOrder_MouseDown(object sender, MouseButtonEventArgs e)
         {
             StaffFrame.Visibility = Visibility.Visible;
-            StaffFrame.NavigationService.Navigate(new CoffeeShop.Staff_Order());
+            StaffFrame.Navigate(new CoffeeShop.Staff_Order());
         }
 
         private void bdrMenu_MouseDown(object sender, MouseButtonEventArgs e)
         {
             StaffFrame.Visibility = Visibility.Visible;
-            StaffFrame.NavigationService.Navigate(new CoffeeShop.Staff_Menu());
+            StaffFrame.Navigate(new CoffeeShop.Staff_Menu());
         }
 
         private void bdrDepot_MouseDown(object sender, MouseButtonEventArgs e)
         {
             StaffFrame.Visibility = Visibility.Visible;
-            StaffFrame.NavigationService.Navigate(new CoffeeShop.Staff_Depot());
+            StaffFrame.Navigate(new CoffeeShop.Staff_Depot());
         }
 
         private void bdrStatistics_MouseDown(object sender, MouseButtonEventArgs e)
         {
             StaffFrame.Visibility = Visibility.Visible;
-            StaffFrame.NavigationService.Navigate(new CoffeeShop.Staff_Statistics());
+            StaffFrame.Navigate(new CoffeeShop.Staff_Statistics());
         }
     }
 }
