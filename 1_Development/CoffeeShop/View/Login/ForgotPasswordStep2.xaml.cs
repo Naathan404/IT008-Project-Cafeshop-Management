@@ -7,7 +7,7 @@ using CoffeeShop.Models;
 using CoffeeShop.View;
 using CoffeeShop.Helper;
 
-namespace CoffeeShop
+namespace CoffeeShop.View.Login
 {
     /// <summary>
     /// Interaction logic for ForgotPasswordStep2.xaml

@@ -1,5 +1,4 @@
-﻿using CoffeeShop.View;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,21 +10,19 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace CoffeeShop
+namespace CoffeeShop.View.Staff
 {
     /// <summary>
-    /// Interaction logic for ResetPasswordWindow.xaml
+    /// Interaction logic for Staff_Statistics.xaml
     /// </summary>
-    public partial class ResetPasswordWindow : Window
+    public partial class Staff_Statistics : Page
     {
-        private LoginWindow loginWindow;
-        public ResetPasswordWindow(LoginWindow loginWindow)
+        public Staff_Statistics()
         {
             InitializeComponent();
-            ForgotPasswordFrame.Navigate(new ForgotPasswordStep1(ForgotPasswordFrame, loginWindow));
-            this.loginWindow = loginWindow;
         }
     }
 }

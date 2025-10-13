@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace CoffeeShop
+namespace CoffeeShop.View.Staff
 {
     /// <summary>
-    /// Interaction logic for Staff_Depot.xaml
+    /// Interaction logic for Staff_Order.xaml
     /// </summary>
-    public partial class Staff_Depot : Page
+    public partial class Staff_Order : Page
     {
-        public Staff_Depot()
+        public Staff_Order()
         {
             InitializeComponent();
         }

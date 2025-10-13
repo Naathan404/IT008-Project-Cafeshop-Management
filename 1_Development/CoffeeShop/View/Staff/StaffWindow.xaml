@@ -1,4 +1,4 @@
-﻿<Window x:Class="CoffeeShop.View.StaffWindow"
+﻿<Window x:Class="CoffeeShop.View.Staff.StaffWindow"
         x:Name="Cafeshop___Staff" 
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"

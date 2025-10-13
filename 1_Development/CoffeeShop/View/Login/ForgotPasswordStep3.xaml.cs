@@ -6,7 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Animation;
 
-namespace CoffeeShop
+namespace CoffeeShop.View.Login
 {
     /// <summary>
     /// Interaction logic for ForgotPasswordStep3.xaml
@@ -27,6 +27,7 @@ namespace CoffeeShop
             txblNotify.Visibility = Visibility.Hidden;
         }
 
+        // Xử lý sự kiện ấn phím Enter của textbox Nhập mật khẩu mới
         private void pwdBox_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
@@ -35,6 +36,7 @@ namespace CoffeeShop
             }
         }
 
+        // Xử lý sự kiện ấn phím Enter của textbox Nhập lại mật khẩu
         private void pwdBox2_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
@@ -58,7 +60,7 @@ namespace CoffeeShop
         private void btnBack_Click(object sender, RoutedEventArgs e)
         {
             // tạo Page2, margin chuẩn (0)
-            var lastPage = new ForgotPasswordStep2(_parentFrame, _loginWindow);
+            var lastPage = new ForgotPasswordStep2(_parentFrame, _loginWindow, _emailToSend);
 
             _parentFrame.Content = lastPage;
 
@@ -119,6 +121,7 @@ namespace CoffeeShop
             }
         }
 
+        // Ẩn thông báo mật khẩu nhập lại không trùng khớp khi nhập lại mật khẩu một lần nữa
         private void pwdBox_PasswordChanged(object sender, RoutedEventArgs e)
         {
             if (pwdBox.Password.Length == 1)
