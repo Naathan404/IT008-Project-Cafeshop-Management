@@ -130,7 +130,7 @@ namespace CoffeeShop.View.Login
             {
                 Email = _emailToSend,
                 Code = _otpCode,
-                ExpireTime = DateTime.UtcNow.AddMinutes(0.5) // mã OTP hết hạn sau 3 phút
+                ExpireTime = DateTime.UtcNow.AddMinutes(3) // mã OTP hết hạn sau 3 phút
             };
 
             using (var db = new CoffeeShopContext())
