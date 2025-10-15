@@ -73,9 +73,10 @@
                                     Background="#E0CEB5"
                                     CornerRadius="30"
                                     HorizontalAlignment="Left"
+                                    VerticalAlignment="Bottom"
                                     Margin="12,200,0,0"
                                     Mouse.MouseDown="bdrOrder_MouseDown">
-                                <Image Source="/Assets/Images/imgCoffeeOrder.png"
+                                <Image Source="/Assets/Images/imgCoffeeOrder.jpg"
                                        Height="35" Width="35"
                                        Margin="10"/>
                             </Border>
@@ -89,7 +90,7 @@
                                     Opacity="0"
                                     Visibility="Collapsed">
                                 <Grid>
-                                    <Image Source="/Assets/Images/imgCoffeeOrder.png"
+                                    <Image Source="/Assets/Images/imgCoffeeOrder.jpg"
                                            Height="35" Width="35"
                                            Margin="-100 0 0 0"/>
                                     <TextBlock Text="Đặt đơn"
