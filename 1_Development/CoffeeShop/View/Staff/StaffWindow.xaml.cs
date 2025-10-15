@@ -52,7 +52,61 @@ namespace CoffeeShop.View.Staff
 
         private void bdrStaffWindowFunction_MouseDown(object sender, MouseButtonEventArgs e)
         {
+            Visibility visibility = Visibility.Visible;
+            double dwidth = isExpanded ? 80 : 200;
+
+            // animation xuat hien
+            var vShowBdr = new DoubleAnimation
+            {
+                To = dwidth,
+                Duration = TimeSpan.FromMilliseconds(250),
+                EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut }
+            };
+            bdrStaffWindowFunction.BeginAnimation(Border.WidthProperty, vShowBdr);
             
+            //animation thu gon
+            var vReduceBdr = new DoubleAnimation
+            {
+                To = dwidth,
+                Duration = TimeSpan.FromMilliseconds(250),
+                EasingFunction = new CubicEase { EasingMode = EasingMode.EaseIn }
+            };
+            bdrStaffWindowFunction.BeginAnimation(Border.WidthProperty, vReduceBdr);
+
+            if (! isExpanded) // đang thu gon tab bar
+            {
+                //cho cac element before an di
+                bdrAccount_Before.Visibility = Visibility.Collapsed;
+                bdrOrder_Before.Visibility = Visibility.Collapsed;
+                bdrMenu_Before.Visibility = Visibility.Collapsed;
+                bdrDepot_Before.Visibility = Visibility.Collapsed;
+                bdrStatistics_Before.Visibility = Visibility.Collapsed;
+                
+
+                //cho cac element after hien ra
+                bdrAccount_After.Visibility = Visibility.Visible;
+                bdrOrder_After.Visibility = Visibility.Visible;
+                bdrMenu_After.Visibility = Visibility.Visible;
+                bdrDepot_After.Visibility = Visibility.Visible;
+                bdrStatistics_After.Visibility = Visibility.Visible;
+            }
+            else // đang hien thi tab bar 
+            {
+                //cho cac element after an di
+                bdrAccount_After.Visibility = Visibility.Collapsed;
+                bdrOrder_After.Visibility = Visibility.Collapsed;
+                bdrMenu_After.Visibility = Visibility.Collapsed;
+                bdrDepot_After.Visibility = Visibility.Collapsed;
+                bdrStatistics_After.Visibility = Visibility.Collapsed;
+
+                //cho cac element before hien ra
+                bdrAccount_Before.Visibility = Visibility.Visible;
+                bdrOrder_Before.Visibility = Visibility.Visible;
+                bdrMenu_Before.Visibility = Visibility.Visible;
+                bdrDepot_Before.Visibility = Visibility.Visible;
+                bdrStatistics_Before.Visibility = Visibility.Visible;
+            }
+            isExpanded = !isExpanded;
         }
     }
 }
