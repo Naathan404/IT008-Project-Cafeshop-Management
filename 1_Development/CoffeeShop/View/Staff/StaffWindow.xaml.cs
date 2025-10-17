@@ -15,16 +15,13 @@ using System.Windows.Media.Animation;
 
 namespace CoffeeShop.View.Staff
 {
-    /// <summary>
-    /// Interaction logic for StaffWindow.xaml
-    /// </summary>
-    /// 
     public partial class StaffWindow : Window
     {
         private bool isExpanded = false;
         public StaffWindow()
         {
             InitializeComponent();
+            StaffFrame.Navigate(new Staff_Order());
         }
         private void bdrOrder_MouseDown(object sender, MouseButtonEventArgs e)
         {
@@ -48,6 +45,18 @@ namespace CoffeeShop.View.Staff
         {
             StaffFrame.Visibility = Visibility.Visible;
             StaffFrame.Navigate(new Staff_Statistics());
+        }
+
+        private void bdrTable_After_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            StaffFrame.Visibility = Visibility.Visible;
+            StaffFrame.Navigate(new Staff_Table());
+        }
+
+        private void bdrTable_Before_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            StaffFrame.Visibility = Visibility.Visible;
+            StaffFrame.Navigate(new Staff_Table());
         }
 
         private void bdrStaffWindowFunction_MouseDown(object sender, MouseButtonEventArgs e)
@@ -81,6 +90,7 @@ namespace CoffeeShop.View.Staff
                 bdrMenu_Before.Visibility = Visibility.Collapsed;
                 bdrDepot_Before.Visibility = Visibility.Collapsed;
                 bdrStatistics_Before.Visibility = Visibility.Collapsed;
+                bdrTable_Before.Visibility= Visibility.Collapsed;
                 
 
                 //cho cac element after hien ra
@@ -89,6 +99,7 @@ namespace CoffeeShop.View.Staff
                 bdrMenu_After.Visibility = Visibility.Visible;
                 bdrDepot_After.Visibility = Visibility.Visible;
                 bdrStatistics_After.Visibility = Visibility.Visible;
+                bdrTable_After.Visibility = Visibility.Visible;
             }
             else // đang hien thi tab bar 
             {
@@ -98,6 +109,7 @@ namespace CoffeeShop.View.Staff
                 bdrMenu_After.Visibility = Visibility.Collapsed;
                 bdrDepot_After.Visibility = Visibility.Collapsed;
                 bdrStatistics_After.Visibility = Visibility.Collapsed;
+                bdrTable_After.Visibility = Visibility.Collapsed;
 
                 //cho cac element before hien ra
                 bdrAccount_Before.Visibility = Visibility.Visible;
@@ -105,6 +117,7 @@ namespace CoffeeShop.View.Staff
                 bdrMenu_Before.Visibility = Visibility.Visible;
                 bdrDepot_Before.Visibility = Visibility.Visible;
                 bdrStatistics_Before.Visibility = Visibility.Visible;
+                bdrTable_Before.Visibility = Visibility.Visible;
             }
             isExpanded = !isExpanded;
         }
