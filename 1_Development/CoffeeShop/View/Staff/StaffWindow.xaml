@@ -23,15 +23,15 @@
                NavigationUIVisibility="Hidden"/>
         <Grid>
             <Border x:Name="bdrStaffWindowFunction"
-                    Background="#C7A57A"
+                    Background="#BC9466"
                     Width="80"
                     HorizontalAlignment="Left"
                     Mouse.MouseDown="bdrStaffWindowFunction_MouseDown">
                 <Border.Effect>
                     <DropShadowEffect Color="#462812"
-                          Opacity="0.3"
-                          BlurRadius="10"
-                          ShadowDepth="5"/>
+                                      Opacity="0.4"
+                                      BlurRadius="10"
+                                      ShadowDepth="5"/>
                 </Border.Effect>
                 <Grid>
                     <!-- Hiện tên account nhân viên -->
@@ -46,23 +46,23 @@
                         <Border.Effect>
                             <DropShadowEffect Color="#462812"
                                               Opacity="0.3"
-                                              BlurRadius="10"
+                                              BlurRadius="-10"
                                               ShadowDepth="5"/>
                         </Border.Effect>
                         <Grid>
                             <materialDesign:PackIcon Kind="AccountCircle"
-                                                    Margin="10 10 0 0"
-                                                    HorizontalAlignment="Left"
-                                                    VerticalAlignment="Top"
-                                                    Height="35" Width="35"
-                                                    Foreground="#462812"/>
+                                                     Margin="10 10 0 0"
+                                                     HorizontalAlignment="Left"
+                                                     VerticalAlignment="Top"
+                                                     Height="35" Width="35"
+                                                     Foreground="#462812"/>
                             <TextBlock x:Name="txblAccountName1"
-                                        Text="Account Name"
-                                        Margin="50,19,12,0"
-                                        FontFamily="Cascadia Code"
-                                        FontSize="16"
-                                        Foreground="#391B05" 
-                                        FontWeight="Bold"/>
+                                       Text="Account Name"
+                                       Margin="50,19,12,0"
+                                       FontFamily="Cascadia Code"
+                                       FontSize="16"
+                                       Foreground="#391B05" 
+                                       FontWeight="Bold"/>
                         </Grid>
                     </Border>
                     <Border x:Name="bdrAccount_Before"
@@ -73,16 +73,16 @@
                             Margin="0,12,0,0">
                         <Border.Effect>
                             <DropShadowEffect Color="#462812"
-                                            Opacity="0.3"
-                                            BlurRadius="10"
-                                            ShadowDepth="5"/>
+                                              Opacity="0.3"
+                                              BlurRadius="-10"
+                                              ShadowDepth="5"/>
                         </Border.Effect>
                         <materialDesign:PackIcon Kind="AccountCircle"
-                                                Margin="10"
-                                                HorizontalAlignment="Left"
-                                                VerticalAlignment="Top"
-                                                Height="35" Width="35"
-                                                Foreground="#391B05"/>
+                                                 Margin="10"
+                                                 HorizontalAlignment="Left"
+                                                 VerticalAlignment="Top"
+                                                 Height="35" Width="35"
+                                                 Foreground="#391B05"/>
                     </Border>
 
                     <!-- Tab Order -->
@@ -96,12 +96,12 @@
                         <Border.Effect>
                             <DropShadowEffect Color="#462812"
                                               Opacity="0.3"
-                                              BlurRadius="10"
+                                              BlurRadius="-10"
                                               ShadowDepth="5"/>
                         </Border.Effect>
                         <Image Source="/Assets/Images/imgCoffeeOrder.jpg"
-                                Height="35" Width="35"
-                                Margin="10"/>
+                               Height="35" Width="35"
+                               Margin="10"/>
                     </Border>
                     <Border x:Name="bdrOrder_After"
                             Background="#E0CEB5"
@@ -115,7 +115,7 @@
                         <Border.Effect>
                             <DropShadowEffect Color="#462812"
                                               Opacity="0.3"
-                                              BlurRadius="10"
+                                              BlurRadius="-10"
                                               ShadowDepth="5"/>
                         </Border.Effect>
                         <Grid>
@@ -124,12 +124,12 @@
                                    HorizontalAlignment="Left"
                                    Margin="10"/>
                             <TextBlock Text="Đặt đơn"
-                                        Margin="50 17 25 0"
-                                        FontFamily="Cascadia Code"
-                                        FontSize="21"
-                                        Foreground="#462812" 
-                                        FontWeight="Bold"
-                                        TextAlignment="Center"/>
+                                       Margin="50 17 25 0"
+                                       FontFamily="Cascadia Code"
+                                       FontSize="21"
+                                       Foreground="#462812" 
+                                       FontWeight="Bold"
+                                       TextAlignment="Center"/>
                         </Grid>
                     </Border>
 
@@ -144,7 +144,7 @@
                         <Border.Effect>
                             <DropShadowEffect Color="#462812"
                                               Opacity="0.3"
-                                              BlurRadius="10"
+                                              BlurRadius="-10"
                                               ShadowDepth="5"/>
                         </Border.Effect>
                         <materialDesign:PackIcon Kind="TableFurniture"
@@ -163,15 +163,15 @@
                             Visibility="Collapsed">
                         <Border.Effect>
                             <DropShadowEffect Color="#462812"
-                                            Opacity="0.3"
-                                            BlurRadius="10"
-                                            ShadowDepth="5"/>
+                                              Opacity="0.3"
+                                              BlurRadius="-10"
+                                              ShadowDepth="5"/>
                         </Border.Effect>
                         <Grid>
                             <materialDesign:PackIcon Kind="TableFurniture"
-                                                    Height="35" Width="35"
-                                                    Margin="10"
-                                                    Foreground="#340D05"/>
+                                                     Height="35" Width="35"
+                                                     Margin="10"
+                                                     Foreground="#340D05"/>
                             <TextBlock Text="Bàn ăn"
                                        Margin="50 17 25 0"
                                        FontFamily="Cascadia Code"
@@ -193,7 +193,7 @@
                         <Border.Effect>
                             <DropShadowEffect Color="#462812"
                                               Opacity="0.3"
-                                              BlurRadius="10"
+                                              BlurRadius="-10"
                                               ShadowDepth="5"/>
                         </Border.Effect>
                         <materialDesign:PackIcon Kind="Menu"
@@ -213,7 +213,7 @@
                         <Border.Effect>
                             <DropShadowEffect Color="#462812"
                                               Opacity="0.3"
-                                              BlurRadius="10"
+                                              BlurRadius="-10"
                                               ShadowDepth="5"/>
                         </Border.Effect>
                         <Grid>
@@ -242,13 +242,13 @@
                         <Border.Effect>
                             <DropShadowEffect Color="#462812"
                                               Opacity="0.3"
-                                              BlurRadius="10"
+                                              BlurRadius="-10"
                                               ShadowDepth="5"/>
                         </Border.Effect>
                         <materialDesign:PackIcon Kind="ArchiveOutline"
-                                                Height="35" Width="35"
-                                                Margin="10"
-                                                Foreground="#340D05"/>
+                                                 Height="35" Width="35"
+                                                 Margin="10"
+                                                 Foreground="#340D05"/>
                     </Border>
                     <Border x:Name="bdrDepot_After"
                             Background="#E0CEB5"
@@ -262,21 +262,21 @@
                         <Border.Effect>
                             <DropShadowEffect Color="#462812"
                                               Opacity="0.3"
-                                              BlurRadius="10"
+                                              BlurRadius="-10"
                                               ShadowDepth="5"/>
                         </Border.Effect>
                         <Grid>
                             <materialDesign:PackIcon Kind="ArchiveOutline"
-                                                    Height="35" Width="35"
-                                                    Margin="10"
-                                                    Foreground="#340D05"/>
+                                                     Height="35" Width="35"
+                                                     Margin="10"
+                                                     Foreground="#340D05"/>
                             <TextBlock Text="Kho hàng"
-                                        Margin="50 17 10 0"
-                                        FontFamily="Cascadia Code"
-                                        FontSize="21"
-                                        Foreground="#462812" 
-                                        FontWeight="Bold"
-                                        TextAlignment="Center"/>
+                                       Margin="50 17 10 0"
+                                       FontFamily="Cascadia Code"
+                                       FontSize="21"
+                                       Foreground="#462812" 
+                                       FontWeight="Bold"
+                                       TextAlignment="Center"/>
                         </Grid>
                     </Border>
 
@@ -291,13 +291,13 @@
                         <Border.Effect>
                             <DropShadowEffect Color="#462812"
                                               Opacity="0.3"
-                                              BlurRadius="10"
+                                              BlurRadius="-10"
                                               ShadowDepth="5"/>
                         </Border.Effect>
                         <materialDesign:PackIcon Kind="ChartBoxOutline"
-                                                Height="35" Width="35"
-                                                Margin="10"
-                                                Foreground="#340D05"/>
+                                                 Height="35" Width="35"
+                                                 Margin="10"
+                                                 Foreground="#340D05"/>
                     </Border>
                     <Border x:Name="bdrStatistics_After"
                             Background="#E0CEB5"
@@ -311,22 +311,22 @@
                         <Border.Effect>
                             <DropShadowEffect Color="#462812"
                                               Opacity="0.3"
-                                              BlurRadius="10"
+                                              BlurRadius="-10"
                                               ShadowDepth="5"/>
                         </Border.Effect>
                         <Grid>
 
                             <materialDesign:PackIcon Kind="ChartBoxOutline"
-                                                    Height="35" Width="35"
-                                                    Margin="10"
-                                                    Foreground="#340D05"/>
+                                                     Height="35" Width="35"
+                                                     Margin="10"
+                                                     Foreground="#340D05"/>
                             <TextBlock Text="Thống kê"
-                                        Margin="50 17 10 0"
-                                        FontFamily="Cascadia Code"
-                                        FontSize="21"
-                                        Foreground="#462812" 
-                                        FontWeight="Bold"
-                                        TextAlignment="Center"/>
+                                       Margin="50 17 10 0"
+                                       FontFamily="Cascadia Code"
+                                       FontSize="21"
+                                       Foreground="#462812" 
+                                       FontWeight="Bold"
+                                       TextAlignment="Center"/>
                         </Grid>
                     </Border>
                 </Grid>

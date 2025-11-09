@@ -3,16 +3,265 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
       xmlns:local="clr-namespace:CoffeeShop"
       mc:Ignorable="d" 
-      d:DesignHeight="450" d:DesignWidth="800"
+      d:DesignHeight="520" d:DesignWidth="850"
       Title="Staff_Order">
     <Grid>
-        <Border Background="#F9F6F0"
+        <Border Background="#B18252"
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Stretch">
-            <TextBlock Text="This is Order tab"
-                       FontSize="100"></TextBlock>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="3*"/>
+                    <ColumnDefinition Width="1.5*"/>
+                </Grid.ColumnDefinitions>
+
+                <Grid Grid.Column="0">
+                    <Border x:Name="bdrMenuTab"
+                        Margin="15 15 10 15"
+                        Background="#EDE2D3"
+                        CornerRadius="15">
+                        <Border.Effect>
+                            <DropShadowEffect BlurRadius="-20"
+                                          Opacity="0.3"
+                                          Color="Black"
+                                          ShadowDepth="8"/>
+                        </Border.Effect>
+                        <Grid>
+                            <TabControl Margin="10 10 10 0"
+                                        materialDesign:ColorZoneAssist.Mode="Standard"
+                                        Background="#C7A57A"
+                                        HorizontalAlignment="Left"
+                                        VerticalContentAlignment="Top"
+                                        materialDesign:ThemeAssist.Theme="Light"
+                                        materialDesign:TabAssist.HasUniformTabWidth="False">
+                                <!-- Style cho từng TabItem -->
+                                <TabControl.ItemContainerStyle>
+                                    <Style TargetType="TabItem"
+                                           BasedOn="{StaticResource MaterialDesignTabItem}">
+                                        <Setter Property="Height" Value="40"/>
+                                        <Setter Property="Width" Value="Auto"/>
+                                        <Setter Property="MinWidth" Value="0"/>
+                                        <Setter Property="Margin" Value="2,0"/>
+                                        <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                                        <Setter Property="VerticalContentAlignment" Value="Top"/>
+                                        <Setter Property="FontSize" Value="16"/>
+                                        <Setter Property="FontFamily" Value="Cascadia Code"/>
+                                    </Style>
+                                </TabControl.ItemContainerStyle>
+
+                                <TabItem Header="Cà phê"
+                                         Padding="0">
+                                    <ScrollViewer HorizontalScrollBarVisibility="Auto"
+                                                  VerticalScrollBarVisibility="Auto"
+                                                  Margin="5">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="150"/>
+                                                <ColumnDefinition Width="150"/>
+                                                <ColumnDefinition Width="150"/>
+                                                <ColumnDefinition Width="150"/>
+                                                <ColumnDefinition Width="150"/>
+                                                <ColumnDefinition Width="150"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="150"/>
+                                                <RowDefinition Height="150"/>
+                                                <RowDefinition Height="150"/>
+                                                <RowDefinition Height="150"/>
+                                                <RowDefinition Height="150"/>
+                                                <RowDefinition Height="150"/>
+                                                <RowDefinition Height="150"/>
+                                                <RowDefinition Height="150"/>
+                                            </Grid.RowDefinitions>
+
+                                            <ContentControl Grid.Column="0"
+                                                            Margin="5"
+                                                            Style="{StaticResource RoundedCard}"
+                                                            Tag="/Assets/Images/imgItemExample.jpg"/>
+                                            <ContentControl Grid.Column="1"
+                                                            Margin="5"
+                                                            Style="{StaticResource RoundedCard}"/>
+                                        </Grid>
+                                    </ScrollViewer>
+                                </TabItem>
+                                <TabItem Header="Trà sữa">
+                                    <ScrollViewer HorizontalScrollBarVisibility="Auto"
+                                                  VerticalScrollBarVisibility="Auto"
+                                                  Margin="5">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="150"/>
+                                                <ColumnDefinition Width="150"/>
+                                                <ColumnDefinition Width="150"/>
+                                                <ColumnDefinition Width="150"/>
+                                                <ColumnDefinition Width="150"/>
+                                                <ColumnDefinition Width="150"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="150"/>
+                                                <RowDefinition Height="150"/>
+                                                <RowDefinition Height="150"/>
+                                                <RowDefinition Height="150"/>
+                                                <RowDefinition Height="150"/>
+                                                <RowDefinition Height="150"/>
+                                                <RowDefinition Height="150"/>
+                                                <RowDefinition Height="150"/>
+                                            </Grid.RowDefinitions>
+                                        </Grid>
+                                    </ScrollViewer>
+                                </TabItem>
+                                <TabItem Header="Đá xay">
+                                    <ScrollViewer HorizontalScrollBarVisibility="Auto"
+                                                  VerticalScrollBarVisibility="Auto"
+                                                  Margin="5">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="150"/>
+                                                <ColumnDefinition Width="150"/>
+                                                <ColumnDefinition Width="150"/>
+                                                <ColumnDefinition Width="150"/>
+                                                <ColumnDefinition Width="150"/>
+                                                <ColumnDefinition Width="150"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="150"/>
+                                                <RowDefinition Height="150"/>
+                                                <RowDefinition Height="150"/>
+                                                <RowDefinition Height="150"/>
+                                                <RowDefinition Height="150"/>
+                                                <RowDefinition Height="150"/>
+                                                <RowDefinition Height="150"/>
+                                                <RowDefinition Height="150"/>
+                                            </Grid.RowDefinitions>
+                                        </Grid>
+                                    </ScrollViewer>
+                                </TabItem>
+                                <TabItem Header="Trà">
+                                    <ScrollViewer HorizontalScrollBarVisibility="Auto"
+                                                  VerticalScrollBarVisibility="Auto"
+                                                  Margin="5">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="150"/>
+                                                <ColumnDefinition Width="150"/>
+                                                <ColumnDefinition Width="150"/>
+                                                <ColumnDefinition Width="150"/>
+                                                <ColumnDefinition Width="150"/>
+                                                <ColumnDefinition Width="150"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="150"/>
+                                                <RowDefinition Height="150"/>
+                                                <RowDefinition Height="150"/>
+                                                <RowDefinition Height="150"/>
+                                                <RowDefinition Height="150"/>
+                                                <RowDefinition Height="150"/>
+                                                <RowDefinition Height="150"/>
+                                                <RowDefinition Height="150"/>
+                                            </Grid.RowDefinitions>
+                                        </Grid>
+                                    </ScrollViewer>
+                                </TabItem>
+                                <TabItem Header="Nước ép">
+                                    <ScrollViewer HorizontalScrollBarVisibility="Auto"
+                                                  VerticalScrollBarVisibility="Auto"
+                                                  Margin="5">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="150"/>
+                                                <ColumnDefinition Width="150"/>
+                                                <ColumnDefinition Width="150"/>
+                                                <ColumnDefinition Width="150"/>
+                                                <ColumnDefinition Width="150"/>
+                                                <ColumnDefinition Width="150"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="150"/>
+                                                <RowDefinition Height="150"/>
+                                                <RowDefinition Height="150"/>
+                                                <RowDefinition Height="150"/>
+                                                <RowDefinition Height="150"/>
+                                                <RowDefinition Height="150"/>
+                                                <RowDefinition Height="150"/>
+                                                <RowDefinition Height="150"/>
+                                            </Grid.RowDefinitions>
+                                        </Grid>
+                                    </ScrollViewer>
+                                </TabItem>
+                                <TabItem Header="Sinh tố">
+                                    <ScrollViewer HorizontalScrollBarVisibility="Auto"
+                                                  VerticalScrollBarVisibility="Auto"
+                                                  Margin="5">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="150"/>
+                                                <ColumnDefinition Width="150"/>
+                                                <ColumnDefinition Width="150"/>
+                                                <ColumnDefinition Width="150"/>
+                                                <ColumnDefinition Width="150"/>
+                                                <ColumnDefinition Width="150"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="150"/>
+                                                <RowDefinition Height="150"/>
+                                                <RowDefinition Height="150"/>
+                                                <RowDefinition Height="150"/>
+                                                <RowDefinition Height="150"/>
+                                                <RowDefinition Height="150"/>
+                                                <RowDefinition Height="150"/>
+                                                <RowDefinition Height="150"/>
+                                            </Grid.RowDefinitions>
+                                        </Grid>
+                                    </ScrollViewer>
+                                </TabItem>
+                                <TabItem Header="Food">
+                                    <ScrollViewer HorizontalScrollBarVisibility="Auto"
+                                                  VerticalScrollBarVisibility="Auto"
+                                                  Margin="5">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="150"/>
+                                                <ColumnDefinition Width="150"/>
+                                                <ColumnDefinition Width="150"/>
+                                                <ColumnDefinition Width="150"/>
+                                                <ColumnDefinition Width="150"/>
+                                                <ColumnDefinition Width="150"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="150"/>
+                                                <RowDefinition Height="150"/>
+                                                <RowDefinition Height="150"/>
+                                                <RowDefinition Height="150"/>
+                                                <RowDefinition Height="150"/>
+                                                <RowDefinition Height="150"/>
+                                                <RowDefinition Height="150"/>
+                                                <RowDefinition Height="150"/>
+                                            </Grid.RowDefinitions>
+                                        </Grid>
+                                    </ScrollViewer>
+                                </TabItem>
+                            </TabControl>
+                        </Grid>
+                    </Border>
+                </Grid>
+
+                <Grid Grid.Column="1">
+                    <Border x:Name="bdrOrderBox"
+                        Margin="10 15 20 15"
+                        Background="#EDE2D3"
+                        CornerRadius="15">
+                        <Border.Effect>
+                            <DropShadowEffect BlurRadius="-20"
+                                          Opacity="0.3"
+                                          Color="Black"
+                                          ShadowDepth="8"/>
+                        </Border.Effect>
+                    </Border>
+                </Grid>
+            </Grid>
         </Border>
     </Grid>
 </Page>

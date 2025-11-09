@@ -9,9 +9,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Assets\Fonts\**" />
     <Compile Remove="Model\**" />
+    <EmbeddedResource Remove="Assets\Fonts\**" />
     <EmbeddedResource Remove="Model\**" />
+    <None Remove="Assets\Fonts\**" />
     <None Remove="Model\**" />
+    <Page Remove="Assets\Fonts\**" />
     <Page Remove="Model\**" />
   </ItemGroup>
 
@@ -24,6 +28,7 @@
     <None Remove="Assets\Images\imgBanner_4.png" />
     <None Remove="Assets\Images\imgBanner_5.jpg" />
     <None Remove="Assets\Images\imgCoffeeOrder.jpg" />
+    <None Remove="Assets\Images\imgItemExample.jpg" />
   </ItemGroup>
 
   <ItemGroup>
@@ -51,10 +56,7 @@
     <Resource Include="Assets\Images\imgCoffeeOrder.jpg">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Assets\Fonts\" />
+    <Resource Include="Assets\Images\imgItemExample.jpg" />
   </ItemGroup>
 
 </Project>
