@@ -11,7 +11,7 @@
                         <Border Background="{TemplateBinding Background}"
                                 CornerRadius="5"
                                 HorizontalAlignment="Stretch"
-                                VerticalAlignment="Stretch"/>       
+                                VerticalAlignment="Stretch"/>
                         <Track x:Name="PART_Track"
                                IsDirectionReversed="true"
                                Focusable="false">
@@ -53,29 +53,4 @@
             </Setter.Value>
         </Setter>
     </Style>
-
-    <!-- Style for Item card -->
-    <Style x:Key="RoundedCard" TargetType="ContentControl">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="ContentControl">
-                    <Border Background="#E0CEB5" CornerRadius="15" ClipToBounds="True">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="80"/>
-                                <RowDefinition Height="20"/>
-                                <RowDefinition Height="20"/>
-                                <RowDefinition Height="*"/>
-                            </Grid.RowDefinitions>
-                            <Image x:Name="imgItem"
-                                   Margin="7"
-                                   Source="{Binding Tag,RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}"
-                                   Stretch="UniformToFill"/>
-                        </Grid>
-                    </Border>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
 </ResourceDictionary>

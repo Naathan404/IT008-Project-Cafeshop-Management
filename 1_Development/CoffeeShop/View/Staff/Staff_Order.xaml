@@ -8,6 +8,38 @@
       mc:Ignorable="d" 
       d:DesignHeight="520" d:DesignWidth="850"
       Title="Staff_Order">
+    <Page.Resources>
+        <!-- Style for Item card -->
+        <Style x:Key="RoundedCard" TargetType="ContentControl">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ContentControl">
+                        <Border Background="#E0CEB5" CornerRadius="15" ClipToBounds="True">
+                            <StackPanel>
+                                <Image x:Name="imgItem"
+                                       Margin="7"
+                                       Stretch="UniformToFill"
+                                       Source="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}"
+                                       Loaded="ImgItem_Loaded">
+                                    <Image.Clip>
+                                        <RectangleGeometry RadiusX="13" RadiusY="13"/>
+                                    </Image.Clip>
+                                </Image>
+                                    <TextBlock x:Name="txtblItemName"
+                                               Text="{Binding Content, RelativeSource={RelativeSource TemplatedParent}}"
+                                               FontSize="16"
+                                               FontWeight="Bold"
+                                               Margin="10"
+                                               FontFamily="Cascadia Code"
+                                               Foreground="#340D05"/>
+                                </StackPanel>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Page.Resources>
+    
     <Grid>
         <Border Background="#B18252"
                 HorizontalAlignment="Stretch"
@@ -77,10 +109,10 @@
                                                 <RowDefinition Height="150"/>
                                             </Grid.RowDefinitions>
 
-                                            <ContentControl Grid.Column="0"
+                                            <ContentControl x:Name="myCard"
+                                                            Grid.Column="0"
                                                             Margin="5"
-                                                            Style="{StaticResource RoundedCard}"
-                                                            Tag="/Assets/Images/imgItemExample.jpg"/>
+                                                            Style="{StaticResource RoundedCard}"/>
                                             <ContentControl Grid.Column="1"
                                                             Margin="5"
                                                             Style="{StaticResource RoundedCard}"/>

@@ -56,7 +56,9 @@
     <Resource Include="Assets\Images\imgCoffeeOrder.jpg">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Assets\Images\imgItemExample.jpg" />
+    <Resource Include="Assets\Images\imgItemExample.jpg">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
 </Project>
