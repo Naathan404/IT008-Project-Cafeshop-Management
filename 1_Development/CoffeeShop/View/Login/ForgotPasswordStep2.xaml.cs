@@ -126,7 +126,7 @@ namespace CoffeeShop.View.Login
         {
             _otpCode = CodeGeneratorHelper.GenerateOTPCode(5);
 
-            OTPRequest request = new OTPRequest
+            Otprequest request = new Otprequest
             {
                 Email = _emailToSend,
                 Code = _otpCode,
