@@ -11,6 +11,8 @@ public partial class Order
 
     public int? CustomerId { get; set; }
 
+    public int StaffId { get; set; }
+
     public DateTime OrderDate { get; set; }
 
     public string OrderStatus { get; set; } = null!;
