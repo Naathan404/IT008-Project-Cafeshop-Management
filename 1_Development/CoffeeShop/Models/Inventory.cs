@@ -15,5 +15,7 @@ public partial class Inventory
 
     public decimal Threshold { get; set; }
 
+    public string? Note { get; set; }
+
     public virtual ICollection<InventoryHistory> InventoryHistories { get; set; } = new List<InventoryHistory>();
 }

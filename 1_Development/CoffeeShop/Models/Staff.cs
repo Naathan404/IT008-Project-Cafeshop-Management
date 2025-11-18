@@ -15,13 +15,13 @@ public partial class Staff
 
     public string StaffRole { get; set; } = null!;
 
+    public string Phonenumber { get; set; } = null!;
+
+    public string Email { get; set; } = null!;
+
     public int? ShiftId { get; set; }
 
     public decimal? BaseSalary { get; set; }
-
-    public string PhoneNumber { get; set; } = null!;
-
-    public string Email { get; set; } = null!;
 
     public virtual ICollection<InventoryHistory> InventoryHistories { get; set; } = new List<InventoryHistory>();
 
