@@ -1,7 +1,7 @@
 # ☕ [IT008.Q14] QUẢN LÝ QUÁN CÀ PHÊ ☕
 
 ## LỜI NÓI ĐẦU
-Ứng dụng *Quản lý quán cà phê* là sản phẩm đồ án của môn học Lập trình trức quan - IT008, Trường Đại học Công nghệ Thông tin, ĐHQG-HCM.
+Ứng dụng *Quản lý quán cà phê* là sản phẩm đồ án của môn học Lập trình trực quan - IT008, Trường Đại học Công nghệ Thông tin, ĐHQG-HCM.
 Ứng dụng được lên ý tưởng, xây dựng và phát triển trong thời gian 2 tháng. Nhóm sinh viên thực hiện bao gồm:
 
 | STT | Họ tên | Mã số sinh viên |
