@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using CoffeeShop.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace CoffeeShop.Data;
+namespace CoffeeShop.Models;
 
 public partial class CoffeeShopContext : DbContext
 {
