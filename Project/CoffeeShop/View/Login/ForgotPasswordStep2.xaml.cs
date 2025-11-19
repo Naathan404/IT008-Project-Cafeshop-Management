@@ -45,7 +45,7 @@ namespace CoffeeShop.View.Login
             using (var db = new CoffeeShopContext())
             {
                 string enteredCode = txbVeriCode.Text.Trim();
-                var otpEntry = db.OTPRequests.FirstOrDefault(o => o.Email == _emailToSend && o.Code == enteredCode);
+                var otpEntry = db.Otprequests.FirstOrDefault(o => o.Email == _emailToSend && o.Code == enteredCode);
                 if(otpEntry != null)    // Nếu mã xác hợp lệ
                 {
                     // Kiểm tra mã còn hiệu lực hay không
@@ -53,11 +53,11 @@ namespace CoffeeShop.View.Login
                     {
                         txblNotify.Text = "Mã hết hiệu lực. Vui lòng chọn gửi lại mã!";
                         txblNotify.Visibility = Visibility.Visible;
-                        db.OTPRequests.Remove(otpEntry);
+                        db.Otprequests.Remove(otpEntry);
                         return;
                     }
                     // Nếu mã còn hiệu lực, xóa bộ dữ liệu trong csdl và thực hiện di chuyển đến bước 3
-                    db.OTPRequests.Remove(otpEntry);
+                    db.Otprequests.Remove(otpEntry);
                     db.SaveChanges();
                     MoveToNextPage(_emailToSend);
                 }
@@ -136,10 +136,10 @@ namespace CoffeeShop.View.Login
             using (var db = new CoffeeShopContext())
             {
                 // Xóa các mã OTP cũ chưa sử dụng của email này
-                var existingOTPs = db.OTPRequests.Where(o => o.Email == _emailToSend);
-                db.OTPRequests.RemoveRange(existingOTPs);
+                var existingOTPs = db.Otprequests.Where(o => o.Email == _emailToSend);
+                db.Otprequests.RemoveRange(existingOTPs);
                 // Thêm mã OTP mới vào cơ sở dữ liệu
-                db.OTPRequests.Add(request);
+                db.Otprequests.Add(request);
                 db.SaveChanges();
             }
 
