@@ -11,28 +11,96 @@
     <Page.Resources>
         <!-- Style for Item card -->
         <Style x:Key="RoundedCard" TargetType="ContentControl">
+            <Setter Property="Margin" Value="7"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ContentControl">
-                        <Border Background="#E0CEB5" CornerRadius="15" ClipToBounds="True">
-                            <StackPanel>
+                        <Border Background="#E0CEB5" CornerRadius="15" ClipToBounds="True" Width="130" Height="150">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="80"/>
+                                    <RowDefinition Height="20"/>
+                                    <RowDefinition Height="25"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <!--Item Image-->
                                 <Image x:Name="imgItem"
-                                       Margin="7"
+                                       Margin="10"
+                                       Grid.Row="0"
                                        Stretch="UniformToFill"
                                        Source="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}"
-                                       Loaded="ImgItem_Loaded">
-                                    <Image.Clip>
-                                        <RectangleGeometry RadiusX="13" RadiusY="13"/>
-                                    </Image.Clip>
-                                </Image>
-                                    <TextBlock x:Name="txtblItemName"
-                                               Text="{Binding Content, RelativeSource={RelativeSource TemplatedParent}}"
-                                               FontSize="16"
-                                               FontWeight="Bold"
-                                               Margin="10"
-                                               FontFamily="Cascadia Code"
-                                               Foreground="#340D05"/>
+                                       d:Source="/Assets/Images/imgItemExample.jpg"/>
+                                <!--Item Name-->
+                                <TextBlock x:Name="txtblItemName"
+                                           Text="{Binding Content, RelativeSource={RelativeSource TemplatedParent}}"
+                                           FontSize="15"
+                                           FontWeight="Bold"
+                                           Margin="10 0 0 0"
+                                           FontFamily="Bahnschrift"
+                                           Foreground="#340D05"
+                                           HorizontalAlignment="Left"
+                                           VerticalAlignment="Center"
+                                           Grid.Row="1"/>
+                                <!--Item Size-->
+                                <StackPanel x:Name="stpnItemSize" Orientation="Horizontal" Margin="0 0 10 0" Grid.Row="2" HorizontalAlignment="Right" VerticalAlignment="Top">
+                                    <Border x:Name="bdrItemSizeS"
+                                            BorderBrush="#766839"
+                                            BorderThickness="2"
+                                            CornerRadius="15"
+                                            Width="20"
+                                            Height="20"
+                                            MouseDown="bdrItemSizeS_MouseDown">
+                                        <TextBlock Text="S"
+                                                   FontSize="10"
+                                                   FontWeight="Bold"
+                                                   HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center"
+                                                   FontFamily="Bahnschrift"
+                                                   Foreground="#766839"/>
+                                    </Border>
+                                    <Border x:Name="bdrItemSizeM"
+                                            BorderBrush="#766839"
+                                            BorderThickness="2"
+                                            CornerRadius="15"
+                                            Width="20"
+                                            Height="20"
+                                            Margin="2.5"
+                                            MouseDown="bdrItemSizeM_MouseDown">
+                                        <TextBlock Text="M"
+                                                   FontSize="10"
+                                                   FontWeight="Bold"
+                                                   HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center"
+                                                   FontFamily="Bahnschrift"
+                                                   Foreground="#766839"/>
+                                    </Border>
+                                    <Border x:Name="bdrItemSizeL"
+                                            BorderBrush="#766839"
+                                            BorderThickness="2"
+                                            CornerRadius="15"
+                                            Width="20"
+                                            Height="20"
+                                            MouseDown="bdrItemSizeL_MouseDown">
+                                        <TextBlock Text="L"
+                                                   FontSize="10"
+                                                   FontWeight="Bold"
+                                                   HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center"
+                                                   FontFamily="Bahnschrift"
+                                                   Foreground="#766839"/>
+                                    </Border>
                                 </StackPanel>
+                                <!--Item Price-->
+                                <TextBlock x:Name="txtblItemPrice"
+                                           Text="35.000đ"
+                                           Grid.Row="3"
+                                           FontFamily="Bahnschrift"
+                                           FontSize="15"
+                                           FontWeight="Bold"
+                                           Foreground="#766839"
+                                           Margin="0 2 12 0"
+                                           HorizontalAlignment="Right"/>
+                            </Grid>
                         </Border>
                     </ControlTemplate>
                 </Setter.Value>
@@ -41,13 +109,13 @@
     </Page.Resources>
     
     <Grid>
-        <Border Background="#B18252"
+        <Border Background="#D4BA98"
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Stretch">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="3*"/>
-                    <ColumnDefinition Width="1.5*"/>
+                    <ColumnDefinition Width="2.5*"/>
+                    <ColumnDefinition Width="2*"/>
                 </Grid.ColumnDefinitions>
 
                 <Grid Grid.Column="0">
@@ -57,232 +125,145 @@
                         CornerRadius="15">
                         <Border.Effect>
                             <DropShadowEffect BlurRadius="-20"
-                                          Opacity="0.3"
-                                          Color="Black"
-                                          ShadowDepth="8"/>
+                                              Opacity="0.3"
+                                              Color="Black"
+                                              ShadowDepth="8"/>
                         </Border.Effect>
-                        <Grid>
-                            <TabControl Margin="10 10 10 0"
-                                        materialDesign:ColorZoneAssist.Mode="Standard"
-                                        Background="#C7A57A"
-                                        HorizontalAlignment="Left"
-                                        VerticalContentAlignment="Top"
-                                        materialDesign:ThemeAssist.Theme="Light"
-                                        materialDesign:TabAssist.HasUniformTabWidth="False">
+                        <TabControl x:Name="tabMain"
+                                    Margin="10 10 10 0"
+                                    materialDesign:ColorZoneAssist.Mode="Standard"
+                                    Background="#C7A57A"
+                                    HorizontalAlignment="Left"
+                                    VerticalContentAlignment="Top"
+                                    VirtualizingStackPanel.IsVirtualizing="False"
+                                    materialDesign:ThemeAssist.Theme="Light"
+                                    materialDesign:TabAssist.HasUniformTabWidth="False">
+
+                            <TabControl.ItemContainerStyle>
                                 <!-- Style cho từng TabItem -->
-                                <TabControl.ItemContainerStyle>
-                                    <Style TargetType="TabItem"
-                                           BasedOn="{StaticResource MaterialDesignTabItem}">
-                                        <Setter Property="Height" Value="40"/>
-                                        <Setter Property="Width" Value="Auto"/>
-                                        <Setter Property="MinWidth" Value="0"/>
-                                        <Setter Property="Margin" Value="2,0"/>
-                                        <Setter Property="HorizontalContentAlignment" Value="Left"/>
-                                        <Setter Property="VerticalContentAlignment" Value="Top"/>
-                                        <Setter Property="FontSize" Value="16"/>
-                                        <Setter Property="FontFamily" Value="Cascadia Code"/>
-                                    </Style>
-                                </TabControl.ItemContainerStyle>
+                                <Style TargetType="TabItem" BasedOn="{StaticResource MaterialDesignTabItem}">
+                                    <Setter Property="Height" Value="40"/>
+                                    <Setter Property="Width" Value="Auto"/>
+                                    <Setter Property="MinWidth" Value="0"/>
+                                    <Setter Property="Margin" Value="2,0"/>
+                                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                    <Setter Property="FontSize" Value="16"/>
+                                    <Setter Property="FontFamily" Value="Cascadia Code"/>
+                                </Style>
+                            </TabControl.ItemContainerStyle>
 
-                                <TabItem Header="Cà phê"
-                                         Padding="0">
-                                    <ScrollViewer HorizontalScrollBarVisibility="Auto"
-                                                  VerticalScrollBarVisibility="Auto"
-                                                  Margin="5">
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="150"/>
-                                                <ColumnDefinition Width="150"/>
-                                                <ColumnDefinition Width="150"/>
-                                                <ColumnDefinition Width="150"/>
-                                                <ColumnDefinition Width="150"/>
-                                                <ColumnDefinition Width="150"/>
-                                            </Grid.ColumnDefinitions>
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition Height="150"/>
-                                                <RowDefinition Height="150"/>
-                                                <RowDefinition Height="150"/>
-                                                <RowDefinition Height="150"/>
-                                                <RowDefinition Height="150"/>
-                                                <RowDefinition Height="150"/>
-                                                <RowDefinition Height="150"/>
-                                                <RowDefinition Height="150"/>
-                                            </Grid.RowDefinitions>
-
-                                            <ContentControl x:Name="myCard"
-                                                            Grid.Column="0"
-                                                            Margin="5"
+                            <TabItem Header="Cà phê">
+                                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                                    <WrapPanel Width="{Binding ActualWidth, ElementName=tabMain}">
+                                        <ContentControl x:Name="crdItem1"
+                                                            Style="{StaticResource RoundedCard}"
+                                                            Content="Cà phê"
+                                                            Tag="/Assets/Images/imgItemExample.jpg"/>
+                                        <ContentControl x:Name="crdItem2"
+                                                            Style="{StaticResource RoundedCard}"
+                                                            Content="Cà phê sữa"/>
+                                        <ContentControl x:Name="crdItem3"
+                                                            Style="{StaticResource RoundedCard}"
+                                                            Content="Cà phê sữa"/>
+                                        <ContentControl x:Name="crdItem4"
+                                                            Style="{StaticResource RoundedCard}"
+                                                            Content="Cà phê sữa"/>
+                                        <ContentControl x:Name="crdItem5"
+                                                            Style="{StaticResource RoundedCard}"
+                                                            Content="Cà phê sữa"/>
+                                        <ContentControl x:Name="crdItem6"
+                                                            Style="{StaticResource RoundedCard}"
+                                                            Content="Cà phê sữa"/>
+                                        <ContentControl x:Name="crdItem11"
                                                             Style="{StaticResource RoundedCard}"/>
-                                            <ContentControl Grid.Column="1"
-                                                            Margin="5"
+                                        <ContentControl x:Name="crdItem7"
                                                             Style="{StaticResource RoundedCard}"/>
-                                        </Grid>
-                                    </ScrollViewer>
-                                </TabItem>
-                                <TabItem Header="Trà sữa">
-                                    <ScrollViewer HorizontalScrollBarVisibility="Auto"
-                                                  VerticalScrollBarVisibility="Auto"
-                                                  Margin="5">
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="150"/>
-                                                <ColumnDefinition Width="150"/>
-                                                <ColumnDefinition Width="150"/>
-                                                <ColumnDefinition Width="150"/>
-                                                <ColumnDefinition Width="150"/>
-                                                <ColumnDefinition Width="150"/>
-                                            </Grid.ColumnDefinitions>
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition Height="150"/>
-                                                <RowDefinition Height="150"/>
-                                                <RowDefinition Height="150"/>
-                                                <RowDefinition Height="150"/>
-                                                <RowDefinition Height="150"/>
-                                                <RowDefinition Height="150"/>
-                                                <RowDefinition Height="150"/>
-                                                <RowDefinition Height="150"/>
-                                            </Grid.RowDefinitions>
-                                        </Grid>
-                                    </ScrollViewer>
-                                </TabItem>
-                                <TabItem Header="Đá xay">
-                                    <ScrollViewer HorizontalScrollBarVisibility="Auto"
-                                                  VerticalScrollBarVisibility="Auto"
-                                                  Margin="5">
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="150"/>
-                                                <ColumnDefinition Width="150"/>
-                                                <ColumnDefinition Width="150"/>
-                                                <ColumnDefinition Width="150"/>
-                                                <ColumnDefinition Width="150"/>
-                                                <ColumnDefinition Width="150"/>
-                                            </Grid.ColumnDefinitions>
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition Height="150"/>
-                                                <RowDefinition Height="150"/>
-                                                <RowDefinition Height="150"/>
-                                                <RowDefinition Height="150"/>
-                                                <RowDefinition Height="150"/>
-                                                <RowDefinition Height="150"/>
-                                                <RowDefinition Height="150"/>
-                                                <RowDefinition Height="150"/>
-                                            </Grid.RowDefinitions>
-                                        </Grid>
-                                    </ScrollViewer>
-                                </TabItem>
-                                <TabItem Header="Trà">
-                                    <ScrollViewer HorizontalScrollBarVisibility="Auto"
-                                                  VerticalScrollBarVisibility="Auto"
-                                                  Margin="5">
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="150"/>
-                                                <ColumnDefinition Width="150"/>
-                                                <ColumnDefinition Width="150"/>
-                                                <ColumnDefinition Width="150"/>
-                                                <ColumnDefinition Width="150"/>
-                                                <ColumnDefinition Width="150"/>
-                                            </Grid.ColumnDefinitions>
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition Height="150"/>
-                                                <RowDefinition Height="150"/>
-                                                <RowDefinition Height="150"/>
-                                                <RowDefinition Height="150"/>
-                                                <RowDefinition Height="150"/>
-                                                <RowDefinition Height="150"/>
-                                                <RowDefinition Height="150"/>
-                                                <RowDefinition Height="150"/>
-                                            </Grid.RowDefinitions>
-                                        </Grid>
-                                    </ScrollViewer>
-                                </TabItem>
-                                <TabItem Header="Nước ép">
-                                    <ScrollViewer HorizontalScrollBarVisibility="Auto"
-                                                  VerticalScrollBarVisibility="Auto"
-                                                  Margin="5">
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="150"/>
-                                                <ColumnDefinition Width="150"/>
-                                                <ColumnDefinition Width="150"/>
-                                                <ColumnDefinition Width="150"/>
-                                                <ColumnDefinition Width="150"/>
-                                                <ColumnDefinition Width="150"/>
-                                            </Grid.ColumnDefinitions>
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition Height="150"/>
-                                                <RowDefinition Height="150"/>
-                                                <RowDefinition Height="150"/>
-                                                <RowDefinition Height="150"/>
-                                                <RowDefinition Height="150"/>
-                                                <RowDefinition Height="150"/>
-                                                <RowDefinition Height="150"/>
-                                                <RowDefinition Height="150"/>
-                                            </Grid.RowDefinitions>
-                                        </Grid>
-                                    </ScrollViewer>
-                                </TabItem>
-                                <TabItem Header="Sinh tố">
-                                    <ScrollViewer HorizontalScrollBarVisibility="Auto"
-                                                  VerticalScrollBarVisibility="Auto"
-                                                  Margin="5">
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="150"/>
-                                                <ColumnDefinition Width="150"/>
-                                                <ColumnDefinition Width="150"/>
-                                                <ColumnDefinition Width="150"/>
-                                                <ColumnDefinition Width="150"/>
-                                                <ColumnDefinition Width="150"/>
-                                            </Grid.ColumnDefinitions>
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition Height="150"/>
-                                                <RowDefinition Height="150"/>
-                                                <RowDefinition Height="150"/>
-                                                <RowDefinition Height="150"/>
-                                                <RowDefinition Height="150"/>
-                                                <RowDefinition Height="150"/>
-                                                <RowDefinition Height="150"/>
-                                                <RowDefinition Height="150"/>
-                                            </Grid.RowDefinitions>
-                                        </Grid>
-                                    </ScrollViewer>
-                                </TabItem>
-                                <TabItem Header="Food">
-                                    <ScrollViewer HorizontalScrollBarVisibility="Auto"
-                                                  VerticalScrollBarVisibility="Auto"
-                                                  Margin="5">
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="150"/>
-                                                <ColumnDefinition Width="150"/>
-                                                <ColumnDefinition Width="150"/>
-                                                <ColumnDefinition Width="150"/>
-                                                <ColumnDefinition Width="150"/>
-                                                <ColumnDefinition Width="150"/>
-                                            </Grid.ColumnDefinitions>
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition Height="150"/>
-                                                <RowDefinition Height="150"/>
-                                                <RowDefinition Height="150"/>
-                                                <RowDefinition Height="150"/>
-                                                <RowDefinition Height="150"/>
-                                                <RowDefinition Height="150"/>
-                                                <RowDefinition Height="150"/>
-                                                <RowDefinition Height="150"/>
-                                            </Grid.RowDefinitions>
-                                        </Grid>
-                                    </ScrollViewer>
-                                </TabItem>
-                            </TabControl>
-                        </Grid>
+                                        <ContentControl x:Name="crdItem8"
+                                                            Style="{StaticResource RoundedCard}"/>
+                                        <ContentControl x:Name="crdItem9"
+                                                            Style="{StaticResource RoundedCard}"/>
+                                        <ContentControl x:Name="crdItem10"
+                                                            Style="{StaticResource RoundedCard}"/>
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                    </WrapPanel>
+                                </ScrollViewer>
+                            </TabItem>
+                            <TabItem Header="Trà sữa">
+                                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                                    <WrapPanel Width="{Binding ActualWidth, ElementName=tabMain}">
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                    </WrapPanel>
+                                </ScrollViewer>
+                            </TabItem>
+                            <TabItem Header="Đá xay">
+                                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                                    <WrapPanel Width="{Binding ActualWidth, ElementName=tabMain}">
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                    </WrapPanel>
+                                </ScrollViewer>
+                            </TabItem>
+                            <TabItem Header="Trà">
+                                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                                    <WrapPanel Width="{Binding ActualWidth, ElementName=tabMain}">
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                    </WrapPanel>
+                                </ScrollViewer>
+                            </TabItem>
+                            <TabItem Header="Nước ép">
+                                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                                    <WrapPanel Width="{Binding ActualWidth, ElementName=tabMain}">
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                    </WrapPanel>
+                                </ScrollViewer>
+                            </TabItem>
+                            <TabItem Header="Sinh tố">
+                                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                                    <WrapPanel Width="{Binding ActualWidth, ElementName=tabMain}">
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                    </WrapPanel>
+                                </ScrollViewer>
+                            </TabItem>
+                            <TabItem Header="Food">
+                                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                                    <WrapPanel Width="{Binding ActualWidth, ElementName=tabMain}">
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                    </WrapPanel>
+                                </ScrollViewer>
+                            </TabItem>
+                        </TabControl>
                     </Border>
                 </Grid>
 
                 <Grid Grid.Column="1">
                     <Border x:Name="bdrOrderBox"
-                        Margin="10 15 20 15"
+                        Margin="10 15 15 15"
                         Background="#EDE2D3"
                         CornerRadius="15">
                         <Border.Effect>
@@ -291,6 +272,27 @@
                                           Color="Black"
                                           ShadowDepth="8"/>
                         </Border.Effect>
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="TableFurniture"
+                                                     Margin="10"
+                                                     Foreground="#766839"
+                                                     Height="30" Width="30"/>
+                                <ComboBox MinWidth="72"
+                                          materialDesign:HintAssist.Hint="(editable)"
+                                          IsEditable="True"
+                                          ItemsSource="{Binding LongIntegerList}">
+                                    <ComboBox.Text>
+                                        <Binding Mode="TwoWay"
+                                                 Path="SelectedTextTwo"
+                                                 UpdateSourceTrigger="PropertyChanged">
+                                            
+                                        </Binding>
+                                    </ComboBox.Text>
+                                </ComboBox>
+
+                            </StackPanel>
+                        </StackPanel>
                     </Border>
                 </Grid>
             </Grid>

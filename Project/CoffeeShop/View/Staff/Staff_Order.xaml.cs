@@ -1,5 +1,8 @@
-﻿using System;
+﻿using CoffeeShop.Models;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Globalization;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -25,28 +28,35 @@ namespace CoffeeShop.View.Staff
         public Staff_Order()
         {
             InitializeComponent();
-            myCard.Tag = "/Assets/Images/imgItemExample.jpg"; // đường dẫn tới ảnh trong project
-            myCard.SizeChanged += ImgItem_Loaded;
-            myCard.Content = "Cà phê";
         }
         private void ImgItem_Loaded(object sender, RoutedEventArgs e)
         {
             var img = sender as Image;
             if (img == null) return;
-
-            double cropWidth = img.ActualWidth;
-            double cropHeight = img.ActualHeight;
-
-            double x = (img.ActualWidth - cropWidth) / 2;
-            double y = (img.ActualHeight - cropHeight) / 2;
-
-            img.Clip = new RectangleGeometry()
+            img.SizeChanged += (s, e) =>
             {
-                Rect = new Rect(x, y, cropWidth, cropHeight),
-                RadiusX = 15,
-                RadiusY = 15
+                img.Clip = new RectangleGeometry()
+                {
+                    Rect = new Rect(0, 0, img.ActualWidth, img.ActualHeight),
+                    RadiusX = 15,
+                    RadiusY = 15
+                };
             };
         }
 
+        private void bdrItemSizeS_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+
+        }
+
+        private void bdrItemSizeM_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+
+        }
+
+        private void bdrItemSizeL_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+
+        }
     }
 }
