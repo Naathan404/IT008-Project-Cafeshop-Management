@@ -95,6 +95,7 @@ CREATE TABLE [Order]
 	PaymentMethod NVARCHAR(40) NOT NULL,							-- Tien mat, chuyen khoan
 	CONSTRAINT FK_Order_Table FOREIGN KEY (TableID) REFERENCES CafeTable(TableID),
 	CONSTRAINT FK_Order_Customer FOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID),
+	CONSTRAINT FK_Order_Staff FOREIGN KEY (StaffID) REFERENCES Staff(StaffID)
 );
 
 -- Tạo bảng OrderDetail
@@ -200,8 +201,9 @@ DELETE FROM CafeTable;
 DELETE FROM Customer;
 DELETE FROM Size;
 DELETE FROM Category;
-DELETE FROM OTPRequests;
+DELETE FROM OTPRequest;
 
+-- SELECT 
 SELECT * FROM Staff
 
 ------------------------------------------------------------------SEED DATA----------------------------------------------------------------------------------------------
@@ -327,9 +329,10 @@ GO
 
 INSERT INTO Staff
 VALUES
-(N'Nguyễn Ngọc Lan Anh', N'ngnlananh', N'bf0dbd74174039131b667de9f31b5d8012baaf82011b934b2cc0e3bd53a02a1f', N'Employee', '0988888888', N'ngnlananh@gmail.com', 2, 25000);
-(N'Lê Thành Nghĩa', N'ltnghia', N'fa980dbf4533c98fa5ed792374bea691610dfaabc62558182f4cc814ef0d69db', N'Employee', '0977778888', N'24521143@gm.uit.edu.vn', 1, 20000),
+(N'ADMIN', 'admin', N'bf0dbd74174039131b667de9f31b5d8012baaf82011b934b2cc0e3bd53a02a1f', N'Admin', '0865320821', N'coffeeshop2g1g@gmail.com', NULL, NULL),
 (N'Nguyễn Chí Nguyên', N'ngnguyen', N'38d180985d1b2e7a6014190e2cbd3c967408837188354ec93d27bfd86d09a017', N'Admin', '0865320821', N'nathannguyen6002@gmail.com', NULL, NULL),
+(N'Nguyễn Ngọc Lan Anh', N'ngnlananh', N'bf0dbd74174039131b667de9f31b5d8012baaf82011b934b2cc0e3bd53a02a1f', N'Employee', '0988888888', N'ngnlananh@gmail.com', 2, 25000),
+(N'Lê Thành Nghĩa', N'ltnghia', N'fa980dbf4533c98fa5ed792374bea691610dfaabc62558182f4cc814ef0d69db', N'Employee', '0977778888', N'24521143@gm.uit.edu.vn', 1, 20000)
 GO
 
 INSERT INTO [Order] (TableID, CustomerID, StaffID, OrderDate, OrderStatus, TotalAmount, PaymentMethod) 
@@ -339,7 +342,7 @@ VALUES
 (5, NULL, 1, GETDATE(), N'Đã thanh toán', 0, N'Tiền mặt'),
 (3, 1, 1, DATEADD(day, -1, GETDATE()), N'Đã thanh toán', 120000, N'Chuyển khoản'),
 (NULL, NULL, 1, GETDATE(), N'Đã thanh toán', 45000, N'Tiền mặt'),
-(NULL, 2, 1, GETDATE(), N'Đã thanh toán', 45000, N'Chuyển khoản');
+(NULL, 2, 1, GETDATE(), N'Đã thanh toán', 45000, N'Chuyển khoản')
 GO
 
 INSERT INTO OrderDetail (OrderID, PriceID, Quantity, UnitPrice, Discount, TotalPrice, Note) 
@@ -353,14 +356,14 @@ VALUES
 (5, 23, 1, 25000, 0, 25000, N'Không cay'),
 (5, 5, 1, 22000, 0, 22000, NULL),
 (6, 17, 1, 35000, 0, 35000, N'Ít ngọt'),
-(6, 21, 1, 35000, 25000, 10000, N'Hâm nóng');
+(6, 21, 1, 35000, 25000, 10000, N'Hâm nóng')
 GO
 
 INSERT INTO StaffAttendance (StaffID, CheckIn, CheckOut) 
 VALUES 
 (1, '2025-11-16 07:00:00', '2025-11-16 11:30:00'),
 (1, '2025-11-17 07:05:00', NULL),
-(1, '2025-11-18 07:00:00', NULL);
+(1, '2025-11-18 07:00:00', NULL)
 GO
 
 INSERT INTO Inventory (MaterialName, Quantity, Unit, Threshold, Note) 
@@ -378,7 +381,7 @@ VALUES
 (N'Trân châu đen', 8, N'kg', 3.0, N'Sắp hết hạn'),
 (N'Thạch trái cây', 5, N'Hộp', 2.0, NULL),
 (N'Cam vàng', 10, N'kg', 3.0, NULL),
-(N'Chanh tươi', 2.5, N'kg', 1.0, NULL);
+(N'Chanh tươi', 2.5, N'kg', 1.0, NULL)
 GO
 
 INSERT INTO ActionType (ActionName) 
@@ -386,7 +389,7 @@ VALUES
 (N'Nhập'),     
 (N'Dùng'),       
 (N'Cập nhật'),    
-(N'Hủy');      
+(N'Hủy')    
 GO
 
 INSERT INTO InventoryHistory (MaterialID, ActionTypeID, Quantity, InputPrice, Date, StaffID) 
@@ -402,6 +405,6 @@ VALUES
 (3, 3, -1, NULL, DATEADD(day, -1, GETDATE()), 2),    -- Hủy 1 hộp sữa tươi do bị rách bao bì
 (6, 3, -0.1, NULL, DATEADD(day, -1, GETDATE()), 2),  -- Hủy 0.1kg Matcha do ẩm mốc
 -- 4. Nhập hàng bổ sung hôm nay
-(6, 1, 0.5, 450000, GETDATE(), 1);                   -- Nhập thêm 0.5kg Matcha xịn
+(6, 1, 0.5, 450000, GETDATE(), 1)                    -- Nhập thêm 0.5kg Matcha xịn
 GO
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------
