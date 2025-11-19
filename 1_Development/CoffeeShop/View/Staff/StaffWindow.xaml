@@ -23,7 +23,7 @@
                NavigationUIVisibility="Hidden"/>
         <Grid>
             <Border x:Name="bdrStaffWindowFunction"
-                    Background="#BC9466"
+                    Background="#C7A57A"
                     Width="80"
                     HorizontalAlignment="Left"
                     Mouse.MouseDown="bdrStaffWindowFunction_MouseDown">
