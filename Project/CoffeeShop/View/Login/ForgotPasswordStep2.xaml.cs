@@ -6,6 +6,7 @@ using System.Windows.Media.Animation;
 using CoffeeShop.Models;
 using CoffeeShop.View;
 using CoffeeShop.Helper;
+using System.Windows.Media;
 
 namespace CoffeeShop.View.Login
 {
@@ -18,13 +19,14 @@ namespace CoffeeShop.View.Login
         private LoginWindow _loginWindow;
         private string _emailToSend;
         private string _otpCode;
+
         public ForgotPasswordStep2(Frame frame, LoginWindow loginWindow, string email = "")
         {
             InitializeComponent();
 
             // Thiết lập UI ban đầu
             txbVeriCode.Focus();
-            txblInvalidCode.Visibility = Visibility.Hidden;
+            txblNotify.Visibility = Visibility.Hidden;
 
             // Gán biến
             _parentFrame = frame;
@@ -33,22 +35,36 @@ namespace CoffeeShop.View.Login
             _otpCode = "";
 
             // Gửi mã OTP khi vừa hiển thị trang
-            SendOTP();
+            Task task = SendOTP();
         }
 
         private void btnNext_Click(object sender, RoutedEventArgs e)
         {
+            DateTime currentTime = DateTime.UtcNow;
+            
             using (var db = new CoffeeShopContext())
             {
                 string enteredCode = txbVeriCode.Text.Trim();
-                var otpEntry = db.OTPRequests.FirstOrDefault(o => o.Email == _emailToSend && o.Code == enteredCode);
-                if(otpEntry != null)
+                var otpEntry = db.Otprequests.FirstOrDefault(o => o.Email == _emailToSend && o.Code == enteredCode);
+                if(otpEntry != null)    // Nếu mã xác hợp lệ
                 {
+                    // Kiểm tra mã còn hiệu lực hay không
+                    if(currentTime > otpEntry.ExpireTime) // Nếu không còn hiệu lực
+                    {
+                        txblNotify.Text = "Mã hết hiệu lực. Vui lòng chọn gửi lại mã!";
+                        txblNotify.Visibility = Visibility.Visible;
+                        db.Otprequests.Remove(otpEntry);
+                        return;
+                    }
+                    // Nếu mã còn hiệu lực, xóa bộ dữ liệu trong csdl và thực hiện di chuyển đến bước 3
+                    db.Otprequests.Remove(otpEntry);
+                    db.SaveChanges();
                     MoveToNextPage(_emailToSend);
                 }
-                else
+                else    // Nếu mã xác nhận không hợp lệ
                 {
-                    txblInvalidCode.Visibility = Visibility.Visible;
+                    txblNotify.Text = "Mã xác nhận không hợp lệ. Vui lòng nhập lại!";
+                    txblNotify.Visibility = Visibility.Visible;
                     txbVeriCode.Text = "";
                     txbVeriCode.Focus();
                 }    
@@ -71,9 +87,14 @@ namespace CoffeeShop.View.Login
         }
 
         // Xử lý sự kiện nút Gửi lại mã
-        private void btnResend_Click(object sender, MouseButtonEventArgs e)
+        private async void btnResend_Click(object sender, RoutedEventArgs  e)
         {
-            SendOTP();
+            txblNotify.Text = "Đã gửi lại mã xác nhận.";
+            txblNotify.Visibility = Visibility.Visible;
+            txblNotify.Foreground = Brushes.Green;
+            txbVeriCode.Text = "";
+            txbVeriCode.Focus();
+            await SendOTP();
         }
 
         // Xử lý sự kiện nút Quay lại
@@ -101,33 +122,34 @@ namespace CoffeeShop.View.Login
         //
         // Xử lý gửi mã OPT xác nhận qua email người dùng nhập
         //
-        private void SendOTP()
+        private async Task SendOTP()
         {
             _otpCode = CodeGeneratorHelper.GenerateOTPCode(5);
 
-            OTPRequest request = new OTPRequest
+            Otprequest request = new Otprequest
             {
                 Email = _emailToSend,
                 Code = _otpCode,
-                ExpireTime = DateTime.Now.AddMinutes(3) // mã OTP hết hạn sau 3 phút
+                ExpireTime = DateTime.UtcNow.AddMinutes(3) // mã OTP hết hạn sau 3 phút
             };
 
             using (var db = new CoffeeShopContext())
             {
                 // Xóa các mã OTP cũ chưa sử dụng của email này
-                var existingOTPs = db.OTPRequests.Where(o => o.Email == _emailToSend);
-                db.OTPRequests.RemoveRange(existingOTPs);
+                var existingOTPs = db.Otprequests.Where(o => o.Email == _emailToSend);
+                db.Otprequests.RemoveRange(existingOTPs);
                 // Thêm mã OTP mới vào cơ sở dữ liệu
-                db.OTPRequests.Add(request);
+                db.Otprequests.Add(request);
                 db.SaveChanges();
             }
 
+            // Nội dung email
             string subject = "Mã xác nhận đặt lại mật khẩu - 2G1G";
             string body = $"Mã xác nhận của bạn là: {_otpCode}\n" +
                 $"Mã có hiệu lực trong 3 phút.\nNếu bạn không yêu cầu đặt lại mật khẩu, vui lòng bỏ qua email này.";
 
             // Gửi email
-            Task task = MailUtils.SendEmailAsync(_emailToSend, subject, body);
+            await MailUtils.SendEmailAsync(_emailToSend, subject, body);
         }
 
         // Di chuyển đến trang tiếp theo
@@ -156,7 +178,11 @@ namespace CoffeeShop.View.Login
         private void txbVeriCode_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (txbVeriCode.Text.Length == 1)
-                txblInvalidCode.Visibility = Visibility.Hidden;
+            {
+                txblNotify.Foreground = Brushes.Red;
+                txblNotify.Text = "Mã xác nhận không hợp lệ. Vui lòng nhập lại!";
+                txblNotify.Visibility = Visibility.Hidden;
+            }
         }
     }
 }

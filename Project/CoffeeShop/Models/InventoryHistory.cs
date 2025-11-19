@@ -13,6 +13,8 @@ public partial class InventoryHistory
 
     public decimal Quantity { get; set; }
 
+    public decimal? InputPrice { get; set; }
+
     public DateTime Date { get; set; }
 
     public int StaffId { get; set; }

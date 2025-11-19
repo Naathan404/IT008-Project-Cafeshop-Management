@@ -11,6 +11,8 @@ public partial class Order
 
     public int? CustomerId { get; set; }
 
+    public int StaffId { get; set; }
+
     public DateTime OrderDate { get; set; }
 
     public string OrderStatus { get; set; } = null!;
@@ -22,6 +24,8 @@ public partial class Order
     public virtual Customer? Customer { get; set; }
 
     public virtual ICollection<OrderDetail> OrderDetails { get; set; } = new List<OrderDetail>();
+
+    public virtual Staff Staff { get; set; } = null!;
 
     public virtual CafeTable? Table { get; set; }
 }

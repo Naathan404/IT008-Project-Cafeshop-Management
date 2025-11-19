@@ -9,5 +9,9 @@ public partial class Shift
 
     public string ShiftName { get; set; } = null!;
 
+    public TimeOnly StartTime { get; set; }
+
+    public TimeOnly EndTime { get; set; }
+
     public virtual ICollection<Staff> Staff { get; set; } = new List<Staff>();
 }

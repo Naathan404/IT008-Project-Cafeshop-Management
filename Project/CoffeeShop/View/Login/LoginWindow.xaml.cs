@@ -14,7 +14,7 @@ namespace CoffeeShop.View.Login
     /// </summary>
     public partial class LoginWindow : Window
     {
-        #region UI Fields
+        #region Random Fields
         // Danh sách câu nói hay về cà phê và hình nền banner
         private List<(string Quote, string Author)> _quotes = new List<(string, string)>
         {
