@@ -4,6 +4,11 @@ GO
 USE CoffeeShopDB;
 GO
 
+----- CÁC BƯỚC THỰC HIỆN TRÊN FILE QUERY NÀY
+-- Bước 1: Chạy đoạn lệnh DROP các bảng trong phần THAO TÁC DỮ LIỆU
+-- Bước 2: Chạy hết đoạn lệnh trong phần TẠO BẢNG
+-- Bước 3: Lần lượt chạy các đoạn lệnh đến khi hết trong phần SEED DATA
+
 -------------------------------------------------TẠO BẢNG---------------------------------------------------------------------------------------------------------------
 -- Tạo bảng CafeTable
 CREATE TABLE CafeTable
@@ -184,6 +189,7 @@ DROP TABLE IF EXISTS Customer;
 DROP TABLE IF EXISTS Size;
 DROP TABLE IF EXISTS Category;
 DROP TABLE IF EXISTS OTPRequest;
+--
 
 
 -- XÓA DỮ LIỆU các BẢNG
