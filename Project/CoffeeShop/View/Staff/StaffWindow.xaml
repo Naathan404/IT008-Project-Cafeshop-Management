@@ -13,7 +13,8 @@
         Height="520" Width="850"
         MinHeight="520" MinWidth="850" 
         BorderBrush="#FF340D05" 
-        Foreground="#FFC7A57A">
+        Foreground="#FFC7A57A" 
+        PreviewMouseDown="PreviewMouseDownEvt">
     <Grid HorizontalAlignment="Stretch"
           VerticalAlignment="Stretch"
           Background="#EDE2D3">
@@ -24,7 +25,7 @@
         <Grid>
             <Border x:Name="bdrStaffWindowFunction"
                     Background="#C7A57A"
-                    Width="80"
+                    Width="180"
                     HorizontalAlignment="Left"
                     Mouse.MouseDown="bdrStaffWindowFunction_MouseDown">
                 <Border.Effect>
@@ -68,9 +69,9 @@
                     <Border x:Name="bdrAccount_Before"
                             Background="#E0CEB5"
                             CornerRadius="30"
-                            HorizontalAlignment="Center"
+                            HorizontalAlignment="Left"
                             VerticalAlignment="Top"
-                            Margin="0,12,0,0">
+                            Margin="12,12,0,330">
                         <Border.Effect>
                             <DropShadowEffect Color="#462812"
                                               Opacity="0.3"
@@ -91,8 +92,7 @@
                             CornerRadius="30"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Bottom"
-                            Margin="12,0,0,330"
-                            Mouse.MouseDown="bdrOrder_MouseDown">
+                            Margin="12,0,0,330">
                         <Border.Effect>
                             <DropShadowEffect Color="#462812"
                                               Opacity="0.3"
@@ -139,8 +139,7 @@
                             CornerRadius="30"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Bottom"
-                            Margin="12,0,0,260"
-                            Mouse.MouseDown="bdrTable_Before_MouseDown">
+                            Margin="12,0,0,260">
                         <Border.Effect>
                             <DropShadowEffect Color="#462812"
                                               Opacity="0.3"
@@ -154,12 +153,12 @@
                     </Border>
                     <Border x:Name="bdrTable_After"
                             Background="#E0CEB5"
-                            Height="55" Width="160"
+                            Height="55"
                             CornerRadius="28"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Bottom"
                             Margin="12,0,0,260"
-                            Mouse.MouseDown="bdrTable_After_MouseDown"
+                            Mouse.MouseDown="bdrTable_MouseDown"
                             Visibility="Collapsed">
                         <Border.Effect>
                             <DropShadowEffect Color="#462812"
@@ -188,8 +187,7 @@
                             CornerRadius="30"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Bottom"
-                            Margin="12,0,0,190"
-                            Mouse.MouseDown="bdrMenu_MouseDown">
+                            Margin="12,0,0,190">
                         <Border.Effect>
                             <DropShadowEffect Color="#462812"
                                               Opacity="0.3"
@@ -203,7 +201,7 @@
                     </Border>
                     <Border x:Name="bdrMenu_After"
                             Background="#E0CEB5"
-                            Height="55"
+                            Height="55"                                    
                             CornerRadius="28"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Bottom"
@@ -237,8 +235,7 @@
                             CornerRadius="30"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Bottom"
-                            Margin="12,0,0,120"
-                            Mouse.MouseDown="bdrDepot_MouseDown">
+                            Margin="12,0,0,120">
                         <Border.Effect>
                             <DropShadowEffect Color="#462812"
                                               Opacity="0.3"
@@ -286,8 +283,7 @@
                             CornerRadius="30"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Bottom"
-                            Margin="12,0,0,50"
-                            Mouse.MouseDown="bdrStatistics_MouseDown">
+                            Margin="12,0,0,50">
                         <Border.Effect>
                             <DropShadowEffect Color="#462812"
                                               Opacity="0.3"
