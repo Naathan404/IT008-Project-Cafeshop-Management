@@ -11,11 +11,30 @@ namespace CoffeeShop.View.Staff
         private bool _isExpanded = false;
         private float _minimumNavigationBarWidth = 80;
         private float _maximumNavigationBarWidth = 200;
-        public StaffWindow()
+        private float _animationDuration = 200;
+        private bool _isAnimating = false;
+
+        /// Account informations
+        /// Name, Role, Phonenumber, Email, BaseSalary
+        private CoffeeShop.Models.Staff _account;
+        
+        // Constructor
+        public StaffWindow(CoffeeShop.Models.Staff account)
         {
             InitializeComponent();
             StaffFrame.Navigate(new Staff_Order());
             bdrStaffWindowFunction.Width = _minimumNavigationBarWidth;
+            _account = account;
+        }
+
+        #region Button Events
+        private void bdrAccount_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            e.Handled = true;
+            StaffFrame.Visibility = Visibility.Visible;
+            AccountWindow accountWindow = new AccountWindow(_account);
+            accountWindow.Owner = this;
+            accountWindow.ShowDialog();
         }
         private void bdrOrder_MouseDown(object sender, MouseButtonEventArgs e)
         {
@@ -49,6 +68,8 @@ namespace CoffeeShop.View.Staff
 
         private void bdrStaffWindowFunction_MouseDown(object sender, MouseButtonEventArgs e)
         {
+            if (_isAnimating) return;       // Nếu có 1 animation đang hoạt động thì không làm gì cả
+
             if (!_isExpanded)    // Nếu Navigation bar đang được thu gọn
             {
                 MaximizeNavigationBar();
@@ -59,17 +80,30 @@ namespace CoffeeShop.View.Staff
             }
             _isExpanded = !_isExpanded;
         }
+        #endregion
 
-        // Mở rộng Navigation bar
+        /// <summary>
+        /// Expands the navigation bar to its maximum width and updates the visibility of its elements.
+        /// </summary>
+        /// <remarks>This method animates the expansion of the navigation bar to the width specified by
+        /// the  maximum navigation bar width. It also updates the visibility of the navigation bar's  elements, hiding
+        /// the "before" elements and displaying the "after" elements.</remarks>
         private void MaximizeNavigationBar()
         {
+            _isAnimating = true;            // Bật cờ đang chạy animation
+
             double dwidth = _maximumNavigationBarWidth;
             // animation xuat hien
             var animMaximizeNavigationBar = new DoubleAnimation
             {
                 To = dwidth,
-                Duration = TimeSpan.FromMilliseconds(250),
+                Duration = TimeSpan.FromMilliseconds(_animationDuration),
                 EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut }
+            };
+
+            animMaximizeNavigationBar.Completed += (s, e) =>
+            {
+                _isAnimating = false;       // Đã hoàn thành animation
             };
 
             //cho cac element before an di
@@ -91,18 +125,24 @@ namespace CoffeeShop.View.Staff
             bdrStaffWindowFunction.BeginAnimation(Border.WidthProperty, animMaximizeNavigationBar);
         }
 
-        // Thu nhỏ Navigation bar
+        /// <summary>
+        /// Minimizes the navigation bar by animating its width and updating the visibility of related elements.
+        /// </summary>
+        /// <remarks>This method reduces the width of the navigation bar to a predefined minimum value
+        /// using an animation.  Once the animation completes, it updates the visibility of specific UI elements to
+        /// reflect the minimized state.</remarks>
         private void MinimizeNavigationBar()
         {
+            _isAnimating = true;            // Bật cờ đang chạy animation
+
             double dwidth = _minimumNavigationBarWidth;
             //animation thu gon
             var animMinimizeNavigationBar = new DoubleAnimation
             {
                 To = dwidth,
-                Duration = TimeSpan.FromMilliseconds(250),
+                Duration = TimeSpan.FromMilliseconds(_animationDuration),
                 EasingFunction = new CubicEase { EasingMode = EasingMode.EaseIn }
             };
-
             // Chạy animation
             animMinimizeNavigationBar.Completed += (s, e) => // Đảm bảo vReduceBdr hoàn thành thì mới chạy đoạn code bên tronng
             {
@@ -121,18 +161,32 @@ namespace CoffeeShop.View.Staff
                 bdrDepot_Before.Visibility = Visibility.Visible;
                 bdrStatistics_Before.Visibility = Visibility.Visible;
                 bdrTable_Before.Visibility = Visibility.Visible;
+
+                _isAnimating = false;       // Kết thúc animation
             };
+
             bdrStaffWindowFunction.BeginAnimation(Border.WidthProperty, animMinimizeNavigationBar);
         }
 
+        /// <summary>
+        /// Handles the PreviewMouseDown event to minimize the navigation bar when certain conditions are met.
+        /// </summary>
+        /// <remarks>This method minimizes the navigation bar if it is currently expanded and the mouse
+        /// click occurs outside the specified area. The event is marked as handled to prevent further
+        /// processing.</remarks>
+        /// <param name="sender">The source of the event, typically the control that was clicked.</param>
+        /// <param name="e">The <see cref="MouseButtonEventArgs"/> instance containing the event data.</param>
         private void PreviewMouseDownEvt(object sender, MouseButtonEventArgs e)
         {
+            if (_isAnimating) return;       // Nếu có 1 animation đang hoạt động thì không làm gì cả
+
             if (_isExpanded)
             {
                 if (bdrStaffWindowFunction.IsMouseOver == false)
                 {
                     MinimizeNavigationBar();
                     _isExpanded = false;
+                    e.Handled = true;
                 }
             }
         }

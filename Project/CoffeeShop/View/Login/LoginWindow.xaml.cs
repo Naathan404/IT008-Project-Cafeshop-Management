@@ -93,10 +93,10 @@ namespace CoffeeShop.View.Login
                     switch(account.StaffRole)
                     {
                         case "Employee":
-                            LoginStaffWindow();
+                            LoginStaffWindow(account);
                             break;
                         case "Admin":
-                            LoginAdminWindow();
+                            LoginAdminWindow(account);
                             break;
                         default:
                             MessageBox.Show("Unidentified user");
@@ -114,16 +114,16 @@ namespace CoffeeShop.View.Login
         }
 
         // Mở cửa sổ AdminWindow
-        private void LoginAdminWindow()
+        private void LoginAdminWindow(CoffeeShop.Models.Staff account)
         {
             AdminWindow adminWindow = new AdminWindow();
             adminWindow.Show();
             this.Close();
         }
         // Mở cửa sổ StaffWindow
-        private void LoginStaffWindow()
-        {
-            StaffWindow staffWindow = new StaffWindow();
+        private void LoginStaffWindow(CoffeeShop.Models.Staff account)
+        {  
+            StaffWindow staffWindow = new StaffWindow(account);
             staffWindow.Show();
             this.Close();
         }
