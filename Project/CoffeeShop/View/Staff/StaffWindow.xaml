@@ -13,10 +13,12 @@
         Height="520" Width="850"
         MinHeight="520" MinWidth="850" 
         BorderBrush="#FF340D05" 
-        Foreground="#FFC7A57A">
+        Foreground="#FFC7A57A" 
+        >
     <Grid HorizontalAlignment="Stretch"
           VerticalAlignment="Stretch"
-          Background="#EDE2D3">
+          Background="#EDE2D3"
+          PreviewMouseDown="PreviewMouseDownEvt">
         <Frame x:Name="StaffFrame"
                HorizontalAlignment="Stretch"
                Margin="80 0 0 0"
@@ -24,7 +26,7 @@
         <Grid>
             <Border x:Name="bdrStaffWindowFunction"
                     Background="#C7A57A"
-                    Width="80"
+                    Width="180"
                     HorizontalAlignment="Left"
                     Mouse.MouseDown="bdrStaffWindowFunction_MouseDown">
                 <Border.Effect>
@@ -37,12 +39,13 @@
                     <!-- Hiện tên account nhân viên -->
                     <Border x:Name="bdrAccount_After"
                             Background="#E0CEB5"
-                            Height="55"
+                            Height="55" 
                             CornerRadius="28"
-                            Margin="12 12 0 0"
-                            HorizontalAlignment="Left"
+                            Margin="12 12 12 330"
+                            HorizontalAlignment="Stretch"
                             VerticalAlignment="Top"
-                            Visibility="Collapsed">
+                            Visibility="Collapsed"
+                            Mouse.MouseDown="bdrAccount_MouseDown">
                         <Border.Effect>
                             <DropShadowEffect Color="#462812"
                                               Opacity="0.3"
@@ -57,20 +60,21 @@
                                                      Height="35" Width="35"
                                                      Foreground="#462812"/>
                             <TextBlock x:Name="txblAccountName1"
-                                       Text="Account Name"
-                                       Margin="50,19,12,0"
+                                       Text="TÀI KHOẢN"
+                                       Margin="52,17,10,0"
                                        FontFamily="Cascadia Code"
-                                       FontSize="16"
+                                       FontSize="20"
                                        Foreground="#391B05" 
-                                       FontWeight="Bold"/>
+                                       FontWeight="Bold"
+                                       TextAlignment="Left"/>
                         </Grid>
                     </Border>
                     <Border x:Name="bdrAccount_Before"
                             Background="#E0CEB5"
                             CornerRadius="30"
-                            HorizontalAlignment="Center"
+                            HorizontalAlignment="Left"
                             VerticalAlignment="Top"
-                            Margin="0,12,0,0">
+                            Margin="12,12,0,330">
                         <Border.Effect>
                             <DropShadowEffect Color="#462812"
                                               Opacity="0.3"
@@ -91,8 +95,7 @@
                             CornerRadius="30"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Bottom"
-                            Margin="12,0,0,330"
-                            Mouse.MouseDown="bdrOrder_MouseDown">
+                            Margin="12,0,0,330">
                         <Border.Effect>
                             <DropShadowEffect Color="#462812"
                                               Opacity="0.3"
@@ -107,9 +110,9 @@
                             Background="#E0CEB5"
                             Height="55"
                             CornerRadius="28"
-                            HorizontalAlignment="Left"
+                            HorizontalAlignment="Stretch"
                             VerticalAlignment="Bottom"
-                            Margin="12,0,0,330"
+                            Margin="12,0,12,330"
                             Mouse.MouseDown="bdrOrder_MouseDown"
                             Visibility="Collapsed">
                         <Border.Effect>
@@ -124,12 +127,12 @@
                                    HorizontalAlignment="Left"
                                    Margin="10"/>
                             <TextBlock Text="Đặt đơn"
-                                       Margin="50 17 25 0"
+                                       Margin="60 17 10 0"
                                        FontFamily="Cascadia Code"
-                                       FontSize="21"
+                                       FontSize="20"
                                        Foreground="#462812" 
                                        FontWeight="Bold"
-                                       TextAlignment="Center"/>
+                                       TextAlignment="Left"/>
                         </Grid>
                     </Border>
 
@@ -139,8 +142,7 @@
                             CornerRadius="30"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Bottom"
-                            Margin="12,0,0,260"
-                            Mouse.MouseDown="bdrTable_Before_MouseDown">
+                            Margin="12,0,0,260">
                         <Border.Effect>
                             <DropShadowEffect Color="#462812"
                                               Opacity="0.3"
@@ -154,12 +156,12 @@
                     </Border>
                     <Border x:Name="bdrTable_After"
                             Background="#E0CEB5"
-                            Height="55" Width="160"
+                            Height="55"
                             CornerRadius="28"
-                            HorizontalAlignment="Left"
+                            HorizontalAlignment="Stretch"
                             VerticalAlignment="Bottom"
-                            Margin="12,0,0,260"
-                            Mouse.MouseDown="bdrTable_After_MouseDown"
+                            Margin="12,0,12,260"
+                            Mouse.MouseDown="bdrTable_MouseDown"
                             Visibility="Collapsed">
                         <Border.Effect>
                             <DropShadowEffect Color="#462812"
@@ -173,9 +175,9 @@
                                                      Margin="10"
                                                      Foreground="#340D05"/>
                             <TextBlock Text="Bàn ăn"
-                                       Margin="50 17 25 0"
+                                       Margin="60 17 10 0"
                                        FontFamily="Cascadia Code"
-                                       FontSize="21"
+                                       FontSize="20"
                                        Foreground="#462812" 
                                        FontWeight="Bold"
                                        TextAlignment="Left"/>
@@ -188,8 +190,7 @@
                             CornerRadius="30"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Bottom"
-                            Margin="12,0,0,190"
-                            Mouse.MouseDown="bdrMenu_MouseDown">
+                            Margin="12,0,0,190">
                         <Border.Effect>
                             <DropShadowEffect Color="#462812"
                                               Opacity="0.3"
@@ -203,11 +204,11 @@
                     </Border>
                     <Border x:Name="bdrMenu_After"
                             Background="#E0CEB5"
-                            Height="55"
+                            Height="55"                                    
                             CornerRadius="28"
-                            HorizontalAlignment="Left"
+                            HorizontalAlignment="Stretch"
                             VerticalAlignment="Bottom"
-                            Margin="12,0,0,190"
+                            Margin="12,0,12,190"
                             Mouse.MouseDown="bdrMenu_MouseDown"
                             Visibility="Collapsed">
                         <Border.Effect>
@@ -222,12 +223,12 @@
                                                      Margin="10"
                                                      Foreground="#340D05"/>
                             <TextBlock Text="Thực đơn"
-                                       Margin="50 17 10 0"
+                                       Margin="60 17 10 0"
                                        FontFamily="Cascadia Code"
-                                       FontSize="21"
+                                       FontSize="20"
                                        Foreground="#462812" 
                                        FontWeight="Bold"
-                                       TextAlignment="Center"/>
+                                       TextAlignment="Left"/>
                         </Grid>
                     </Border>
 
@@ -237,8 +238,7 @@
                             CornerRadius="30"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Bottom"
-                            Margin="12,0,0,120"
-                            Mouse.MouseDown="bdrDepot_MouseDown">
+                            Margin="12,0,0,120">
                         <Border.Effect>
                             <DropShadowEffect Color="#462812"
                                               Opacity="0.3"
@@ -254,9 +254,9 @@
                             Background="#E0CEB5"
                             Height="55"
                             CornerRadius="28"
-                            HorizontalAlignment="Left"
+                            HorizontalAlignment="Stretch"
                             VerticalAlignment="Bottom"
-                            Margin="12,0,0,120"
+                            Margin="12,0,12,120"
                             Mouse.MouseDown="bdrDepot_MouseDown"
                             Visibility="Collapsed">
                         <Border.Effect>
@@ -271,12 +271,12 @@
                                                      Margin="10"
                                                      Foreground="#340D05"/>
                             <TextBlock Text="Kho hàng"
-                                       Margin="50 17 10 0"
+                                       Margin="60 17 10 0"
                                        FontFamily="Cascadia Code"
-                                       FontSize="21"
+                                       FontSize="20"
                                        Foreground="#462812" 
                                        FontWeight="Bold"
-                                       TextAlignment="Center"/>
+                                       TextAlignment="Left"/>
                         </Grid>
                     </Border>
 
@@ -286,8 +286,7 @@
                             CornerRadius="30"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Bottom"
-                            Margin="12,0,0,50"
-                            Mouse.MouseDown="bdrStatistics_MouseDown">
+                            Margin="12,0,0,50">
                         <Border.Effect>
                             <DropShadowEffect Color="#462812"
                                               Opacity="0.3"
@@ -303,9 +302,9 @@
                             Background="#E0CEB5"
                             Height="55" 
                             CornerRadius="28"
-                            HorizontalAlignment="Left"
+                            HorizontalAlignment="Stretch"
                             VerticalAlignment="Bottom"
-                            Margin="12,0,0,50"
+                            Margin="12,0,12,50"
                             Mouse.MouseDown="bdrStatistics_MouseDown"
                             Visibility="Collapsed">
                         <Border.Effect>
@@ -321,12 +320,12 @@
                                                      Margin="10"
                                                      Foreground="#340D05"/>
                             <TextBlock Text="Thống kê"
-                                       Margin="50 17 10 0"
+                                       Margin="60 17 10 0"
                                        FontFamily="Cascadia Code"
-                                       FontSize="21"
+                                       FontSize="20"
                                        Foreground="#462812" 
                                        FontWeight="Bold"
-                                       TextAlignment="Center"/>
+                                       TextAlignment="Left"/>
                         </Grid>
                     </Border>
                 </Grid>
