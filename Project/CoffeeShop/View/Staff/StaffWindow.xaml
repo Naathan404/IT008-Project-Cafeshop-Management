@@ -7,11 +7,11 @@
         xmlns:local="clr-namespace:CoffeeShop"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
-        Title="Coffeeshop - Staff"
+        Title="2G1G Café"
         Icon="/CoffeeShop;component/Assets/icoCoffee.ico"
         WindowState="Maximized"
-        Height="520" Width="850"
-        MinHeight="520" MinWidth="850" 
+        Height="610" Width="1110"
+        MinHeight="610" MinWidth="1110" 
         BorderBrush="#FF340D05" 
         Foreground="#FFC7A57A" 
         >
@@ -51,9 +51,10 @@
                                               Opacity="0.3"
                                               BlurRadius="-10"
                                               ShadowDepth="5"/>
+
                         </Border.Effect>
                         <Grid>
-                            <materialDesign:PackIcon Kind="AccountCircle"
+                            <materialDesign:PackIcon Kind="AccountCircleOutline"
                                                      Margin="10 10 0 0"
                                                      HorizontalAlignment="Left"
                                                      VerticalAlignment="Top"
@@ -95,7 +96,7 @@
                             CornerRadius="30"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Bottom"
-                            Margin="12,0,0,330">
+                            Margin="12,0,0,360">
                         <Border.Effect>
                             <DropShadowEffect Color="#462812"
                                               Opacity="0.3"
@@ -112,7 +113,7 @@
                             CornerRadius="28"
                             HorizontalAlignment="Stretch"
                             VerticalAlignment="Bottom"
-                            Margin="12,0,12,330"
+                            Margin="12,0,12,360"
                             Mouse.MouseDown="bdrOrder_MouseDown"
                             Visibility="Collapsed">
                         <Border.Effect>
@@ -142,14 +143,14 @@
                             CornerRadius="30"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Bottom"
-                            Margin="12,0,0,260">
+                            Margin="12,0,0,290">
                         <Border.Effect>
                             <DropShadowEffect Color="#462812"
                                               Opacity="0.3"
                                               BlurRadius="-10"
                                               ShadowDepth="5"/>
                         </Border.Effect>
-                        <materialDesign:PackIcon Kind="TableFurniture"
+                        <materialDesign:PackIcon Kind="Seat"
                                                     Height="35" Width="35"
                                                     Margin="10"
                                                     Foreground="#340D05"/>
@@ -160,7 +161,7 @@
                             CornerRadius="28"
                             HorizontalAlignment="Stretch"
                             VerticalAlignment="Bottom"
-                            Margin="12,0,12,260"
+                            Margin="12,0,12,290"
                             Mouse.MouseDown="bdrTable_MouseDown"
                             Visibility="Collapsed">
                         <Border.Effect>
@@ -170,7 +171,7 @@
                                               ShadowDepth="5"/>
                         </Border.Effect>
                         <Grid>
-                            <materialDesign:PackIcon Kind="TableFurniture"
+                            <materialDesign:PackIcon Kind="SeatOutline"
                                                      Height="35" Width="35"
                                                      Margin="10"
                                                      Foreground="#340D05"/>
@@ -190,25 +191,25 @@
                             CornerRadius="30"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Bottom"
-                            Margin="12,0,0,190">
+                            Margin="12,0,0,220">
                         <Border.Effect>
                             <DropShadowEffect Color="#462812"
                                               Opacity="0.3"
                                               BlurRadius="-10"
                                               ShadowDepth="5"/>
                         </Border.Effect>
-                        <materialDesign:PackIcon Kind="Menu"
+                        <materialDesign:PackIcon Kind="Food"
                                                  Height="35" Width="35"
                                                  Margin="10"
                                                  Foreground="#340D05"/>
                     </Border>
                     <Border x:Name="bdrMenu_After"
                             Background="#E0CEB5"
-                            Height="55"                                    
+                            Height="55"               
                             CornerRadius="28"
                             HorizontalAlignment="Stretch"
                             VerticalAlignment="Bottom"
-                            Margin="12,0,12,190"
+                            Margin="12,0,12,220"
                             Mouse.MouseDown="bdrMenu_MouseDown"
                             Visibility="Collapsed">
                         <Border.Effect>
@@ -218,11 +219,110 @@
                                               ShadowDepth="5"/>
                         </Border.Effect>
                         <Grid>
-                            <materialDesign:PackIcon Kind="Menu"
+                            <materialDesign:PackIcon Kind="FoodOutline"
                                                      Height="35" Width="35"
                                                      Margin="10"
                                                      Foreground="#340D05"/>
                             <TextBlock Text="Thực đơn"
+                                       Margin="60 17 10 0"
+                                       FontFamily="Cascadia Code"
+                                       FontSize="20"
+                                       Foreground="#462812" 
+                                       FontWeight="Bold"
+                                       TextAlignment="Left"/>
+                        </Grid>
+                    </Border>
+
+                    <!-- Tab khách hàng -->
+                    <Border x:Name="bdrCustomer_Before"
+                            Background="#E0CEB5"
+                            CornerRadius="30"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Bottom"
+                            Margin="12,0,0,150">     
+                        <Border.Effect>
+                            <DropShadowEffect Color="#462812"
+                          Opacity="0.3"
+                          BlurRadius="-10"
+                          ShadowDepth="5"/>
+                        </Border.Effect>
+                        <materialDesign:PackIcon Kind="AccountGroup"
+                             Height="35" Width="35"
+                             Margin="10"
+                             Foreground="#340D05"/>
+                    </Border>
+                    <Border x:Name="bdrCustomer_After"
+                            Background="#E0CEB5"
+                            Height="55" 
+                            CornerRadius="28"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Bottom"
+                            Margin="12,0,12,150"
+                            Mouse.MouseDown="bdrCustomer_MouseDown"
+                            Visibility="Collapsed">
+                        <Border.Effect>
+                            <DropShadowEffect Color="#462812"
+                          Opacity="0.3"
+                          BlurRadius="-10"
+                          ShadowDepth="5"/>
+                        </Border.Effect>
+                        <Grid>
+
+                            <materialDesign:PackIcon Kind="AccountGroupOutline"
+                                 Height="35" Width="35"
+                                 Margin="10"
+                                 Foreground="#340D05"/>
+                            <TextBlock Text="Thành viên"
+                                       Margin="60 17 10 0"
+                                       FontFamily="Cascadia Code"
+                                       FontSize="18"
+                                       Foreground="#462812" 
+                                       FontWeight="Bold"
+                                       TextAlignment="Left"/>
+                        </Grid>
+                    </Border>
+                    
+
+                    <!-- Tab Lịch sử mua hàng -->
+                    <Border x:Name="bdrHistory_Before"
+                            Background="#E0CEB5"
+                            CornerRadius="30"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Bottom"
+                            Margin="12,0,0,80">
+                        <Border.Effect>
+                            <DropShadowEffect Color="#462812"
+                                              Opacity="0.3"
+                                              BlurRadius="-10"
+                                              ShadowDepth="5"/>
+                        </Border.Effect>
+                        <materialDesign:PackIcon Kind="History"
+                                                 Height="35" Width="35"
+                                                 Margin="10"
+                                                 Foreground="#340D05"/>
+                    </Border>
+                    <Border x:Name="bdrHistory_After"
+                            Background="#E0CEB5"
+                            Height="55" 
+                            CornerRadius="28"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Bottom"
+                            Margin="12,0,12,80"
+                            Mouse.MouseDown="bdrHistory_MouseDown"
+                            Visibility="Collapsed">
+                        <Border.Effect>
+                            <DropShadowEffect Color="#462812"
+                                              Opacity="0.3"
+                                              BlurRadius="-10"
+                                              ShadowDepth="5"/>
+                        </Border.Effect>
+                        <Grid>
+
+                            <materialDesign:PackIcon Kind="History"
+                                                     Height="35" Width="35"
+                                                     Margin="10"
+                                                     Foreground="#340D05"/>
+                            <TextBlock Text="Lịch sử"
                                        Margin="60 17 10 0"
                                        FontFamily="Cascadia Code"
                                        FontSize="20"
@@ -238,14 +338,14 @@
                             CornerRadius="30"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Bottom"
-                            Margin="12,0,0,120">
+                            Margin="12,0,0,10">
                         <Border.Effect>
                             <DropShadowEffect Color="#462812"
                                               Opacity="0.3"
                                               BlurRadius="-10"
                                               ShadowDepth="5"/>
                         </Border.Effect>
-                        <materialDesign:PackIcon Kind="ArchiveOutline"
+                        <materialDesign:PackIcon Kind="Archive"
                                                  Height="35" Width="35"
                                                  Margin="10"
                                                  Foreground="#340D05"/>
@@ -256,7 +356,7 @@
                             CornerRadius="28"
                             HorizontalAlignment="Stretch"
                             VerticalAlignment="Bottom"
-                            Margin="12,0,12,120"
+                            Margin="12,0,12,10"
                             Mouse.MouseDown="bdrDepot_MouseDown"
                             Visibility="Collapsed">
                         <Border.Effect>
@@ -271,55 +371,6 @@
                                                      Margin="10"
                                                      Foreground="#340D05"/>
                             <TextBlock Text="Kho hàng"
-                                       Margin="60 17 10 0"
-                                       FontFamily="Cascadia Code"
-                                       FontSize="20"
-                                       Foreground="#462812" 
-                                       FontWeight="Bold"
-                                       TextAlignment="Left"/>
-                        </Grid>
-                    </Border>
-
-                    <!-- Tab Thống Kê -->
-                    <Border x:Name="bdrStatistics_Before"
-                            Background="#E0CEB5"
-                            CornerRadius="30"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Bottom"
-                            Margin="12,0,0,50">
-                        <Border.Effect>
-                            <DropShadowEffect Color="#462812"
-                                              Opacity="0.3"
-                                              BlurRadius="-10"
-                                              ShadowDepth="5"/>
-                        </Border.Effect>
-                        <materialDesign:PackIcon Kind="ChartBoxOutline"
-                                                 Height="35" Width="35"
-                                                 Margin="10"
-                                                 Foreground="#340D05"/>
-                    </Border>
-                    <Border x:Name="bdrStatistics_After"
-                            Background="#E0CEB5"
-                            Height="55" 
-                            CornerRadius="28"
-                            HorizontalAlignment="Stretch"
-                            VerticalAlignment="Bottom"
-                            Margin="12,0,12,50"
-                            Mouse.MouseDown="bdrStatistics_MouseDown"
-                            Visibility="Collapsed">
-                        <Border.Effect>
-                            <DropShadowEffect Color="#462812"
-                                              Opacity="0.3"
-                                              BlurRadius="-10"
-                                              ShadowDepth="5"/>
-                        </Border.Effect>
-                        <Grid>
-
-                            <materialDesign:PackIcon Kind="ChartBoxOutline"
-                                                     Height="35" Width="35"
-                                                     Margin="10"
-                                                     Foreground="#340D05"/>
-                            <TextBlock Text="Thống kê"
                                        Margin="60 17 10 0"
                                        FontFamily="Cascadia Code"
                                        FontSize="20"
