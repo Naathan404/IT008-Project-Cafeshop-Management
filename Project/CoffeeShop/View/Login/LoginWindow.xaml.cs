@@ -116,7 +116,7 @@ namespace CoffeeShop.View.Login
         // Mở cửa sổ AdminWindow
         private void LoginAdminWindow(CoffeeShop.Models.Staff account)
         {
-            AdminWindow adminWindow = new AdminWindow();
+            AdminWindow adminWindow = new AdminWindow(account);
             adminWindow.Show();
             this.Close();
         }
