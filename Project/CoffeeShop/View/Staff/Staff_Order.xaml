@@ -16,7 +16,7 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ContentControl">
-                        <Border Background="#E0CEB5" CornerRadius="15" ClipToBounds="True" MinWidth="130" MinHeight="150">
+                        <Border Background="#E0CEB5" CornerRadius="15" ClipToBounds="True" MinWidth="130" MinHeight="150" MaxHeight="220" MaxWidth="200">
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="80"/>
@@ -182,49 +182,114 @@
 
                             <TabItem Header="Cà phê" FontSize="50">
                                 <ScrollViewer VerticalScrollBarVisibility="Auto" SizeChanged="ItemsContainer_SizeChanged">
-                                    <UniformGrid>
-                                        <!-- Nơi chứa các items -->
+                                    <UniformGrid HorizontalAlignment="Left" VerticalAlignment="Top">
+                                        <ContentControl Style="{StaticResource RoundedCard}"
+                                                        Content="Cà phê sữa"
+                                                        Tag="/Assets/Images/imgItemExample.jpg"/>
                                     </UniformGrid>
                                 </ScrollViewer>
                             </TabItem>
                             <TabItem Header="Trà sữa">
                                 <ScrollViewer VerticalScrollBarVisibility="Auto" SizeChanged="ItemsContainer_SizeChanged">
-                                    <UniformGrid>
-                                        <!-- Nơi chứa các items -->
-                                    </UniformGrid>
+                                    <!-- Binding items từ cơ sở dữ liệu -->
+                                    <ItemsControl x:Name="icCoffee"
+                                                  ItemsSource="{Binding CoffeeItems}">
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <UniformGrid HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <ContentControl Style="{StaticResource RoundedCard}"
+                                                                Content="{Binding Name}"
+                                                                Tag="{Binding ImagePath}"/>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
                                 </ScrollViewer>
                             </TabItem>
                             <TabItem Header="Đá xay">
                                 <ScrollViewer VerticalScrollBarVisibility="Auto" SizeChanged="ItemsContainer_SizeChanged">
                                     <UniformGrid>
-                                        <!-- Nơi chứa các items -->
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
                                     </UniformGrid>
                                 </ScrollViewer>
                             </TabItem>
                             <TabItem Header="Trà">
                                 <ScrollViewer VerticalScrollBarVisibility="Auto" SizeChanged="ItemsContainer_SizeChanged">
-                                    <UniformGrid>
-                                        <!-- Nơi chứa các items -->
+                                    <UniformGrid HorizontalAlignment="Left" VerticalAlignment="Top">
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
                                     </UniformGrid>
                                 </ScrollViewer>
                             </TabItem>
                             <TabItem Header="Nước ép">
                                 <ScrollViewer VerticalScrollBarVisibility="Auto" SizeChanged="ItemsContainer_SizeChanged">
-                                    <UniformGrid>
-                                        <!-- Nơi chứa các items -->
+                                    <UniformGrid HorizontalAlignment="Left" VerticalAlignment="Top">
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
                                     </UniformGrid>
                                 </ScrollViewer>
                             </TabItem>
                             <TabItem Header="Sinh tố">
                                 <ScrollViewer VerticalScrollBarVisibility="Auto" SizeChanged="ItemsContainer_SizeChanged">
-                                    <UniformGrid>
-                                        <!-- Nơi chứa các items -->
+                                    <UniformGrid HorizontalAlignment="Left" VerticalAlignment="Top">
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
+                                        <ContentControl Style="{StaticResource RoundedCard}"/>
                                     </UniformGrid>
                                 </ScrollViewer>
                             </TabItem>
                             <TabItem Header="Food">
                                 <ScrollViewer VerticalScrollBarVisibility="Auto" SizeChanged="ItemsContainer_SizeChanged">
-                                    <UniformGrid>
+                                    <UniformGrid HorizontalAlignment="Left" VerticalAlignment="Top">
                                         <!-- Nơi chứa các items -->
                                     </UniformGrid>
                                 </ScrollViewer>
