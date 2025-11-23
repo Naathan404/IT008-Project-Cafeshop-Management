@@ -15,6 +15,14 @@ namespace CoffeeShop.View.Staff
         private float _animationDuration = 200;
         private bool _isAnimating = false;
 
+        /// Inial all pages
+        private Staff_Order _orderPage = new Staff_Order();
+        private Staff_Menu _menuPage = new Staff_Menu();
+        private Staff_Table _tablePage = new Staff_Table();
+        private Staff_Customer _customerPage = new Staff_Customer();
+        private Staff_History _historyPage = new Staff_History();
+        private Staff_Depot _depotPage = new Staff_Depot();
+
         /// Account informations
         /// Name, Role, Phonenumber, Email, BaseSalary
         private CoffeeShop.Models.Staff _account;
@@ -41,31 +49,37 @@ namespace CoffeeShop.View.Staff
         private void bdrOrder_MouseDown(object sender, MouseButtonEventArgs e)
         {
             StaffFrame.Visibility = Visibility.Visible;
-            StaffFrame.Navigate(new Staff_Order());
+            StaffFrame.Navigate(_orderPage);
         }
 
         private void bdrMenu_MouseDown(object sender, MouseButtonEventArgs e)
         {
             StaffFrame.Visibility = Visibility.Visible;
-            StaffFrame.Navigate(new Staff_Menu());
+            StaffFrame.Navigate(_menuPage);
         }
 
         private void bdrDepot_MouseDown(object sender, MouseButtonEventArgs e)
         {
             StaffFrame.Visibility = Visibility.Visible;
-            StaffFrame.Navigate(new Staff_Depot());
-        }
-
-        private void bdrStatistics_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            StaffFrame.Visibility = Visibility.Visible;
-            StaffFrame.Navigate(new Staff_Statistics());
+            StaffFrame.Navigate(_depotPage);
         }
 
         private void bdrTable_MouseDown(object sender, MouseButtonEventArgs e)
         {
             StaffFrame.Visibility = Visibility.Visible;
-            StaffFrame.Navigate(new Staff_Table());
+            StaffFrame.Navigate(_tablePage);
+        }
+
+        private void bdrHistory_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            StaffFrame.Visibility = Visibility.Visible;
+            StaffFrame.Navigate(_historyPage);
+        }
+
+        private void bdrCustomer_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            StaffFrame.Visibility = Visibility.Visible;
+            StaffFrame.Navigate(_customerPage);
         }
 
         private void bdrStaffWindowFunction_MouseDown(object sender, MouseButtonEventArgs e)
@@ -113,16 +127,18 @@ namespace CoffeeShop.View.Staff
             bdrOrder_Before.Visibility = Visibility.Collapsed;
             bdrMenu_Before.Visibility = Visibility.Collapsed;
             bdrDepot_Before.Visibility = Visibility.Collapsed;
-            bdrStatistics_Before.Visibility = Visibility.Collapsed;
+            bdrHistory_Before.Visibility = Visibility.Collapsed;
             bdrTable_Before.Visibility = Visibility.Collapsed;
+            bdrCustomer_Before.Visibility = Visibility.Collapsed;
 
             //cho cac element after hien ra
             bdrAccount_After.Visibility = Visibility.Visible;
             bdrOrder_After.Visibility = Visibility.Visible;
             bdrMenu_After.Visibility = Visibility.Visible;
             bdrDepot_After.Visibility = Visibility.Visible;
-            bdrStatistics_After.Visibility = Visibility.Visible;
+            bdrHistory_After.Visibility = Visibility.Visible;
             bdrTable_After.Visibility = Visibility.Visible;
+            bdrCustomer_After.Visibility = Visibility.Visible;
 
             bdrStaffWindowFunction.BeginAnimation(Border.WidthProperty, animMaximizeNavigationBar);
         }
@@ -153,16 +169,18 @@ namespace CoffeeShop.View.Staff
                 bdrOrder_After.Visibility = Visibility.Collapsed;
                 bdrMenu_After.Visibility = Visibility.Collapsed;
                 bdrDepot_After.Visibility = Visibility.Collapsed;
-                bdrStatistics_After.Visibility = Visibility.Collapsed;
+                bdrHistory_After.Visibility = Visibility.Collapsed;
                 bdrTable_After.Visibility = Visibility.Collapsed;
+                bdrCustomer_After.Visibility = Visibility.Collapsed;
 
                 //cho cac element before hien ra
                 bdrAccount_Before.Visibility = Visibility.Visible;
                 bdrOrder_Before.Visibility = Visibility.Visible;
                 bdrMenu_Before.Visibility = Visibility.Visible;
                 bdrDepot_Before.Visibility = Visibility.Visible;
-                bdrStatistics_Before.Visibility = Visibility.Visible;
+                bdrHistory_Before.Visibility = Visibility.Visible;
                 bdrTable_Before.Visibility = Visibility.Visible;
+                bdrCustomer_Before.Visibility = Visibility.Visible;
 
                 _isAnimating = false;       // Kết thúc animation
             };

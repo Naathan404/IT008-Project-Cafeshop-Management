@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace CoffeeShop.View.Staff
+namespace CoffeeShop.View.Admin
 {
     /// <summary>
-    /// Interaction logic for Staff_Statistics.xaml
+    /// Interaction logic for MenuManagementPage.xaml
     /// </summary>
-    public partial class Staff_Statistics : Page
+    public partial class MenuManagementPage : Page
     {
-        public Staff_Statistics()
+        public MenuManagementPage()
         {
             InitializeComponent();
         }
