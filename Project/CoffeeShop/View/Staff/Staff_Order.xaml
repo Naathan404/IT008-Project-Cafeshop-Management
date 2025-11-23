@@ -6,7 +6,8 @@
       xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
       xmlns:local="clr-namespace:CoffeeShop"
       mc:Ignorable="d" 
-      d:DesignHeight="520" d:DesignWidth="850"
+      d:DesignHeight="600" d:DesignWidth="1100"
+      MinHeight="0" MinWidth="1000"
       Title="Staff_Order">
     <Page.Resources>
         <!-- Style for Item card -->
@@ -15,7 +16,7 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ContentControl">
-                        <Border Background="#E0CEB5" CornerRadius="15" ClipToBounds="True" Width="130" Height="150">
+                        <Border Background="#E0CEB5" CornerRadius="15" ClipToBounds="True" MinWidth="130" MinHeight="150">
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="80"/>
@@ -106,6 +107,30 @@
                 </Setter.Value>
             </Setter>
         </Style>
+
+        <!--Style cho TabControl (xuống dòng khi không đủ độ rộng) -->
+        <Style TargetType="{x:Type TabControl}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabControl">
+                        <Grid ClipToBounds="True">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <!-- Tab headers -->
+                            <TabPanel Grid.Row="0"
+                              IsItemsHost="True"
+                              Margin="0"
+                              HorizontalAlignment="Stretch"/>
+                            <!-- Tab content -->
+                            <ContentPresenter Grid.Row="1"
+                                      ContentSource="SelectedContent"/>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Page.Resources>
     
     <Grid>
@@ -133,128 +158,75 @@
                                     Margin="10 10 10 0"
                                     materialDesign:ColorZoneAssist.Mode="Standard"
                                     Background="#C7A57A"
-                                    HorizontalAlignment="Left"
-                                    VerticalContentAlignment="Top"
-                                    VirtualizingStackPanel.IsVirtualizing="False"
-                                    materialDesign:ThemeAssist.Theme="Light"
-                                    materialDesign:TabAssist.HasUniformTabWidth="False">
-
+                                    HorizontalAlignment="Stretch"
+                                    VerticalContentAlignment="Stretch"
+                                    materialDesign:ThemeAssist.Theme="Light">
                             <TabControl.ItemContainerStyle>
                                 <!-- Style cho từng TabItem -->
                                 <Style TargetType="TabItem" BasedOn="{StaticResource MaterialDesignTabItem}">
-                                    <Setter Property="Height" Value="40"/>
-                                    <Setter Property="Width" Value="Auto"/>
+                                    <Setter Property="Height" Value="50"/>
                                     <Setter Property="MinWidth" Value="0"/>
-                                    <Setter Property="Margin" Value="2,0"/>
+                                    <Setter Property="Padding" Value="10"/>
                                     <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                                    <Setter Property="FontSize" Value="16"/>
-                                    <Setter Property="FontFamily" Value="Cascadia Code"/>
+                                    <!-- Font cho header -->
+                                    <Setter Property="HeaderTemplate">
+                                        <Setter.Value>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding}" FontSize="17" FontFamily="Cascadia Code" FontWeight="Bold"
+                                                           HorizontalAlignment="Center"/>
+                                            </DataTemplate>
+                                        </Setter.Value>
+                                    </Setter>
                                 </Style>
                             </TabControl.ItemContainerStyle>
 
-                            <TabItem Header="Cà phê">
-                                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                                    <WrapPanel Width="{Binding ActualWidth, ElementName=tabMain}">
-                                        <ContentControl x:Name="crdItem1"
-                                                            Style="{StaticResource RoundedCard}"
-                                                            Content="Cà phê"
-                                                            Tag="/Assets/Images/imgItemExample.jpg"/>
-                                        <ContentControl x:Name="crdItem2"
-                                                            Style="{StaticResource RoundedCard}"
-                                                            Content="Cà phê sữa"/>
-                                        <ContentControl x:Name="crdItem3"
-                                                            Style="{StaticResource RoundedCard}"
-                                                            Content="Cà phê sữa"/>
-                                        <ContentControl x:Name="crdItem4"
-                                                            Style="{StaticResource RoundedCard}"
-                                                            Content="Cà phê sữa"/>
-                                        <ContentControl x:Name="crdItem5"
-                                                            Style="{StaticResource RoundedCard}"
-                                                            Content="Cà phê sữa"/>
-                                        <ContentControl x:Name="crdItem6"
-                                                            Style="{StaticResource RoundedCard}"
-                                                            Content="Cà phê sữa"/>
-                                        <ContentControl x:Name="crdItem11"
-                                                            Style="{StaticResource RoundedCard}"/>
-                                        <ContentControl x:Name="crdItem7"
-                                                            Style="{StaticResource RoundedCard}"/>
-                                        <ContentControl x:Name="crdItem8"
-                                                            Style="{StaticResource RoundedCard}"/>
-                                        <ContentControl x:Name="crdItem9"
-                                                            Style="{StaticResource RoundedCard}"/>
-                                        <ContentControl x:Name="crdItem10"
-                                                            Style="{StaticResource RoundedCard}"/>
-                                        <ContentControl Style="{StaticResource RoundedCard}"/>
-                                        <ContentControl Style="{StaticResource RoundedCard}"/>
-                                        <ContentControl Style="{StaticResource RoundedCard}"/>
-                                        <ContentControl Style="{StaticResource RoundedCard}"/>
-                                        <ContentControl Style="{StaticResource RoundedCard}"/>
-                                        <ContentControl Style="{StaticResource RoundedCard}"/>
-                                        <ContentControl Style="{StaticResource RoundedCard}"/>
-                                    </WrapPanel>
+                            <TabItem Header="Cà phê" FontSize="50">
+                                <ScrollViewer VerticalScrollBarVisibility="Auto" SizeChanged="ItemsContainer_SizeChanged">
+                                    <UniformGrid>
+                                        <!-- Nơi chứa các items -->
+                                    </UniformGrid>
                                 </ScrollViewer>
                             </TabItem>
                             <TabItem Header="Trà sữa">
-                                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                                    <WrapPanel Width="{Binding ActualWidth, ElementName=tabMain}">
-                                        <ContentControl Style="{StaticResource RoundedCard}"/>
-                                        <ContentControl Style="{StaticResource RoundedCard}"/>
-                                        <ContentControl Style="{StaticResource RoundedCard}"/>
-                                        <ContentControl Style="{StaticResource RoundedCard}"/>
-                                        <ContentControl Style="{StaticResource RoundedCard}"/>
-                                        <ContentControl Style="{StaticResource RoundedCard}"/>
-                                        <ContentControl Style="{StaticResource RoundedCard}"/>
-                                        <ContentControl Style="{StaticResource RoundedCard}"/>
-                                        <ContentControl Style="{StaticResource RoundedCard}"/>
-                                        <ContentControl Style="{StaticResource RoundedCard}"/>
-                                        <ContentControl Style="{StaticResource RoundedCard}"/>
-                                        <ContentControl Style="{StaticResource RoundedCard}"/>
-                                        <ContentControl Style="{StaticResource RoundedCard}"/>
-                                        <ContentControl Style="{StaticResource RoundedCard}"/>
-                                        <ContentControl Style="{StaticResource RoundedCard}"/>
-                                        <ContentControl Style="{StaticResource RoundedCard}"/>
-                                        <ContentControl Style="{StaticResource RoundedCard}"/>
-                                        <ContentControl Style="{StaticResource RoundedCard}"/>
-                                        <ContentControl Style="{StaticResource RoundedCard}"/>
-                                        <ContentControl Style="{StaticResource RoundedCard}"/>
-                                        <ContentControl Style="{StaticResource RoundedCard}"/>
-                                        <ContentControl Style="{StaticResource RoundedCard}"/>
-                                    </WrapPanel>
+                                <ScrollViewer VerticalScrollBarVisibility="Auto" SizeChanged="ItemsContainer_SizeChanged">
+                                    <UniformGrid>
+                                        <!-- Nơi chứa các items -->
+                                    </UniformGrid>
                                 </ScrollViewer>
                             </TabItem>
                             <TabItem Header="Đá xay">
-                                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                                    <WrapPanel Width="{Binding ActualWidth, ElementName=tabMain}">
-                                        <ContentControl Style="{StaticResource RoundedCard}"/>
-                                    </WrapPanel>
+                                <ScrollViewer VerticalScrollBarVisibility="Auto" SizeChanged="ItemsContainer_SizeChanged">
+                                    <UniformGrid>
+                                        <!-- Nơi chứa các items -->
+                                    </UniformGrid>
                                 </ScrollViewer>
                             </TabItem>
                             <TabItem Header="Trà">
-                                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                                    <WrapPanel Width="{Binding ActualWidth, ElementName=tabMain}">
-                                        <ContentControl Style="{StaticResource RoundedCard}"/>
-                                    </WrapPanel>
+                                <ScrollViewer VerticalScrollBarVisibility="Auto" SizeChanged="ItemsContainer_SizeChanged">
+                                    <UniformGrid>
+                                        <!-- Nơi chứa các items -->
+                                    </UniformGrid>
                                 </ScrollViewer>
                             </TabItem>
                             <TabItem Header="Nước ép">
-                                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                                    <WrapPanel Width="{Binding ActualWidth, ElementName=tabMain}">
-                                        <ContentControl Style="{StaticResource RoundedCard}"/>
-                                    </WrapPanel>
+                                <ScrollViewer VerticalScrollBarVisibility="Auto" SizeChanged="ItemsContainer_SizeChanged">
+                                    <UniformGrid>
+                                        <!-- Nơi chứa các items -->
+                                    </UniformGrid>
                                 </ScrollViewer>
                             </TabItem>
                             <TabItem Header="Sinh tố">
-                                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                                    <WrapPanel Width="{Binding ActualWidth, ElementName=tabMain}">
-                                        <ContentControl Style="{StaticResource RoundedCard}"/>
-                                    </WrapPanel>
+                                <ScrollViewer VerticalScrollBarVisibility="Auto" SizeChanged="ItemsContainer_SizeChanged">
+                                    <UniformGrid>
+                                        <!-- Nơi chứa các items -->
+                                    </UniformGrid>
                                 </ScrollViewer>
                             </TabItem>
                             <TabItem Header="Food">
-                                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                                    <WrapPanel Width="{Binding ActualWidth, ElementName=tabMain}">
-                                        <ContentControl Style="{StaticResource RoundedCard}"/>
-                                    </WrapPanel>
+                                <ScrollViewer VerticalScrollBarVisibility="Auto" SizeChanged="ItemsContainer_SizeChanged">
+                                    <UniformGrid>
+                                        <!-- Nơi chứa các items -->
+                                    </UniformGrid>
                                 </ScrollViewer>
                             </TabItem>
                         </TabControl>
@@ -275,22 +247,18 @@
                         <StackPanel>
                             <StackPanel Orientation="Horizontal">
                                 <materialDesign:PackIcon Kind="TableFurniture"
-                                                     Margin="10"
-                                                     Foreground="#766839"
-                                                     Height="30" Width="30"/>
-                                <ComboBox MinWidth="72"
-                                          materialDesign:HintAssist.Hint="(editable)"
-                                          IsEditable="True"
-                                          ItemsSource="{Binding LongIntegerList}">
-                                    <ComboBox.Text>
-                                        <Binding Mode="TwoWay"
-                                                 Path="SelectedTextTwo"
-                                                 UpdateSourceTrigger="PropertyChanged">
-                                            
-                                        </Binding>
-                                    </ComboBox.Text>
+                                                         Margin="10 10 5 10"
+                                                         Foreground="#766839"
+                                                         Height="30" Width="30"/>
+                                <ComboBox x:Name="cbTable"
+                                          Width="90" Height="30"
+                                          FontFamily="Cascadia Code" FontSize="15" Foreground="#340D05"
+                                          materialDesign:HintAssist.HelperTextFontSize="20"
+                                          materialDesign:HintAssist.ApplyHintPaddingBrush="True"
+                                          ItemsSource="{Binding LongIntegerList}"
+                                          materialDesign:TextFieldAssist.UnderlineBrush="#766839"
+                                          materialDesign:ListBoxItemAssist.SelectedFocusedBackground="#E0CEB5">
                                 </ComboBox>
-
                             </StackPanel>
                         </StackPanel>
                     </Border>

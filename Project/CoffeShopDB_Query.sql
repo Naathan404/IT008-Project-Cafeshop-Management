@@ -337,7 +337,7 @@ INSERT INTO Staff
 VALUES
 (N'ADMIN', 'admin', N'bf0dbd74174039131b667de9f31b5d8012baaf82011b934b2cc0e3bd53a02a1f', N'Admin', '0865320821', N'coffeeshop2g1g@gmail.com', NULL, NULL),
 (N'Nguyễn Chí Nguyên', N'ngnguyen', N'38d180985d1b2e7a6014190e2cbd3c967408837188354ec93d27bfd86d09a017', N'Admin', '0865320821', N'nathannguyen6002@gmail.com', NULL, NULL),
-(N'Nguyễn Ngọc Lan Anh', N'ngnlananh', N'bf0dbd74174039131b667de9f31b5d8012baaf82011b934b2cc0e3bd53a02a1f', N'Employee', '0988888888', N'ngnlananh@gmail.com', 2, 25000),
+(N'Nguyễn Ngọc Lan Anh', N'ngnlananh', N'bf0dbd74174039131b667de9f31b5d8012baaf82011b934b2cc0e3bd53a02a1f', N'Employee', '0793124539', N'lanh111106@gmail.com', 2, 25000),
 (N'Lê Thành Nghĩa', N'ltnghia', N'fa980dbf4533c98fa5ed792374bea691610dfaabc62558182f4cc814ef0d69db', N'Employee', '0977778888', N'24521143@gm.uit.edu.vn', 1, 20000)
 GO
 
