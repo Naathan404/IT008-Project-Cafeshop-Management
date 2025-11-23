@@ -275,7 +275,7 @@
                             <TextBlock Text="Thành viên"
                                        Margin="60 17 10 0"
                                        FontFamily="Cascadia Code"
-                                       FontSize="20"
+                                       FontSize="18"
                                        Foreground="#462812" 
                                        FontWeight="Bold"
                                        TextAlignment="Left"/>
