@@ -9,68 +9,9 @@
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesign2.Defaults.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Light.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Primary/MaterialDesignColor.DeepPurple.xaml" />
-                <ResourceDictionary Source="/Resources/MainResource.xaml"></ResourceDictionary>
+                <ResourceDictionary Source="/Resources/MainResource.xaml" />
+                <ResourceDictionary Source="/Resources/DepotResource.xaml" />
             </ResourceDictionary.MergedDictionaries>
-
-            <!-- Template cho nút trong kho -->
-            <ControlTemplate x:Key="depotButtonTemplate" TargetType="Button">
-                <Border Background="{TemplateBinding Background}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        CornerRadius="5"
-                        Height="{TemplateBinding Height}">
-                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"
-                                      Content="{TemplateBinding Content}"/>
-                </Border>
-            </ControlTemplate>
-
-            <!-- Style cho nút trong kho -->
-            <Style x:Key="depotButtonStyle" TargetType="Button">
-                <Setter Property="Template" Value="{StaticResource depotButtonTemplate}"/>
-                <Setter Property="Height" Value="40"/>
-                <Setter Property="Background" Value="#C7A57A"/>
-                <Setter Property="Foreground" Value="Black"/>
-                <Setter Property="FontFamily" Value="Times New Roman"/>
-                <Setter Property="FontWeight" Value="Bold"/>
-                <Setter Property="FontSize" Value="18"/>
-            </Style>
-
-            <!-- Style DataGrid áp dụng HeaderTemplate -->
-            <Style x:Key="dgTemplate" TargetType="DataGridColumnHeader">
-                <Setter Property="Background" Value="#E0CEB5"/>
-                <Setter Property="Foreground" Value="Black"/>
-                <Setter Property="FontWeight" Value="Bold"/>
-                <Setter Property="FontFamily" Value="Times New Roman"/>
-                <Setter Property="Height" Value="27"/>
-                <Setter Property="HorizontalContentAlignment" Value="Center"/>
-                <Setter Property="BorderBrush" Value="Black"/>
-                <Setter Property="BorderThickness" Value="0.6"/>
-            </Style>
-            
-            <!-- Style cho datagrid cell -->
-            <ControlTemplate x:Key="dgCellTemplate" TargetType="{x:Type DataGridCell}">
-                <Border 
-                    BorderBrush="{TemplateBinding BorderBrush}" 
-                    BorderThickness="{TemplateBinding BorderThickness}" 
-                    Background="{TemplateBinding Background}" 
-                    Padding="{TemplateBinding Padding}">
-
-                    <ContentPresenter 
-                        SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-                        VerticalAlignment="Center"  HorizontalAlignment="Stretch"/>
-                </Border>   
-            </ControlTemplate>
-
-            <Style TargetType="DataGridCell">
-
-                <Setter Property="Padding" Value="0"/>
-                <Setter Property="BorderBrush" Value="Gray"/>
-                <Setter Property="BorderThickness" Value="0.2"/>
-                <Setter Property="Height" Value="30"/>
-
-                <Setter Property="OverridesDefaultStyle" Value="True"/>
-
-                <Setter Property="Template" Value="{StaticResource dgCellTemplate}"></Setter>
-            </Style>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

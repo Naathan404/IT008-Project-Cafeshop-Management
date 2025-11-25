@@ -11,11 +11,15 @@
 
     <Grid Background="#E0CEB5">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="2.5*"/>
             <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="270"/>
         </Grid.ColumnDefinitions>
 
-        <StackPanel Grid.Column="0" Margin="25">
+        <Grid Grid.Column="0" Margin="25">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
             <DockPanel Height="43">
                 <!-- Filter -->
                 <Border 
@@ -55,6 +59,16 @@
                                         </Grid>
                                     </StackPanel>
 
+                                    <StackPanel Orientation="Vertical">
+                                        <TextBlock Text="Lọc theo Đơn vị" FontWeight="SemiBold" Margin="0,0,0,5"/>
+
+                                        <!-- The combobox that contains all the unit to filter -->
+                                        <ComboBox x:Name="cbUnitFilter"
+                                            >
+                                            
+                                        </ComboBox>
+                                    </StackPanel>
+
                                     <Separator Margin="0,5"/>
 
                                     <Button Content="Áp dụng" Margin="0,15,0,0" Padding="5"
@@ -91,25 +105,26 @@
                 </Border>
             </DockPanel>
 
-            <!-- Datagrid - The place that contains the items in dopet -->
+            <!-- Datagrid - The place that contains the items in depot -->
             <DataGrid x:Name="dgDepot"
-                ColumnHeaderStyle="{StaticResource dgTemplate}"
-                Grid.Row="1" Margin="5"
-                AutoGenerateColumns="False" CanUserAddRows="False"
-                CanUserResizeColumns="False" CanUserReorderColumns="False"
-                HorizontalAlignment="Stretch" Height="440"
-                GridLinesVisibility="None"
-                IsReadOnly="true">
+                    ColumnHeaderStyle="{StaticResource dgTemplate}"
+                    Grid.Row="1" Margin="5"
+                    AutoGenerateColumns="False" CanUserAddRows="False"
+                    CanUserResizeColumns="False" CanUserReorderColumns="False"
+                    HorizontalAlignment="Stretch"
+                    GridLinesVisibility="None"
+                    IsReadOnly="true">
 
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="ID" Binding="{Binding ID}" Width="0.6*"/>
-                    <DataGridTextColumn Header="Tên" Binding="{Binding Name}" Width="2*"/>
+                    <DataGridTextColumn Header="ID" Binding="{Binding ID}" Width="0.6*" CanUserResize="False"/>
+                    <DataGridTextColumn Header="Tên" Binding="{Binding Name}" Width="1.2*" CanUserResize="False"/>
                     <DataGridTextColumn Header="Số lượng" Binding="{Binding Quantity}" Width="*"/>
                     <DataGridTextColumn Header="Đơn vị" Binding="{Binding Unit}" Width="0.7*"/>
-                    <DataGridTextColumn Header="Ghi chú" Binding="{Binding Note}" Width="1.2*"/>
+                    <DataGridTextColumn Header="Ghi chú" Binding="{Binding Note}" Width="2*"/>
                 </DataGrid.Columns>
             </DataGrid>
-        </StackPanel>
+
+        </Grid>
 
         <!-- Function button -->
         <Grid Grid.Column="1" Margin="30">
