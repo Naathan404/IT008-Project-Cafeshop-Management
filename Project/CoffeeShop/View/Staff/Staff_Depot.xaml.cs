@@ -32,7 +32,13 @@ namespace CoffeeShop.View.Staff
         {
             InitializeComponent();
             itemsView = CollectionViewSource.GetDefaultView(items);
+            AddDatagridData();
+            LoadUnitData();
+        }
 
+
+        public void AddDatagridData()
+        {
             // Add datas for datagrid
             items.Add(new DepotItem
             {
@@ -49,7 +55,7 @@ namespace CoffeeShop.View.Staff
                 Name = "Ly nhựa 500ml",
                 Quantity = 200,
                 Unit = "cái",
-                Note = ""
+                Note = "As you can see, this is a super long note."
             });
 
             items.Add(new DepotItem
@@ -60,8 +66,95 @@ namespace CoffeeShop.View.Staff
                 Unit = "túi",
                 Note = ""
             });
+            items.Add(new DepotItem
+            {
+                ID = 3,
+                Name = "Trân châu",
+                Quantity = 100,
+                Unit = "túi",
+                Note = ""
+            });
+            items.Add(new DepotItem
+            {
+                ID = 3,
+                Name = "Trân châu",
+                Quantity = 100,
+                Unit = "túi",
+                Note = ""
+            });
+            items.Add(new DepotItem
+            {
+                ID = 3,
+                Name = "Trân châu",
+                Quantity = 100,
+                Unit = "túi",
+                Note = ""
+            });
+            items.Add(new DepotItem
+            {
+                ID = 3,
+                Name = "Trân châu",
+                Quantity = 100,
+                Unit = "túi",
+                Note = ""
+            });
+            items.Add(new DepotItem
+            {
+                ID = 3,
+                Name = "Trân châu",
+                Quantity = 100,
+                Unit = "túi",
+                Note = ""
+            });
+            items.Add(new DepotItem
+            {
+                ID = 3,
+                Name = "Trân châu",
+                Quantity = 100,
+                Unit = "túi",
+                Note = ""
+            });
+            items.Add(new DepotItem
+            {
+                ID = 3,
+                Name = "Trân châu",
+                Quantity = 100,
+                Unit = "túi",
+                Note = ""
+            });
+            items.Add(new DepotItem
+            {
+                ID = 3,
+                Name = "Trân châu",
+                Quantity = 100,
+                Unit = "túi",
+                Note = ""
+            });
+            items.Add(new DepotItem
+            {
+                ID = 3,
+                Name = "Trân châu",
+                Quantity = 100,
+                Unit = "túi",
+                Note = ""
+            });
+            items.Add(new DepotItem
+            {
+                ID = 3,
+                Name = "Trân châu",
+                Quantity = 100,
+                Unit = "túi",
+                Note = ""
+            });
             dgDepot.ItemsSource = items;
             dgDepot.ItemsSource = itemsView;
+        }
+
+        public void LoadUnitData()
+        {
+            cbUnitFilter.Items.Add("Kg");
+            cbUnitFilter.Items.Add("Cái");
+            cbUnitFilter.Items.Add("Túi");
         }
 
         // Class for adding datas
@@ -122,11 +215,11 @@ namespace CoffeeShop.View.Staff
             // 1. Lấy giá trị cho Amount Filter (chuyển sang int)
             bool isAmountMinValid = int.TryParse(txbMin1.Text, out int amountMin);
             bool isAmountMaxValid = int.TryParse(txbMax1.Text, out int amountMax);
-
-            // 3. Định nghĩa hàm lọc (Filter Predicate)
+            string unit = cbUnitFilter.SelectedItem.ToString().ToLower();
+            // 3. Định nghĩa hàm lọc
             itemsView.Filter = item =>
             {
-                // Ép kiểu đối tượng item về kiểu dữ liệu của m
+                // Ép kiểu đối tượng item
                 if (item is DepotItem depotItem)
                 {
                     // --- LOGIC CHO AMOUNT ---
@@ -138,9 +231,8 @@ namespace CoffeeShop.View.Staff
                     // Tổng hợp điều kiện Amount
                     bool amountFilterPassed = amountPassesMin && amountPassesMax;
 
-                    // --- KẾT QUẢ CUỐI CÙNG ---
-                    // Chỉ trả về TRUE nếu thỏa mãn CẢ HAI bộ lọc (Amount VÀ Unit)
-                    return amountFilterPassed;
+                    bool unitFilterPassed = (unit == depotItem.Unit);
+                    return amountFilterPassed && unitFilterPassed;
                 }
                 return false;
             };
