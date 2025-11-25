@@ -51,7 +51,7 @@ public partial class CoffeeShopContext : DbContext
         => optionsBuilder.UseSqlServer("Server=localhost;Database=CoffeeShopDB;Trusted_Connection=True;TrustServerCertificate=True;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
+    { 
         modelBuilder.Entity<ActionType>(entity =>
         {
             entity.HasKey(e => e.ActionTypeId).HasName("PK__ActionTy__62FE4C046C7CCF5D");
