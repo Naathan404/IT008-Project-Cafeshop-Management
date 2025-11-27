@@ -3,7 +3,8 @@
     <!-- Template cho nút trong kho -->
     <ControlTemplate x:Key="depotButtonTemplate" TargetType="Button">
         <Border Background="{TemplateBinding Background}"
-             BorderBrush="{TemplateBinding BorderBrush}"
+             BorderBrush="#340D05"
+                BorderThickness="1"
              CornerRadius="5"
              Height="{TemplateBinding Height}">
             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"
@@ -17,17 +18,17 @@
         <Setter Property="Height" Value="40"/>
         <Setter Property="Background" Value="#C7A57A"/>
         <Setter Property="Foreground" Value="Black"/>
-        <Setter Property="FontFamily" Value="Times New Roman"/>
+        <Setter Property="FontFamily" Value="Cascadia Code"/>
         <Setter Property="FontWeight" Value="Bold"/>
         <Setter Property="FontSize" Value="18"/>
     </Style>
 
     <!-- Style DataGrid áp dụng HeaderTemplate -->
-    <Style x:Key="dgTemplate" TargetType="DataGridColumnHeader">
+    <Style x:Key="dgHeaderTemplate" TargetType="DataGridColumnHeader">
         <Setter Property="Background" Value="#E0CEB5"/>
         <Setter Property="Foreground" Value="Black"/>
         <Setter Property="FontWeight" Value="Bold"/>
-        <Setter Property="FontFamily" Value="Times New Roman"/>
+        <Setter Property="FontFamily" Value="Cascadia Code"/>
         <Setter Property="Height" Value="27"/>
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
         <Setter Property="BorderBrush" Value="Black"/>
@@ -49,14 +50,11 @@
     </ControlTemplate>
 
     <Style TargetType="DataGridCell">
-
         <Setter Property="Padding" Value="0"/>
         <Setter Property="BorderBrush" Value="Gray"/>
         <Setter Property="BorderThickness" Value="0.2"/>
         <Setter Property="Height" Value="30"/>
-
         <Setter Property="OverridesDefaultStyle" Value="True"/>
-
         <Setter Property="Template" Value="{StaticResource dgCellTemplate}"></Setter>
     </Style>
 </ResourceDictionary>
