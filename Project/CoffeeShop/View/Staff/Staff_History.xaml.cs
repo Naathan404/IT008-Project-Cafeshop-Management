@@ -51,7 +51,7 @@ namespace CoffeeShop.View.Staff
                         OrderID = order.OrderId,
                         CustomerName = order.CustomerId == null ? "Khách vãng lai" : order.Customer.CustomerName,
                         EmployeeName = order.Staff.StaffName,
-                        OrderDate = order.OrderDate,
+                        OrderDate = order.OrderDate.ToString("HH:mm:ss"),
                         Total = order.TotalAmount.ToString("N0", viVn),
                         PaymentMethod = order.PaymentMethod
                     });
@@ -65,7 +65,7 @@ namespace CoffeeShop.View.Staff
             public int OrderID { get; set; }
             public string CustomerName { get; set; } = null!;
             public string EmployeeName { get; set; } = null!;
-            public DateTime OrderDate { get; set; }
+            public string OrderDate { get; set; }
             public string Total { get; set; } = null!;
             public string PaymentMethod { get; set; } = null!;
         }

@@ -1,8 +1,11 @@
-﻿using MailKit.Search;
+﻿using CoffeeShop.Models;
+using MailKit.Search;
 using Microsoft.Identity.Client;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Security.RightsManagement;
 using System.Text;
@@ -10,13 +13,13 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.ComponentModel;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using static CoffeeShop.View.Staff.Staff_History;
 using static MaterialDesignThemes.Wpf.Theme;
 
 namespace CoffeeShop.View.Staff
@@ -27,148 +30,46 @@ namespace CoffeeShop.View.Staff
     public partial class Staff_Depot : Page
     {
         private ICollectionView itemsView;
-        List<DepotItem> items = new List<DepotItem>();
+        List<DepotItem> depotItems = new List<DepotItem>();
         public Staff_Depot()
         {
             InitializeComponent();
-            itemsView = CollectionViewSource.GetDefaultView(items);
-            AddDatagridData();
-            LoadUnitData();
+            itemsView = CollectionViewSource.GetDefaultView(depotItems);
+            LoadDepotItem();
         }
 
-
-        public void AddDatagridData()
+        private void LoadDepotItem()
         {
-            // Add datas for datagrid
-            items.Add(new DepotItem
+            using (var db = new CoffeeShopContext())
             {
-                ID = 1,
-                Name = "Cà phê hạt",
-                Quantity = 50,
-                Unit = "kg",
-                Note = "Hết hàng sớm"
-            });
-
-            items.Add(new DepotItem
-            {
-                ID = 2,
-                Name = "Ly nhựa 500ml",
-                Quantity = 200,
-                Unit = "cái",
-                Note = "As you can see, this is a super long note."
-            });
-
-            items.Add(new DepotItem
-            {
-                ID = 3,
-                Name = "Trân châu",
-                Quantity = 100,
-                Unit = "túi",
-                Note = ""
-            });
-            items.Add(new DepotItem
-            {
-                ID = 3,
-                Name = "Trân châu",
-                Quantity = 100,
-                Unit = "túi",
-                Note = ""
-            });
-            items.Add(new DepotItem
-            {
-                ID = 3,
-                Name = "Trân châu",
-                Quantity = 100,
-                Unit = "túi",
-                Note = ""
-            });
-            items.Add(new DepotItem
-            {
-                ID = 3,
-                Name = "Trân châu",
-                Quantity = 100,
-                Unit = "túi",
-                Note = ""
-            });
-            items.Add(new DepotItem
-            {
-                ID = 3,
-                Name = "Trân châu",
-                Quantity = 100,
-                Unit = "túi",
-                Note = ""
-            });
-            items.Add(new DepotItem
-            {
-                ID = 3,
-                Name = "Trân châu",
-                Quantity = 100,
-                Unit = "túi",
-                Note = ""
-            });
-            items.Add(new DepotItem
-            {
-                ID = 3,
-                Name = "Trân châu",
-                Quantity = 100,
-                Unit = "túi",
-                Note = ""
-            });
-            items.Add(new DepotItem
-            {
-                ID = 3,
-                Name = "Trân châu",
-                Quantity = 100,
-                Unit = "túi",
-                Note = ""
-            });
-            items.Add(new DepotItem
-            {
-                ID = 3,
-                Name = "Trân châu",
-                Quantity = 100,
-                Unit = "túi",
-                Note = ""
-            });
-            items.Add(new DepotItem
-            {
-                ID = 3,
-                Name = "Trân châu",
-                Quantity = 100,
-                Unit = "túi",
-                Note = ""
-            });
-            items.Add(new DepotItem
-            {
-                ID = 3,
-                Name = "Trân châu",
-                Quantity = 100,
-                Unit = "túi",
-                Note = ""
-            });
-            dgDepot.ItemsSource = items;
-            dgDepot.ItemsSource = itemsView;
-        }
-
-        public void LoadUnitData()
-        {
-            cbUnitFilter.Items.Add("Tất cả");
-            cbUnitFilter.Items.Add("Kg");
-            cbUnitFilter.Items.Add("Cái");
-            cbUnitFilter.Items.Add("Túi");
+                var items = db.Inventories
+                    .ToList();
+                foreach (var item in items)
+                {
+                    depotItems.Add(new DepotItem
+                    {
+                        MaterialId = item.MaterialId,
+                        MaterialName = item.MaterialName,
+                        Quantity = (float)item.Quantity,
+                        Unit = item.Unit,
+                        Note = item.Note
+                    });
+                }
+                dgDepot.ItemsSource = depotItems;
+            }
         }
 
         // Class for adding datas
         public class DepotItem
         {
-            public int ID { get; set; }
-            public string Name { get; set; }
-            public int Quantity { get; set; }
+            public int MaterialId { get; set; }
+            public string MaterialName { get; set; }
+            public float Quantity { get; set; }
             public string Unit { get; set; }
-            public string Note { get; set; }
+            public string? Note { get; set; }
         }
 
-        private void btnPopup_Click(object sender, RoutedEventArgs e)
+        private void Grid_MouseDown(object sender, MouseButtonEventArgs e)
         {
             popupFilter.IsOpen = !popupFilter.IsOpen;
         }
@@ -215,9 +116,8 @@ namespace CoffeeShop.View.Staff
         public string searchTerm = "";
         private void txbSearch_TextChanged(object sender, TextChangedEventArgs e)
         {
-            searchTerm = (sender as System.Windows.Controls.TextBox).Name.ToString().ToLower();
-            itemsView.Refresh(); // Cập nhật datagrid liên tục khi nhập chữ
             bool searchFilterPassed = true;
+            searchTerm = (sender as System.Windows.Controls.TextBox).Name.ToString().ToLower();
 
             itemsView.Filter = item =>
             {
@@ -225,12 +125,13 @@ namespace CoffeeShop.View.Staff
                 {
                     if (!string.IsNullOrWhiteSpace(searchTerm))
                     {
-                        searchFilterPassed = depotItem.Name.ToLower().Contains(searchTerm);
+                        searchFilterPassed = depotItem.MaterialName.ToLower().Contains(searchTerm);
                     }
                     return searchFilterPassed;
                 }
                 return false;
             };
+            itemsView.Refresh(); // Cập nhật datagrid liên tục khi nhập chữ
         }
     }
 }
