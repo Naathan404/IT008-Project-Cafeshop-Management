@@ -26,7 +26,7 @@ namespace CoffeeShop.View.Staff
     {
         private List<OrderHistory> orderHistoryItems = new List<OrderHistory>();
         private ICollectionView orderView;
-
+        CultureInfo viVn = new CultureInfo("vn-VN");
 
         public Staff_History()
         {
@@ -37,7 +37,6 @@ namespace CoffeeShop.View.Staff
 
         private void LoadOrderHistory()
         {
-            CultureInfo viVn = new CultureInfo("vn-VN");
             using (var db = new CoffeeShopContext())
             {
                 var orders = db.Orders
@@ -49,7 +48,7 @@ namespace CoffeeShop.View.Staff
                     orderHistoryItems.Add(new OrderHistory
                     {
                         OrderID = order.OrderId,
-                        CustomerName = order.CustomerId == null ? "Khách vãng lai" : order.Customer.CustomerName,
+                        CustomerName = order.Customer != null ? order.Customer.CustomerName : "Khách vãng lai",
                         EmployeeName = order.Staff.StaffName,
                         OrderDate = order.OrderDate.ToString("HH:mm:ss"),
                         Total = order.TotalAmount.ToString("N0", viVn),
@@ -68,6 +67,78 @@ namespace CoffeeShop.View.Staff
             public string OrderDate { get; set; }
             public string Total { get; set; } = null!;
             public string PaymentMethod { get; set; } = null!;
+        }
+
+        private void TextChangedEvt(object sender, TextChangedEventArgs e)
+        {
+            FilterData();
+        }
+
+        private void SelectedTimeChangedEvt(object sender, RoutedPropertyChangedEventArgs<DateTime?> e)
+        {
+            FilterData();
+        }
+
+        private void FilterData()
+        {
+            string keyword = txbCustomerName.Text.Trim();
+            DateTime? start = timePickerStartTime.SelectedTime;
+            DateTime? end = timePickerEndTime.SelectedTime;
+            orderHistoryItems.Clear();
+
+
+            using (var db = new CoffeeShopContext())
+            {
+                var query = db.Orders
+                              .Include(o => o.Customer)
+                              .Include(o => o.Staff)
+                              .AsQueryable();
+
+                if (!string.IsNullOrEmpty(keyword))
+                {
+                    query = query.Where(o => o.Customer != null &&
+                                             o.Customer.CustomerName.Contains(keyword));
+                }
+
+                if (start.HasValue)
+                {
+                    DateTime startDateTime = DateTime.Today.Add(start.Value.TimeOfDay);
+                    query = query.Where(o => o.OrderDate >= startDateTime);
+                }
+                if (end.HasValue)
+                {
+                    DateTime endDateTime = DateTime.Today.Add(end.Value.TimeOfDay);
+                    query = query.Where(o => o.OrderDate <= endDateTime);
+                }
+
+                var orders = query.ToList();
+
+                foreach (var order in orders)
+                {
+                    orderHistoryItems.Add(new OrderHistory
+                    {
+                        OrderID = order.OrderId,
+                        CustomerName = order.Customer != null ? order.Customer.CustomerName : "Khách vãng lai",
+                        EmployeeName = order.Staff.StaffName,
+                        OrderDate = order.OrderDate.ToString("HH:mm:ss"),
+                        Total = order.TotalAmount.ToString("N0", viVn),
+                        PaymentMethod = order.PaymentMethod
+                    });
+                }
+
+                dgOrdersHistory.ItemsSource = orderHistoryItems;
+                dgOrdersHistory.Items.Refresh();
+            }
+        }
+
+        private void DetailClickEvt(object sender, RoutedEventArgs e)
+        {
+            if (dgOrdersHistory.SelectedItem == null) return;
+
+            using(var db = new CoffeeShopContext())
+            {
+
+            }    
         }
     }
 }

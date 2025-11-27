@@ -343,12 +343,12 @@ GO
 
 INSERT INTO [Order] (TableID, CustomerID, StaffID, OrderDate, OrderStatus, TotalAmount, PaymentMethod) 
 VALUES 
-(1, 1, 1, GETDATE(), N'Đã thanh toán', 55000, N'Tiền mặt'),
-(NULL, 2, 1, GETDATE(), N'Đã thanh toán', 30000, N'Chuyển khoản'),
-(5, NULL, 1, GETDATE(), N'Đã thanh toán', 0, N'Tiền mặt'),
-(3, 1, 1, DATEADD(day, -1, GETDATE()), N'Đã thanh toán', 120000, N'Chuyển khoản'),
-(NULL, NULL, 1, GETDATE(), N'Đã thanh toán', 45000, N'Tiền mặt'),
-(NULL, 2, 1, GETDATE(), N'Đã thanh toán', 45000, N'Chuyển khoản')
+(1, 1, 3, '2025-11-27 07:00:00', N'Đã thanh toán', 55000, N'Tiền mặt'),
+(NULL, 2, 3, '2025-11-27 13:00:00', N'Đã thanh toán', 30000, N'Chuyển khoản'),
+(5, NULL, 4, '2025-11-27 13:30:00', N'Đã thanh toán', 0, N'Tiền mặt'),
+(3, 1, 3, '2025-11-27 16:00:00', N'Đã thanh toán', 120000, N'Chuyển khoản'),
+(NULL, NULL, 4, '2025-11-27 17:15:00', N'Đã thanh toán', 45000, N'Tiền mặt'),
+(NULL, 2, 4, '2025-11-27 20:00:00', N'Đã thanh toán', 45000, N'Chuyển khoản')
 GO
 
 INSERT INTO OrderDetail (OrderID, PriceID, Quantity, UnitPrice, Discount, TotalPrice, Note) 
