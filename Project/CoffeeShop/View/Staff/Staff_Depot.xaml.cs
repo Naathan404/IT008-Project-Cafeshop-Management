@@ -152,6 +152,7 @@ namespace CoffeeShop.View.Staff
 
         public void LoadUnitData()
         {
+            cbUnitFilter.Items.Add("Tất cả");
             cbUnitFilter.Items.Add("Kg");
             cbUnitFilter.Items.Add("Cái");
             cbUnitFilter.Items.Add("Túi");
@@ -167,56 +168,24 @@ namespace CoffeeShop.View.Staff
             public string Note { get; set; }
         }
 
-        private void btnSearch_Click(object sender, RoutedEventArgs e)
-        {
-            // Get datagrid's View
-            var view = CollectionViewSource.GetDefaultView(dgDepot.ItemsSource);
-            view.Filter = FilterItems;
-        }
-
-        private bool FilterItems(object item)
-        {
-            string searchText = txbSearch.Text.ToLower();
-            if (string.IsNullOrEmpty(searchText))
-            {
-                return true;
-            }
-            
-            if (item is DepotItem depotItem)
-            {
-                // Chuyen kieu item: object -> DepotItem
-                // Chuyen text cua item thanh lower de so sanh
-
-                // Tim kiem theo ten
-                if (depotItem.Name != null && depotItem.Name.ToLower().Contains(searchText))
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        private void txbSearch_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Enter)
-            {
-                btnSearch.RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Button.ClickEvent));
-                e.Handled = true;
-            }
-        }
-
         private void btnPopup_Click(object sender, RoutedEventArgs e)
         {
             popupFilter.IsOpen = !popupFilter.IsOpen;
         }
 
+        bool amountFilterPassed = true;
+        bool unitFilterPassed = true;
         private void btnApplyFilter_Click(object sender, RoutedEventArgs e)
         {
-            // 1. Lấy giá trị cho Amount Filter (chuyển sang int)
+            // Lấy giá trị cho Amount Filter (chuyển sang int)
             bool isAmountMinValid = int.TryParse(txbMin1.Text, out int amountMin);
             bool isAmountMaxValid = int.TryParse(txbMax1.Text, out int amountMax);
-            string unit = cbUnitFilter.SelectedItem.ToString().ToLower();
-            // 3. Định nghĩa hàm lọc
+            string unit = "";
+            if (cbUnitFilter.SelectedItem != null)
+            {
+                unit = cbUnitFilter.SelectedItem.ToString().ToLower(); // Đơn vị được chọn trong filter
+            }
+            // Định nghĩa hàm lọc
             itemsView.Filter = item =>
             {
                 // Ép kiểu đối tượng item
@@ -229,19 +198,39 @@ namespace CoffeeShop.View.Staff
                     bool amountPassesMax = !isAmountMaxValid || (depotItem.Quantity <= amountMax);
 
                     // Tổng hợp điều kiện Amount
-                    bool amountFilterPassed = amountPassesMin && amountPassesMax;
-
-                    bool unitFilterPassed = (unit == depotItem.Unit);
+                    amountFilterPassed = amountPassesMin && amountPassesMax;
+                    unitFilterPassed = (unit == "tất cả") || (unit == depotItem.Unit.ToLower());
                     return amountFilterPassed && unitFilterPassed;
                 }
                 return false;
             };
 
-            // 4. Cập nhật DataGrid
+            // Cập nhật DataGrid
             itemsView.Refresh();
 
-            // 5. Đóng Popup sau khi lọc (nếu muốn)
+            // Đóng Popup sau khi lọc
             popupFilter.IsOpen = false;
+        }
+
+        public string searchTerm = "";
+        private void txbSearch_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            searchTerm = (sender as System.Windows.Controls.TextBox).Name.ToString().ToLower();
+            itemsView.Refresh(); // Cập nhật datagrid liên tục khi nhập chữ
+            bool searchFilterPassed = true;
+
+            itemsView.Filter = item =>
+            {
+                if (item is DepotItem depotItem)
+                {
+                    if (!string.IsNullOrWhiteSpace(searchTerm))
+                    {
+                        searchFilterPassed = depotItem.Name.ToLower().Contains(searchTerm);
+                    }
+                    return searchFilterPassed;
+                }
+                return false;
+            };
         }
     }
 }
