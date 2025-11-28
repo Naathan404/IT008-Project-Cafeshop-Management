@@ -25,13 +25,11 @@ namespace CoffeeShop.View.Staff
     public partial class Staff_History : Page
     {
         private List<OrderHistory> orderHistoryItems = new List<OrderHistory>();
-        private ICollectionView orderView;
         CultureInfo viVn = new CultureInfo("vn-VN");
 
         public Staff_History()
         {
             InitializeComponent();
-            orderView = CollectionViewSource.GetDefaultView(orderHistoryItems);
             LoadOrderHistory();
         }
 
@@ -133,12 +131,11 @@ namespace CoffeeShop.View.Staff
 
         private void DetailClickEvt(object sender, RoutedEventArgs e)
         {
-            if (dgOrdersHistory.SelectedItem == null) return;
-
-            using(var db = new CoffeeShopContext())
-            {
-
-            }    
+            OrderHistory? selectedItem =  dgOrdersHistory.SelectedItem as OrderHistory;
+            if (selectedItem == null)
+                return;
+            OrderDetailWindow orderDetailWindow = new OrderDetailWindow(selectedItem.OrderID);
+            orderDetailWindow.ShowDialog();
         }
     }
 }
