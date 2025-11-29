@@ -36,6 +36,7 @@ namespace CoffeeShop.View.Staff
         public Staff_Order()
         {
             InitializeComponent();
+            _items = GetSampleItems();
             LoadSampleData();
         }
 
@@ -234,18 +235,28 @@ namespace CoffeeShop.View.Staff
             };
         }
 
-        //Load sample data
-        private void LoadSampleData()
+        //Load items vào từng tabItem theo categoryId
+        private void LoadItem(ObservableCollection<OrderItem> itemsList) 
         {
-            //Load items cho từng tabItem 
-            _items = GetSampleItems();
-            for (int i = 1; i <= _items.Max(x => x.CategoryId); i++)
+            if (itemsList == null || itemsList.Count == 0)
+                return;
+            for (int i = 1; i <= itemsList.Max(x => x.CategoryId); i++)
             {
                 // Lấy tên TabItem và UniformGrid
                 var ic = tabMain.FindName("icCategory" + i) as ItemsControl;
                 if (ic != null)
-                    ic.ItemsSource = new ObservableCollection<OrderItem>(_items.Where(x => x.CategoryId == i));
+                {
+                    ic.ItemsSource = null; // Xóa dữ liệu cũ trước khi nạp dữ liệu mới
+                    ic.ItemsSource = new ObservableCollection<OrderItem>(itemsList.Where(x => x.CategoryId == i));
+                }
             }
+        }
+
+        //Load sample data
+        private void LoadSampleData()
+        {
+            //Load items cho từng tabItem
+            LoadItem(_items);
             //Load bàn
             cbTable.ItemsSource = new List<string>()
             {
@@ -363,6 +374,19 @@ namespace CoffeeShop.View.Staff
         {
             
         }
+
+        // Tìm kiếm item với từ khóa
+        private void SearchItems(string keyword) 
+        {
+            var result = _items.Where(i => i.ItemName.Contains(keyword, StringComparison.OrdinalIgnoreCase));
+            LoadItem(new ObservableCollection<OrderItem>(result));
+        }
+
+        private void txblSearchItem_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            SearchItems(txblSearchItem.Text.Trim());
+        }
+
         #endregion
 
         #region Choose Customer
@@ -377,5 +401,7 @@ namespace CoffeeShop.View.Staff
 
         }
         #endregion
+
+        
     }
 }

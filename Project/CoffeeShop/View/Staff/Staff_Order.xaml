@@ -150,7 +150,7 @@
             </Setter>
         </Style>
     </Page.Resources>
-    
+
     <Grid>
         <Border Background="#D4BA98"
                 HorizontalAlignment="Stretch"
@@ -172,165 +172,186 @@
                                               Color="Black"
                                               ShadowDepth="8"/>
                         </Border.Effect>
-                        <TabControl x:Name="tabMain"
+                        <Grid>
+                            <TabControl x:Name="tabMain"
                                     Margin="10 10 10 0"
                                     materialDesign:ColorZoneAssist.Mode="Standard"
                                     Background="#C7A57A"
                                     HorizontalAlignment="Stretch"
                                     VerticalContentAlignment="Stretch"
                                     materialDesign:ThemeAssist.Theme="Light">
-                            <TabControl.ItemContainerStyle>
-                                <!-- Style cho từng TabItem -->
-                                <Style TargetType="TabItem" BasedOn="{StaticResource MaterialDesignTabItem}">
-                                    <Setter Property="Height" Value="40"/>
-                                    <Setter Property="MinWidth" Value="0"/>
-                                    <Setter Property="Padding" Value="10"/>
-                                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                                    <!-- Font cho header -->
-                                    <Setter Property="HeaderTemplate">
-                                        <Setter.Value>
-                                            <DataTemplate>
-                                                <TextBlock Text="{Binding}" FontSize="15" FontFamily="Cascadia Code" FontWeight="Bold"
+                                <TabControl.ItemContainerStyle>
+                                    <!-- Style cho từng TabItem -->
+                                    <Style TargetType="TabItem" BasedOn="{StaticResource MaterialDesignTabItem}">
+                                        <Setter Property="Height" Value="40"/>
+                                        <Setter Property="MinWidth" Value="0"/>
+                                        <Setter Property="Padding" Value="7"/>
+                                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                        <!-- Font cho header -->
+                                        <Setter Property="HeaderTemplate">
+                                            <Setter.Value>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding}" FontSize="15" FontFamily="Cascadia Code" FontWeight="Bold"
                                                            HorizontalAlignment="Center"/>
-                                            </DataTemplate>
-                                        </Setter.Value>
-                                    </Setter>
-                                </Style>
-                            </TabControl.ItemContainerStyle>
+                                                </DataTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </TabControl.ItemContainerStyle>
 
-                            <TabItem x:Name="tabItemCategory1" Header="Cà phê">
-                                <ScrollViewer VerticalScrollBarVisibility="Auto" SizeChanged="ItemsContainer_SizeChanged">
-                                    <!-- Binding items từ cơ sở dữ liệu -->
-                                    <ItemsControl x:Name="icCategory1">
-                                        <ItemsControl.ItemsPanel>
-                                            <ItemsPanelTemplate>
-                                                <UniformGrid HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                                            </ItemsPanelTemplate>
-                                        </ItemsControl.ItemsPanel>
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate DataType="{x:Type models:Item}">
-                                                <ContentControl Style="{StaticResource RoundedCard}" 
+                                <TabItem x:Name="tabItemCategory1" Header="Cà phê">
+                                    <ScrollViewer VerticalScrollBarVisibility="Auto" SizeChanged="ItemsContainer_SizeChanged">
+                                        <!-- Binding items từ cơ sở dữ liệu -->
+                                        <ItemsControl x:Name="icCategory1">
+                                            <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <UniformGrid HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                                                </ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate DataType="{x:Type models:Item}">
+                                                    <ContentControl Style="{StaticResource RoundedCard}" 
                                                                 Content="{Binding}"
                                                                 MouseDown="Item_MouseDown"/>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
-                                </ScrollViewer>
-                            </TabItem>
-                            <TabItem x:Name="tabItemCategory2" Header="Trà sữa">
-                                <ScrollViewer VerticalScrollBarVisibility="Auto" SizeChanged="ItemsContainer_SizeChanged">
-                                    <!-- Binding items từ cơ sở dữ liệu -->
-                                    <ItemsControl x:Name="icCategory2">
-                                        <ItemsControl.ItemsPanel>
-                                            <ItemsPanelTemplate>
-                                                <UniformGrid HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                                            </ItemsPanelTemplate>
-                                        </ItemsControl.ItemsPanel>
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate DataType="{x:Type models:Item}">
-                                                <ContentControl Style="{StaticResource RoundedCard}" 
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </ScrollViewer>
+                                </TabItem>
+                                <TabItem x:Name="tabItemCategory2" Header="Trà sữa">
+                                    <ScrollViewer VerticalScrollBarVisibility="Auto" SizeChanged="ItemsContainer_SizeChanged">
+                                        <!-- Binding items từ cơ sở dữ liệu -->
+                                        <ItemsControl x:Name="icCategory2">
+                                            <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <UniformGrid HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                                                </ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate DataType="{x:Type models:Item}">
+                                                    <ContentControl Style="{StaticResource RoundedCard}" 
                                                                 Content="{Binding}"
                                                                 MouseDown="Item_MouseDown"/>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
-                                </ScrollViewer>
-                            </TabItem>
-                            <TabItem x:Name="tabItemCategory3" Header="Đá xay">
-                                <ScrollViewer VerticalScrollBarVisibility="Auto" SizeChanged="ItemsContainer_SizeChanged">
-                                    <!-- Binding items từ cơ sở dữ liệu -->
-                                    <ItemsControl x:Name="icCategory3">
-                                        <ItemsControl.ItemsPanel>
-                                            <ItemsPanelTemplate>
-                                                <UniformGrid HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                                            </ItemsPanelTemplate>
-                                        </ItemsControl.ItemsPanel>
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate DataType="{x:Type models:Item}">
-                                                <ContentControl Style="{StaticResource RoundedCard}" 
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </ScrollViewer>
+                                </TabItem>
+                                <TabItem x:Name="tabItemCategory3" Header="Đá xay">
+                                    <ScrollViewer VerticalScrollBarVisibility="Auto" SizeChanged="ItemsContainer_SizeChanged">
+                                        <!-- Binding items từ cơ sở dữ liệu -->
+                                        <ItemsControl x:Name="icCategory3">
+                                            <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <UniformGrid HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                                                </ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate DataType="{x:Type models:Item}">
+                                                    <ContentControl Style="{StaticResource RoundedCard}" 
                                                                 Content="{Binding}"
                                                                 MouseDown="Item_MouseDown"/>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
-                                </ScrollViewer>
-                            </TabItem>
-                            <TabItem x:Name="tabItemCategory4" Header="Trà">
-                                <ScrollViewer VerticalScrollBarVisibility="Auto" SizeChanged="ItemsContainer_SizeChanged">
-                                    <!-- Binding items từ cơ sở dữ liệu -->
-                                    <ItemsControl x:Name="icCategory4">
-                                        <ItemsControl.ItemsPanel>
-                                            <ItemsPanelTemplate>
-                                                <UniformGrid HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                                            </ItemsPanelTemplate>
-                                        </ItemsControl.ItemsPanel>
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate DataType="{x:Type models:Item}">
-                                                <ContentControl Style="{StaticResource RoundedCard}" 
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </ScrollViewer>
+                                </TabItem>
+                                <TabItem x:Name="tabItemCategory4" Header="Trà">
+                                    <ScrollViewer VerticalScrollBarVisibility="Auto" SizeChanged="ItemsContainer_SizeChanged">
+                                        <!-- Binding items từ cơ sở dữ liệu -->
+                                        <ItemsControl x:Name="icCategory4">
+                                            <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <UniformGrid HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                                                </ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate DataType="{x:Type models:Item}">
+                                                    <ContentControl Style="{StaticResource RoundedCard}" 
                                                                 Content="{Binding}"
                                                                 MouseDown="Item_MouseDown"/>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
-                                </ScrollViewer>
-                            </TabItem>
-                            <TabItem x:Name="tabItemCategory5" Header="Nước ép">
-                                <ScrollViewer VerticalScrollBarVisibility="Auto" SizeChanged="ItemsContainer_SizeChanged">
-                                    <!-- Binding items từ cơ sở dữ liệu -->
-                                    <ItemsControl x:Name="icCategory5">
-                                        <ItemsControl.ItemsPanel>
-                                            <ItemsPanelTemplate>
-                                                <UniformGrid HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                                            </ItemsPanelTemplate>
-                                        </ItemsControl.ItemsPanel>
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate DataType="{x:Type models:Item}">
-                                                <ContentControl Style="{StaticResource RoundedCard}" 
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </ScrollViewer>
+                                </TabItem>
+                                <TabItem x:Name="tabItemCategory5" Header="Nước ép">
+                                    <ScrollViewer VerticalScrollBarVisibility="Auto" SizeChanged="ItemsContainer_SizeChanged">
+                                        <!-- Binding items từ cơ sở dữ liệu -->
+                                        <ItemsControl x:Name="icCategory5">
+                                            <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <UniformGrid HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                                                </ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate DataType="{x:Type models:Item}">
+                                                    <ContentControl Style="{StaticResource RoundedCard}" 
                                                                 Content="{Binding}"
                                                                 MouseDown="Item_MouseDown"/>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
-                                </ScrollViewer>
-                            </TabItem>
-                            <TabItem x:Name="tabItemCategory6" Header="Sinh tố">
-                                <ScrollViewer VerticalScrollBarVisibility="Auto" SizeChanged="ItemsContainer_SizeChanged">
-                                    <!-- Binding items từ cơ sở dữ liệu -->
-                                    <ItemsControl x:Name="icCategory6">
-                                        <ItemsControl.ItemsPanel>
-                                            <ItemsPanelTemplate>
-                                                <UniformGrid HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                                            </ItemsPanelTemplate>
-                                        </ItemsControl.ItemsPanel>
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate DataType="{x:Type models:Item}">
-                                                <ContentControl Style="{StaticResource RoundedCard}" 
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </ScrollViewer>
+                                </TabItem>
+                                <TabItem x:Name="tabItemCategory6" Header="Sinh tố">
+                                    <ScrollViewer VerticalScrollBarVisibility="Auto" SizeChanged="ItemsContainer_SizeChanged">
+                                        <!-- Binding items từ cơ sở dữ liệu -->
+                                        <ItemsControl x:Name="icCategory6">
+                                            <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <UniformGrid HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                                                </ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate DataType="{x:Type models:Item}">
+                                                    <ContentControl Style="{StaticResource RoundedCard}" 
                                                                 Content="{Binding}"
                                                                 MouseDown="Item_MouseDown"/>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
-                                </ScrollViewer>
-                            </TabItem>
-                            <TabItem x:Name="tabItemCategory7" Header="Food">
-                                <ScrollViewer VerticalScrollBarVisibility="Auto" SizeChanged="ItemsContainer_SizeChanged">
-                                    <ItemsControl x:Name="icCategory7">
-                                        <ItemsControl.ItemsPanel>
-                                            <ItemsPanelTemplate>
-                                                <UniformGrid HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                                            </ItemsPanelTemplate>
-                                        </ItemsControl.ItemsPanel>
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate DataType="{x:Type models:Item}">
-                                                <ContentControl Style="{StaticResource RoundedCard}" 
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </ScrollViewer>
+                                </TabItem>
+                                <TabItem x:Name="tabItemCategory7" Header="Food">
+                                    <ScrollViewer VerticalScrollBarVisibility="Auto" SizeChanged="ItemsContainer_SizeChanged">
+                                        <ItemsControl x:Name="icCategory7">
+                                            <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <UniformGrid HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                                                </ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate DataType="{x:Type models:Item}">
+                                                    <ContentControl Style="{StaticResource RoundedCard}" 
                                                                 Content="{Binding}"
                                                                 MouseDown="Item_MouseDown"/>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
-                                </ScrollViewer>
-                            </TabItem>
-                        </TabControl>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </ScrollViewer>
+                                </TabItem>
+                            </TabControl>
+                            <StackPanel Orientation="Horizontal" 
+                                        Height="50" Margin="0 0 10 10"
+                                        HorizontalAlignment="Right" VerticalAlignment="Top">
+                                <materialDesign:PackIcon x:Name="icSearchItem"
+                                                         Kind="Magnify" 
+                                                         Margin="450,20,10,0"
+                                                         Width="20" Height="20"
+                                                         Foreground="#766839"/>
+                                <TextBox x:Name="txblSearchItem"
+                                         Width="120" Height="40"
+                                         materialDesign:HintAssist.Hint="Tìm kiếm"
+                                         materialDesign:HintAssist.IsFloating="False"
+                                         FontFamily="Cascadia Code"
+                                         Foreground="#766839" FontSize="15" FontWeight="Bold"
+                                         materialDesign:TextFieldAssist.UnderlineBrush="#766839"
+                                         materialDesign:HintAssist.Foreground="#766839"
+                                         Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                                         TextChanged="txblSearchItem_TextChanged"/>
+                            </StackPanel>
+                        </Grid>
                     </Border>
                 </Grid>
 
