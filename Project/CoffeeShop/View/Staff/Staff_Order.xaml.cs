@@ -34,12 +34,13 @@ namespace CoffeeShop.View.Staff
     {
         private ICollectionView itemsView;
         ObservableCollection<OrderItem> _items = new ObservableCollection<OrderItem>();
+        ObservableCollection<OrderItemDisplay> _OrderedItemsDisplay { get; set; } = new ObservableCollection<OrderItemDisplay>();
         public Staff_Order()
         {
             InitializeComponent();
             _items = GetSampleItems();
             LoadSampleData();
-            dtgListOrder.ItemsSource = _items;
+            dtgListOrder.ItemsSource = _OrderedItemsDisplay;
         }
 
         //Class for Sample datas
@@ -54,6 +55,16 @@ namespace CoffeeShop.View.Staff
             public string? Note { get; set; }
             public string ImagePath { get; set; } = "/Assets/Images/imgItemExample.jpg";
         }
+        public class OrderItemDisplay
+        {
+            public int ItemId { get; set; }
+            public string ItemName { get; set; }
+            public string SizeName { get; set; }
+            public int Quantity { get; set; }
+            public decimal Price { get; set; }
+            public decimal TotalPrice { get; set; } = 0;
+        }
+
         public static T FindParent<T>(DependencyObject child) where T : DependencyObject
         {
             DependencyObject parentObject = VisualTreeHelper.GetParent(child);
@@ -64,7 +75,6 @@ namespace CoffeeShop.View.Staff
 
             return FindParent<T>(parentObject);
         }
-
 
         #region Sample data
         //Sample data
@@ -284,23 +294,31 @@ namespace CoffeeShop.View.Staff
         #endregion
 
         #region Datagrid Events
-        private void AddItemToDataGrid(OrderItem item)
+        private void AddItemToDataGrid(OrderItem item, string selectedSize, decimal price)
         {
             if (item == null) return;
 
-            // Kiểm tra item đã tồn tại trong DataGrid chưa (theo ItemId)
-            var existingItem = _items.FirstOrDefault(x => x.ItemId == item.ItemId);
+            // Kiểm tra item + size đã tồn tại chưa
+            var existingItem = _OrderedItemsDisplay.FirstOrDefault(x =>
+                x.ItemId == item.ItemId && x.SizeName == selectedSize);
+
             if (existingItem != null)
             {
-                // Nếu muốn, tăng số lượng thay vì thêm mới
-                existingItem.Quantity += 1;
-                // Cập nhật giá nếu cần
-                existingItem.SelectedPrice = item.SelectedPrice;
+                existingItem.Quantity++;
+                existingItem.TotalPrice = existingItem.Price * existingItem.Quantity;
             }
             else
             {
-                // Thêm item mới
-                _orderItems.Add(item);
+                var newItem = new OrderItemDisplay
+                {
+                    ItemId = item.ItemId,
+                    ItemName = item.ItemName,
+                    SizeName = selectedSize,
+                    Quantity = 1,
+                    Price = price,
+                    TotalPrice = price
+                };
+                _OrderedItemsDisplay.Add(newItem);
             }
         }
 
@@ -469,6 +487,7 @@ namespace CoffeeShop.View.Staff
                 // Tìm StackPanel chứa các size
                 var stkSizePanel = FindParent<StackPanel>(bdrSize);
                 if (stkSizePanel == null) return;
+                var item = stkSizePanel.DataContext as OrderItem;
 
                 // Bỏ chọn tất cả size khác
                 foreach (var b in stkSizePanel.Children.OfType<Border>())
@@ -483,7 +502,10 @@ namespace CoffeeShop.View.Staff
                 bdrSize.Tag = true;
                 bdrSize.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#766839"));
                 if (bdrSize.Child is TextBlock txt)
+                {
                     txt.Foreground = (SolidColorBrush)(new BrushConverter().ConvertFrom("#EDE2D3"));
+                    AddItemToDataGrid(item, txt.Text.ToString(), price);
+                }
             }
         }
 

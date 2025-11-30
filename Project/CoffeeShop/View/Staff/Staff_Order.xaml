@@ -8,7 +8,7 @@
       xmlns:local="clr-namespace:CoffeeShop"
       xmlns:models="clr-namespace:CoffeeShop.Models"
       mc:Ignorable="d" 
-      d:DesignHeight="600" d:DesignWidth="1310"
+      d:DesignHeight="800" d:DesignWidth="1310"
       MinHeight="0" MinWidth="1000"
       Title="Staff_Order">
     <Page.Resources>
@@ -413,20 +413,50 @@
                                            Margin="7 0 0 0"
                                            FontFamily="Cascadia Code" FontWeight="Bold" FontSize="17" Foreground="#340D05"/>
                             </StackPanel>
-                            <Border BorderBrush="#766839" BorderThickness="3"
-                                    CornerRadius="15" Margin="10 20 10 0">
-                                <Border.Clip>
-                                    <RectangleGeometry RadiusX="15" RadiusY="15"
-                                                       Rect="0,0,1000,1000"/>
-                                </Border.Clip>
+                            <Border BorderBrush="#766839" 
+                                    BorderThickness="3"
+                                    CornerRadius="15" 
+                                    Margin="10 20 10 0">
                                 <DataGrid x:Name="dtgListOrder"
                                           IsReadOnly="True"
-                                          FontFamily="Cascadia Code" BorderThickness="0"
-                                          Background="#EDE2D3" ColumnHeaderHeight="38"
-                                          Margin="5"
-                                          GridLinesVisibility="All">
+                                          FontFamily="Cascadia Code"
+                                          Background="Transparent"
+                                          ColumnHeaderHeight="38"
+                                          Margin="2 2 2 5"
+                                          GridLinesVisibility="All"
+                                          AutoGenerateColumns="False"
+                                          Height="500">
+                                    <DataGrid.ColumnHeaderStyle>
+                                        <Style TargetType="DataGridColumnHeader">
+                                            <Setter Property="Background" Value="Transparent"/>
+                                            <Setter Property="Foreground" Value="#462812"/>
+                                            <Setter Property="FontWeight" Value="Bold"/>
+                                            <Setter Property="FontFamily" Value="Cascadia Code"/>
+                                            <Setter Property="FontSize" Value="20"/>
+                                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                        </Style>
+                                    </DataGrid.ColumnHeaderStyle>
+                                    <DataGrid.CellStyle>
+                                        <Style TargetType="DataGridCell">
+                                            <Setter Property="Foreground" Value="#766839"/>
+                                            <Setter Property="FontSize" Value="15"/>
+                                            <Setter Property="FontFamily" Value="Cascadia Code"/>
+                                            <Setter Property="Background" Value="#F9F6F0"/>
+                                        </Style>
+                                    </DataGrid.CellStyle>
                                     <DataGrid.Columns>
-                                        <DataGridTextColumn Header="Tên sản phẩm" Binding="{Binding ItemName}" Width="1*"/>
+                                        <DataGridTextColumn Header="Tên sản phẩm" Binding="{Binding ItemName}" Width="1.2*">
+                                            <DataGridTextColumn.ElementStyle>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="TextWrapping" Value="Wrap"/>
+                                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                                    <Setter Property="HorizontalAlignment" Value="Left"/>
+                                                    <Setter Property="FontSize" Value="18"/>
+                                                    <Setter Property="FontFamily" Value="Cascadia Code"/>
+                                                    <Setter Property="Foreground" Value="#340D05"/>
+                                                </Style>
+                                            </DataGridTextColumn.ElementStyle>
+                                        </DataGridTextColumn>
                                         <DataGridTextColumn Header="Size" Binding="{Binding SizeName}" Width="0.5*"/>
                                         <DataGridTextColumn Header="Số lượng" Binding="{Binding Quantity}" Width="0.7*"/>
                                         <DataGridTextColumn Header="Đơn giá" Binding="{Binding Price}" Width="0.8*"/>
