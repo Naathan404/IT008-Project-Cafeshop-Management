@@ -450,28 +450,107 @@
                                             <Setter Property="Background" Value="#F9F6F0"/>
                                             <Setter Property="BorderBrush" Value="#A0A0A0"/>
                                             <Setter Property="BorderThickness" Value="0,0,1,1"/>
-                                            <Setter Property="Padding" Value="5,0,5,0"/>
                                         </Style>
                                     </DataGrid.CellStyle>
                                     <DataGrid.Columns>
-                                        <DataGridTextColumn Header="STT" Binding="{Binding STT}" Width="0.4*" IsReadOnly="True"/>
-                                        <DataGridTextColumn Header="Tên sản phẩm" Binding="{Binding ItemName}" Width="1.2*">
-                                            <DataGridTextColumn.ElementStyle>
-                                                <Style TargetType="TextBlock">
-                                                    <Setter Property="TextWrapping" Value="Wrap"/>
-                                                </Style>
-                                            </DataGridTextColumn.ElementStyle>
-                                        </DataGridTextColumn>
-                                        <DataGridTextColumn Header="Size" Binding="{Binding SizeName}" Width="0.5*"/>
-                                        <DataGridTextColumn Header="Số lượng" Binding="{Binding Quantity}" Width="0.8*">
-                                            <DataGridTextColumn.ElementStyle>
-                                                <Style TargetType="TextBlock">
-                                                    <Setter Property="HorizontalAlignment" Value="Center"/>
-                                                </Style>
-                                            </DataGridTextColumn.ElementStyle>
-                                        </DataGridTextColumn>
-                                        <DataGridTextColumn Header="Đơn giá" Binding="{Binding Price}" Width="0.8*"/>
-                                        <DataGridTextColumn Header="Thành tiền" Binding="{Binding TotalPrice}" Width="1*"/>
+                                        <DataGridTemplateColumn Header="STT" Width="0.4*" IsReadOnly="True">
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <StackPanel HorizontalAlignment="Center"
+                                                                VerticalAlignment="Center">
+                                                        <TextBlock Text="{Binding STT}" 
+                                                                   HorizontalAlignment="Center"
+                                                                   FontWeight="Bold" FontSize="15"/>
+                                                        <materialDesign:PackIcon Kind="Delete"
+                                                                                 Foreground="#BC9466"
+                                                                                 Width="20" Height="20"
+                                                                                 MouseDown="DeleteOrderItem_MouseDown"/>
+                                                    </StackPanel>
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+                                        
+                                        <DataGridTemplateColumn Header="Tên sản phẩm" Width="1.2*">
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <StackPanel HorizontalAlignment="Left" 
+                                                                VerticalAlignment="Center"
+                                                                Margin="5">
+                                                        <TextBlock Text="{Binding ItemName}" 
+                                                                   HorizontalAlignment="Left"
+                                                                   FontWeight="Bold" FontSize="15" Foreground="#766839"
+                                                                   TextWrapping="Wrap"/>
+                                                        <TextBox x:Name="tbItemOrderedNote"
+                                                                 Width="130" Height="25" 
+                                                                 VerticalAlignment="Center"
+                                                                 FontFamily="Cascadia Code"
+                                                                 FontSize="15" Foreground="#C7A57A"
+                                                                 materialDesign:HintAssist.Hint="Ghi chú"
+                                                                 materialDesign:TextFieldAssist.UnderlineBrush="#E0CEB5"/>
+                                                    </StackPanel>
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+
+                                        <DataGridTemplateColumn Header="Size" Width="0.5*">
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding SizeName}" 
+                                                               HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                               FontWeight="Bold" FontSize="15" Foreground="#766839"/>
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+                                        
+                                        <DataGridTemplateColumn Header="Số lượng" Width="0.8*">
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <StackPanel Orientation="Horizontal" 
+                                                                HorizontalAlignment="Center" 
+                                                                VerticalAlignment="Center" 
+                                                                Margin="3">
+                                                        <materialDesign:PackIcon Kind="Plus" 
+                                                                                 Foreground="#766839"
+                                                                                 Width="17" Height="17"
+                                                                                 Margin="5 5 5 0"
+                                                                                 MouseDown="icPlusQuantity_MouseDown"/>
+                                                        <TextBox x:Name="tbItemOrderedQuantity"
+                                                                 Text="{Binding Quantity}"
+                                                                 Width="25" Height="25"
+                                                                 VerticalAlignment="Center"
+                                                                 FontFamily="Cascadia Code"
+                                                                 FontSize="15" Foreground="#766839"
+                                                                 materialDesign:TextFieldAssist.UnderlineBrush="#766839"
+                                                                 KeyDown="tbItemOrderedQuantity_KeyDown"/>
+                                                        <materialDesign:PackIcon Kind="Minus"
+                                                                                 Foreground="#766839"
+                                                                                 Width="17" Height="17"
+                                                                                 Margin="5 5 0 0"
+                                                                                 MouseDown="icMinusQuantity_MouseDown"/>
+                                                    </StackPanel>
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+
+                                        <DataGridTemplateColumn Header="Đơn giá" Width="0.8*">
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding Price}" 
+                                                               HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                               FontWeight="Bold" FontSize="15" Foreground="#766839"/>
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+                                        
+                                        <DataGridTemplateColumn Header="Thành tiền" Width="1*">
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding TotalPrice}" 
+                                                               HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                               FontWeight="Bold" FontSize="15" Foreground="#766839"/>
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
                                     </DataGrid.Columns>
                                 </DataGrid>
                             </Border>

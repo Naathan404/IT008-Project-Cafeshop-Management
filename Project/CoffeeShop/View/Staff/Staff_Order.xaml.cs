@@ -1,4 +1,5 @@
 ﻿using CoffeeShop.Models;
+using MaterialDesignThemes.Wpf;
 using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
@@ -324,7 +325,47 @@ namespace CoffeeShop.View.Staff
             }
         }
 
+        private void DeleteOrderItem_MouseDown(object sender, RoutedEventArgs e)
+        {
+            if (sender is PackIcon ic && ic.DataContext is OrderItemDisplay item)
+            {
+                var list = dtgListOrder.ItemsSource as ObservableCollection<OrderItemDisplay>;
+                if (list != null)
+                {
+                    list.Remove(item); // xóa item khỏi danh sách
+                }
+            }
+        }
 
+        private void icPlusQuantity_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is PackIcon icon && icon.DataContext is OrderItemDisplay item)
+            {
+                item.Quantity++;
+            }
+        }
+        private void icMinusQuantity_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is PackIcon icon && icon.DataContext is OrderItemDisplay item)
+            {
+                var list = dtgListOrder.ItemsSource as ObservableCollection<OrderItemDisplay>;
+                if (list == null) return;
+
+                if (item.Quantity > 1)
+                    item.Quantity--;
+                else
+                    // Nếu số lượng = 1, xóa item khỏi danh sách
+                    list.Remove(item);
+            }
+        }
+        private void tbItemOrderedQuantity_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter && sender is TextBox tb && tb.DataContext is OrderItemDisplay item)
+            {
+                item.Quantity = int.TryParse(tb.Text, out int qty) && qty > 0 ? qty : 1;
+                item.TotalPrice = item.Price * item.Quantity;
+            }
+        }
 
         #endregion
 
@@ -537,7 +578,9 @@ namespace CoffeeShop.View.Staff
         {
 
         }
+
         #endregion
+
         
     }
 }
