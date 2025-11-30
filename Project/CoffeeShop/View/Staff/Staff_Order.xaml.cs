@@ -57,6 +57,7 @@ namespace CoffeeShop.View.Staff
         }
         public class OrderItemDisplay
         {
+            public int STT { get; set; } // thêm thuộc tính STT
             public int ItemId { get; set; }
             public string ItemName { get; set; }
             public string SizeName { get; set; }
@@ -298,29 +299,32 @@ namespace CoffeeShop.View.Staff
         {
             if (item == null) return;
 
-            // Kiểm tra item + size đã tồn tại chưa
-            var existingItem = _OrderedItemsDisplay.FirstOrDefault(x =>
-                x.ItemId == item.ItemId && x.SizeName == selectedSize);
+            selectedSize = selectedSize.Trim();
+
+            var existingItem = _OrderedItemsDisplay.FirstOrDefault(x => x.ItemId == item.ItemId && x.SizeName == selectedSize);
 
             if (existingItem != null)
             {
                 existingItem.Quantity++;
                 existingItem.TotalPrice = existingItem.Price * existingItem.Quantity;
+                dtgListOrder.Items.Refresh();
             }
             else
             {
-                var newItem = new OrderItemDisplay
+                _OrderedItemsDisplay.Add(new OrderItemDisplay
                 {
+                    STT = _OrderedItemsDisplay.Count + 1,
                     ItemId = item.ItemId,
                     ItemName = item.ItemName,
                     SizeName = selectedSize,
                     Quantity = 1,
                     Price = price,
                     TotalPrice = price
-                };
-                _OrderedItemsDisplay.Add(newItem);
+                });
             }
         }
+
+
 
         #endregion
 
@@ -472,40 +476,38 @@ namespace CoffeeShop.View.Staff
             }
         }
 
-
-
         private void bdrItemSize_MouseDown(object sender, MouseButtonEventArgs e)
         {
             e.Handled = true; // Ngăn event bubble lên parent
 
             if (sender is Border bdrSize)
             {
-                // Cập nhật giá
-                decimal price = GetPriceFromBorder(bdrSize);
-                DisplayPrice("txtblItemPrice", bdrSize, price);
+                var stackPanel = FindParent<StackPanel>(bdrSize);
+                if (stackPanel == null) return;
 
-                // Tìm StackPanel chứa các size
-                var stkSizePanel = FindParent<StackPanel>(bdrSize);
-                if (stkSizePanel == null) return;
-                var item = stkSizePanel.DataContext as OrderItem;
-
-                // Bỏ chọn tất cả size khác
-                foreach (var b in stkSizePanel.Children.OfType<Border>())
+                foreach(var bdr in stackPanel.Children.OfType<Border>()) // Reset tất cả border về trạng thái ban đầu
                 {
-                    b.Tag = false;
-                    b.Background = Brushes.Transparent;
-                    if (b.Child is TextBlock t)
-                        t.Foreground = (SolidColorBrush)(new BrushConverter().ConvertFrom("#766839"));
+                    bdr.Background = Brushes.Transparent;
+                    if (bdr.Child is TextBlock t)
+                        t.Foreground = (SolidColorBrush)new BrushConverter().ConvertFrom("#766839");
                 }
-
-                // Chọn Border được click
-                bdrSize.Tag = true;
-                bdrSize.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#766839"));
+                // Tô màu border đang click
+                bdrSize.Background = (SolidColorBrush)new BrushConverter().ConvertFrom("#766839");
                 if (bdrSize.Child is TextBlock txt)
-                {
-                    txt.Foreground = (SolidColorBrush)(new BrushConverter().ConvertFrom("#EDE2D3"));
-                    AddItemToDataGrid(item, txt.Text.ToString(), price);
-                }
+                    txt.Foreground = (SolidColorBrush)new BrushConverter().ConvertFrom("#EDE2D3");
+                // Lấy size được chọn
+                string selectedSize = (bdrSize.Child as TextBlock)?.Text.Trim();
+
+                // Lấy giá
+                decimal price = GetPriceFromBorder(bdrSize);
+
+                // Lấy item từ DataContext cha
+                var card = FindParent<Border>(bdrSize);
+                var item = card?.DataContext as OrderItem;
+                if (item == null) return;
+
+                // Thêm vào DataGrid
+                AddItemToDataGrid(item, selectedSize, price);
             }
         }
 
