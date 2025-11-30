@@ -52,7 +52,8 @@ namespace CoffeeShop.View.Staff
             public string? Note { get; set; }
             public string ImagePath { get; set; } = "/Assets/Images/imgItemExample.jpg";
         }
-        
+
+        #region Sample data
         //Sample data
         public static ObservableCollection<OrderItem> GetSampleItems()
         {
@@ -67,8 +68,8 @@ namespace CoffeeShop.View.Staff
                 new OrderItem { ItemId = 7, ItemName = "Cà phê sữa đá", CategoryId = 1, IsAvailable = true, ItemPrices = new List<ItemPrice> { new ItemPrice { Price = 28000, Size = new CoffeeShop.Models.Size { SizeId = 1, SizeName = "S" } }, new ItemPrice { Price = 33000, Size = new CoffeeShop.Models.Size { SizeId = 2, SizeName = "M" } }, new ItemPrice { Price = 38000, Size = new CoffeeShop.Models.Size { SizeId = 3, SizeName = "L" } } } },
                 new OrderItem { ItemId = 8, ItemName = "Cà phê đen", CategoryId = 1, IsAvailable = true, ItemPrices = new List<ItemPrice> { new ItemPrice { Price = 25000, Size = new CoffeeShop.Models.Size { SizeId = 1, SizeName = "S" } }, new ItemPrice { Price = 30000, Size = new CoffeeShop.Models.Size { SizeId = 2, SizeName = "M" } }, new ItemPrice { Price = 35000, Size = new CoffeeShop.Models.Size { SizeId = 3, SizeName = "L" } } } },
                 new OrderItem { ItemId = 9, ItemName = "Bạc xỉu", CategoryId = 1, IsAvailable = true, ItemPrices = new List<ItemPrice> { new ItemPrice { Price = 30000, Size = new CoffeeShop.Models.Size { SizeId = 1, SizeName = "S" } }, new ItemPrice { Price = 35000, Size = new CoffeeShop.Models.Size { SizeId = 2, SizeName = "M" } }, new ItemPrice { Price = 40000, Size = new CoffeeShop.Models.Size { SizeId = 3, SizeName = "L" } } } },
-                new OrderItem { ItemId = 10, ItemName = "Cà phê dừa", CategoryId = 1, IsAvailable = true, ItemPrices = new List<ItemPrice> { new ItemPrice { Price = 35000, Size = new CoffeeShop.Models.Size { SizeId = 1, SizeName = "S" } }, new ItemPrice { Price = 40000, Size = new CoffeeShop.Models.Size { SizeId = 2, SizeName = "M" } }, new ItemPrice { Price = 45000, Size = new CoffeeShop.Models.Size { SizeId = 3, SizeName = "L" } } } },
-
+                new OrderItem { ItemId = 10, ItemName = "Cà phê dừa", CategoryId = 1, IsAvailable = true, ItemPrices = new List<ItemPrice> { new ItemPrice { Price = 35000, Size = new CoffeeShop.Models.Size { SizeId = 1, SizeName = "S" } }, new ItemPrice { Price = 45000, Size = new CoffeeShop.Models.Size { SizeId = 3, SizeName = "L" } } } },
+                // Cà phê dừa: S L
                 // Category 2: Trà sữa (Milk Tea)
                 new OrderItem { ItemId = 11, ItemName = "Trà sữa truyền thống", CategoryId = 2, IsAvailable = true, ItemPrices = new List<ItemPrice> { new ItemPrice { Price = 30000, Size = new CoffeeShop.Models.Size { SizeId = 1, SizeName = "S" } }, new ItemPrice { Price = 35000, Size = new CoffeeShop.Models.Size { SizeId = 2, SizeName = "M" } }, new ItemPrice { Price = 40000, Size = new CoffeeShop.Models.Size { SizeId = 3, SizeName = "L" } } } },
                 new OrderItem { ItemId = 12, ItemName = "Trà sữa trân châu đường đen", CategoryId = 2, IsAvailable = true, ItemPrices = new List<ItemPrice> { new ItemPrice { Price = 35000, Size = new CoffeeShop.Models.Size { SizeId = 1, SizeName = "S" } }, new ItemPrice { Price = 40000, Size = new CoffeeShop.Models.Size { SizeId = 2, SizeName = "M" } }, new ItemPrice { Price = 45000, Size = new CoffeeShop.Models.Size { SizeId = 3, SizeName = "L" } } } },
@@ -82,7 +83,8 @@ namespace CoffeeShop.View.Staff
                 new OrderItem { ItemId = 20, ItemName = "Trà sữa hokkaido", CategoryId = 2, IsAvailable = true, ItemPrices = new List<ItemPrice> { new ItemPrice { Price = 40000, Size = new CoffeeShop.Models.Size { SizeId = 1, SizeName = "S" } }, new ItemPrice { Price = 45000, Size = new CoffeeShop.Models.Size { SizeId = 2, SizeName = "M" } }, new ItemPrice { Price = 50000, Size = new CoffeeShop.Models.Size { SizeId = 3, SizeName = "L" } } } },
 
                 // Category 3: Đá xay (Blended/Frappe)
-                new OrderItem { ItemId = 21, ItemName = "Matcha đá xay", CategoryId = 3, IsAvailable = true, ItemPrices = new List<ItemPrice> { new ItemPrice { Price = 40000, Size = new CoffeeShop.Models.Size { SizeId = 1, SizeName = "S" } }, new ItemPrice { Price = 45000, Size = new CoffeeShop.Models.Size { SizeId = 2, SizeName = "M" } }, new ItemPrice { Price = 50000, Size = new CoffeeShop.Models.Size { SizeId = 3, SizeName = "L" } } } },
+                new OrderItem { ItemId = 21, ItemName = "Matcha đá xay", CategoryId = 3, IsAvailable = true, ItemPrices = new List<ItemPrice> { new ItemPrice { Price = 40000, Size = new CoffeeShop.Models.Size { SizeId = 1, SizeName = "S" } } } },
+                //Matcha đá xay: S
                 new OrderItem { ItemId = 22, ItemName = "Socola đá xay", CategoryId = 3, IsAvailable = true, ItemPrices = new List<ItemPrice> { new ItemPrice { Price = 38000, Size = new CoffeeShop.Models.Size { SizeId = 1, SizeName = "S" } }, new ItemPrice { Price = 43000, Size = new CoffeeShop.Models.Size { SizeId = 2, SizeName = "M" } }, new ItemPrice { Price = 48000, Size = new CoffeeShop.Models.Size { SizeId = 3, SizeName = "L" } } } },
                 new OrderItem { ItemId = 23, ItemName = "Cookies & Cream đá xay", CategoryId = 3, IsAvailable = true, ItemPrices = new List<ItemPrice> { new ItemPrice { Price = 42000, Size = new CoffeeShop.Models.Size { SizeId = 1, SizeName = "S" } }, new ItemPrice { Price = 47000, Size = new CoffeeShop.Models.Size { SizeId = 2, SizeName = "M" } }, new ItemPrice { Price = 52000, Size = new CoffeeShop.Models.Size { SizeId = 3, SizeName = "L" } } } },
                 new OrderItem { ItemId = 24, ItemName = "Caramel đá xay", CategoryId = 3, IsAvailable = true, ItemPrices = new List<ItemPrice> { new ItemPrice { Price = 40000, Size = new CoffeeShop.Models.Size { SizeId = 1, SizeName = "S" } }, new ItemPrice { Price = 45000, Size = new CoffeeShop.Models.Size { SizeId = 2, SizeName = "M" } }, new ItemPrice { Price = 50000, Size = new CoffeeShop.Models.Size { SizeId = 3, SizeName = "L" } } } },
@@ -93,8 +95,8 @@ namespace CoffeeShop.View.Staff
                 new OrderItem { ItemId = 29, ItemName = "Mocha đá xay", CategoryId = 3, IsAvailable = true, ItemPrices = new List<ItemPrice> { new ItemPrice { Price = 42000, Size = new CoffeeShop.Models.Size { SizeId = 1, SizeName = "S" } }, new ItemPrice { Price = 47000, Size = new CoffeeShop.Models.Size { SizeId = 2, SizeName = "M" } }, new ItemPrice { Price = 52000, Size = new CoffeeShop.Models.Size { SizeId = 3, SizeName = "L" } } } },
                 new OrderItem { ItemId = 30, ItemName = "Oreo đá xay", CategoryId = 3, IsAvailable = true, ItemPrices = new List<ItemPrice> { new ItemPrice { Price = 42000, Size = new CoffeeShop.Models.Size { SizeId = 1, SizeName = "S" } }, new ItemPrice { Price = 47000, Size = new CoffeeShop.Models.Size { SizeId = 2, SizeName = "M" } }, new ItemPrice { Price = 52000, Size = new CoffeeShop.Models.Size { SizeId = 3, SizeName = "L" } } } },
 
-                // Category 4: Trà (Tea)
-                new OrderItem { ItemId = 31, ItemName = "Trà đào cam sả", CategoryId = 4, IsAvailable = true, ItemPrices = new List<ItemPrice> { new ItemPrice { Price = 32000, Size = new CoffeeShop.Models.Size { SizeId = 1, SizeName = "S" } }, new ItemPrice { Price = 37000, Size = new CoffeeShop.Models.Size { SizeId = 2, SizeName = "M" } }, new ItemPrice { Price = 42000, Size = new CoffeeShop.Models.Size { SizeId = 3, SizeName = "L" } } } },
+                // Category 4: Trà (Tea) //Trà đào cam sả: S M
+                new OrderItem { ItemId = 31, ItemName = "Trà đào cam sả", CategoryId = 4, IsAvailable = true, ItemPrices = new List<ItemPrice> { new ItemPrice { Price = 32000, Size = new CoffeeShop.Models.Size { SizeId = 1, SizeName = "S" } }, new ItemPrice { Price = 37000, Size = new CoffeeShop.Models.Size { SizeId = 2, SizeName = "M" } } } },
                 new OrderItem { ItemId = 32, ItemName = "Trà chanh leo", CategoryId = 4, IsAvailable = true, ItemPrices = new List<ItemPrice> { new ItemPrice { Price = 30000, Size = new CoffeeShop.Models.Size { SizeId = 1, SizeName = "S" } }, new ItemPrice { Price = 35000, Size = new CoffeeShop.Models.Size { SizeId = 2, SizeName = "M" } }, new ItemPrice { Price = 40000, Size = new CoffeeShop.Models.Size { SizeId = 3, SizeName = "L" } } } },
                 new OrderItem { ItemId = 33, ItemName = "Trà vải", CategoryId = 4, IsAvailable = true, ItemPrices = new List<ItemPrice> { new ItemPrice { Price = 30000, Size = new CoffeeShop.Models.Size { SizeId = 1, SizeName = "S" } }, new ItemPrice { Price = 35000, Size = new CoffeeShop.Models.Size { SizeId = 2, SizeName = "M" } }, new ItemPrice { Price = 40000, Size = new CoffeeShop.Models.Size { SizeId = 3, SizeName = "L" } } } },
                 new OrderItem { ItemId = 34, ItemName = "Trà dâu", CategoryId = 4, IsAvailable = true, ItemPrices = new List<ItemPrice> { new ItemPrice { Price = 32000, Size = new CoffeeShop.Models.Size { SizeId = 1, SizeName = "S" } }, new ItemPrice { Price = 37000, Size = new CoffeeShop.Models.Size { SizeId = 2, SizeName = "M" } }, new ItemPrice { Price = 42000, Size = new CoffeeShop.Models.Size { SizeId = 3, SizeName = "L" } } } },
@@ -234,7 +236,9 @@ namespace CoffeeShop.View.Staff
 
             };
         }
+        #endregion
 
+        #region tabItem Loading
         //Load items vào từng tabItem theo categoryId
         private void LoadItem(ObservableCollection<OrderItem> itemsList) 
         {
@@ -264,31 +268,32 @@ namespace CoffeeShop.View.Staff
             };
         }
 
+        #endregion
+
         #region Datagrid Events
         #endregion
 
         #region ItemCard Events
-        private void ImgItem_Loaded(object sender, RoutedEventArgs e)
-        {
-            var img = sender as Image;
-            if (img == null) return;
-            img.SizeChanged += (s, e) =>
-            {
-                img.Clip = new RectangleGeometry()
-                {
-                    Rect = new Rect(0, 0, img.ActualWidth, img.ActualHeight),
-                    RadiusX = 15,
-                    RadiusY = 15
-                };
-            };
-        }
+        //private void ImgItem_Loaded(object sender, RoutedEventArgs e)
+        //{
+        //    var img = sender as Image;
+        //    if (img == null) return;
+        //    img.SizeChanged += (s, e) =>
+        //    {
+        //        img.Clip = new RectangleGeometry()
+        //        {
+        //            Rect = new Rect(0, 0, img.ActualWidth, img.ActualHeight),
+        //            RadiusX = 15,
+        //            RadiusY = 15
+        //        };
+        //    };
+        //}
         private void Item_Loaded(object sender, RoutedEventArgs e)
         {
             if (sender is StackPanel stackPanel)
             {
                 var item = stackPanel.DataContext as OrderItem;
                 if (item == null || item.ItemPrices == null) return;
-
 
                 //Load size button tương ứng với item   
                 var sizeList = item.ItemPrices.Select(p => p.Size).ToList(); // list size cua item
@@ -322,8 +327,15 @@ namespace CoffeeShop.View.Staff
 
         private void Item_MouseDown(object sender, RoutedEventArgs e)
         {
-            ItemWindow itemWindow = new ItemWindow();
-            itemWindow.ShowDialog();
+            e.Handled = true;
+            var element = sender as FrameworkElement;
+            var data = element.DataContext;
+
+            if (data == null)
+                return;
+            var thisitem = data as OrderItem;
+            var detailWindow = new ItemWindow(thisitem);
+            detailWindow.ShowDialog();
         }
 
         private void ItemsContainer_SizeChanged(object sender, SizeChangedEventArgs e) //Căn chỉnh items
@@ -343,9 +355,9 @@ namespace CoffeeShop.View.Staff
         {
             if (sender is Border border)
             {
-                border.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#766839"));
+                border.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#D4BA98"));
                 var txtb = border.Child as TextBlock;
-                txtb.Foreground = (SolidColorBrush)(new BrushConverter().ConvertFrom("#EDE2D3"));
+                txtb.Foreground = (SolidColorBrush)(new BrushConverter().ConvertFrom("#340D05"));
             }
         }
 
@@ -360,19 +372,9 @@ namespace CoffeeShop.View.Staff
         }
 
 
-        private void bdrItemSizeS_MouseDown(object sender, MouseButtonEventArgs e)
+        private void bdrItemSize_MouseDown(object sender, MouseButtonEventArgs e)
         {
 
-        }
-
-        private void bdrItemSizeM_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            
-        }
-
-        private void bdrItemSizeL_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            
         }
 
         // Tìm kiếm item với từ khóa

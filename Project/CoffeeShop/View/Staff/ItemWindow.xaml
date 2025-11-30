@@ -3,46 +3,70 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:local="clr-namespace:CoffeeShop.View.Staff"
         mc:Ignorable="d"
         Title="{Binding ItemName}"
         d:Title="Item Window"
-        Height="350" Width="600"
+        Height="370" Width="600"
         Icon="/Assets/icoCoffee.ico"
         WindowStartupLocation="CenterScreen"
-        ResizeMode="NoResize"
-        Background="#E0CEB5">
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="1.5*"/>
-            <ColumnDefinition Width="2*"/>
-        </Grid.ColumnDefinitions>
-        <StackPanel Grid.Column="0" Margin="10 30 10 30">
-            <TextBlock Text="{Binding ItemName}"
-                       d:Text="Cà phê sữa"
-                       HorizontalAlignment="Center" VerticalAlignment="Top"
-                       TextWrapping="Wrap"
-                       MaxWidth="250"
-                       Foreground="#766839"
-                       FontSize="30" FontFamily="Cascadia Code" FontWeight="Bold"/>
-            <StackPanel Orientation="Horizontal" Margin="20 50 20 0">
-                <TextBlock Text="Size:"
+        ResizeMode="NoResize">
+    <Window.Background>
+        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#D4BA98" Offset="0"/>
+            <GradientStop Color="#C8B48C" Offset="0.5"/>
+            <GradientStop Color="#B18252" Offset="1"/>
+        </LinearGradientBrush>
+    </Window.Background>
+    <Border CornerRadius="15"
+            Background="#EDE2D3"
+            Margin="10">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1.7*"/>
+                <ColumnDefinition Width="2*"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="0" 
+                        Margin="10 40 0 30"
+                        Loaded="Item_Loaded">
+                <TextBlock x:Name="txblItemName"
+                           Text="{Binding ItemName}"
+                           d:Text="Cà phê sữa"
+                           HorizontalAlignment="Center" 
+                           VerticalAlignment="Top"
+                           TextWrapping="Wrap"
+                           MaxWidth="250"
                            Foreground="#766839"
-                           FontSize="25" FontFamily="Cascadia Code"/>
+                           FontSize="35" 
+                           FontFamily="Cascadia Code" 
+                           FontWeight="UltraBold"/>
                 <!--Item Size-->
                 <StackPanel x:Name="stpnItemSize" 
-                            Orientation="Horizontal" 
-                            VerticalAlignment="Center"
-                            Margin="10 0 0 0">
-                    <Border x:Name="bdrItemSizeS"
+                            Orientation="Horizontal"
+                            Margin="10 30 0 0"
+                            d:Visibility="Visible"
+                            Visibility="Collapsed">
+                    <TextBlock Text="Size:"
+                               Foreground="#766839"
+                               FontSize="22" FontFamily="Cascadia Code" 
+                               FontStyle="Italic" 
+                               FontWeight="Bold"
+                               VerticalAlignment="Center"/>
+                    <Border x:Name="bdrItemSize0"
                             BorderBrush="#766839"
                             BorderThickness="2.5"
                             CornerRadius="15"
                             Width="30"
                             Height="30"
+                            Margin="10 0 0 0"
                             MouseDown="bdrItemSizeS_MouseDown"
-                            MouseEnter="bdrItemSize_MouseEnter">
-                        <TextBlock Text="S"
+                            MouseEnter="bdrItemSize_MouseEnter"
+                            MouseLeave="bdrItemSize_MouseLeave"
+                            d:Visibility="Visible"
+                            Visibility="Collapsed">
+                        <TextBlock x:Name="txtSize0"
+                                   Text="S"
                                    FontSize="20"
                                    FontWeight="Bold"
                                    HorizontalAlignment="Center"
@@ -50,16 +74,20 @@
                                    FontFamily="Bahnschrift"
                                    Foreground="#766839"/>
                     </Border>
-                    <Border x:Name="bdrItemSizeM"
+                    <Border x:Name="bdrItemSize1"
                             BorderBrush="#766839"
                             BorderThickness="2"
                             CornerRadius="15"
                             Width="30"
                             Height="30"
-                            Margin="2.5"
+                            Margin="5 0 5 0"
                             MouseDown="bdrItemSizeM_MouseDown"
-                            MouseEnter="bdrItemSize_MouseEnter">
-                        <TextBlock Text="M"
+                            MouseEnter="bdrItemSize_MouseEnter"
+                            MouseLeave="bdrItemSize_MouseLeave"
+                            d:Visibility="Visible"
+                            Visibility="Collapsed">
+                        <TextBlock x:Name="txtSize1"
+                                   Text="M"
                                    FontSize="20"
                                    FontWeight="Bold"
                                    HorizontalAlignment="Center"
@@ -67,15 +95,19 @@
                                    FontFamily="Bahnschrift"
                                    Foreground="#766839"/>
                     </Border>
-                    <Border x:Name="bdrItemSizeL"
+                    <Border x:Name="bdrItemSize2"
                             BorderBrush="#766839"
                             BorderThickness="2"
                             CornerRadius="15"
                             Width="30"
                             Height="30"
                             MouseDown="bdrItemSizeL_MouseDown"
-                            MouseEnter="bdrItemSize_MouseEnter">
-                        <TextBlock Text="L"
+                            MouseEnter="bdrItemSize_MouseEnter"
+                            MouseLeave="bdrItemSize_MouseLeave"
+                            d:Visibility="Visible"
+                            Visibility="Collapsed">
+                        <TextBlock x:Name="txtSize2"
+                                   Text="L"
                                    FontSize="20"
                                    FontWeight="Bold"
                                    HorizontalAlignment="Center"
@@ -84,56 +116,87 @@
                                    Foreground="#766839"/>
                     </Border>
                 </StackPanel>
-            </StackPanel>
-        </StackPanel>
+                <StackPanel x:Name="stpnItemPrice" Orientation="Horizontal" Margin="10 20 0 0">
+                    <TextBlock Text="Giá:"
+                               Foreground="#766839"
+                               FontSize="22" FontFamily="Cascadia Code"
+                               FontStyle="Italic"
+                               FontWeight="Bold"/>
+                    <TextBlock x:Name="txblItemPrice"
+                               Text="{Binding ItemPrice, StringFormat={}{0:N0} đ}"
+                               d:Text="45000 VND"
+                               Foreground="#766839"
+                               FontSize="25" FontFamily="Cascadia Code"
+                               Margin="15 0 0 0"/>
+                </StackPanel>
 
-        <StackPanel Grid.Column="1" Orientation="Vertical">
-            <!--Item Image-->
-            <Border Width="270" Margin="10">
-                <Image x:Name="imgItem"
-                       Stretch="UniformToFill"
-                       Source="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}"
-                       d:Source="/Assets/Images/imgItemExample.jpg"/>
-            </Border>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                <Border x:Name="bdrAddToOrder"
-                        BorderBrush="#766839"
-                        BorderThickness="2"
-                        Width="100" Height="40" Margin="0 20 30 10"
-                        CornerRadius="12"
-                        HorizontalAlignment="Right" VerticalAlignment="Bottom">
-                    <TextBlock Text="Thêm"
-                               FontSize="20"
-                               FontWeight="Bold"
-                               HorizontalAlignment="Center"
-                               VerticalAlignment="Center"
-                               FontFamily="Cascadia Code"
+                <StackPanel x:Name="stpnNote" Orientation="Horizontal" Margin="10 20 0 0">
+                    <TextBlock Text="Ghi chú:"
                                Foreground="#766839"
-                               MouseDown="bdrExit_MouseDown"
-                               MouseEnter="bdrExit_MouseEnter"
-                               Margin="10"/>
-                </Border>
-                <Border x:Name="bdrExit"
-                        BorderBrush="#766839"
-                        BorderThickness="2"
-                        Width="100" Height="40" Margin="0 20 30 10"
-                        CornerRadius="12"
-                        HorizontalAlignment="Right" VerticalAlignment="Bottom"
-                        MouseDown="bdrExit_MouseDown"
-                        MouseEnter="bdrExit_MouseEnter">
-                    <TextBlock Text="Thoát"
-                               FontSize="20"
+                               FontSize="22" FontFamily="Cascadia Code"
+                               FontStyle="Italic"
                                FontWeight="Bold"
-                               HorizontalAlignment="Center"
-                               VerticalAlignment="Center"
-                               FontFamily="Cascadia Code"
-                               Foreground="#766839"
-                               MouseDown="bdrExit_MouseDown"
-                               MouseEnter="bdrExit_MouseEnter"
-                               Margin="10"/>
-                </Border>
+                               VerticalAlignment="Center"/>
+                    <TextBox x:Name="txblItemNote"
+                             Width="120" Height="35"
+                             Margin="10 0 0 0"
+                             materialDesign:HintAssist.Hint="Nhập ghi chú"
+                             materialDesign:HintAssist.IsFloating="False"
+                             FontFamily="Cascadia Code"
+                             Foreground="#766839" 
+                             FontSize="15" 
+                             FontWeight="Bold"
+                             materialDesign:TextFieldAssist.UnderlineBrush="#766839"
+                             materialDesign:HintAssist.Foreground="#766839"
+                             Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
+                </StackPanel>
             </StackPanel>
-            
-        </StackPanel>
-    </Grid>
+
+            <StackPanel Grid.Column="1" Orientation="Vertical">
+                <!--Item Image-->
+                <Border Width="270" Margin="10 10 0 0">
+                    <Image x:Name="imgItem"
+                           Stretch="UniformToFill"
+                           Source="{Binding ImagePath}"
+                           d:Source="/Assets/Images/imgItemExample.jpg"/>
+                </Border>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0 50 10 0">
+                    <Border x:Name="bdrAddToOrder"
+                            BorderBrush="#766839"
+                            BorderThickness="2"
+                            Margin="0 0 30 0" Width="80" Height="40"
+                            CornerRadius="12"
+                            HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                            MouseEnter="bdrAddToOrder_MouseEnter"
+                            MouseLeave="bdrAddToOrder_MouseLeave"
+                            MouseDown="bdrAddToOrder_MouseDown">
+                        <TextBlock Text="Thêm"
+                                   FontSize="20"
+                                   FontWeight="Bold"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   FontFamily="Cascadia Code"
+                                   Foreground="#766839"/>
+                    </Border>
+                    <Border x:Name="bdrExit"
+                            BorderBrush="#766839"
+                            BorderThickness="2"
+                            Width="90" Height="40"
+                            CornerRadius="12"
+                            HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                            MouseDown="bdrExit_MouseDown"
+                            MouseEnter="bdrExit_MouseEnter"
+                            MouseLeave="bdrExit_MouseLeave">
+                        <TextBlock Text="Thoát"
+                                   FontSize="20"
+                                   FontWeight="Bold"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   FontFamily="Cascadia Code"
+                                   Foreground="#766839"/>
+                    </Border>
+                </StackPanel>
+            </StackPanel>
+        </Grid>
+    </Border>
 </Window>

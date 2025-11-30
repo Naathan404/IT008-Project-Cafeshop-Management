@@ -8,7 +8,7 @@
       xmlns:local="clr-namespace:CoffeeShop"
       xmlns:models="clr-namespace:CoffeeShop.Models"
       mc:Ignorable="d" 
-      d:DesignHeight="600" d:DesignWidth="1230"
+      d:DesignHeight="600" d:DesignWidth="1310"
       MinHeight="0" MinWidth="1000"
       Title="Staff_Order">
     <Page.Resources>
@@ -56,7 +56,7 @@
                                             CornerRadius="15"
                                             Width="20"
                                             Height="20"
-                                            MouseDown="bdrItemSizeS_MouseDown"
+                                            MouseDown="bdrItemSize_MouseDown"
                                             MouseEnter="bdrItemSize_MouseEnter"
                                             MouseLeave="bdrItemSize_MouseLeave"
                                             Visibility="Collapsed">
@@ -76,7 +76,7 @@
                                             Width="20"
                                             Height="20"
                                             Margin="2.5"
-                                            MouseDown="bdrItemSizeM_MouseDown"
+                                            MouseDown="bdrItemSize_MouseDown"
                                             MouseEnter="bdrItemSize_MouseEnter"
                                             MouseLeave="bdrItemSize_MouseLeave"
                                             Visibility="Collapsed">
@@ -95,7 +95,7 @@
                                             CornerRadius="15"
                                             Width="20"
                                             Height="20"
-                                            MouseDown="bdrItemSizeL_MouseDown"
+                                            MouseDown="bdrItemSize_MouseDown"
                                             MouseEnter="bdrItemSize_MouseEnter"
                                             MouseLeave="bdrItemSize_MouseLeave"
                                             Visibility="Collapsed">
@@ -337,7 +337,7 @@
                                         HorizontalAlignment="Right" VerticalAlignment="Top">
                                 <materialDesign:PackIcon x:Name="icSearchItem"
                                                          Kind="Magnify" 
-                                                         Margin="450,20,10,0"
+                                                         Margin="450,20,0,0"
                                                          Width="20" Height="20"
                                                          Foreground="#766839"/>
                                 <TextBox x:Name="txblSearchItem"
