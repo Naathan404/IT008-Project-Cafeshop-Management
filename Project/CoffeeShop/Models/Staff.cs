@@ -28,6 +28,4 @@ public partial class Staff
     public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
 
     public virtual Shift? Shift { get; set; }
-
-    public virtual ICollection<StaffAttendance> StaffAttendances { get; set; } = new List<StaffAttendance>();
 }

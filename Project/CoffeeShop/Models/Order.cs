@@ -15,13 +15,19 @@ public partial class Order
 
     public DateTime OrderDate { get; set; }
 
-    public string OrderStatus { get; set; } = null!;
+    public decimal SubTotal { get; set; }
+
+    public int? DiscountId { get; set; }
+
+    public decimal? DiscountMoney { get; set; }
 
     public decimal TotalAmount { get; set; }
 
     public string PaymentMethod { get; set; } = null!;
 
     public virtual Customer? Customer { get; set; }
+
+    public virtual Discount? Discount { get; set; }
 
     public virtual ICollection<OrderDetail> OrderDetails { get; set; } = new List<OrderDetail>();
 
