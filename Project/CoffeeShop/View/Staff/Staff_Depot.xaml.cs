@@ -1,8 +1,11 @@
-﻿using MailKit.Search;
+﻿using CoffeeShop.Models;
+using MailKit.Search;
 using Microsoft.Identity.Client;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Security.RightsManagement;
 using System.Text;
@@ -10,13 +13,13 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.ComponentModel;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using static CoffeeShop.View.Staff.Staff_History;
 using static MaterialDesignThemes.Wpf.Theme;
 
 namespace CoffeeShop.View.Staff
@@ -27,196 +30,63 @@ namespace CoffeeShop.View.Staff
     public partial class Staff_Depot : Page
     {
         private ICollectionView itemsView;
-        List<DepotItem> items = new List<DepotItem>();
+        List<DepotItem> depotItems = new List<DepotItem>();
         public Staff_Depot()
         {
             InitializeComponent();
-            itemsView = CollectionViewSource.GetDefaultView(items);
-            AddDatagridData();
-            LoadUnitData();
+            itemsView = CollectionViewSource.GetDefaultView(depotItems);
+            LoadDepotItem();
         }
 
-
-        public void AddDatagridData()
+        private void LoadDepotItem()
         {
-            // Add datas for datagrid
-            items.Add(new DepotItem
+            using (var db = new CoffeeShopContext())
             {
-                ID = 1,
-                Name = "Cà phê hạt",
-                Quantity = 50,
-                Unit = "kg",
-                Note = "Hết hàng sớm"
-            });
-
-            items.Add(new DepotItem
-            {
-                ID = 2,
-                Name = "Ly nhựa 500ml",
-                Quantity = 200,
-                Unit = "cái",
-                Note = "As you can see, this is a super long note."
-            });
-
-            items.Add(new DepotItem
-            {
-                ID = 3,
-                Name = "Trân châu",
-                Quantity = 100,
-                Unit = "túi",
-                Note = ""
-            });
-            items.Add(new DepotItem
-            {
-                ID = 3,
-                Name = "Trân châu",
-                Quantity = 100,
-                Unit = "túi",
-                Note = ""
-            });
-            items.Add(new DepotItem
-            {
-                ID = 3,
-                Name = "Trân châu",
-                Quantity = 100,
-                Unit = "túi",
-                Note = ""
-            });
-            items.Add(new DepotItem
-            {
-                ID = 3,
-                Name = "Trân châu",
-                Quantity = 100,
-                Unit = "túi",
-                Note = ""
-            });
-            items.Add(new DepotItem
-            {
-                ID = 3,
-                Name = "Trân châu",
-                Quantity = 100,
-                Unit = "túi",
-                Note = ""
-            });
-            items.Add(new DepotItem
-            {
-                ID = 3,
-                Name = "Trân châu",
-                Quantity = 100,
-                Unit = "túi",
-                Note = ""
-            });
-            items.Add(new DepotItem
-            {
-                ID = 3,
-                Name = "Trân châu",
-                Quantity = 100,
-                Unit = "túi",
-                Note = ""
-            });
-            items.Add(new DepotItem
-            {
-                ID = 3,
-                Name = "Trân châu",
-                Quantity = 100,
-                Unit = "túi",
-                Note = ""
-            });
-            items.Add(new DepotItem
-            {
-                ID = 3,
-                Name = "Trân châu",
-                Quantity = 100,
-                Unit = "túi",
-                Note = ""
-            });
-            items.Add(new DepotItem
-            {
-                ID = 3,
-                Name = "Trân châu",
-                Quantity = 100,
-                Unit = "túi",
-                Note = ""
-            });
-            items.Add(new DepotItem
-            {
-                ID = 3,
-                Name = "Trân châu",
-                Quantity = 100,
-                Unit = "túi",
-                Note = ""
-            });
-            dgDepot.ItemsSource = items;
-            dgDepot.ItemsSource = itemsView;
-        }
-
-        public void LoadUnitData()
-        {
-            cbUnitFilter.Items.Add("Kg");
-            cbUnitFilter.Items.Add("Cái");
-            cbUnitFilter.Items.Add("Túi");
+                var items = db.Inventories
+                    .ToList();
+                foreach (var item in items)
+                {
+                    depotItems.Add(new DepotItem
+                    {
+                        MaterialId = item.MaterialId,
+                        MaterialName = item.MaterialName,
+                        Quantity = (float)item.Quantity,
+                        Unit = item.Unit,
+                        Note = item.Note
+                    });
+                }
+                dgDepot.ItemsSource = depotItems;
+            }
         }
 
         // Class for adding datas
         public class DepotItem
         {
-            public int ID { get; set; }
-            public string Name { get; set; }
-            public int Quantity { get; set; }
+            public int MaterialId { get; set; }
+            public string MaterialName { get; set; }
+            public float Quantity { get; set; }
             public string Unit { get; set; }
-            public string Note { get; set; }
+            public string? Note { get; set; }
         }
 
-        private void btnSearch_Click(object sender, RoutedEventArgs e)
-        {
-            // Get datagrid's View
-            var view = CollectionViewSource.GetDefaultView(dgDepot.ItemsSource);
-            view.Filter = FilterItems;
-        }
-
-        private bool FilterItems(object item)
-        {
-            string searchText = txbSearch.Text.ToLower();
-            if (string.IsNullOrEmpty(searchText))
-            {
-                return true;
-            }
-            
-            if (item is DepotItem depotItem)
-            {
-                // Chuyen kieu item: object -> DepotItem
-                // Chuyen text cua item thanh lower de so sanh
-
-                // Tim kiem theo ten
-                if (depotItem.Name != null && depotItem.Name.ToLower().Contains(searchText))
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        private void txbSearch_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Enter)
-            {
-                btnSearch.RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Button.ClickEvent));
-                e.Handled = true;
-            }
-        }
-
-        private void btnPopup_Click(object sender, RoutedEventArgs e)
+        private void Grid_MouseDown(object sender, MouseButtonEventArgs e)
         {
             popupFilter.IsOpen = !popupFilter.IsOpen;
         }
 
+        bool amountFilterPassed = true;
+        bool unitFilterPassed = true;
         private void btnApplyFilter_Click(object sender, RoutedEventArgs e)
         {
-            // 1. Lấy giá trị cho Amount Filter (chuyển sang int)
+            // Lấy giá trị cho Amount Filter (chuyển sang int)
             bool isAmountMinValid = int.TryParse(txbMin1.Text, out int amountMin);
             bool isAmountMaxValid = int.TryParse(txbMax1.Text, out int amountMax);
-            string unit = cbUnitFilter.SelectedItem.ToString().ToLower();
-            // 3. Định nghĩa hàm lọc
+            string unit = "";
+            if (cbUnitFilter.SelectedItem != null)
+            {
+                unit = cbUnitFilter.SelectedItem.ToString().ToLower(); // Đơn vị được chọn trong filter
+            }
+            // Định nghĩa hàm lọc
             itemsView.Filter = item =>
             {
                 // Ép kiểu đối tượng item
@@ -229,19 +99,39 @@ namespace CoffeeShop.View.Staff
                     bool amountPassesMax = !isAmountMaxValid || (depotItem.Quantity <= amountMax);
 
                     // Tổng hợp điều kiện Amount
-                    bool amountFilterPassed = amountPassesMin && amountPassesMax;
-
-                    bool unitFilterPassed = (unit == depotItem.Unit);
+                    amountFilterPassed = amountPassesMin && amountPassesMax;
+                    unitFilterPassed = (unit == "tất cả") || (unit == depotItem.Unit.ToLower());
                     return amountFilterPassed && unitFilterPassed;
                 }
                 return false;
             };
 
-            // 4. Cập nhật DataGrid
+            // Cập nhật DataGrid
             itemsView.Refresh();
 
-            // 5. Đóng Popup sau khi lọc (nếu muốn)
+            // Đóng Popup sau khi lọc
             popupFilter.IsOpen = false;
+        }
+
+        public string searchTerm = "";
+        private void txbSearch_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            bool searchFilterPassed = true;
+            searchTerm = (sender as System.Windows.Controls.TextBox).Name.ToString().ToLower();
+
+            itemsView.Filter = item =>
+            {
+                if (item is DepotItem depotItem)
+                {
+                    if (!string.IsNullOrWhiteSpace(searchTerm))
+                    {
+                        searchFilterPassed = depotItem.MaterialName.ToLower().Contains(searchTerm);
+                    }
+                    return searchFilterPassed;
+                }
+                return false;
+            };
+            itemsView.Refresh(); // Cập nhật datagrid liên tục khi nhập chữ
         }
     }
 }
