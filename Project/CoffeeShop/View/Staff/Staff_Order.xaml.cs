@@ -23,6 +23,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using static CoffeeShop.View.Staff.Staff_Order;
 
 namespace CoffeeShop.View.Staff
 {
@@ -38,6 +39,7 @@ namespace CoffeeShop.View.Staff
             InitializeComponent();
             _items = GetSampleItems();
             LoadSampleData();
+            dtgListOrder.ItemsSource = _items;
         }
 
         //Class for Sample datas
@@ -52,6 +54,17 @@ namespace CoffeeShop.View.Staff
             public string? Note { get; set; }
             public string ImagePath { get; set; } = "/Assets/Images/imgItemExample.jpg";
         }
+        public static T FindParent<T>(DependencyObject child) where T : DependencyObject
+        {
+            DependencyObject parentObject = VisualTreeHelper.GetParent(child);
+            if (parentObject == null) return null;
+
+            if (parentObject is T parent)
+                return parent;
+
+            return FindParent<T>(parentObject);
+        }
+
 
         #region Sample data
         //Sample data
@@ -271,6 +284,26 @@ namespace CoffeeShop.View.Staff
         #endregion
 
         #region Datagrid Events
+        private void AddItemToDataGrid(OrderItem item)
+        {
+            if (item == null) return;
+
+            // Kiểm tra item đã tồn tại trong DataGrid chưa (theo ItemId)
+            var existingItem = _items.FirstOrDefault(x => x.ItemId == item.ItemId);
+            if (existingItem != null)
+            {
+                // Nếu muốn, tăng số lượng thay vì thêm mới
+                existingItem.Quantity += 1;
+                // Cập nhật giá nếu cần
+                existingItem.SelectedPrice = item.SelectedPrice;
+            }
+            else
+            {
+                // Thêm item mới
+                _orderItems.Add(item);
+            }
+        }
+
         #endregion
 
         #region ItemCard Events
@@ -288,7 +321,41 @@ namespace CoffeeShop.View.Staff
         //        };
         //    };
         //}
-        private void Item_Loaded(object sender, RoutedEventArgs e)
+        private void DisplayPrice(string txtblName, Border bdrItem, decimal price) // Hiển thị giá lên TextBlock
+        {
+            var txtbPrice = bdrItem.FindName(txtblName) as TextBlock;
+            if (txtbPrice != null)
+                txtbPrice.Text = String.Format("{0:N0} VND", price);
+        }
+        private void ItemPrice_Changed(TextBlock txbl, decimal price)
+        {
+            if (txbl == null)
+                return;
+
+            txbl.Text = string.Format("{0:N0} VND", price);
+        }
+        private decimal GetPriceFromBorder(Border bdrItemSize) // Lấy giá theo size được click
+        {
+            if (bdrItemSize == null) return 0;
+
+            // Lấy tên size từ TextBlock bên trong
+            if (!(bdrItemSize.Child is TextBlock txtSize)) return 0;
+            string sizeName = txtSize.Text;
+
+            // Lấy item từ DataContext của StackPanel cha
+            var stackPanel = FindParent<StackPanel>(bdrItemSize);
+            if (stackPanel == null) return 0;
+
+            var item = stackPanel.DataContext as OrderItem;
+            if (item == null || item.ItemPrices == null) return 0;
+
+            // Tìm price tương ứng size
+            var selectedPrice = item.ItemPrices.FirstOrDefault(p => p.Size.SizeName == sizeName)?.Price ?? 0;
+
+            return selectedPrice;
+        }
+
+        private void ItemSize_Loaded(object sender, RoutedEventArgs e)
         {
             if (sender is StackPanel stackPanel)
             {
@@ -324,7 +391,23 @@ namespace CoffeeShop.View.Staff
                 }
             }
         }
+        private void ItemPrice_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (sender is TextBlock txtblItemPrice)
+            {
+                var stackPanel = FindParent<StackPanel>(txtblItemPrice);
+                if (stackPanel == null) return;
+                var item = stackPanel.DataContext as OrderItem;
+                if (item == null || item.ItemPrices == null) return;
 
+                // Hiển thị giá mặc định (giá size đầu tiên)
+                var defaultPrice = item.ItemPrices.FirstOrDefault();
+                if (defaultPrice != null)
+                {
+                    ItemPrice_Changed(txtblItemPrice, defaultPrice.Price);
+                }
+            }
+        }        
         private void Item_MouseDown(object sender, RoutedEventArgs e)
         {
             e.Handled = true;
@@ -351,9 +434,9 @@ namespace CoffeeShop.View.Staff
             ug.Columns = columns;
         }
 
-        private void bdrItemSize_MouseEnter(object sender, MouseEventArgs e) //Đổi màu background khi rê chuột vào
+        private void bdrItemSize_MouseEnter(object sender, MouseEventArgs e) // Đổi màu background khi rê chuột vào
         {
-            if (sender is Border border)
+            if (sender is Border border && !(border.Tag as bool? ?? false))
             {
                 border.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#D4BA98"));
                 var txtb = border.Child as TextBlock;
@@ -363,7 +446,7 @@ namespace CoffeeShop.View.Staff
 
         private void bdrItemSize_MouseLeave(object sender, MouseEventArgs e) //Trả lại màu ban đầu khi không trò con chuột vào
         {
-            if (sender is Border border)
+            if (sender is Border border && !(border.Tag as bool? ?? false))
             {
                 border.Background = Brushes.Transparent; // trả về nền mặc định
                 var txtb = border.Child as TextBlock;
@@ -372,10 +455,38 @@ namespace CoffeeShop.View.Staff
         }
 
 
+
         private void bdrItemSize_MouseDown(object sender, MouseButtonEventArgs e)
         {
+            e.Handled = true; // Ngăn event bubble lên parent
 
+            if (sender is Border bdrSize)
+            {
+                // Cập nhật giá
+                decimal price = GetPriceFromBorder(bdrSize);
+                DisplayPrice("txtblItemPrice", bdrSize, price);
+
+                // Tìm StackPanel chứa các size
+                var stkSizePanel = FindParent<StackPanel>(bdrSize);
+                if (stkSizePanel == null) return;
+
+                // Bỏ chọn tất cả size khác
+                foreach (var b in stkSizePanel.Children.OfType<Border>())
+                {
+                    b.Tag = false;
+                    b.Background = Brushes.Transparent;
+                    if (b.Child is TextBlock t)
+                        t.Foreground = (SolidColorBrush)(new BrushConverter().ConvertFrom("#766839"));
+                }
+
+                // Chọn Border được click
+                bdrSize.Tag = true;
+                bdrSize.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#766839"));
+                if (bdrSize.Child is TextBlock txt)
+                    txt.Foreground = (SolidColorBrush)(new BrushConverter().ConvertFrom("#EDE2D3"));
+            }
         }
+
 
         // Tìm kiếm item với từ khóa
         private void SearchItems(string keyword) 
@@ -403,7 +514,6 @@ namespace CoffeeShop.View.Staff
 
         }
         #endregion
-
         
     }
 }

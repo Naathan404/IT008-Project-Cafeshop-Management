@@ -23,7 +23,7 @@
                                 MinWidth="130" MinHeight="150" 
                                 MaxHeight="220" MaxWidth="200"
                                 MouseDown="Item_MouseDown">
-                            <StackPanel Loaded="Item_Loaded">
+                            <StackPanel>
                                 <!--Item Image-->
                                 <Image x:Name="imgItem"
                                        Margin="10" MaxHeight="80"
@@ -49,7 +49,8 @@
                                             Margin="0 0 10 0" Grid.Row="2" 
                                             HorizontalAlignment="Right"
                                             VerticalAlignment="Top"
-                                            Visibility="Collapsed">
+                                            Visibility="Collapsed"
+                                            Loaded="ItemSize_Loaded">
                                     <Border x:Name="bdrItemSize0"
                                             BorderBrush="#766839"
                                             BorderThickness="2"
@@ -111,14 +112,14 @@
                                 </StackPanel>
                                 <!--Item Price-->
                                 <TextBlock x:Name="txtblItemPrice"
-                                           Text="{Binding ItemPrices}"
                                            Grid.Row="3"
                                            FontFamily="Bahnschrift"
                                            FontSize="15"
                                            FontWeight="Bold"
                                            Foreground="#766839"
                                            Margin="0 2 12 0"
-                                           HorizontalAlignment="Right"/>
+                                           HorizontalAlignment="Right"
+                                           Loaded="ItemPrice_Loaded"/>
                             </StackPanel>
                         </Border>
                     </ControlTemplate>

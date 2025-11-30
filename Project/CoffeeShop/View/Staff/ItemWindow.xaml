@@ -28,8 +28,7 @@
                 <ColumnDefinition Width="2*"/>
             </Grid.ColumnDefinitions>
             <StackPanel Grid.Column="0" 
-                        Margin="10 40 0 30"
-                        Loaded="Item_Loaded">
+                        Margin="10 40 0 30">
                 <TextBlock x:Name="txblItemName"
                            Text="{Binding ItemName}"
                            d:Text="Cà phê sữa"
@@ -46,7 +45,8 @@
                             Orientation="Horizontal"
                             Margin="10 30 0 0"
                             d:Visibility="Visible"
-                            Visibility="Collapsed">
+                            Visibility="Collapsed"
+                            Loaded="ItemSize_Loaded">
                     <TextBlock Text="Size:"
                                Foreground="#766839"
                                FontSize="22" FontFamily="Cascadia Code" 
@@ -60,7 +60,7 @@
                             Width="30"
                             Height="30"
                             Margin="10 0 0 0"
-                            MouseDown="bdrItemSizeS_MouseDown"
+                            MouseDown="bdrItemSize_MouseDown"
                             MouseEnter="bdrItemSize_MouseEnter"
                             MouseLeave="bdrItemSize_MouseLeave"
                             d:Visibility="Visible"
@@ -81,7 +81,7 @@
                             Width="30"
                             Height="30"
                             Margin="5 0 5 0"
-                            MouseDown="bdrItemSizeM_MouseDown"
+                            MouseDown="bdrItemSize_MouseDown"
                             MouseEnter="bdrItemSize_MouseEnter"
                             MouseLeave="bdrItemSize_MouseLeave"
                             d:Visibility="Visible"
@@ -101,7 +101,7 @@
                             CornerRadius="15"
                             Width="30"
                             Height="30"
-                            MouseDown="bdrItemSizeL_MouseDown"
+                            MouseDown="bdrItemSize_MouseDown"
                             MouseEnter="bdrItemSize_MouseEnter"
                             MouseLeave="bdrItemSize_MouseLeave"
                             d:Visibility="Visible"
@@ -116,18 +116,21 @@
                                    Foreground="#766839"/>
                     </Border>
                 </StackPanel>
-                <StackPanel x:Name="stpnItemPrice" Orientation="Horizontal" Margin="10 20 0 0">
+                <StackPanel x:Name="stpnItemPrice" 
+                            Orientation="Horizontal" 
+                            Margin="10 20 0 0">
                     <TextBlock Text="Giá:"
                                Foreground="#766839"
                                FontSize="22" FontFamily="Cascadia Code"
                                FontStyle="Italic"
                                FontWeight="Bold"/>
                     <TextBlock x:Name="txblItemPrice"
-                               Text="{Binding ItemPrice, StringFormat={}{0:N0} đ}"
+                               Text="{Binding ItemPrice, StringFormat={}{0:N0} VND}"
                                d:Text="45000 VND"
                                Foreground="#766839"
                                FontSize="25" FontFamily="Cascadia Code"
-                               Margin="15 0 0 0"/>
+                               Margin="15 0 0 0"
+                               Loaded="ItemPrice_Loaded"/>
                 </StackPanel>
 
                 <StackPanel x:Name="stpnNote" Orientation="Horizontal" Margin="10 20 0 0">
