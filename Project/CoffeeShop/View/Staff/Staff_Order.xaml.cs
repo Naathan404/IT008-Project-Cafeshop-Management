@@ -21,6 +21,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
@@ -62,7 +63,6 @@ namespace CoffeeShop.View.Staff
             private decimal _price;
             private decimal _totalPrice;
 
-            public int STT { get; set; }
             public int ItemId { get; set; }
             public string ItemName { get; set; }
             public string SizeName { get; set; }
@@ -346,6 +346,8 @@ namespace CoffeeShop.View.Staff
         #endregion
 
         #region Datagrid Events
+
+
         private void AddItemToDataGrid(OrderItem item, string selectedSize, decimal price)
         {
             if (item == null) return;
@@ -364,7 +366,6 @@ namespace CoffeeShop.View.Staff
             {
                 _OrderedItemsDisplay.Add(new OrderDetailDisplay
                 {
-                    STT = _OrderedItemsDisplay.Count + 1,
                     ItemId = item.ItemId,
                     ItemName = item.ItemName,
                     SizeName = selectedSize,
@@ -381,22 +382,18 @@ namespace CoffeeShop.View.Staff
             {
                 var list = dtgListOrder.ItemsSource as ObservableCollection<OrderDetailDisplay>;
                 if (list != null)
-                {
                     list.Remove(item); // xóa item khỏi danh sách
-                }
             }
         }
 
         private void icPlusQuantity_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (sender is PackIcon icon && icon.DataContext is OrderDetailDisplay item)
-            {
+            if (sender is Border bdr && bdr.DataContext is OrderDetailDisplay item)
                 item.Quantity++;
-            }
         }
         private void icMinusQuantity_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (sender is PackIcon icon && icon.DataContext is OrderDetailDisplay item)
+            if (sender is Border bdr && bdr.DataContext is OrderDetailDisplay item)
             {
                 var list = dtgListOrder.ItemsSource as ObservableCollection<OrderDetailDisplay>;
                 if (list == null) return;
@@ -404,16 +401,28 @@ namespace CoffeeShop.View.Staff
                 if (item.Quantity > 1)
                     item.Quantity--;
                 else
-                    // Nếu số lượng = 1, xóa item khỏi danh sách
                     list.Remove(item);
             }
         }
         private void tbItemOrderedQuantity_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Enter && sender is TextBox tb && tb.DataContext is OrderDetailDisplay item)
+            if (e.Key == Key.Enter)
             {
-                item.Quantity = int.TryParse(tb.Text, out int qty) && qty > 0 ? qty : 1;
-                item.TotalPrice = item.Price * item.Quantity;
+                if (sender is TextBox tb)
+                {
+                    // Force update binding
+                    tb.GetBindingExpression(TextBox.TextProperty)?.UpdateSource();
+
+                    if (tb.DataContext is OrderDetailDisplay item)
+                    {
+                        if (item.Quantity <= 0)
+                        {
+                            var list = dtgListOrder.ItemsSource as ObservableCollection<OrderDetailDisplay>;
+                            list?.Remove(item);
+                        }
+                    }
+                    Keyboard.ClearFocus();
+                }
             }
         }
         private void tbItemOrderedNote_KeyDown(object sender, KeyEventArgs e)
@@ -423,6 +432,17 @@ namespace CoffeeShop.View.Staff
                 item.Note = tb.Text.Trim();
             }
         }
+
+        private static bool IsTextNumeric(string text)
+        {
+            return int.TryParse(text, out _);
+        }
+        private void tbItemOrderedQuantity_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            // Chỉ cho phép nhập số
+            e.Handled = !IsTextNumeric(e.Text);
+        }
+
         #endregion
 
         #region ItemCard Events
@@ -640,8 +660,25 @@ namespace CoffeeShop.View.Staff
         }
 
 
+
         #endregion
 
         
+    }
+    public class IndexToNumberConverter : IValueConverter // Converter để hiển thị số thứ tự trong DataGrid
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is int index)
+            {
+                return (index + 1).ToString();
+            }
+            return "0";
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

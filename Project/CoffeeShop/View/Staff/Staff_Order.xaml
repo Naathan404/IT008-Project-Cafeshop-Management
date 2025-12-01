@@ -5,13 +5,14 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
       xmlns:sys="clr-namespace:System;assembly=mscorlib"
-      xmlns:local="clr-namespace:CoffeeShop"
+      xmlns:local="clr-namespace:CoffeeShop.View.Staff"
       xmlns:models="clr-namespace:CoffeeShop.Models"
       mc:Ignorable="d" 
       d:DesignHeight="800" d:DesignWidth="1310"
       MinHeight="0" MinWidth="1000"
       Title="Staff_Order">
     <Page.Resources>
+        <local:IndexToNumberConverter x:Key="IndexToNumberConverter"/>
         <!-- Style for Item card -->
         <Style x:Key="RoundedCard" TargetType="ContentControl">
             <Setter Property="Margin" Value="5"/>
@@ -427,7 +428,8 @@
                                           FontFamily="Cascadia Code"
                                           FontSize="16"
                                           Margin="5"
-                                          Height="500">
+                                          Height="500"
+                                          AlternationCount="1000">
                                     <DataGrid.ColumnHeaderStyle>
                                         <Style TargetType="DataGridColumnHeader">
                                             <Setter Property="Background" Value="#F9F6F0"/>
@@ -459,9 +461,16 @@
                                                 <DataTemplate>
                                                     <StackPanel HorizontalAlignment="Center"
                                                                 VerticalAlignment="Center">
-                                                        <TextBlock Text="{Binding STT}" 
-                                                                   HorizontalAlignment="Center"
-                                                                   FontWeight="Bold" FontSize="15"/>
+                                                        <TextBlock HorizontalAlignment="Center"
+                                                                   FontWeight="Bold" FontSize="15">
+                                                            <TextBlock.Text>
+                                                                <MultiBinding StringFormat="{}{0}">
+                                                                    <Binding RelativeSource="{RelativeSource AncestorType=DataGridRow}" 
+                                                                             Path="AlternationIndex" 
+                                                                             Converter="{StaticResource IndexToNumberConverter}"/>
+                                                                </MultiBinding>
+                                                            </TextBlock.Text>
+                                                        </TextBlock>
                                                         <materialDesign:PackIcon Kind="Delete"
                                                                                  Foreground="#BC9466"
                                                                                  Width="20" Height="20"
@@ -511,11 +520,16 @@
                                                                 HorizontalAlignment="Center" 
                                                                 VerticalAlignment="Center" 
                                                                 Margin="3">
-                                                        <materialDesign:PackIcon Kind="Plus"
-                                                                                 Foreground="#766839"
-                                                                                 Width="20" Height="20"
-                                                                                 Margin="5 5 5 0"
-                                                                                 MouseDown="icPlusQuantity_MouseDown"/>
+                                                        <Border Background="Transparent"
+                                                                Cursor="Hand"
+                                                                Margin="5 5 5 0"
+                                                                MouseDown="icPlusQuantity_MouseDown">
+                                                            <materialDesign:PackIcon Kind="PlusCircleOutline"
+                                                                                     Foreground="#B18252"
+                                                                                     Width="20" Height="20"
+                                                                                     HorizontalAlignment="Center"
+                                                                                     VerticalAlignment="Center"/>
+                                                        </Border>
                                                         <TextBox x:Name="tbItemOrderedQuantity"
                                                                  Text="{Binding Quantity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                                  Width="25" Height="25"
@@ -523,12 +537,18 @@
                                                                  FontFamily="Cascadia Code"
                                                                  FontSize="15" Foreground="#766839"
                                                                  materialDesign:TextFieldAssist.UnderlineBrush="#766839"
-                                                                 KeyDown="tbItemOrderedQuantity_KeyDown"/>
-                                                        <materialDesign:PackIcon Kind="Minus"
-                                                                                 Foreground="#766839"
-                                                                                 Width="20" Height="20"
-                                                                                 Margin="5 5 0 0"
-                                                                                 MouseDown="icMinusQuantity_MouseDown"/>
+                                                                 KeyDown="tbItemOrderedQuantity_KeyDown"
+                                                                 PreviewTextInput="tbItemOrderedQuantity_PreviewTextInput"/>
+                                                        <Border Background="Transparent"
+                                                                Cursor="Hand"
+                                                                Margin="5 5 5 0"
+                                                                MouseDown="icMinusQuantity_MouseDown">
+                                                            <materialDesign:PackIcon Kind="MinusCircleOutline"
+                                                                                     Foreground="#B18252"
+                                                                                     Width="20" Height="20"
+                                                                                     HorizontalAlignment="Center"
+                                                                                     VerticalAlignment="Center"/>
+                                                        </Border>
                                                     </StackPanel>
                                                 </DataTemplate>
                                             </DataGridTemplateColumn.CellTemplate>
