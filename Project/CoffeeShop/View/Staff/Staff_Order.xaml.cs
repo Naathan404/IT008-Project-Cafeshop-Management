@@ -35,7 +35,7 @@ namespace CoffeeShop.View.Staff
     {
         private ICollectionView itemsView;
         ObservableCollection<OrderItem> _items = new ObservableCollection<OrderItem>();
-        ObservableCollection<OrderDetail> _OrderedItemsDisplay { get; set; } = new ObservableCollection<OrderDetail>();
+        ObservableCollection<OrderDetailDisplay> _OrderedItemsDisplay { get; set; } = new ObservableCollection<OrderDetailDisplay>();
         public Staff_Order()
         {
             InitializeComponent();
@@ -55,17 +55,67 @@ namespace CoffeeShop.View.Staff
             public virtual ICollection<ItemPrice> ItemPrices { get; set; } = new List<ItemPrice>();
             public string ImagePath { get; set; } = "/Assets/Images/imgItemExample.jpg";
         }
-        public class OrderDetail // chưa có orderID 
+
+        public class OrderDetailDisplay : INotifyPropertyChanged
         {
-            public int STT { get; set; } // thêm thuộc tính STT
+            private int _quantity;
+            private decimal _price;
+            private decimal _totalPrice;
+
+            public int STT { get; set; }
             public int ItemId { get; set; }
             public string ItemName { get; set; }
             public string SizeName { get; set; }
-            public int Quantity { get; set; }
-            public decimal Price { get; set; }
-            public decimal TotalPrice { get; set; } = 0;
+
+            public int Quantity
+            {
+                get => _quantity;
+                set
+                {
+                    if (_quantity != value)
+                    {
+                        _quantity = value;
+                        OnPropertyChanged(nameof(Quantity));
+                        TotalPrice = _quantity * Price;
+                    }
+                }
+            }
+
+            public decimal Price
+            {
+                get => _price;
+                set
+                {
+                    if (_price != value)
+                    {
+                        _price = value;
+                        OnPropertyChanged(nameof(Price));
+                        // cập nhật lại thành tiền khi đơn giá thay đổi
+                        TotalPrice = Quantity * _price;
+                    }
+                }
+            }
+
+            public decimal TotalPrice
+            {
+                get => _totalPrice;
+                set
+                {
+                    if (_totalPrice != value)
+                    {
+                        _totalPrice = value;
+                        OnPropertyChanged(nameof(TotalPrice));
+                    }
+                }
+            }
+
             public string? Note { get; set; }
+
+            public event PropertyChangedEventHandler PropertyChanged;
+            protected void OnPropertyChanged(string propertyName)
+                => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
 
         public static T FindParent<T>(DependencyObject child) where T : DependencyObject
         {
@@ -312,7 +362,7 @@ namespace CoffeeShop.View.Staff
             }
             else
             {
-                _OrderedItemsDisplay.Add(new OrderDetail
+                _OrderedItemsDisplay.Add(new OrderDetailDisplay
                 {
                     STT = _OrderedItemsDisplay.Count + 1,
                     ItemId = item.ItemId,
@@ -327,9 +377,9 @@ namespace CoffeeShop.View.Staff
 
         private void DeleteOrderItem_MouseDown(object sender, RoutedEventArgs e)
         {
-            if (sender is PackIcon ic && ic.DataContext is OrderDetail item)
+            if (sender is PackIcon ic && ic.DataContext is OrderDetailDisplay item)
             {
-                var list = dtgListOrder.ItemsSource as ObservableCollection<OrderDetail>;
+                var list = dtgListOrder.ItemsSource as ObservableCollection<OrderDetailDisplay>;
                 if (list != null)
                 {
                     list.Remove(item); // xóa item khỏi danh sách
@@ -339,16 +389,16 @@ namespace CoffeeShop.View.Staff
 
         private void icPlusQuantity_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (sender is PackIcon icon && icon.DataContext is OrderDetail item)
+            if (sender is PackIcon icon && icon.DataContext is OrderDetailDisplay item)
             {
                 item.Quantity++;
             }
         }
         private void icMinusQuantity_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (sender is PackIcon icon && icon.DataContext is OrderDetail item)
+            if (sender is PackIcon icon && icon.DataContext is OrderDetailDisplay item)
             {
-                var list = dtgListOrder.ItemsSource as ObservableCollection<OrderDetail>;
+                var list = dtgListOrder.ItemsSource as ObservableCollection<OrderDetailDisplay>;
                 if (list == null) return;
 
                 if (item.Quantity > 1)
@@ -360,7 +410,7 @@ namespace CoffeeShop.View.Staff
         }
         private void tbItemOrderedQuantity_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Enter && sender is TextBox tb && tb.DataContext is OrderDetail item)
+            if (e.Key == Key.Enter && sender is TextBox tb && tb.DataContext is OrderDetailDisplay item)
             {
                 item.Quantity = int.TryParse(tb.Text, out int qty) && qty > 0 ? qty : 1;
                 item.TotalPrice = item.Price * item.Quantity;
@@ -368,7 +418,7 @@ namespace CoffeeShop.View.Staff
         }
         private void tbItemOrderedNote_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Enter && sender is TextBox tb && tb.DataContext is OrderDetail item)
+            if (e.Key == Key.Enter && sender is TextBox tb && tb.DataContext is OrderDetailDisplay item)
             {
                 item.Note = tb.Text.Trim();
             }

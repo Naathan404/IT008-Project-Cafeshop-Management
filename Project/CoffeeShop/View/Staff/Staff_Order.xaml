@@ -442,29 +442,17 @@
                                             <Setter Property="BorderBrush" Value="#766839"/>
                                         </Style>
                                     </DataGrid.ColumnHeaderStyle>
-                                    
+
                                     <DataGrid.CellStyle>
                                         <Style TargetType="DataGridCell">
                                             <Setter Property="Foreground" Value="#766839"/>
                                             <Setter Property="FontSize" Value="15"/>
                                             <Setter Property="FontFamily" Value="Cascadia Code"/>
-                                            <Setter Property="Background" Value="Transparent"/>
+                                            <Setter Property="Background" Value="#F9F6F0"/>
                                             <Setter Property="BorderBrush" Value="#A0A0A0"/>
                                             <Setter Property="BorderThickness" Value="0,0,1,1"/>
                                         </Style>
                                     </DataGrid.CellStyle>
-
-                                    <DataGrid.RowStyle>
-                                        <Style TargetType="DataGridRow">
-                                            <Style.Triggers>
-                                                <Trigger Property="IsMouseOver" Value="True">
-                                                    <Setter Property="Background" Value="#E0CEB5"/>
-                                                    <Setter Property="Foreground" Value="#340D05"/>
-                                                </Trigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </DataGrid.RowStyle>
-                                    
                                     <DataGrid.Columns>
                                         <DataGridTemplateColumn Header="STT" Width="0.4*" IsReadOnly="True">
                                             <DataGridTemplateColumn.CellTemplate>
@@ -523,13 +511,13 @@
                                                                 HorizontalAlignment="Center" 
                                                                 VerticalAlignment="Center" 
                                                                 Margin="3">
-                                                        <materialDesign:PackIcon Kind="Plus" 
+                                                        <materialDesign:PackIcon Kind="Plus"
                                                                                  Foreground="#766839"
-                                                                                 Width="17" Height="17"
+                                                                                 Width="20" Height="20"
                                                                                  Margin="5 5 5 0"
                                                                                  MouseDown="icPlusQuantity_MouseDown"/>
                                                         <TextBox x:Name="tbItemOrderedQuantity"
-                                                                 Text="{Binding Quantity}"
+                                                                 Text="{Binding Quantity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                                  Width="25" Height="25"
                                                                  VerticalAlignment="Center"
                                                                  FontFamily="Cascadia Code"
@@ -538,7 +526,7 @@
                                                                  KeyDown="tbItemOrderedQuantity_KeyDown"/>
                                                         <materialDesign:PackIcon Kind="Minus"
                                                                                  Foreground="#766839"
-                                                                                 Width="17" Height="17"
+                                                                                 Width="20" Height="20"
                                                                                  Margin="5 5 0 0"
                                                                                  MouseDown="icMinusQuantity_MouseDown"/>
                                                     </StackPanel>
