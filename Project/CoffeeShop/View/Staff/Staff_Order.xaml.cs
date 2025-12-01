@@ -481,6 +481,10 @@ namespace CoffeeShop.View.Staff
                 return;
             var thisitem = data as OrderItem;
             var detailWindow = new ItemWindow(thisitem);
+            detailWindow.OnAddItem += (itemSelected, size, price) =>
+            {
+                AddItemToDataGrid(itemSelected, size, price);
+            };
             detailWindow.ShowDialog();
         }
 

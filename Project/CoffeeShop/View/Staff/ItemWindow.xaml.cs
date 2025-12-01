@@ -17,6 +17,7 @@ namespace CoffeeShop.View.Staff
 {
     public partial class ItemWindow : Window
     {
+        public event Action<OrderItem, string, decimal> OnAddItem;
         public ItemWindow(OrderItem item)
         {
             InitializeComponent();
@@ -108,6 +109,9 @@ namespace CoffeeShop.View.Staff
         {
             if (sender is Border border)
             {
+                // Nếu border đang selected thì KHÔNG đổi màu khi hover
+                if (border.Tag is bool isSelected && isSelected == true)
+                    return;
                 border.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#D4BA98"));
                 var txtb = border.Child as TextBlock;
                 txtb.Foreground = (SolidColorBrush)(new BrushConverter().ConvertFrom("#340D05"));
@@ -118,6 +122,9 @@ namespace CoffeeShop.View.Staff
         {
             if (sender is Border border)
             {
+                // Nếu border đang selected thì KHÔNG reset màu
+                if (border.Tag is bool isSelected && isSelected == true)
+                    return;
                 border.Background = Brushes.Transparent; // trả về nền mặc định
                 var txtb = border.Child as TextBlock;
                 txtb.Foreground = (SolidColorBrush)(new BrushConverter().ConvertFrom("#766839"));
@@ -155,6 +162,7 @@ namespace CoffeeShop.View.Staff
         }
         #endregion
 
+        #region Button Events
         private void bdrExit_MouseDown(object sender, MouseButtonEventArgs e)
         {
             this.Close();
@@ -202,7 +210,29 @@ namespace CoffeeShop.View.Staff
 
         private void bdrAddToOrder_MouseDown(object sender, MouseButtonEventArgs e)
         {
+            // Lấy item hiện tại
+            var item = this.DataContext as OrderItem;
+            if (item == null) return;
 
+            // Lấy size được chọn
+            var sizeBorder = stpnItemSize.Children
+                .OfType<Border>()
+                .FirstOrDefault(b => (bool)(b.Tag ?? false));
+
+            string selectedSize = sizeBorder != null? (sizeBorder.Child as TextBlock)?.Text: item.ItemPrices.First().Size.SizeName; // nếu không chọn thì lấy size đầu
+
+            // Lấy giá
+            decimal price = 0;
+            if (sizeBorder != null)
+                price = GetPriceFromBorder(sizeBorder);
+            else
+                price = item.ItemPrices.First().Price;
+
+            // Gọi event trả dữ liệu về Page
+            OnAddItem?.Invoke(item, selectedSize, price);
+
+            this.Close();
         }
+        #endregion
     }
 }
