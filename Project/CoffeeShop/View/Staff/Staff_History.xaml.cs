@@ -1,21 +1,9 @@
 ﻿using CoffeeShop.Models;
+using CoffeeShop.View.General;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace CoffeeShop.View.Staff
 {
@@ -30,22 +18,24 @@ namespace CoffeeShop.View.Staff
         public Staff_History()
         {
             InitializeComponent();
-            LoadOrderHistory();
+            LoadOrderHistoryOfCurrentDay();
         }
 
-        private void LoadOrderHistory()
+        private void LoadOrderHistoryOfCurrentDay()
         {
             using (var db = new CoffeeShopContext())
             {
                 var orders = db.Orders
                     .Include(o => o.Customer)
                     .Include(o => o.Staff)
+                    .Where(o => o.OrderDate >=  DateTime.Today && o.OrderDate < DateTime.Today.AddDays(1))
                     .ToList();
                 foreach (var order in orders)
                 {
                     orderHistoryItems.Add(new OrderHistory
                     {
                         OrderID = order.OrderId,
+                        DisplayID = order.DisplayID,
                         CustomerName = order.Customer != null ? order.Customer.CustomerName : "Khách vãng lai",
                         EmployeeName = order.Staff.StaffName,
                         OrderDate = order.OrderDate.ToString("HH:mm:ss"),
@@ -60,9 +50,10 @@ namespace CoffeeShop.View.Staff
         public class OrderHistory
         {
             public int OrderID { get; set; }
+            public string DisplayID { get; set; } = null!;
             public string CustomerName { get; set; } = null!;
             public string EmployeeName { get; set; } = null!;
-            public string OrderDate { get; set; }
+            public string OrderDate { get; set; } = null!;
             public string Total { get; set; } = null!;
             public string PaymentMethod { get; set; } = null!;
         }
@@ -117,6 +108,7 @@ namespace CoffeeShop.View.Staff
                     orderHistoryItems.Add(new OrderHistory
                     {
                         OrderID = order.OrderId,
+                        DisplayID = order.DisplayID,
                         CustomerName = order.Customer != null ? order.Customer.CustomerName : "Khách vãng lai",
                         EmployeeName = order.Staff.StaffName,
                         OrderDate = order.OrderDate.ToString("HH:mm:ss"),

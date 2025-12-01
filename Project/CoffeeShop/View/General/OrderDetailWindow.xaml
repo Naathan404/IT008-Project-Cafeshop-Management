@@ -1,4 +1,4 @@
-﻿<Window x:Class="CoffeeShop.View.Staff.OrderDetailWindow"
+﻿<Window x:Class="CoffeeShop.View.General.OrderDetailWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -31,7 +31,7 @@
             </Grid.ColumnDefinitions>
             <TextBlock Grid.Column="0"
                 x:Name="txblOrderID"
-                Text="Mã số hóa đơn: XXX"
+                Text="Mã hóa đơn: HDXXXXX-XXXX"
                 Foreground="#FF340D05"
                 FontFamily="Cascadia Code"
                 FontWeight="Bold"
