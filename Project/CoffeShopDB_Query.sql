@@ -372,7 +372,7 @@ VALUES
 (3, 1, 3, '2025-12-1 16:00:00', 53000, 3, 10000, 43000, N'Chuyển khoản'), --3
 (NULL, NULL, 4, '2025-12-1 17:15:00', 56000, NULL, 0, 56000, N'Tiền mặt'), --4
 (NULL, 2, 4, '2025-12-1 20:00:00', 125000, 2, 6000, 119000, N'Chuyển khoản'), --5
-(10, NULL, 3, '2025-12-1 20:20:00', 55000, NULL, 0, 55000, N'Tiền mặt') --6
+(10, NULL, 3, '2025-12-1 20:20:00', 55000, NULL, 0, 55000, N'Tiền mặt'), --6
 GO
 
 INSERT INTO OrderDetail (OrderID, PriceID, Quantity, UnitPrice, TotalPrice, Note) 

@@ -135,7 +135,17 @@
                             Is24Hours="True"
                             Style="{StaticResource MaterialDesignOutlinedTimePicker}"
                             SelectedTimeChanged="SelectedTimeChangedEvt" ToolTip="Thời gian kết thúc"
-                              />
+                            >
+                            <materialDesign:TimePicker.Resources>
+                                <SolidColorBrush x:Key="PrimaryHueMidBrush" Color="#391B05"/>
+
+                                <SolidColorBrush x:Key="PrimaryHueMidForegroundBrush" Color="#E0CEB5"/>
+
+                                <SolidColorBrush x:Key="SecondaryAccentBrush" Color="#B18252"/>
+
+                                <SolidColorBrush x:Key="MaterialDesignPaper" Color="#F9F6F0"/>
+                            </materialDesign:TimePicker.Resources>
+                        </materialDesign:TimePicker>
                     </Grid>
                 </Grid>
 
