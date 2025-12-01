@@ -27,7 +27,7 @@
                 HorizontalAlignment="Center"
 >
         </TextBlock>
-
+    
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="10*"></ColumnDefinition>
@@ -47,9 +47,8 @@
                         GridLinesVisibility="None"
                         IsReadOnly="true">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="Mã hóa đơn" Width="3*" Binding="{Binding OrderID}"></DataGridTextColumn>
-                        <DataGridTextColumn Header="Tên khách hàng" Width="5*" Binding="{Binding CustomerName}"></DataGridTextColumn>
-                        <DataGridTextColumn Header="Tên nhân viên" Width="5*" Binding="{Binding EmployeeName}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="Mã hóa đơn" Width="4*" Binding="{Binding DisplayID}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="Tên khách hàng" Width="6*" Binding="{Binding CustomerName}"></DataGridTextColumn>
                         <DataGridTextColumn Header="Thời gian" Width="4*" Binding="{Binding OrderDate}"></DataGridTextColumn>
                         <DataGridTextColumn Header="Tổng tiền" Width="4*" Binding="{Binding Total}"></DataGridTextColumn>
                         <DataGridTextColumn Header="Hình thức" Width="4*" Binding="{Binding PaymentMethod}"></DataGridTextColumn>
@@ -57,10 +56,14 @@
                 </DataGrid>
             </Border>
 
-            <StackPanel Grid.Column="1"
-                        Margin="-10 0 40 0">
-
-                <TextBox
+            <materialDesign:Card Grid.Column="1"
+                                 Margin="-15 0 35 0"
+                                 Height="300"
+                                 VerticalAlignment="Top"
+                                 UniformCornerRadius="10"
+                                 >
+                <StackPanel Margin="10">
+                    <TextBox
                     x:Name="txbCustomerName"
                     Margin="0 0 0 0"
                     Height="50"
@@ -135,7 +138,17 @@
                             Is24Hours="True"
                             Style="{StaticResource MaterialDesignOutlinedTimePicker}"
                             SelectedTimeChanged="SelectedTimeChangedEvt" ToolTip="Thời gian kết thúc"
-                              />
+                            >
+                            <materialDesign:TimePicker.Resources>
+                                <SolidColorBrush x:Key="PrimaryHueMidBrush" Color="#391B05"/>
+
+                                <SolidColorBrush x:Key="PrimaryHueMidForegroundBrush" Color="#E0CEB5"/>
+
+                                <SolidColorBrush x:Key="SecondaryAccentBrush" Color="#B18252"/>
+
+                                <SolidColorBrush x:Key="MaterialDesignPaper" Color="#F9F6F0"/>
+                            </materialDesign:TimePicker.Resources>
+                        </materialDesign:TimePicker>
                     </Grid>
                 </Grid>
 
@@ -227,6 +240,8 @@
                     </Grid>
                 </Button>
             </StackPanel>
+                
+            </materialDesign:Card>
         </Grid>
     </Grid>
 </Page>
