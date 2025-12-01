@@ -192,6 +192,7 @@ DROP TABLE IF EXISTS OrderDetail;
 DROP TABLE IF EXISTS [Order];
 DROP TABLE IF EXISTS ItemPrice;
 DROP TABLE IF EXISTS Item;
+DROP TABLE IF EXISTS StaffAttendance;
 
 -- Xóa các bảng được khóa ngoại tham chiếu đến
 DROP TABLE IF EXISTS Discount;
