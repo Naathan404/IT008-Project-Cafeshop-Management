@@ -442,16 +442,29 @@
                                             <Setter Property="BorderBrush" Value="#766839"/>
                                         </Style>
                                     </DataGrid.ColumnHeaderStyle>
+                                    
                                     <DataGrid.CellStyle>
                                         <Style TargetType="DataGridCell">
                                             <Setter Property="Foreground" Value="#766839"/>
                                             <Setter Property="FontSize" Value="15"/>
                                             <Setter Property="FontFamily" Value="Cascadia Code"/>
-                                            <Setter Property="Background" Value="#F9F6F0"/>
+                                            <Setter Property="Background" Value="Transparent"/>
                                             <Setter Property="BorderBrush" Value="#A0A0A0"/>
                                             <Setter Property="BorderThickness" Value="0,0,1,1"/>
                                         </Style>
                                     </DataGrid.CellStyle>
+
+                                    <DataGrid.RowStyle>
+                                        <Style TargetType="DataGridRow">
+                                            <Style.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Background" Value="#E0CEB5"/>
+                                                    <Setter Property="Foreground" Value="#340D05"/>
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </DataGrid.RowStyle>
+                                    
                                     <DataGrid.Columns>
                                         <DataGridTemplateColumn Header="STT" Width="0.4*" IsReadOnly="True">
                                             <DataGridTemplateColumn.CellTemplate>
@@ -486,7 +499,8 @@
                                                                  FontFamily="Cascadia Code"
                                                                  FontSize="15" Foreground="#C7A57A"
                                                                  materialDesign:HintAssist.Hint="Ghi chú"
-                                                                 materialDesign:TextFieldAssist.UnderlineBrush="#E0CEB5"/>
+                                                                 materialDesign:TextFieldAssist.UnderlineBrush="#E0CEB5"
+                                                                 KeyDown="tbItemOrderedNote_KeyDown"/>
                                                     </StackPanel>
                                                 </DataTemplate>
                                             </DataGridTemplateColumn.CellTemplate>

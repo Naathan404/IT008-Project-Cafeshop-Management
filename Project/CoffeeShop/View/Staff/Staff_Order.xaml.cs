@@ -35,7 +35,7 @@ namespace CoffeeShop.View.Staff
     {
         private ICollectionView itemsView;
         ObservableCollection<OrderItem> _items = new ObservableCollection<OrderItem>();
-        ObservableCollection<OrderItemDisplay> _OrderedItemsDisplay { get; set; } = new ObservableCollection<OrderItemDisplay>();
+        ObservableCollection<OrderDetail> _OrderedItemsDisplay { get; set; } = new ObservableCollection<OrderDetail>();
         public Staff_Order()
         {
             InitializeComponent();
@@ -53,10 +53,9 @@ namespace CoffeeShop.View.Staff
             public int Quantity { get; set; }
             public bool IsAvailable { get; set; }
             public virtual ICollection<ItemPrice> ItemPrices { get; set; } = new List<ItemPrice>();
-            public string? Note { get; set; }
             public string ImagePath { get; set; } = "/Assets/Images/imgItemExample.jpg";
         }
-        public class OrderItemDisplay
+        public class OrderDetail // chưa có orderID 
         {
             public int STT { get; set; } // thêm thuộc tính STT
             public int ItemId { get; set; }
@@ -65,6 +64,7 @@ namespace CoffeeShop.View.Staff
             public int Quantity { get; set; }
             public decimal Price { get; set; }
             public decimal TotalPrice { get; set; } = 0;
+            public string? Note { get; set; }
         }
 
         public static T FindParent<T>(DependencyObject child) where T : DependencyObject
@@ -312,7 +312,7 @@ namespace CoffeeShop.View.Staff
             }
             else
             {
-                _OrderedItemsDisplay.Add(new OrderItemDisplay
+                _OrderedItemsDisplay.Add(new OrderDetail
                 {
                     STT = _OrderedItemsDisplay.Count + 1,
                     ItemId = item.ItemId,
@@ -327,9 +327,9 @@ namespace CoffeeShop.View.Staff
 
         private void DeleteOrderItem_MouseDown(object sender, RoutedEventArgs e)
         {
-            if (sender is PackIcon ic && ic.DataContext is OrderItemDisplay item)
+            if (sender is PackIcon ic && ic.DataContext is OrderDetail item)
             {
-                var list = dtgListOrder.ItemsSource as ObservableCollection<OrderItemDisplay>;
+                var list = dtgListOrder.ItemsSource as ObservableCollection<OrderDetail>;
                 if (list != null)
                 {
                     list.Remove(item); // xóa item khỏi danh sách
@@ -339,16 +339,16 @@ namespace CoffeeShop.View.Staff
 
         private void icPlusQuantity_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (sender is PackIcon icon && icon.DataContext is OrderItemDisplay item)
+            if (sender is PackIcon icon && icon.DataContext is OrderDetail item)
             {
                 item.Quantity++;
             }
         }
         private void icMinusQuantity_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (sender is PackIcon icon && icon.DataContext is OrderItemDisplay item)
+            if (sender is PackIcon icon && icon.DataContext is OrderDetail item)
             {
-                var list = dtgListOrder.ItemsSource as ObservableCollection<OrderItemDisplay>;
+                var list = dtgListOrder.ItemsSource as ObservableCollection<OrderDetail>;
                 if (list == null) return;
 
                 if (item.Quantity > 1)
@@ -360,13 +360,19 @@ namespace CoffeeShop.View.Staff
         }
         private void tbItemOrderedQuantity_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Enter && sender is TextBox tb && tb.DataContext is OrderItemDisplay item)
+            if (e.Key == Key.Enter && sender is TextBox tb && tb.DataContext is OrderDetail item)
             {
                 item.Quantity = int.TryParse(tb.Text, out int qty) && qty > 0 ? qty : 1;
                 item.TotalPrice = item.Price * item.Quantity;
             }
         }
-
+        private void tbItemOrderedNote_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter && sender is TextBox tb && tb.DataContext is OrderDetail item)
+            {
+                item.Note = tb.Text.Trim();
+            }
+        }
         #endregion
 
         #region ItemCard Events
@@ -582,6 +588,7 @@ namespace CoffeeShop.View.Staff
         {
 
         }
+
 
         #endregion
 
