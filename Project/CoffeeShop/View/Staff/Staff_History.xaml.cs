@@ -79,7 +79,7 @@ namespace CoffeeShop.View.Staff
 
         private void FilterData()
         {
-            string keyword = txbCustomerName.Text.Trim();
+            string keyword = txbCustomerName.Text.Trim().ToLower();
             DateTime? start = timePickerStartTime.SelectedTime;
             DateTime? end = timePickerEndTime.SelectedTime;
             orderHistoryItems.Clear();
@@ -94,8 +94,9 @@ namespace CoffeeShop.View.Staff
 
                 if (!string.IsNullOrEmpty(keyword))
                 {
-                    query = query.Where(o => o.Customer != null &&
-                                             o.Customer.CustomerName.Contains(keyword));
+                    query = query.Where(o => (o.Customer != null &&
+                                             o.Customer.CustomerName.ToLower().Contains(keyword))
+                                             || (o.Customer == null && "Khách vãng lai".ToLower().Contains(keyword)));
                 }
 
                 if (start.HasValue)

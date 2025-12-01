@@ -37,7 +37,8 @@ namespace CoffeeShop.View.Staff
             dgOrderDetail.Items.Clear();
             using (var db = new CoffeeShopContext())
             {
-                var order = db.Orders.Include(o => o.Table)
+                var order = db.Orders
+                    .Include(o => o.Table)
                     .Include(o => o.Customer)
                     .Include(o => o.Staff)
                     .FirstOrDefault(o => o.OrderId == _orderID);
@@ -53,6 +54,9 @@ namespace CoffeeShop.View.Staff
                 txblPaymentMethod.Text = "HTTT: " + order.PaymentMethod;
                 txblCustomer.Text = "Khách hàng: " + (order.Customer == null ? "Khách vãng lai" : order.Customer.CustomerName);
                 txblemployee.Text = "Nhân viên: " + order.Staff.StaffName;
+                txblSubTotal.Text = order.SubTotal.ToString("N0", viVn);
+                txblDiscountMoney.Text = order.DiscountMoney.ToString("N0", viVn);
+                txblTotalAmount.Text = order.TotalAmount.ToString("N0", viVn);
 
                 // Hiển thị chi tiết từng sản phẩm đã mua
                 List<ItemDetail> displayItems = new List<ItemDetail>();
