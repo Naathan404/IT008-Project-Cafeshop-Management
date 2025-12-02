@@ -17,14 +17,14 @@ namespace CoffeeShop.View.Staff
 {
     public partial class ItemWindow : Window
     {
-        public event Action<OrderItem, string, decimal> OnAddItem;
+        public event Action<OrderItem, string, string, decimal> OnAddItem; // Event để trả dữ liệu về Page Order
         public ItemWindow(OrderItem item)
         {
             InitializeComponent();
             this.DataContext = item; // Gán DataContext cho cả Window
         }
 
-        #region ItemSize Events
+        #region Item Events
         private void ItemPrice_Changed(TextBlock txbl, decimal price)
         {
             if (txbl == null)
@@ -220,6 +220,7 @@ namespace CoffeeShop.View.Staff
                 .FirstOrDefault(b => (bool)(b.Tag ?? false));
 
             string selectedSize = sizeBorder != null? (sizeBorder.Child as TextBlock)?.Text: item.ItemPrices.First().Size.SizeName; // nếu không chọn thì lấy size đầu
+            string note = txblItemNote.Text;
 
             // Lấy giá
             decimal price = 0;
@@ -229,10 +230,11 @@ namespace CoffeeShop.View.Staff
                 price = item.ItemPrices.First().Price;
 
             // Gọi event trả dữ liệu về Page
-            OnAddItem?.Invoke(item, selectedSize, price);
+            OnAddItem?.Invoke(item, selectedSize, note, price);
 
             this.Close();
         }
         #endregion
+        
     }
 }

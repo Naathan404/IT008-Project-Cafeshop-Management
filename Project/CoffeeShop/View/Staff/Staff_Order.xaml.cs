@@ -62,11 +62,10 @@ namespace CoffeeShop.View.Staff
             private int _quantity;
             private decimal _price;
             private decimal _totalPrice;
-
+            private string _note;
             public int ItemId { get; set; }
             public string ItemName { get; set; }
             public string SizeName { get; set; }
-
             public int Quantity
             {
                 get => _quantity;
@@ -80,7 +79,6 @@ namespace CoffeeShop.View.Staff
                     }
                 }
             }
-
             public decimal Price
             {
                 get => _price;
@@ -108,8 +106,15 @@ namespace CoffeeShop.View.Staff
                     }
                 }
             }
-
-            public string? Note { get; set; }
+            public string? Note
+            {
+                get => _note;
+                set
+                {
+                    _note = value;
+                    OnPropertyChanged(nameof(Note));
+                }
+            }
 
             public event PropertyChangedEventHandler PropertyChanged;
             protected void OnPropertyChanged(string propertyName)
@@ -346,15 +351,13 @@ namespace CoffeeShop.View.Staff
         #endregion
 
         #region Datagrid Events
-
-
-        private void AddItemToDataGrid(OrderItem item, string selectedSize, decimal price)
+        private void AddItemToDataGrid(OrderItem item, string selectedSize, string note, decimal price)
         {
             if (item == null) return;
 
             selectedSize = selectedSize.Trim();
 
-            var existingItem = _OrderedItemsDisplay.FirstOrDefault(x => x.ItemId == item.ItemId && x.SizeName == selectedSize);
+            var existingItem = _OrderedItemsDisplay.FirstOrDefault(x => x.ItemId == item.ItemId && x.SizeName == selectedSize && note == x.Note);
 
             if (existingItem != null)
             {
@@ -371,6 +374,7 @@ namespace CoffeeShop.View.Staff
                     SizeName = selectedSize,
                     Quantity = 1,
                     Price = price,
+                    Note = note,
                     TotalPrice = price
                 });
             }
@@ -557,9 +561,10 @@ namespace CoffeeShop.View.Staff
                 return;
             var thisitem = data as OrderItem;
             var detailWindow = new ItemWindow(thisitem);
-            detailWindow.OnAddItem += (itemSelected, size, price) =>
+            string note = null; // Ghi chú mặc định là null
+            detailWindow.OnAddItem += (itemSelected, size, note, price) =>
             {
-                AddItemToDataGrid(itemSelected, size, price);
+                AddItemToDataGrid(itemSelected, size, note, price);
             };
             detailWindow.ShowDialog();
         }
@@ -628,7 +633,7 @@ namespace CoffeeShop.View.Staff
                 if (item == null) return;
 
                 // Thêm vào DataGrid
-                AddItemToDataGrid(item, selectedSize, price);
+                AddItemToDataGrid(item, selectedSize,null, price); // Mặc định note là null khi click size
             }
         }
 

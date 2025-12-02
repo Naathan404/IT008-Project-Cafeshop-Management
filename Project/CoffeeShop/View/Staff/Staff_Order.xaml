@@ -491,6 +491,7 @@
                                                                    FontWeight="Bold" FontSize="15" Foreground="#766839"
                                                                    TextWrapping="Wrap"/>
                                                         <TextBox x:Name="tbItemOrderedNote"
+                                                                 Text="{Binding Note, UpdateSourceTrigger=PropertyChanged}"
                                                                  Width="130" Height="25" 
                                                                  VerticalAlignment="Center"
                                                                  FontFamily="Cascadia Code"
