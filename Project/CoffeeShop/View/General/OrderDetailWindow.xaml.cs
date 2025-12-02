@@ -1,5 +1,6 @@
 ﻿using CoffeeShop.Models;
 using Microsoft.EntityFrameworkCore;
+using Org.BouncyCastle.Asn1.Esf;
 using System.Globalization;
 using System.Windows;
 
@@ -43,7 +44,7 @@ namespace CoffeeShop.View.General
                 txblCustomer.Text = "Khách hàng: " + (order.Customer == null ? "Khách vãng lai" : order.Customer.CustomerName);
                 txblemployee.Text = "Nhân viên: " + order.Staff.StaffName;
                 txblSubTotal.Text = order.SubTotal.ToString("N0", viVn);
-                txblDiscountMoney.Text = order.DiscountMoney.ToString("N0", viVn);
+                txblDiscountMoney.Text = order.DiscountMoney?.ToString("N0", viVn);
                 txblTotalAmount.Text = order.TotalAmount.ToString("N0", viVn);
 
                 // Hiển thị chi tiết từng sản phẩm đã mua
