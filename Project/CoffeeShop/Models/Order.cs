@@ -19,7 +19,7 @@ public partial class Order
 
     public int? DiscountId { get; set; }
 
-    public decimal DiscountMoney { get; set; }
+    public decimal? DiscountMoney { get; set; }
 
     public decimal TotalAmount { get; set; }
 
@@ -34,12 +34,4 @@ public partial class Order
     public virtual Staff Staff { get; set; } = null!;
 
     public virtual CafeTable? Table { get; set; }
-
-    public string DisplayID
-    {
-        get
-        {
-            return $"HD{OrderDate:yyMMdd}-{OrderId:D5}";
-        }
-    }
 }
