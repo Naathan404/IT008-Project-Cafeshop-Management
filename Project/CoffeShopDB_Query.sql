@@ -192,6 +192,7 @@ DROP TABLE IF EXISTS OrderDetail;
 DROP TABLE IF EXISTS [Order];
 DROP TABLE IF EXISTS ItemPrice;
 DROP TABLE IF EXISTS Item;
+DROP TABLE IF EXISTS StaffAttendance;
 
 -- Xóa các bảng được khóa ngoại tham chiếu đến
 DROP TABLE IF EXISTS Discount;
@@ -366,12 +367,12 @@ GO
 
 INSERT INTO [Order] (TableID, CustomerID, StaffID, OrderDate, SubTotal, DiscountID, DiscountMoney, TotalAmount, PaymentMethod) 
 VALUES 
-(1, 1, 3, '2025-11-27 07:00:00', 54000, 3, 10000, 44000, N'Tiền mặt'), --1
-(NULL, 2, 3, '2025-11-27 13:00:00', 18000, 2, 6000, 12000, N'Chuyển khoản'), --2
-(3, 1, 3, '2025-11-27 16:00:00', 53000, 3, 10000, 43000, N'Chuyển khoản'), --3
-(NULL, NULL, 4, '2025-11-27 17:15:00', 56000, NULL, 0, 56000, N'Tiền mặt'), --4
-(NULL, 2, 4, '2025-11-27 20:00:00', 125000, 2, 6000, 119000, N'Chuyển khoản'), --5
-(10, NULL, 3, '2025-11-27 20:20:00', 55000, NULL, 0, 55000, N'Tiền mặt') --6
+(1, 1, 3, '2025-12-1 07:00:00', 54000, 3, 10000, 44000, N'Tiền mặt'), --1
+(NULL, 2, 3, '2025-12-1 13:00:00', 18000, 2, 6000, 12000, N'Chuyển khoản'), --2
+(3, 1, 3, '2025-12-1 16:00:00', 53000, 3, 10000, 43000, N'Chuyển khoản'), --3
+(NULL, NULL, 4, '2025-12-1 17:15:00', 56000, NULL, 0, 56000, N'Tiền mặt'), --4
+(NULL, 2, 4, '2025-12-1 20:00:00', 125000, 2, 6000, 119000, N'Chuyển khoản'), --5
+(10, NULL, 3, '2025-12-1 20:20:00', 55000, NULL, 0, 55000, N'Tiền mặt') --6
 GO
 
 INSERT INTO OrderDetail (OrderID, PriceID, Quantity, UnitPrice, TotalPrice, Note) 
@@ -439,3 +440,162 @@ VALUES
 (6, 1, 0.5, 450000, GETDATE(), 1)                    -- Nhập thêm 0.5kg Matcha xịn
 GO
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------
+select * from [order]
+
+-- =================================================================================
+-- KHAI BÁO CÁC BIẾN CẤU HÌNH
+-- =================================================================================
+DECLARE @TotalOrdersToCreate INT = 300; 
+DECLARE @StartDate DATETIME = '2025-12-13'; 
+DECLARE @DaysRange INT = 15; 
+
+-- Bảng tạm để lưu dữ liệu "nháp"
+DECLARE @StagingOrders TABLE (
+    TempID INT IDENTITY(1,1),
+    RandomDate DATETIME,
+    RandomStaffID INT,
+    RandomCustomerID INT,
+    RandomTableID INT,
+    RandomPaymentMethod NVARCHAR(20)
+);
+
+-- =================================================================================
+-- BƯỚC 1: SINH DỮ LIỆU NGẪU NHIÊN VÀO BẢNG TẠM
+-- =================================================================================
+DECLARE @i INT = 1;
+DECLARE @R_Date DATETIME;
+DECLARE @R_Staff INT;
+DECLARE @R_Cust INT;
+DECLARE @R_Table INT;
+DECLARE @R_Pay NVARCHAR(20);
+
+WHILE @i <= @TotalOrdersToCreate
+BEGIN
+    -- 1. Random Ngày giờ
+    SET @R_Date = DATEADD(hour, ABS(CHECKSUM(NEWID()) % 15) + 7, DATEADD(day, ABS(CHECKSUM(NEWID()) % (@DaysRange + 1)), @StartDate));
+    SET @R_Date = DATEADD(minute, ABS(CHECKSUM(NEWID()) % 60), @R_Date);
+
+    -- 2. Random Nhân viên
+    SET @R_Staff = CASE ABS(CHECKSUM(NEWID()) % 2) WHEN 0 THEN 3 ELSE 4 END;
+
+    -- 3. Random Khách hàng (30% vãng lai)
+    SET @R_Cust = CASE WHEN (ABS(CHECKSUM(NEWID()) % 10) < 3) THEN NULL ELSE (ABS(CHECKSUM(NEWID()) % 6) + 1) END;
+
+    -- 4. Random Bàn
+    SET @R_Table = CASE WHEN (ABS(CHECKSUM(NEWID()) % 10) < 3) THEN NULL ELSE (ABS(CHECKSUM(NEWID()) % 20) + 1) END;
+
+    -- 5. Random Phương thức
+    SET @R_Pay = CASE WHEN (ABS(CHECKSUM(NEWID()) % 2) = 0) THEN N'Tiền mặt' ELSE N'Chuyển khoản' END;
+
+    INSERT INTO @StagingOrders (RandomDate, RandomStaffID, RandomCustomerID, RandomTableID, RandomPaymentMethod)
+    VALUES (@R_Date, @R_Staff, @R_Cust, @R_Table, @R_Pay);
+
+    SET @i = @i + 1;
+END
+
+-- =================================================================================
+-- BƯỚC 2: CHÈN VÀO BẢNG CHÍNH (SẮP XẾP THEO THỜI GIAN)
+-- =================================================================================
+DECLARE OrderCursor CURSOR FOR 
+SELECT RandomDate, RandomStaffID, RandomCustomerID, RandomTableID, RandomPaymentMethod 
+FROM @StagingOrders ORDER BY RandomDate ASC; 
+
+OPEN OrderCursor;
+FETCH NEXT FROM OrderCursor INTO @R_Date, @R_Staff, @R_Cust, @R_Table, @R_Pay;
+
+DECLARE @NewOrderID INT;
+
+WHILE @@FETCH_STATUS = 0
+BEGIN
+    -- Chèn Order (Để DiscountID là NULL tạm thời, tính sau)
+    INSERT INTO [Order] (TableID, CustomerID, StaffID, OrderDate, SubTotal, DiscountID, DiscountMoney, TotalAmount, PaymentMethod)
+    VALUES (@R_Table, @R_Cust, @R_Staff, @R_Date, 0, NULL, 0, 0, @R_Pay);
+
+    SET @NewOrderID = SCOPE_IDENTITY();
+
+    -- Tạo chi tiết món ăn (Random 1-4 món để dễ đạt mốc 100k)
+    DECLARE @NumItems INT = (ABS(CHECKSUM(NEWID()) % 4) + 1); 
+    DECLARE @j INT = 1;
+    WHILE @j <= @NumItems
+    BEGIN
+        DECLARE @RandomPriceID INT = (ABS(CHECKSUM(NEWID()) % 24) + 1);
+        DECLARE @RandomQty INT = (ABS(CHECKSUM(NEWID()) % 2) + 1); -- SL 1 hoặc 2
+        
+        INSERT INTO OrderDetail (OrderID, PriceID, Quantity, UnitPrice, TotalPrice, Note)
+        SELECT @NewOrderID, @RandomPriceID, @RandomQty, Price, Price * @RandomQty, NULL
+        FROM ItemPrice WHERE PriceID = @RandomPriceID;
+        
+        SET @j = @j + 1;
+    END
+
+    FETCH NEXT FROM OrderCursor INTO @R_Date, @R_Staff, @R_Cust, @R_Table, @R_Pay;
+END
+
+CLOSE OrderCursor;
+DEALLOCATE OrderCursor;
+GO
+
+-- =================================================================================
+-- BƯỚC 3: TÍNH TOÁN VÀ ÁP DỤNG LOGIC KHUYẾN MÃI
+-- =================================================================================
+
+-- A. Tính SubTotal (Tổng tiền hàng) trước cho các đơn mới
+UPDATE O
+SET O.SubTotal = (SELECT SUM(TotalPrice) FROM OrderDetail WHERE OrderID = O.OrderID)
+FROM [Order] O
+WHERE O.TotalAmount = 0; 
+
+-- B. LOGIC 1: ÁP DỤNG MÃ VIP (Ưu tiên cao nhất)
+-- Nếu khách hàng có Tier là 'VIP1', 'VIP10',... và bảng Discount có mã trùng tên đó -> Áp dụng
+UPDATE O
+SET O.DiscountID = D.DiscountID
+FROM [Order] O
+JOIN Customer C ON O.CustomerID = C.CustomerID
+JOIN Discount D ON C.Tier = D.DiscountCode -- Khớp Tier với Mã giảm giá
+WHERE O.TotalAmount = 0; -- Chỉ áp dụng cho đơn mới
+
+-- C. LOGIC 2: ÁP DỤNG MÃ 'CF05' (Cho đơn chưa có Discount)
+-- Điều kiện: SubTotal >= 100k VÀ Có món thuộc CategoryID = 1 (Giả sử 1 là Cà phê)
+DECLARE @CF05_ID INT = (SELECT DiscountID FROM Discount WHERE DiscountCode = 'CF05');
+
+IF @CF05_ID IS NOT NULL
+BEGIN
+    UPDATE O
+    SET O.DiscountID = @CF05_ID
+    FROM [Order] O
+    WHERE O.TotalAmount = 0       -- Đơn mới
+      AND O.DiscountID IS NULL    -- Chưa được giảm giá VIP
+      AND O.SubTotal >= 100000    -- Điều kiện 1: Trên 100k
+      AND EXISTS (                -- Điều kiện 2: Có mua Cà phê
+          SELECT 1 
+          FROM OrderDetail OD
+          JOIN ItemPrice IP ON OD.PriceID = IP.PriceID
+          JOIN Item I ON IP.ItemID = I.ItemID
+          WHERE OD.OrderID = O.OrderID AND I.CategoryID = 1 -- Giả sử CategoryID 1 là Cà phê
+      );
+END
+
+-- D. Tính DiscountMoney dựa trên DiscountID đã gán
+UPDATE O
+SET O.DiscountMoney = CASE 
+        -- Giảm tiền mặt
+        WHEN D.DiscountType = 1 THEN D.DiscountValue
+        -- Giảm % (Kiểm tra trần tối đa MaxDiscountAmount)
+        WHEN D.DiscountType = 0 THEN 
+            CASE 
+                WHEN (O.SubTotal * D.DiscountValue / 100) > ISNULL(D.MaximumDiscountAmount, 999999999) 
+                THEN D.MaximumDiscountAmount 
+                ELSE (O.SubTotal * D.DiscountValue / 100) 
+            END
+        ELSE 0 
+    END
+FROM [Order] O
+JOIN Discount D ON O.DiscountID = D.DiscountID
+WHERE O.TotalAmount = 0;
+
+-- E. Chốt TotalAmount cuối cùng
+UPDATE [Order]
+SET TotalAmount = SubTotal - ISNULL(DiscountMoney, 0)
+WHERE TotalAmount = 0;
+
+PRINT 'Done! Orders created with VIP and CF05 Logic.';
