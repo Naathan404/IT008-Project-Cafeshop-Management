@@ -1,21 +1,9 @@
 ﻿using CoffeeShop.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
-namespace CoffeeShop.View.Staff
+namespace CoffeeShop.View.General
 {
     /// <summary>
     /// Interaction logic for OrderDetails.xaml
@@ -37,7 +25,8 @@ namespace CoffeeShop.View.Staff
             dgOrderDetail.Items.Clear();
             using (var db = new CoffeeShopContext())
             {
-                var order = db.Orders.Include(o => o.Table)
+                var order = db.Orders
+                    .Include(o => o.Table)
                     .Include(o => o.Customer)
                     .Include(o => o.Staff)
                     .FirstOrDefault(o => o.OrderId == _orderID);
@@ -47,12 +36,15 @@ namespace CoffeeShop.View.Staff
                 }
 
                 // Hiển thị thông tin chung của order
-                txblOrderID.Text = "Mã số hóa đơn: " + order.OrderId;
+                txblOrderID.Text = "Mã hóa đơn: " + order.DisplayID;
                 txblTable.Text = order.Table == null ? "Mang đi" : order.Table.TableName;
                 txblOrderDate.Text = "Thời gian: " + order.OrderDate;
                 txblPaymentMethod.Text = "HTTT: " + order.PaymentMethod;
                 txblCustomer.Text = "Khách hàng: " + (order.Customer == null ? "Khách vãng lai" : order.Customer.CustomerName);
                 txblemployee.Text = "Nhân viên: " + order.Staff.StaffName;
+                txblSubTotal.Text = order.SubTotal.ToString("N0", viVn);
+                txblDiscountMoney.Text = order.DiscountMoney.ToString("N0", viVn);
+                txblTotalAmount.Text = order.TotalAmount.ToString("N0", viVn);
 
                 // Hiển thị chi tiết từng sản phẩm đã mua
                 List<ItemDetail> displayItems = new List<ItemDetail>();
@@ -79,12 +71,12 @@ namespace CoffeeShop.View.Staff
 
         public class ItemDetail
         {
-            public string oName { get; set; }
-            public string oSize { get; set; }
-            public int oQuantity { get; set; }
-            public string oPrice { get; set; }
-            public string oTotal { get; set; }
-            public string oNote { get; set; }
+            public string oName { get; set; } = null!;
+            public string oSize { get; set; } = null!;
+            public int oQuantity { get; set; } 
+            public string oPrice { get; set; } = null!;
+            public string oTotal { get; set; } = null!;
+            public string oNote { get; set; } = null!;
         }
     }
 }
