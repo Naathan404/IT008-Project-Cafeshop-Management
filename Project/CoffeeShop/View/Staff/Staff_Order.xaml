@@ -8,7 +8,7 @@
       xmlns:local="clr-namespace:CoffeeShop.View.Staff"
       xmlns:models="clr-namespace:CoffeeShop.Models"
       mc:Ignorable="d" 
-      d:DesignHeight="800" d:DesignWidth="1310"
+      d:DesignHeight="700" d:DesignWidth="1310"
       MinHeight="0" MinWidth="1000"
       Title="Staff_Order">
     <Page.Resources>
@@ -368,8 +368,13 @@
                                               Color="Black"
                                               ShadowDepth="8"/>
                         </Border.Effect>
-                        <StackPanel>
-                            <StackPanel Orientation="Horizontal" Margin="0 10 0 0">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="0.2*"/>
+                                <RowDefinition Height="2.5*"/>
+                                <RowDefinition Height="1*"/>
+                            </Grid.RowDefinitions>
+                            <StackPanel Orientation="Horizontal" Margin="0 10 0 0" Grid.Row="0">
                                 <!--<materialDesign:PackIcon Kind="TableFurniture"
                                                          Margin="8 0 2 0"
                                                          Foreground="#766839"
@@ -418,7 +423,8 @@
                                     BorderThickness="3"
                                     CornerRadius="15" 
                                     Margin="10 20 10 0"
-                                    Background="#F9F6F0">
+                                    Background="#F9F6F0"
+                                    Grid.Row="1">
                                 <DataGrid x:Name="dtgListOrder"
                                           AutoGenerateColumns="False"
                                           IsReadOnly="True"
@@ -428,8 +434,7 @@
                                           FontFamily="Cascadia Code"
                                           FontSize="16"
                                           Margin="5"
-                                          Height="500"
-                                          AlternationCount="1000">
+                                          AlternationCount="1000000">
                                     <DataGrid.ColumnHeaderStyle>
                                         <Style TargetType="DataGridColumnHeader">
                                             <Setter Property="Background" Value="#F9F6F0"/>
@@ -584,7 +589,81 @@
                                     </DataGrid.Columns>
                                 </DataGrid>
                             </Border>
-                        </StackPanel>
+                            <StackPanel Grid.Row="2">
+                                <StackPanel Orientation="Horizontal" 
+                                        HorizontalAlignment="Right" 
+                                        VerticalAlignment="Bottom"
+                                        Margin="0 10 20 0">
+                                    <TextBlock Text="Tổng cộng: "
+                                           FontSize="20" FontFamily="Cascadia Code"
+                                           Foreground="#462812"/>
+                                    <TextBlock x:Name="tbTotalPrice"
+                                           d:Text="10000000000 VND"
+                                           FontFamily="Cascadia Code" FontSize="20" Foreground="#340D05"
+                                           HorizontalAlignment="Right"/>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" 
+                                        HorizontalAlignment="Right" 
+                                        VerticalAlignment="Bottom"
+                                        Margin="0 10 20 0">
+                                    <TextBlock Text="Giảm giá: "
+                                           FontSize="20" FontFamily="Cascadia Code"
+                                           Foreground="#462812"/>
+                                    <TextBlock x:Name="tbTotalDiscount"
+                                           d:Text="10000000000 VND"
+                                           FontFamily="Cascadia Code" FontSize="20" Foreground="#340D05"
+                                           HorizontalAlignment="Right"/>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" 
+                                        HorizontalAlignment="Right" 
+                                        VerticalAlignment="Bottom"
+                                        Margin="0 10 20 0">
+                                    <TextBlock Text="Thành tiền: "
+                                           FontSize="25" FontFamily="Cascadia Code" FontWeight="Bold"
+                                           Foreground="#462812"/>
+                                    <TextBlock x:Name="tbTotalAmount"
+                                           d:Text="10000000000 VND"
+                                           FontFamily="Cascadia Code" FontSize="25" FontWeight="Bold" Foreground="#340D05"
+                                           HorizontalAlignment="Right"/>
+                                </StackPanel>
+
+                                <StackPanel Orientation="Horizontal" 
+                                        HorizontalAlignment="Right"
+                                        Margin="0 15 20 0">
+                                    <Border x:Name="bdrCancelOrder"
+                                        BorderBrush="#766839"
+                                        BorderThickness="2"
+                                        Padding="10"
+                                        CornerRadius="15"
+                                        HorizontalAlignment="Right" VerticalAlignment="Bottom">
+                                        <TextBlock Text="Hủy bỏ"
+                                               FontSize="25"
+                                               FontWeight="Bold"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               FontFamily="Cascadia Code"
+                                               Foreground="#766839"/>
+                                    </Border>
+                                    <Border x:Name="bdrPayOrder"
+                                        BorderBrush="#766839"
+                                        BorderThickness="2"
+                                        Margin="30 0 0 0"
+                                        Padding="10"
+                                        CornerRadius="15"
+                                        HorizontalAlignment="Right" VerticalAlignment="Bottom">
+                                        <TextBlock Text="Thanh toán"
+                                               FontSize="25"
+                                               FontWeight="Bold"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               FontFamily="Cascadia Code"
+                                               Foreground="#766839"/>
+                                    </Border>
+
+                                </StackPanel>
+                            </StackPanel>
+                        </Grid>
+                        
                     </Border>
                 </Grid>
             </Grid>
