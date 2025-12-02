@@ -487,7 +487,7 @@
                                                 </DataTemplate>
                                             </DataGridTemplateColumn.CellTemplate>
                                         </DataGridTemplateColumn>
-                                        
+
                                         <DataGridTemplateColumn Header="Tên sản phẩm" Width="1.2*">
                                             <DataGridTemplateColumn.CellTemplate>
                                                 <DataTemplate>
@@ -521,7 +521,7 @@
                                                 </DataTemplate>
                                             </DataGridTemplateColumn.CellTemplate>
                                         </DataGridTemplateColumn>
-                                        
+
                                         <DataGridTemplateColumn Header="Số lượng" Width="0.8*">
                                             <DataGridTemplateColumn.CellTemplate>
                                                 <DataTemplate>
@@ -576,7 +576,7 @@
                                                 </DataTemplate>
                                             </DataGridTemplateColumn.CellTemplate>
                                         </DataGridTemplateColumn>
-                                        
+
                                         <DataGridTemplateColumn Header="Thành tiền" Width="1*">
                                             <DataGridTemplateColumn.CellTemplate>
                                                 <DataTemplate>
@@ -591,79 +591,77 @@
                             </Border>
                             <StackPanel Grid.Row="2">
                                 <StackPanel Orientation="Horizontal" 
-                                        HorizontalAlignment="Right" 
-                                        VerticalAlignment="Bottom"
-                                        Margin="0 10 20 0">
+                                            HorizontalAlignment="Right" 
+                                            VerticalAlignment="Bottom"
+                                            Margin="0 10 20 0">
                                     <TextBlock Text="Tổng cộng: "
-                                           FontSize="20" FontFamily="Cascadia Code"
-                                           Foreground="#462812"/>
+                                               FontSize="20" FontFamily="Cascadia Code"
+                                               Foreground="#462812"/>
                                     <TextBlock x:Name="tbTotalPrice"
-                                           d:Text="10000000000 VND"
-                                           FontFamily="Cascadia Code" FontSize="20" Foreground="#340D05"
-                                           HorizontalAlignment="Right"/>
+                                               d:Text="10000000000 VND"
+                                               FontFamily="Cascadia Code" FontSize="20" Foreground="#340D05"
+                                               HorizontalAlignment="Right"/>
                                 </StackPanel>
                                 <StackPanel Orientation="Horizontal" 
-                                        HorizontalAlignment="Right" 
-                                        VerticalAlignment="Bottom"
-                                        Margin="0 10 20 0">
+                                            HorizontalAlignment="Right" 
+                                            VerticalAlignment="Bottom"
+                                            Margin="0 10 20 0">
                                     <TextBlock Text="Giảm giá: "
-                                           FontSize="20" FontFamily="Cascadia Code"
-                                           Foreground="#462812"/>
+                                               FontSize="20" FontFamily="Cascadia Code"
+                                               Foreground="#462812"/>
                                     <TextBlock x:Name="tbTotalDiscount"
-                                           d:Text="10000000000 VND"
-                                           FontFamily="Cascadia Code" FontSize="20" Foreground="#340D05"
-                                           HorizontalAlignment="Right"/>
+                                               d:Text="10000000000 VND"
+                                               FontFamily="Cascadia Code" FontSize="20" Foreground="#340D05"
+                                               HorizontalAlignment="Right"/>
                                 </StackPanel>
                                 <StackPanel Orientation="Horizontal" 
-                                        HorizontalAlignment="Right" 
-                                        VerticalAlignment="Bottom"
-                                        Margin="0 10 20 0">
+                                            HorizontalAlignment="Right" 
+                                            VerticalAlignment="Bottom"
+                                            Margin="0 10 20 0">
                                     <TextBlock Text="Thành tiền: "
-                                           FontSize="25" FontFamily="Cascadia Code" FontWeight="Bold"
-                                           Foreground="#462812"/>
+                                               FontSize="25" FontFamily="Cascadia Code" FontWeight="Bold"
+                                               Foreground="#462812"/>
                                     <TextBlock x:Name="tbTotalAmount"
-                                           d:Text="10000000000 VND"
-                                           FontFamily="Cascadia Code" FontSize="25" FontWeight="Bold" Foreground="#340D05"
-                                           HorizontalAlignment="Right"/>
+                                               d:Text="10000000000 VND"
+                                               FontFamily="Cascadia Code" FontSize="25" FontWeight="Bold" Foreground="#340D05"
+                                               HorizontalAlignment="Right"/>
                                 </StackPanel>
 
                                 <StackPanel Orientation="Horizontal" 
-                                        HorizontalAlignment="Right"
-                                        Margin="0 15 20 0">
+                                            HorizontalAlignment="Right"
+                                            Margin="0 15 20 0">
                                     <Border x:Name="bdrCancelOrder"
-                                        BorderBrush="#766839"
-                                        BorderThickness="2"
-                                        Padding="10"
-                                        CornerRadius="15"
-                                        HorizontalAlignment="Right" VerticalAlignment="Bottom">
+                                            BorderBrush="#766839"
+                                            BorderThickness="2"
+                                            Padding="10"
+                                            CornerRadius="15"
+                                            HorizontalAlignment="Right" VerticalAlignment="Bottom">
                                         <TextBlock Text="Hủy bỏ"
-                                               FontSize="25"
-                                               FontWeight="Bold"
-                                               HorizontalAlignment="Center"
-                                               VerticalAlignment="Center"
-                                               FontFamily="Cascadia Code"
-                                               Foreground="#766839"/>
+                                                   FontSize="25"
+                                                   FontWeight="Bold"
+                                                   HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center"
+                                                   FontFamily="Cascadia Code"
+                                                   Foreground="#766839"/>
                                     </Border>
                                     <Border x:Name="bdrPayOrder"
-                                        BorderBrush="#766839"
-                                        BorderThickness="2"
-                                        Margin="30 0 0 0"
-                                        Padding="10"
-                                        CornerRadius="15"
-                                        HorizontalAlignment="Right" VerticalAlignment="Bottom">
+                                            BorderBrush="#766839"
+                                            BorderThickness="2"
+                                            Margin="30 0 0 0"
+                                            Padding="10"
+                                            CornerRadius="15"
+                                            HorizontalAlignment="Right" VerticalAlignment="Bottom">
                                         <TextBlock Text="Thanh toán"
-                                               FontSize="25"
-                                               FontWeight="Bold"
-                                               HorizontalAlignment="Center"
-                                               VerticalAlignment="Center"
-                                               FontFamily="Cascadia Code"
-                                               Foreground="#766839"/>
+                                                   FontSize="25"
+                                                   FontWeight="Bold"
+                                                   HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center"
+                                                   FontFamily="Cascadia Code"
+                                                   Foreground="#766839"/>
                                     </Border>
-
                                 </StackPanel>
                             </StackPanel>
                         </Grid>
-                        
                     </Border>
                 </Grid>
             </Grid>
