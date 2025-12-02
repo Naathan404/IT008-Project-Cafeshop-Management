@@ -50,198 +50,217 @@
                         <DataGridTextColumn Header="Mã hóa đơn" Width="4*" Binding="{Binding DisplayID}"></DataGridTextColumn>
                         <DataGridTextColumn Header="Tên khách hàng" Width="6*" Binding="{Binding CustomerName}"></DataGridTextColumn>
                         <DataGridTextColumn Header="Thời gian" Width="4*" Binding="{Binding OrderDate}"></DataGridTextColumn>
-                        <DataGridTextColumn Header="Tổng tiền" Width="4*" Binding="{Binding Total}"></DataGridTextColumn>
-                        <DataGridTextColumn Header="Hình thức" Width="4*" Binding="{Binding PaymentMethod}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="Hình thức" Width="4*" Binding="{Binding PaymentMethod}">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="HorizontalAlignment" Value="Center"></Setter>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="Tổng tiền" Width="4*" Binding="{Binding Total}">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="HorizontalAlignment" Value="Right"></Setter>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
                     </DataGrid.Columns>
                 </DataGrid>
             </Border>
 
-            <materialDesign:Card Grid.Column="1"
-                                 Margin="-15 0 35 0"
-                                 Height="300"
-                                 VerticalAlignment="Top"
-                                 UniformCornerRadius="10"
-                                 >
-                <StackPanel Margin="10">
-                    <TextBox
-                    x:Name="txbCustomerName"
-                    Margin="0 0 0 0"
-                    Height="50"
-                    VerticalAlignment="Top"
-                    HorizontalAlignment="Stretch"
-                    materialDesign:HintAssist.Hint="Họ tên khách hàng"
-                    materialDesign:HintAssist.Foreground="#462812"
-                    materialDesign:HintAssist.Background="Transparent"
-                    materialDesign:TextFieldAssist.UnderlineBrush="#462812"
-                    AcceptsReturn="True"
-                    Style="{StaticResource MaterialDesignOutlinedTextBox}"
-                    materialDesign:TextFieldAssist.OutlinedBorderActiveThickness="3"
-                    BorderThickness="1"
-                    TextWrapping="Wrap"
-                    VerticalScrollBarVisibility="Auto" 
-                    TextChanged="TextChangedEvt"
-                />
-
-                <!-- TIME FILTER-->
-                <Grid Height="90"
-                      Margin="0 10 0 0"
-                      HorizontalAlignment="Stretch">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="3*"></RowDefinition>
-                        <RowDefinition Height="7*"></RowDefinition>
-                    </Grid.RowDefinitions>
-                    <TextBlock Text="Thời gian:"
-                               Foreground="#FF340D05"
-                               FontFamily="Cascadia Code"
-                               FontSize="20"
-                               FontWeight="Bold"></TextBlock>
-                    <Grid
-                        Grid.Row="1"
-                        Margin="0,0,0,10">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="52*"></ColumnDefinition>
-                            <ColumnDefinition Width="9*"></ColumnDefinition>
-                            <ColumnDefinition Width="52*"></ColumnDefinition>
-                        </Grid.ColumnDefinitions>
-                        <materialDesign:TimePicker
-                            x:Name="timePickerStartTime"
-                            Grid.Column="0"
-                            Height="48"
-                            HorizontalAlignment="Stretch"
-                            materialDesign:HintAssist.Hint="Từ..."
-                            materialDesign:HintAssist.Foreground="#462812"
-                            materialDesign:HintAssist.Background="Transparent"
-                            materialDesign:TextFieldAssist.UnderlineBrush="#462812"                            
-                            materialDesign:TextFieldAssist.OutlinedBorderActiveThickness="3"
-                            BorderThickness="1"
-                            Is24Hours="True"
-                            Style="{StaticResource MaterialDesignOutlinedTimePicker}" 
-                            SelectedTimeChanged="SelectedTimeChangedEvt" ToolTip="Thời gian bắt đầu"
-                              />
-                        <TextBlock Grid.Column ="1"
-                                   Text=" _ "
-                                   FontSize="10"
-                                   FontFamily="Cascadia Code"
-                                   VerticalAlignment="Center"
-                                   Foreground="#FF340D05"></TextBlock>
-                        <materialDesign:TimePicker
-                            x:Name="timePickerEndTime"
-                            Grid.Column="2"
-                            Height="48"
-                            HorizontalAlignment="Stretch"
-                            materialDesign:HintAssist.Hint="Đến..."
-                            materialDesign:HintAssist.Foreground="#462812"
-                            materialDesign:HintAssist.Background="Transparent"
-                            materialDesign:TextFieldAssist.UnderlineBrush="#462812"                            
-                            materialDesign:TextFieldAssist.OutlinedBorderActiveThickness="3"
-                            BorderThickness="1"
-                            Is24Hours="True"
-                            Style="{StaticResource MaterialDesignOutlinedTimePicker}"
-                            SelectedTimeChanged="SelectedTimeChangedEvt" ToolTip="Thời gian kết thúc"
-                            >
-                            <materialDesign:TimePicker.Resources>
-                                <SolidColorBrush x:Key="PrimaryHueMidBrush" Color="#391B05"/>
-
-                                <SolidColorBrush x:Key="PrimaryHueMidForegroundBrush" Color="#E0CEB5"/>
-
-                                <SolidColorBrush x:Key="SecondaryAccentBrush" Color="#B18252"/>
-
-                                <SolidColorBrush x:Key="MaterialDesignPaper" Color="#F9F6F0"/>
-                            </materialDesign:TimePicker.Resources>
-                        </materialDesign:TimePicker>
-                    </Grid>
-                </Grid>
-
-                <!-- TOTAL FILTER
-                <Grid Height="130"
-                      Margin="0 0 0 0">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="2*"></RowDefinition>
-                        <RowDefinition Height="7*"></RowDefinition>
-                    </Grid.RowDefinitions>
-                    <TextBlock Text="Tổng tiền:"
-                               FontFamily="Cascadia Code"
-                               FontSize="20"
-                               FontWeight="Bold"
-                               VerticalAlignment="Top"></TextBlock>
-                    <StackPanel
-                        Grid.Row="1"
-                        HorizontalAlignment="Left"
-                        Orientation="Vertical" 
-                        Margin="0,5,0,0">
-
-                    </StackPanel>
-                </Grid> -->
-                <Button
-                    materialDesign:ButtonAssist.CornerRadius="10"
-                    IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
-                    Background="#BC9466"
-                    Height="50"
-                    Margin="0 10 0 0"
-                    BorderBrush="#FF340D05"
-                    BorderThickness="1" 
-                    Click="DetailClickEvt">
-                    <Grid Width="180"
-                          Height="50"
-                          VerticalAlignment="Center"
-                          HorizontalAlignment="Center">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="2*"></ColumnDefinition>
-                            <ColumnDefinition Width="7*"></ColumnDefinition>
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="1"
-                            Text ="Chi tiết đơn" 
-                            FontFamily="Cascadia Code"
-                            FontWeight="Bold"
-                            FontSize="20"
-                            VerticalAlignment="Center"
-                            HorizontalAlignment="Left">
-                        </TextBlock>
-                        <materialDesign:PackIcon Grid.Column="0"
-                                                 Kind="InformationBox"
-                                                 HorizontalAlignment="Left"
-                                                 VerticalAlignment="Center"
-                                                 Height="30"
-                                                 Width="30"
-                            ></materialDesign:PackIcon>
-                    </Grid>
-                </Button>
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                </Grid.RowDefinitions>
                 
-                <Button
-                    materialDesign:ButtonAssist.CornerRadius="10"
-                    IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
-                    Background="#BC9466"
-                    Height="50"
-                    Margin="0 10 0 0"
-                    BorderBrush="#FF340D05"
-                    BorderThickness="1">
-                    <Grid Width="180"
-                          Height="50"
-                          VerticalAlignment="Stretch"
+                <materialDesign:Card Grid.Row="0"
+                                     Margin="-15 0 35 0"
+                                     Height="Auto"
+                                     VerticalAlignment="Top"
+                                     UniformCornerRadius="10"
+                                     >
+                    <StackPanel Margin="10">
+                        <TextBox
+                        x:Name="txbCustomerName"
+                        Height="50"
+                        VerticalAlignment="Top"
+                        HorizontalAlignment="Stretch"
+                        materialDesign:HintAssist.Hint="Họ tên khách hàng"
+                        materialDesign:HintAssist.Foreground="#462812"
+                        materialDesign:HintAssist.Background="Transparent"
+                        materialDesign:TextFieldAssist.UnderlineBrush="#462812"
+                        AcceptsReturn="True"
+                        Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                        materialDesign:TextFieldAssist.OutlinedBorderActiveThickness="3"
+                        BorderThickness="1"
+                        TextWrapping="Wrap"
+                        VerticalScrollBarVisibility="Auto" 
+                        TextChanged="TextChangedEvt"
+                    />
+
+                    <!-- TIME FILTER-->
+                    <Grid Height="90"
+                          Margin="0 10 0 0"
                           HorizontalAlignment="Stretch">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="2*"></ColumnDefinition>
-                            <ColumnDefinition Width="7*"></ColumnDefinition>
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="1"
-                            Text ="In hóa đơn" 
-                            FontFamily="Cascadia Code"
-                            FontWeight="Bold"
-                            FontSize="20"
-                            VerticalAlignment="Center">
-                        </TextBlock>
-                        <materialDesign:PackIcon Grid.Column="0"
-                                                 Kind="Printer"
-                                                 HorizontalAlignment="Left"
-                                                 VerticalAlignment="Center"
-                                                 Height="30"
-                                                 Width="30"
-                            ></materialDesign:PackIcon>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="3*"></RowDefinition>
+                            <RowDefinition Height="7*"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <TextBlock Text="Thời gian:"
+                                   Foreground="#FF340D05"
+                                   FontFamily="Cascadia Code"
+                                   FontSize="20"
+                                   FontWeight="Bold"></TextBlock>
+                        <Grid
+                            Grid.Row="1"
+                            Margin="0,0,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="52*"></ColumnDefinition>
+                                <ColumnDefinition Width="9*"></ColumnDefinition>
+                                <ColumnDefinition Width="52*"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <materialDesign:TimePicker
+                                x:Name="timePickerStartTime"
+                                Grid.Column="0"
+                                Height="48"
+                                HorizontalAlignment="Stretch"
+                                materialDesign:HintAssist.Hint="Từ..."
+                                materialDesign:HintAssist.Foreground="#462812"
+                                materialDesign:HintAssist.Background="Transparent"
+                                materialDesign:TextFieldAssist.UnderlineBrush="#462812"                            
+                                materialDesign:TextFieldAssist.OutlinedBorderActiveThickness="3"
+                                BorderThickness="1"
+                                Is24Hours="True"
+                                Style="{StaticResource MaterialDesignOutlinedTimePicker}" 
+                                SelectedTimeChanged="SelectedTimeChangedEvt" ToolTip="Thời gian bắt đầu"
+                                  />
+                            <TextBlock Grid.Column ="1"
+                                       Text=" _ "
+                                       FontSize="10"
+                                       FontFamily="Cascadia Code"
+                                       VerticalAlignment="Center"
+                                       HorizontalAlignment="Center"
+                                       Foreground="#FF340D05"></TextBlock>
+                            <materialDesign:TimePicker
+                                x:Name="timePickerEndTime"
+                                Grid.Column="2"
+                                Height="48"
+                                HorizontalAlignment="Stretch"
+                                materialDesign:HintAssist.Hint="Đến..."
+                                materialDesign:HintAssist.Foreground="#462812"
+                                materialDesign:HintAssist.Background="Transparent"
+                                materialDesign:TextFieldAssist.UnderlineBrush="#462812"                            
+                                materialDesign:TextFieldAssist.OutlinedBorderActiveThickness="3"
+                                BorderThickness="1"
+                                Is24Hours="True"
+                                Style="{StaticResource MaterialDesignOutlinedTimePicker}"
+                                SelectedTimeChanged="SelectedTimeChangedEvt" ToolTip="Thời gian kết thúc"
+                                >
+                                <materialDesign:TimePicker.Resources>
+                                    <SolidColorBrush x:Key="PrimaryHueMidBrush" Color="#391B05"/>
+
+                                    <SolidColorBrush x:Key="PrimaryHueMidForegroundBrush" Color="#E0CEB5"/>
+
+                                    <SolidColorBrush x:Key="SecondaryAccentBrush" Color="#B18252"/>
+
+                                    <SolidColorBrush x:Key="MaterialDesignPaper" Color="#F9F6F0"/>
+                                </materialDesign:TimePicker.Resources>
+                            </materialDesign:TimePicker>
+                        </Grid>
                     </Grid>
-                </Button>
-            </StackPanel>
+
+                    <!-- TOTAL FILTER
+                    <Grid Height="130"
+                          Margin="0 0 0 0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="2*"></RowDefinition>
+                            <RowDefinition Height="7*"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <TextBlock Text="Tổng tiền:"
+                                   FontFamily="Cascadia Code"
+                                   FontSize="20"
+                                   FontWeight="Bold"
+                                   VerticalAlignment="Top"></TextBlock>
+                        <StackPanel
+                            Grid.Row="1"
+                            HorizontalAlignment="Left"
+                            Orientation="Vertical" 
+                            Margin="0,5,0,0">
+
+                        </StackPanel>
+                    </Grid> -->
+                    <Button
+                        materialDesign:ButtonAssist.CornerRadius="10"
+                        IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
+                        Background="#BC9466"
+                        Height="50"
+                        Margin="0 0 0 0"
+                        BorderBrush="#FF340D05"
+                        BorderThickness="1" 
+                        Click="DetailClickEvt">
+                        <Grid Width="180"
+                              Height="50"
+                              VerticalAlignment="Center"
+                              HorizontalAlignment="Center">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2*"></ColumnDefinition>
+                                <ColumnDefinition Width="7*"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="1"
+                                Text ="Chi tiết" 
+                                FontFamily="Cascadia Code"
+                                FontWeight="Bold"
+                                FontSize="20"
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Left">
+                            </TextBlock>
+                            <materialDesign:PackIcon Grid.Column="0"
+                                                     Kind="InformationBox"
+                                                     HorizontalAlignment="Left"
+                                                     VerticalAlignment="Center"
+                                                     Height="30"
+                                                     Width="30"
+                                ></materialDesign:PackIcon>
+                        </Grid>
+                    </Button>
                 
-            </materialDesign:Card>
+                    <Button
+                        materialDesign:ButtonAssist.CornerRadius="10"
+                        IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
+                        Background="#BC9466"
+                        Height="50"
+                        Margin="0 10 0 0"
+                        BorderBrush="#FF340D05"
+                        BorderThickness="1">
+                        <Grid Width="180"
+                              Height="50"
+                              VerticalAlignment="Stretch"
+                              HorizontalAlignment="Stretch">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2*"></ColumnDefinition>
+                                <ColumnDefinition Width="7*"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="1"
+                                Text ="In hóa đơn" 
+                                FontFamily="Cascadia Code"
+                                FontWeight="Bold"
+                                FontSize="20"
+                                VerticalAlignment="Center">
+                            </TextBlock>
+                            <materialDesign:PackIcon Grid.Column="0"
+                                                     Kind="Printer"
+                                                     HorizontalAlignment="Left"
+                                                     VerticalAlignment="Center"
+                                                     Height="30"
+                                                     Width="30"
+                                ></materialDesign:PackIcon>
+                        </Grid>
+                    </Button>
+                </StackPanel>
+                
+                </materialDesign:Card>
+            </Grid>
         </Grid>
     </Grid>
 </Page>

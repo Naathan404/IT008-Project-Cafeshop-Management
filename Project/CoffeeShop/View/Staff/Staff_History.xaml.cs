@@ -81,6 +81,7 @@ namespace CoffeeShop.View.Staff
                 var query = db.Orders
                               .Include(o => o.Customer)
                               .Include(o => o.Staff)
+                              .Where(o => o.OrderDate >= DateTime.Today && o.OrderDate < DateTime.Today.AddDays(1))
                               .AsQueryable();
 
                 if (!string.IsNullOrEmpty(keyword))
