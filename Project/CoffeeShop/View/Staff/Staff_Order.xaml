@@ -471,10 +471,13 @@
                                                                 </MultiBinding>
                                                             </TextBlock.Text>
                                                         </TextBlock>
-                                                        <materialDesign:PackIcon Kind="Delete"
+                                                        <materialDesign:PackIcon Kind="DeleteOutline"
                                                                                  Foreground="#BC9466"
                                                                                  Width="20" Height="20"
-                                                                                 MouseDown="DeleteOrderItem_MouseDown"/>
+                                                                                 MouseDown="DeleteOrderItem_MouseDown"
+                                                                                 Cursor="Hand"
+                                                                                 MouseEnter="icDeleteItem_MouseEnter"
+                                                                                 MouseLeave="icDeleteItem_MouseLeave"/>
                                                     </StackPanel>
                                                 </DataTemplate>
                                             </DataGridTemplateColumn.CellTemplate>
@@ -524,7 +527,9 @@
                                                         <Border Background="Transparent"
                                                                 Cursor="Hand"
                                                                 Margin="5 5 5 0"
-                                                                MouseDown="icPlusQuantity_MouseDown">
+                                                                MouseDown="icPlusQuantity_MouseDown"
+                                                                MouseEnter="bdrPlusQuantity_MouseEnter"
+                                                                MouseLeave="bdrPlusQuantity_MouseLeave">
                                                             <materialDesign:PackIcon Kind="PlusCircleOutline"
                                                                                      Foreground="#B18252"
                                                                                      Width="20" Height="20"
@@ -543,7 +548,9 @@
                                                         <Border Background="Transparent"
                                                                 Cursor="Hand"
                                                                 Margin="5 5 5 0"
-                                                                MouseDown="icMinusQuantity_MouseDown">
+                                                                MouseDown="icMinusQuantity_MouseDown"
+                                                                MouseEnter="bdrMinusQuantity_MouseEnter"
+                                                                MouseLeave="bdrMinusQuantity_MouseLeave">
                                                             <materialDesign:PackIcon Kind="MinusCircleOutline"
                                                                                      Foreground="#B18252"
                                                                                      Width="20" Height="20"

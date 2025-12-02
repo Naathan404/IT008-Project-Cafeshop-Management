@@ -45,7 +45,7 @@ namespace CoffeeShop.View.Staff
             dtgListOrder.ItemsSource = _OrderedItemsDisplay;
         }
 
-        //Class for Sample datas
+        #region Class for SampleData
         public class OrderItem
         {
             public int ItemId { get; set; }
@@ -120,18 +120,7 @@ namespace CoffeeShop.View.Staff
             protected void OnPropertyChanged(string propertyName)
                 => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-
-
-        public static T FindParent<T>(DependencyObject child) where T : DependencyObject
-        {
-            DependencyObject parentObject = VisualTreeHelper.GetParent(child);
-            if (parentObject == null) return null;
-
-            if (parentObject is T parent)
-                return parent;
-
-            return FindParent<T>(parentObject);
-        }
+        #endregion
 
         #region Sample data
         //Sample data
@@ -318,6 +307,17 @@ namespace CoffeeShop.View.Staff
         }
         #endregion
 
+        public static T FindParent<T>(DependencyObject child) where T : DependencyObject
+        {
+            DependencyObject parentObject = VisualTreeHelper.GetParent(child);
+            if (parentObject == null) return null;
+
+            if (parentObject is T parent)
+                return parent;
+
+            return FindParent<T>(parentObject);
+        }
+
         #region tabItem Loading
         //Load items vào từng tabItem theo categoryId
         private void LoadItem(ObservableCollection<OrderItem> itemsList) 
@@ -379,7 +379,6 @@ namespace CoffeeShop.View.Staff
                 });
             }
         }
-
         private void DeleteOrderItem_MouseDown(object sender, RoutedEventArgs e)
         {
             if (sender is PackIcon ic && ic.DataContext is OrderDetailDisplay item)
@@ -389,7 +388,52 @@ namespace CoffeeShop.View.Staff
                     list.Remove(item); // xóa item khỏi danh sách
             }
         }
-
+        private void icDeleteItem_MouseEnter(object sender, MouseEventArgs e)
+        {
+            if (sender is PackIcon icon)
+                icon.Kind = PackIconKind.Delete;
+        }
+        private void icDeleteItem_MouseLeave(object sender, MouseEventArgs e)
+        {
+            if (sender is PackIcon icon)
+                icon.Kind = PackIconKind.DeleteOutline;
+        }
+        private void bdrPlusQuantity_MouseEnter(object sender, MouseEventArgs e)
+        {
+            if (sender is Border border)
+            {
+                var icon = border.Child as PackIcon;
+                if (icon == null) return;
+                icon.Kind = PackIconKind.PlusCircle;
+            }
+        }
+        private void bdrPlusQuantity_MouseLeave(object sender, MouseEventArgs e)
+        {
+            if (sender is Border border && !(border.Tag as bool? ?? false))
+            {
+                var icon = border.Child as PackIcon;
+                if (icon == null) return;
+                icon.Kind = PackIconKind.PlusCircleOutline;
+            }
+        }
+        private void bdrMinusQuantity_MouseEnter(object sender, MouseEventArgs e)
+        {
+            if (sender is Border border)
+            {
+                var icon = border.Child as PackIcon;
+                if (icon == null) return;
+                icon.Kind = PackIconKind.MinusCircle;
+            }
+        }
+        private void bdrMinusQuantity_MouseLeave(object sender, MouseEventArgs e)
+        {
+            if (sender is Border border && !(border.Tag as bool? ?? false))
+            {
+                var icon = border.Child as PackIcon;
+                if (icon == null) return;
+                icon.Kind = PackIconKind.MinusCircleOutline;
+            }
+        }
         private void icPlusQuantity_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (sender is Border bdr && bdr.DataContext is OrderDetailDisplay item)
@@ -665,10 +709,7 @@ namespace CoffeeShop.View.Staff
         }
 
 
-
         #endregion
-
-        
     }
     public class IndexToNumberConverter : IValueConverter // Converter để hiển thị số thứ tự trong DataGrid
     {
