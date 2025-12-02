@@ -7,7 +7,7 @@
       xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
       xmlns:local="clr-namespace:CoffeeShop.View.Admin"
       mc:Ignorable="d" 
-      d:DesignHeight="610" d:DesignWidth="1110"
+      d:DesignHeight="1000" d:DesignWidth="1110"
       Background="#E0CEB5"
       Title="Thống kê cửa hàng">
 
@@ -33,13 +33,15 @@
                         <DatePicker x:Name="dpStartDate" 
                             Width="120" 
                             materialDesign:HintAssist.Hint="Từ ngày"
-                            Style="{StaticResource MaterialDesignOutlinedDatePicker}"/>
+                            Style="{StaticResource MaterialDesignOutlinedDatePicker}" 
+                            SelectedDateChanged="SelectedDateChangedEvt"/>
 
                         <TextBlock Text="-" VerticalAlignment="Center" Margin="10,0" FontWeight="ExtraBlack" Foreground="#FF340D05"/>
 
                         <DatePicker x:Name="dpEndDate" Width="120" 
                             materialDesign:HintAssist.Hint="Đến ngày"
-                            Style="{StaticResource MaterialDesignOutlinedDatePicker}"/>
+                            Style="{StaticResource MaterialDesignOutlinedDatePicker}"
+                            SelectedDateChanged="SelectedDateChangedEvt"/>
 
                         <Button x:Name="btnStatistic" 
                             Content="Thống kê" Margin="20,0,0,0"
