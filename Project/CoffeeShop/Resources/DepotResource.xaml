@@ -16,6 +16,7 @@
     <Style x:Key="depotButtonStyle" TargetType="Button">
         <Setter Property="Template" Value="{StaticResource depotButtonTemplate}"/>
         <Setter Property="Height" Value="50"/>
+        <Setter Property="Margin" Value="10,0,10,0"/>
         <Setter Property="Background" Value="#C7A57A"/>
         <Setter Property="Foreground" Value="#F9F6F0"/>
         <Setter Property="FontFamily" Value="Cascadia Code"/>

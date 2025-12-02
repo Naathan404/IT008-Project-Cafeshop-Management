@@ -56,7 +56,7 @@
         <ComboBox x:Name="cbInputUnit" Grid.Row="2" Grid.Column="1" Margin="20,0,0,0"
             Height="30" Width="250"
             HorizontalAlignment="Left" VerticalAlignment="Center"
-            Background="#F9F6F0"/>
+            Background="#F9F6F0" SelectedIndex="0"/>
 
         <Border Grid.Row="3" Grid.Column="1" Margin="20,0,0,0"
             HorizontalAlignment="Left" VerticalAlignment="Center"

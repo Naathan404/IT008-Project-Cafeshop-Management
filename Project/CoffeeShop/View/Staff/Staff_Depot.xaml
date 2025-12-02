@@ -22,9 +22,64 @@
             Foreground="#340D05"/>
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="10*"/> <!-- Datagrid -->
-                <ColumnDefinition Width="3*"/> <!-- Function button -->
+                <ColumnDefinition Width="10*"/>
+                <!-- Datagrid -->
+                <ColumnDefinition Width="3*"/>
+                <!-- Function button -->
             </Grid.ColumnDefinitions>
+
+            <!-- popup filter -->
+            <Border x:Name="popupFilterBorder" 
+                Visibility="Collapsed" 
+                Background="#F9F6F0" BorderBrush="#340D05" BorderThickness="1" 
+                Grid.Row="1" Grid.ColumnSpan="2"
+                HorizontalAlignment="Right" VerticalAlignment="Top" 
+                Width="300" Height="200" Panel.ZIndex="10" Margin="0,50,80,0"
+                CornerRadius="7" Padding="15">
+                <StackPanel Orientation="Vertical">
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Text="Lọc theo Số lượng" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Text="Từ:" Grid.Column="0" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                            <TextBox x:Name="txbMin" Grid.Column="1" Margin="0,0,10,0" Width="Auto"/>
+
+                            <TextBlock Text="Đến:" Grid.Column="2" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                            <TextBox x:Name="txbMax" Grid.Column="3" Width="Auto"/>
+                        </Grid>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Text="Lọc theo Đơn vị" FontWeight="SemiBold" Margin="0,0,0,5"/>
+
+                        <!-- The combobox that contains all the unit to filter -->
+                        <ComboBox x:Name="cbUnitFilter"/>
+                    </StackPanel>
+
+                    <Separator Margin="0,5"/>
+                    <Grid>
+                        <Button x:Name="btnClearFilter" 
+                            Content="Bỏ lọc" Margin="0,15,0,0" Padding="5"
+                            BorderBrush="Transparent" Background="#B18252"
+                            Height="40" Width="100"
+                                HorizontalAlignment="Left"
+                            Click="btnClearFilter_Click"/>
+                        <Button x:Name="btnApplyFilter" 
+                            Content="Áp dụng" Margin="0,15,0,0" Padding="5"
+                            BorderBrush="Transparent" Background="#B18252"
+                            Height="40" Width="100"
+                            HorizontalAlignment="Right"
+                            Click="btnApplyFilter_Click"/>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
 
             <Grid Grid.Column="0">
                 <!-- Datagrid - The place that contains the items in depot -->
@@ -37,146 +92,119 @@
                         HorizontalAlignment="Stretch"
                         GridLinesVisibility="None"
                         IsReadOnly="true">
-
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="ID" Binding="{Binding MaterialId}" Width="0.6*" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="ID" Binding="{Binding MaterialId}" Width="0.6*" IsReadOnly="True">
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="HorizontalAlignment" Value="Center"></Setter>
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
                             <DataGridTextColumn Header="Tên" Binding="{Binding MaterialName}" Width="1.2*"/>
-                            <DataGridTextColumn Header="Số lượng" Binding="{Binding Quantity, StringFormat={}{0:G2}}" Width="*"/>
-                            <DataGridTextColumn Header="Đơn vị" Binding="{Binding Unit}" Width="0.7*"/>
+                            <DataGridTextColumn Header="Số lượng" Binding="{Binding Quantity, StringFormat={}{0:G2}}" Width="*">
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="HorizontalAlignment" Value="Center"></Setter>
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
+                            <DataGridTextColumn Header="Đơn vị" Binding="{Binding Unit}" Width="0.7*">
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="HorizontalAlignment" Value="Center"></Setter>
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
                             <DataGridTextColumn Header="Ghi chú" Binding="{Binding Note}" Width="2*"/>
                         </DataGrid.Columns>
-                        </DataGrid>
+                    </DataGrid>
                 </Border>
             </Grid>
 
             <!-- Function button -->
-            <Grid Grid.Column="1" Margin="0,0,30,30">
+            <Grid Grid.Column="1">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="3*"/>
-                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="60*"/>
+                    <RowDefinition Height="123*"/>
+                    <RowDefinition Height="61*"/>
                     <!-- Just empty space -->
                 </Grid.RowDefinitions>
 
-                <Grid Grid.Row="0">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
+                <materialDesign:Card Grid.RowSpan="3"
+                         Height="370" Margin="-15 0 35 0"
+                         VerticalAlignment="Top"
+                         UniformCornerRadius="10">
+                    <Grid Grid.Row="0" Margin="0,0,0,10">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
 
-                    <DockPanel Grid.Row="0">
-                        <!-- Filter -->
-                        <Border MouseLeftButtonUp="Border_MouseLeftButtonUp" VerticalAlignment="Top"
-                            Background="#B18252" BorderThickness="1" BorderBrush="Black"
-                            Width="50" Height="50" CornerRadius="5" DockPanel.Dock="Right">
-                            <Grid>
-                                <Border x:Name="bdrFilter">
-                                    <materialDesign:PackIcon Kind="Filter" Height="30" Width="30"
-                                        HorizontalAlignment="Center" VerticalAlignment="Center"
-                                        Foreground="#F9F6F0"/>
-                                </Border>
-
-                                <Popup x:Name="popupFilter"
-                                    Width="250" Height="Auto" 
-                                    PlacementTarget="{Binding ElementName=bdrFilter}" Placement="Left" 
-                                    AllowsTransparency="True"
-                                    StaysOpen="True"
-                                    Margin="5">
-                                    <Border Background="White" BorderBrush="#CCCCCC" BorderThickness="1" CornerRadius="4" Padding="15">
-                                        <StackPanel Orientation="Vertical">
-                                            <StackPanel Orientation="Vertical">
-                                                <TextBlock Text="Lọc theo Số lượng" FontWeight="SemiBold" Margin="0,0,0,5"/>
-                                                <Grid>
-                                                    <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="Auto"/>
-                                                        <ColumnDefinition Width="*"/>
-                                                        <ColumnDefinition Width="Auto"/>
-                                                        <ColumnDefinition Width="*"/>
-                                                    </Grid.ColumnDefinitions>
-
-                                                    <TextBlock Text="Từ:" Grid.Column="0" VerticalAlignment="Center" Margin="0,0,5,0"/>
-                                                    <TextBox x:Name="txbMin" Grid.Column="1" Margin="0,0,10,0" Width="Auto"/>
-
-                                                    <TextBlock Text="Đến:" Grid.Column="2" VerticalAlignment="Center" Margin="0,0,5,0"/>
-                                                    <TextBox x:Name="txbMax" Grid.Column="3" Width="Auto"/>
-                                                </Grid>
-                                            </StackPanel>
-
-                                            <StackPanel Orientation="Vertical">
-                                                <TextBlock Text="Lọc theo Đơn vị" FontWeight="SemiBold" Margin="0,0,0,5"/>
-
-                                                <!-- The combobox that contains all the unit to filter -->
-                                                <ComboBox x:Name="cbUnitFilter"/>
-                                            </StackPanel>
-
-                                            <Separator Margin="0,5"/>
-                                            <Grid>
-                                                <Button x:Name="btnClearFilter" 
-                                                    Content="Bỏ lọc" Margin="0,15,0,0" Padding="5"
-                                                    BorderBrush="Transparent" Background="#B18252"
-                                                    Height="40" Width="100"
-                                                        HorizontalAlignment="Left"
-                                                    Click="btnClearFilter_Click"/>
-                                                <Button x:Name="btnApplyFilter" 
-                                                    Content="Áp dụng" Margin="0,15,0,0" Padding="5"
-                                                    BorderBrush="Transparent" Background="#B18252"
-                                                    Height="40" Width="100"
-                                                    HorizontalAlignment="Right"
-                                                    Click="btnApplyFilter_Click"/>
-                                            </Grid>
-                                        </StackPanel>
+                        <DockPanel Grid.Row="0" Margin="10,10,10,0">
+                            <!-- Filter -->
+                            <Border MouseLeftButtonUp="Border_MouseLeftButtonUp" VerticalAlignment="Top"
+                                Background="#B18252" BorderThickness="1" BorderBrush="Black"
+                                Width="50" Height="50" CornerRadius="5" DockPanel.Dock="Right">
+                                <Grid>
+                                    <Border x:Name="bdrFilter">
+                                        <materialDesign:PackIcon Kind="Filter" Height="30" Width="30"
+                                            HorizontalAlignment="Center" VerticalAlignment="Center"
+                                            Foreground="#F9F6F0"/>
                                     </Border>
-                                </Popup>
-                            </Grid>
-                        </Border>
 
-                        <!-- Search bar -->
-                        <TextBox x:Name="txbSearchBar"
-                            Margin="0 0 5 0"
-                            Height="50"
-                            VerticalAlignment="Top"
-                            HorizontalAlignment="Stretch"
-                            materialDesign:HintAssist.Hint="Tìm kiếm"
-                            materialDesign:HintAssist.Foreground="#462812"
-                            materialDesign:HintAssist.Background="Transparent"
-                            materialDesign:TextFieldAssist.UnderlineBrush="#462812"
-                            AcceptsReturn="True"
-                            Style="{StaticResource MaterialDesignOutlinedTextBox}"
-                            materialDesign:TextFieldAssist.OutlinedBorderActiveThickness="3"
-                            BorderThickness="1"
-                            TextWrapping="Wrap"
-                            VerticalScrollBarVisibility="Auto"
-                            TextChanged="txbSearchBar_TextChanged"/>
-                    </DockPanel>
+                                </Grid>
+                            </Border>
 
-                    <Button x:Name="btnUpdate"
-                        Content="CẬP NHẬT"
-                        Grid.Row="1" Click="btnUpdate_Click"
-                        Style="{StaticResource depotButtonStyle}"/>
+                            <!-- Search bar -->
+                            <TextBox x:Name="txbSearchBar"
+                                Margin="0 0 5 0"
+                                Height="50"
+                                VerticalAlignment="Top"
+                                HorizontalAlignment="Stretch"
+                                materialDesign:HintAssist.Hint="Tìm kiếm"
+                                materialDesign:HintAssist.Foreground="#462812"
+                                materialDesign:HintAssist.Background="Transparent"
+                                materialDesign:TextFieldAssist.UnderlineBrush="#462812"
+                                AcceptsReturn="True"
+                                Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                                materialDesign:TextFieldAssist.OutlinedBorderActiveThickness="3"
+                                BorderThickness="1"
+                                TextWrapping="Wrap"
+                                VerticalScrollBarVisibility="Auto"
+                                TextChanged="txbSearchBar_TextChanged"/>
+                        </DockPanel>
 
-                    <Button x:Name="btnAdd"
-                        Content="THÊM"
-                        Grid.Row="2" Click="btnAdd_Click"
-                        Style="{StaticResource depotButtonStyle}"/>
 
-                    <Button x:Name="btnDelete" 
-                        Content="XOÁ"
-                        Grid.Row="3" Click="btnDelete_Click"
-                        Style="{StaticResource depotButtonStyle}"/>
+                        <Button x:Name="btnUpdate"
+                            Content="CẬP NHẬT"
+                            Grid.Row="1" Click="btnUpdate_Click"
+                            Style="{StaticResource depotButtonStyle}"/>
 
-                    <Button x:Name="btnReport" 
-                        Content="BÁO CÁO"
-                        Grid.Row="4" Click="btnReport_Click"
-                        Style="{StaticResource depotButtonStyle}"/>
+                        <Button x:Name="btnAdd"
+                            Content="THÊM"
+                            Grid.Row="2" Click="btnAdd_Click"
+                            Style="{StaticResource depotButtonStyle}"/>
 
-                    <Button x:Name="btnHistory"
-                        Content="LỊCH SỬ"
-                        Grid.Row="5" Click="btnHistory_Click"
-                        Style="{StaticResource depotButtonStyle}"/>
-                </Grid>
+                        <Button x:Name="btnDelete" 
+                            Content="XOÁ"
+                            Grid.Row="3" Click="btnDelete_Click"
+                            Style="{StaticResource depotButtonStyle}"/>
+
+                        <Button x:Name="btnReport" 
+                            Content="BÁO CÁO"
+                            Grid.Row="4" Click="btnReport_Click"
+                            Style="{StaticResource depotButtonStyle}"/>
+
+                        <Button x:Name="btnHistory"
+                            Content="LỊCH SỬ"
+                            Grid.Row="5" Click="btnHistory_Click"
+                            Style="{StaticResource depotButtonStyle}"/>
+                    </Grid>
+                </materialDesign:Card>
             </Grid>
         </Grid>
     </Grid>

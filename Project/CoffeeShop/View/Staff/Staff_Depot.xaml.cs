@@ -10,6 +10,7 @@ using System.Xml.Linq;
 
 namespace CoffeeShop.View.Staff
 {
+    // Class thông báo sự thay đổi dữ liệu khi update -> cập nhật vào dg
     public class NotificationBase : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler? PropertyChanged;
@@ -35,17 +36,18 @@ namespace CoffeeShop.View.Staff
             LoadFilterUnit();
         }
 
-        // Class for adding datas
+        // Class để chứa dữ liệu trong dg
         public class DepotItem : NotificationBase
         {
-            public int _materialId;
-            public string? _materialName;
-            public decimal _quantity;
-            public string _unit;
-            public string? _note;
+            // Backing field (nơi lưu giá trị thật sự) 
+            private int _materialId;
+            private string? _materialName;
+            private decimal _quantity;
+            private string _unit;
+            private string? _note;
 
-            // --- CÁC PROPERTY (Thuộc tính có logic) ---
-            public int MaterialId;
+            // --- CÁC PROPERTY - Khi có sự thay đổi mới gián giá trị mới cho backing field ---
+            public int MaterialId { get; set; } /// KO có sự thay đổi ID nên ko cần định nghĩa hàm set
             // 1. MaterialName
             public string? MaterialName
             {
@@ -102,7 +104,7 @@ namespace CoffeeShop.View.Staff
                 }
             }
         }
-
+        // Load dữ liệu từ DB vào dg
         public void LoadDepotItem()
         {
             depotItems.Clear();
@@ -113,17 +115,17 @@ namespace CoffeeShop.View.Staff
                 {
                     depotItems.Add(new DepotItem
                     {
-                        _materialId = item.MaterialId,
-                        _materialName = item.MaterialName ?? string.Empty,
-                        _quantity = item.Quantity,
-                        _unit = item.Unit ?? string.Empty,
-                        _note = item.Note ?? string.Empty
+                        MaterialId = item.MaterialId,
+                        MaterialName = item.MaterialName ?? string.Empty,
+                        Quantity = item.Quantity,
+                        Unit = item.Unit ?? string.Empty,
+                        Note = item.Note ?? string.Empty
                     });
                 }
                 dgDepot.ItemsSource = depotItems;
             }
         }
-
+        // Load các đơn vị đã có vào combobox chọn đơn vị của filter
         private void LoadFilterUnit()
         {
             using (var db = new CoffeeShopContext())
@@ -136,18 +138,25 @@ namespace CoffeeShop.View.Staff
                 cbUnitFilter.ItemsSource = unit;
             }
         }
-
+        // Hàm giúp đóng mở popup filter
         private void Border_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            popupFilter.IsOpen = !popupFilter.IsOpen;
+            if (popupFilterBorder.Visibility == Visibility.Collapsed)
+            {
+                popupFilterBorder.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                popupFilterBorder.Visibility = Visibility.Collapsed;
+            }
             e.Handled = true;
         }
-
+        // Hàm áp dụng bộ lọc
         private void btnApplyFilter_Click(object sender, RoutedEventArgs e)
         {
             FilterData();
         }
-
+        // Hàm bỏ lọc - Dữ liệu quay về ban đầu
         private void btnClearFilter_Click(object sender, RoutedEventArgs e)
         {
             txbMin.Clear();
@@ -155,7 +164,7 @@ namespace CoffeeShop.View.Staff
             cbUnitFilter.SelectedIndex = 0;
             FilterData();
         }
-
+        // Hàm nhận biến sự thay đổi của nội dung thanh tìm kiếm -> FilterData
         private void txbSearchBar_TextChanged(object sender, TextChangedEventArgs e)
         {
             FilterData();
@@ -200,7 +209,7 @@ namespace CoffeeShop.View.Staff
                 {
                     depotItems.Add(new DepotItem
                     {
-                        _materialId = item.MaterialId,
+                        MaterialId = item.MaterialId,
                         MaterialName = item.MaterialName,
                         Quantity = item.Quantity,
                         Unit = item.Unit,
@@ -213,31 +222,34 @@ namespace CoffeeShop.View.Staff
                 dgDepot.Items.Refresh();
             }
         }
-
+        // Hàm giúp bỏ focus thanh tìm kiếm và đóng popup khi click ngoài
         private void MainGrid_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (txbSearchBar.IsFocused)
             {
                 btnUpdate.Focus();
             }
+            if (popupFilterBorder.Visibility == Visibility.Visible)
+            {
+                popupFilterBorder.Visibility= Visibility.Collapsed;
+            }
         }
-
 
         #region Các nút chức năng
         // Cập nhật dữ liệu của row đang chọn trong dg
         private void btnUpdate_Click(object sender, RoutedEventArgs e)
         {
-            // 1. Kiểm tra hàng được chọn
+            //  Kiểm tra hàng được chọn - nếu chưa chọn mà ấn update thì phải chọn lại
             if (dgDepot.SelectedItem == null)
             {
                 MessageBox.Show("Vui lòng chọn một vật tư để sửa.", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
-            // 2. Lấy đối tượng đang được chọn
+            //  Lấy đối tượng đang được chọn
             DepotItem selectedItem = dgDepot.SelectedItem as DepotItem;
 
-            // 3. Gọi constructor Sửa: truyền cả đối tượng đang được chọn và Collection
+            //  Gọi constructor Sửa: truyền cả đối tượng đang được chọn và Collection
             InputWindow inputWindow = new InputWindow(selectedItem, depotItems);
             inputWindow.ShowDialog();
         }
@@ -254,28 +266,27 @@ namespace CoffeeShop.View.Staff
         {
             // Kiểm tra xem có đang chọn item nào không
             if (dgDepot.SelectedItem == null) return;
-
+            // Lay item đang chọn
             var selectedItem = dgDepot.SelectedItem as DepotItem;
-
+            // Hỏi lại 
             if (MessageBox.Show($"Bạn có chắc muốn xóa: {selectedItem.MaterialName}?", "Xác nhận", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
+                // Xóa khi người dùng click yes
                 using (var db = new CoffeeShopContext())
                 {
-                    Inventory deletedItem = db.Inventories.Find(selectedItem._materialId);
+                    // Lấy item trong db (phải xóa trong db)
+                    Inventory deletedItem = db.Inventories.Find(selectedItem.MaterialId);
 
                     if (deletedItem != null) // Tim thay item
                     {
-                        // Xóa item
                         db.Inventories.Remove(deletedItem);
-
                         // Lưu thay đổi -> chính thức bị xóa
                         int recordsAffected = db.SaveChanges();
 
-                        if (recordsAffected > 0)
+                        if (recordsAffected > 0) // Khi có thay đổi (bị xóa) -> xóa cả dữ liệu trong dg và thông báo
                         {
-                            // Load lại dữ liệu dg
                             depotItems.Remove(selectedItem);
-                            MessageBox.Show("Đã xóa thành công khỏi DB!", "Thành công");
+                            MessageBox.Show($"Đã xóa thành công {selectedItem.MaterialName} khỏi DB!", "Thành công");
                         }
                     }
                 }

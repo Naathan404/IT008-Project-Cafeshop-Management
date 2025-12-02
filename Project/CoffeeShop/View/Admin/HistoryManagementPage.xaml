@@ -40,7 +40,7 @@
                 Margin="40 0 40 20">
 
                 <DataGrid x:Name="dgOrdersHistory"
-                        ColumnHeaderStyle="{StaticResource dgHeaderTemplate}"
+                        ColumnHeaderStyle="{StaticResource dgHeaderStyle}"
                         AutoGenerateColumns="False" CanUserAddRows="False"
                         CanUserResizeColumns="False" CanUserReorderColumns="False"
                         HorizontalAlignment="Stretch"

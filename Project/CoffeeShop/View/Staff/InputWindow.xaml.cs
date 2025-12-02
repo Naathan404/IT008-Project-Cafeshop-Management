@@ -16,8 +16,8 @@ namespace CoffeeShop.View.Staff
     /// </summary>
     public partial class InputWindow : Window
     {
-        // Trường để giữ đối tượng đang được sửa (Nếu là Thêm thì nó sẽ là null)
-        private DepotItem _itemToEdit = null;
+        
+        private DepotItem _itemToEdit = null; // Nếu đối tượng đã được thêm thì sẽ khác null
         ObservableCollection<DepotItem> depotItems;
         // Constructor 1: CHẾ ĐỘ THÊM MỚI
         public InputWindow(ObservableCollection<DepotItem> itemsCollection)
@@ -30,9 +30,9 @@ namespace CoffeeShop.View.Staff
         }
         
         // Constructor 2: CHẾ ĐỘ CẬP NHẬT
-        public InputWindow(DepotItem selectedItem, ObservableCollection<DepotItem> itemsCollection)
-            : this(itemsCollection) // Gọi lại constructor Thêm mới
+        public InputWindow(DepotItem selectedItem, ObservableCollection<DepotItem> itemsCollection) : this(itemsCollection) // Gọi lại constructor Thêm mới (ko cần ghi lại các dòng giống nhau)
         {
+            // Gán item đang chọn cho _itemToEdit
             _itemToEdit = selectedItem;
             this.Title = $"Sửa vật tư: {selectedItem.MaterialName}";
 
@@ -50,14 +50,12 @@ namespace CoffeeShop.View.Staff
         // Load các đơn vị của item vào combobox để phục vụ cho việc thêm mới item
         private void LoadInputUnit()
         {
-            using (var db = new CoffeeShopContext())
-            {
-                var unit = db.Inventories
-                        .Select(item => item.Unit) // Chọn ra đơn vị trong item
-                        .Distinct() // Loại bỏ trùng lặp
-                        .ToList(); // Chuyển sang List để thêm vào comboBox
-                cbInputUnit.ItemsSource = unit;
-            }
+            cbInputUnit.Items.Add("Kg");
+            cbInputUnit.Items.Add("Lon");
+            cbInputUnit.Items.Add("Chai");
+            cbInputUnit.Items.Add("Hộp");
+            cbInputUnit.Items.Add("Hộp 1L");
+            cbInputUnit.Items.Add("Hũ");
         }
 
         private void btnAddItem_Click(object sender, RoutedEventArgs e)
@@ -82,7 +80,7 @@ namespace CoffeeShop.View.Staff
             {
                 // Nếu chuyển đổi thất bại (chuỗi rỗng, chữ, dấu sai)
                 MessageBox.Show("Vui lòng nhập Số Lượng hợp lệ (chỉ nhập số).", "Lỗi nhập liệu", MessageBoxButton.OK, MessageBoxImage.Error);
-                return; // Dừng hàm, không chạy tiếp
+                return;
             }
 
             if (cbInputUnit.SelectedItem == null)
@@ -91,46 +89,45 @@ namespace CoffeeShop.View.Staff
                 return;
             }
 
-            // Tạo item chứa dữ liệu từ input
+            // Tạo item để thêm vào db (chứa dữ liệu từ input)
             Inventory newItem = new Inventory
             {
                 MaterialName = txbName.Text,
                 Quantity = quantityValue,
-                Unit = cbInputUnit.SelectedItem.ToString(),
+                Unit = cbInputUnit.SelectedValue.ToString(),
                 Note = txbNote.Text
             };
 
-            // Thêm dữ liệu vào Inventories
+            // Thêm dữ liệu vào DB
             using (var db = new CoffeeShopContext())
             {
                 if (_itemToEdit != null)
                 {
                     // CHẾ ĐỘ UPDATE
-                    Inventory itemToUpdate = db.Inventories.Find(_itemToEdit.MaterialId);
+                    Inventory itemToUpdate = db.Inventories.Find(_itemToEdit.MaterialId); // Dựa vào ID của item từ dg -> tìm kiếm item trong DB
 
                     if (itemToUpdate != null)
                     {
-                        // Cập nhật giá trị vào DB Model
+                        // Cập nhật giá trị mới vào DB
                         itemToUpdate.MaterialName = name;
                         itemToUpdate.Quantity = quantityValue;
                         itemToUpdate.Unit = unit;
                         itemToUpdate.Note = txbNote.Text;
 
-                        db.SaveChanges();
+                        db.SaveChanges(); // Lưu thay đổi trong DB
 
-                        // Cập nhật UI Model (DepotItem) để DataGrid tự refresh
+                        // Cập nhật lại dữ liệu cho dg
                         _itemToEdit.MaterialName = name;
                         _itemToEdit.Quantity = quantityValue;
                         _itemToEdit.Unit = unit;
                         _itemToEdit.Note = txbNote.Text;
-
-                        // Vì DepotItem đã có INotifyPropertyChanged (hoặc m gọi Refresh()),
-                        // UI sẽ cập nhật.
+                        // Vì DepotItem đã có INotifyPropertyChanged nên sẽ tự động set khi dữ liệu trong dg có sự thay đổi
                     }
                 }
                 else
                 {
                     // CHẾ ĐỘ THÊM MỚI (ADD)
+                    // Khai báo item mới chứa giá trị từ input
                     Inventory newEntity = new Inventory
                     {
                         MaterialName = name,
@@ -142,7 +139,7 @@ namespace CoffeeShop.View.Staff
                     db.Inventories.Add(newEntity);
                     db.SaveChanges();
 
-                    // Ánh xạ ngược từ Inventory (có ID từ DB) sang DepotItem
+                    // Ánh xạ ngược từ kiểu Inventory (có ID từ DB) sang DepotItem (Vì ko convert từ Inventory sang DepotItem được)
                     DepotItem newDepotItem = new DepotItem
                     {
                         MaterialId = newEntity.MaterialId, // ID từ DB
