@@ -107,7 +107,7 @@
                 HorizontalAlignment="Stretch"
                 GridLinesVisibility="None"
                 IsReadOnly="true"
-                ColumnHeaderStyle="{StaticResource dgHeaderTemplate}"
+                ColumnHeaderStyle="{StaticResource dgHeaderStyle}"
                 >
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Tên món" Width="4*" Binding="{Binding oName}"></DataGridTextColumn>
