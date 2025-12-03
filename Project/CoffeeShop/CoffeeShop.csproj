@@ -20,10 +20,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Remove="Models\Order.Custom.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Remove="Assets\icoCoffee.ico" />
     <None Remove="Assets\Images\cuteCoffeeCup.jpg" />
     <None Remove="Assets\Images\imgBanner_1.png" />
@@ -33,10 +29,6 @@
     <None Remove="Assets\Images\imgBanner_5.jpg" />
     <None Remove="Assets\Images\imgCoffeeOrder.jpg" />
     <None Remove="Assets\Images\imgItemExample.jpg" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="Models\Order.Custom.cs" />
   </ItemGroup>
 
   <ItemGroup>

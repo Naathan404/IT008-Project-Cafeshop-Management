@@ -1,19 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace CoffeeShop.Models;
 
-namespace CoffeeShop.Models
+
+public partial class Order
 {
-	public partial class Order
+    // Scaffold-DbContext "Server=LAPTOP-UEB0IP6O;Database=CoffeeShopDB;Trusted_Connection=True;TrustServerCertificate=True;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models -Context CoffeeShopContext -Force
+    public string DisplayID
 	{
-		public string DisplayID
+		get
 		{
-			get
-			{
-				return $"HD{OrderDate:yyMMdd}-{OrderId:D5}";
-			}
+			return $"HD{OrderDate:yyMMdd}-{OrderId:D5}";
 		}
 	}
+
 }
