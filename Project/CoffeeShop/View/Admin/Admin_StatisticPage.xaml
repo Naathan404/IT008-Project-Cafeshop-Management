@@ -30,22 +30,24 @@
                         Orientation="Horizontal" 
                         Margin="20" 
                         VerticalAlignment="Center">
-                        <DatePicker x:Name="dpStartDate" 
+                        <DatePicker 
+                            x:Name="dpStartDate" 
+                            SelectedDate="{Binding StartDate, Mode=TwoWay}"
                             Width="120" 
                             materialDesign:HintAssist.Hint="Từ ngày"
-                            Style="{StaticResource MaterialDesignOutlinedDatePicker}" 
-                            SelectedDateChanged="SelectedDateChangedEvt"/>
+                            Style="{StaticResource MaterialDesignOutlinedDatePicker}" />
 
                         <TextBlock Text="-" VerticalAlignment="Center" Margin="10,0" FontWeight="ExtraBlack" Foreground="#FF340D05"/>
 
                         <DatePicker x:Name="dpEndDate" Width="120" 
+                            SelectedDate="{Binding EndDate, Mode=TwoWay}"
                             materialDesign:HintAssist.Hint="Đến ngày"
-                            Style="{StaticResource MaterialDesignOutlinedDatePicker}"
-                            SelectedDateChanged="SelectedDateChangedEvt"/>
+                            Style="{StaticResource MaterialDesignOutlinedDatePicker}"/>
 
-                        <Button x:Name="btnStatistic" 
-                            Content="Thống kê" Margin="20,0,0,0"
-                            Width="120"
+                        <Button x:Name="btnCurrentDay" 
+                            Command="{Binding ResetToCurrentDayCommand}"
+                            Content="Trong ngày" Margin="20,0,0,0"
+                            Width="150"
                             Foreground="#FF340D05"
                             Style="{StaticResource depotButtonStyle}" BorderBrush="#391B05"/>
                     </StackPanel>
@@ -130,34 +132,49 @@
                     <materialDesign:Card Grid.Column="0" Margin="10" Padding="10" UniformCornerRadius="15">
                         <Grid>
                             <TextBlock Text="Top 5 bán chạy" FontWeight="Bold" HorizontalAlignment="Center"/>
-                            <lvc:PieChart Series="{Binding TopProductsSeries}" 
-                                LegendLocation="Right" 
-                                InnerRadius="0" 
-                                Margin="0,20,0,0"
-                                Hoverable="True"/>
+                            <lvc:PieChart 
+                                x:Name="pieChartTop5BestSeller"
+                                Series="{Binding TopProductsSeries}" 
+                                Style="{StaticResource PieChartCustomStyle}"
+                                InnerRadius="0">
+                                <lvc:PieChart.DataTooltip>
+                                    <lvc:DefaultTooltip
+                                        SelectionMode="OnlySender"
+                                        ></lvc:DefaultTooltip>
+                                </lvc:PieChart.DataTooltip>
+                            </lvc:PieChart>
                         </Grid>
                     </materialDesign:Card>
 
                     <materialDesign:Card Grid.Column="1" Margin="10" Padding="10" UniformCornerRadius="15">
                         <Grid>
                             <TextBlock Text="Hình thức thanh toán" FontWeight="Bold" HorizontalAlignment="Center"/>
-                            <lvc:PieChart Series="{Binding PaymentMethodSeries}" 
-                                LegendLocation="Right" 
-                                InnerRadius="40" 
-                                Margin="0,20,0,0"
-                                Hoverable="True"/>
+                            <lvc:PieChart 
+                                x:Name="pieChartPaymentMethod"
+                                Series="{Binding PaymentMethodSeries}" 
+                                Style="{StaticResource PieChartCustomStyle}">
+                                <lvc:PieChart.DataTooltip>
+                                    <lvc:DefaultTooltip
+                                        SelectionMode="OnlySender"
+                                        ></lvc:DefaultTooltip>
+                                </lvc:PieChart.DataTooltip>
+                            </lvc:PieChart>
                         </Grid>
                     </materialDesign:Card>
 
                     <materialDesign:Card Grid.Column="2" Margin="10" Padding="10" UniformCornerRadius="15">
                         <Grid>
                             <TextBlock Text="Hình thức sử dụng" FontWeight="Bold" HorizontalAlignment="Center"/>
-                            <lvc:PieChart Series="{Binding DiningOptionSeries}" 
-                                LegendLocation="Right" 
-                                InnerRadius="40" 
-                                Margin="0,20,0,0"
-                                Hoverable="True"
-                          />
+                            <lvc:PieChart 
+                                x:Name="pieChartServiceOption"
+                                Series="{Binding ServiceOptionSeries}" 
+                                Style="{StaticResource PieChartCustomStyle}">
+                                <lvc:PieChart.DataTooltip>
+                                    <lvc:DefaultTooltip
+                                        SelectionMode="OnlySender"
+                                        ></lvc:DefaultTooltip>
+                                </lvc:PieChart.DataTooltip>
+                            </lvc:PieChart>
                             <ScrollBar HorizontalAlignment="Left" Margin="242,53,0,0" VerticalAlignment="Top"/>
                         </Grid>
                     </materialDesign:Card>
