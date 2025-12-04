@@ -7,55 +7,68 @@
       xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
       xmlns:local="clr-namespace:CoffeeShop.View.Admin"
       mc:Ignorable="d" 
-      d:DesignHeight="1000" d:DesignWidth="1110"
+      d:DesignHeight="1600" d:DesignWidth="1110"
       Background="#E0CEB5"
       Title="Thống kê cửa hàng">
 
     <Grid>
-    <ScrollViewer HorizontalScrollBarVisibility="Disabled">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="400"/>
-                    <RowDefinition Height="300"/>
-                </Grid.RowDefinitions>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
 
-                <Grid Grid.Row="0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="2*"></ColumnDefinition>
-                        <ColumnDefinition Width="2*"></ColumnDefinition>
-                    </Grid.ColumnDefinitions>
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"></ColumnDefinition>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
 
-                    <StackPanel Grid.Column="0"
+                <StackPanel Grid.Column="0"
                         Orientation="Horizontal" 
-                        Margin="20" 
+                        Margin="20 0 20 2" 
                         VerticalAlignment="Center">
-                        <DatePicker 
+                    <DatePicker 
                             x:Name="dpStartDate" 
                             SelectedDate="{Binding StartDate, Mode=TwoWay}"
                             Width="120" 
+                            Height="Auto"
                             materialDesign:HintAssist.Hint="Từ ngày"
+                            VerticalAlignment="Center"
                             Style="{StaticResource MaterialDesignOutlinedDatePicker}" />
 
-                        <TextBlock Text="-" VerticalAlignment="Center" Margin="10,0" FontWeight="ExtraBlack" Foreground="#FF340D05"/>
+                    <TextBlock Text="-" VerticalAlignment="Center" Margin="10,0" FontWeight="ExtraBlack" Foreground="#FF340D05"/>
 
-                        <DatePicker x:Name="dpEndDate" Width="120" 
+                    <DatePicker x:Name="dpEndDate" Width="120"  Height="Auto"
                             SelectedDate="{Binding EndDate, Mode=TwoWay}"
                             materialDesign:HintAssist.Hint="Đến ngày"
+                            VerticalAlignment="Center"
                             Style="{StaticResource MaterialDesignOutlinedDatePicker}"/>
 
-                        <Button x:Name="btnCurrentDay" 
+                    <Button x:Name="btnCurrentDay" 
                             Command="{Binding ResetToCurrentDayCommand}"
                             Content="Trong ngày" Margin="20,0,0,0"
                             Width="150"
                             Foreground="#FF340D05"
-                            Style="{StaticResource depotButtonStyle}" BorderBrush="#391B05"/>
-                    </StackPanel>
+                            Style="{StaticResource BrownButtonStyle_1}" BorderBrush="#391B05"/>
 
-                    <StackPanel Grid.Column="1"
+                    <Button x:Name="btnShowCurrency"
+                                Command="{Binding ChangeChartValueCommand}"
+                                Style="{StaticResource BrownButtonStyle_1}">
+                        <materialDesign:PackIcon
+                                Kind="{Binding ShowRevenueIcon}"
+                                Height="45"
+                                Width="45"
+                                HorizontalAlignment="Center"
+                                Foreground="#FF340D05"
+                                ></materialDesign:PackIcon>
+                    </Button>
+                </StackPanel>
+
+                <StackPanel Grid.Column="1"
                                 Orientation="Horizontal"
                                 HorizontalAlignment="Right">
-                        <materialDesign:Card
+                    <materialDesign:Card
                             Margin="0 20 20 20" 
                             Padding="10" 
                             UniformCornerRadius="15"
@@ -71,14 +84,14 @@
                                 <materialDesign:PackIcon Kind="Dollar" VerticalAlignment="Center" Height="30" Width="30"/>
                                 <StackPanel Margin="10,0,0,0">
                                     <TextBlock Text="Tổng doanh thu thống kê  " Opacity="0.6"/>
-                                    <TextBlock x:Name="txblTotalRevenue" Text="0 ₫" FontWeight="Bold" FontSize="18"/>
+                                    <TextBlock x:Name="txblTotalRevenue" Text="1.000.000.000 ₫" FontWeight="Bold" FontSize="18"/>
                                 </StackPanel>
                             </StackPanel>
                             <ScrollBar Grid.Column="1" 
                                    HorizontalAlignment="Right"/>
                         </Grid>
                     </materialDesign:Card>
-                    
+
                     <materialDesign:Card
                         Margin="0 20 20 20" 
                         Padding="10" 
@@ -94,92 +107,174 @@
                                 Orientation="Horizontal">
                                 <materialDesign:PackIcon Kind="Dollar" VerticalAlignment="Center" Height="30" Width="30"/>
                                 <StackPanel Margin="10,0,0,0">
-                                    <TextBlock Text="Tổng oanh thu trong ngày " Opacity="0.6"/>
-                                    <TextBlock x:Name="txblTotalRevenueToday" Text="0 ₫" FontWeight="Bold" FontSize="18"/>
+                                    <TextBlock Text="Tổng doanh thu trong ngày " Opacity="0.6"/>
+                                    <TextBlock x:Name="txblTotalRevenueToday" Text="1.000.000.000 ₫" FontWeight="Bold" FontSize="18"/>
                                 </StackPanel>
                             </StackPanel>
                             <ScrollBar Grid.Column="1" 
                                    HorizontalAlignment="Right"/>
                         </Grid>
                     </materialDesign:Card>
-                    </StackPanel>
-
-                </Grid>
-
-                <materialDesign:Card Grid.Row="1" Margin="20,0,20,10" Padding="20" UniformCornerRadius="15">
-                    <Grid>
-                        <TextBlock Text="Biểu đồ doanh thu theo thời gian" FontWeight="Bold" Foreground="Gray"/>
-
-                        <lvc:CartesianChart Series="{Binding RevenueSeries}" LegendLocation="None">
-                            <lvc:CartesianChart.AxisX>
-                                <lvc:Axis Labels="{Binding RevenueLabels}" Title="Thời gian"></lvc:Axis>
-                            </lvc:CartesianChart.AxisX>
-
-                            <lvc:CartesianChart.AxisY>
-                                <lvc:Axis LabelFormatter="{Binding CurrencyFormatter}" Title="Doanh thu (VNĐ)"></lvc:Axis>
-                            </lvc:CartesianChart.AxisY>
-                        </lvc:CartesianChart>
-                    </Grid>
-                </materialDesign:Card>
-
-                <Grid Grid.Row="2" Margin="10,0,10,20">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-
-                    <materialDesign:Card Grid.Column="0" Margin="10" Padding="10" UniformCornerRadius="15">
-                        <Grid>
-                            <TextBlock Text="Top 5 bán chạy" FontWeight="Bold" HorizontalAlignment="Center"/>
-                            <lvc:PieChart 
-                                x:Name="pieChartTop5BestSeller"
-                                Series="{Binding TopProductsSeries}" 
-                                Style="{StaticResource PieChartCustomStyle}"
-                                InnerRadius="0">
-                                <lvc:PieChart.DataTooltip>
-                                    <lvc:DefaultTooltip
-                                        SelectionMode="OnlySender"
-                                        ></lvc:DefaultTooltip>
-                                </lvc:PieChart.DataTooltip>
-                            </lvc:PieChart>
-                        </Grid>
-                    </materialDesign:Card>
-
-                    <materialDesign:Card Grid.Column="1" Margin="10" Padding="10" UniformCornerRadius="15">
-                        <Grid>
-                            <TextBlock Text="Hình thức thanh toán" FontWeight="Bold" HorizontalAlignment="Center"/>
-                            <lvc:PieChart 
-                                x:Name="pieChartPaymentMethod"
-                                Series="{Binding PaymentMethodSeries}" 
-                                Style="{StaticResource PieChartCustomStyle}">
-                                <lvc:PieChart.DataTooltip>
-                                    <lvc:DefaultTooltip
-                                        SelectionMode="OnlySender"
-                                        ></lvc:DefaultTooltip>
-                                </lvc:PieChart.DataTooltip>
-                            </lvc:PieChart>
-                        </Grid>
-                    </materialDesign:Card>
-
-                    <materialDesign:Card Grid.Column="2" Margin="10" Padding="10" UniformCornerRadius="15">
-                        <Grid>
-                            <TextBlock Text="Hình thức sử dụng" FontWeight="Bold" HorizontalAlignment="Center"/>
-                            <lvc:PieChart 
-                                x:Name="pieChartServiceOption"
-                                Series="{Binding ServiceOptionSeries}" 
-                                Style="{StaticResource PieChartCustomStyle}">
-                                <lvc:PieChart.DataTooltip>
-                                    <lvc:DefaultTooltip
-                                        SelectionMode="OnlySender"
-                                        ></lvc:DefaultTooltip>
-                                </lvc:PieChart.DataTooltip>
-                            </lvc:PieChart>
-                            <ScrollBar HorizontalAlignment="Left" Margin="242,53,0,0" VerticalAlignment="Top"/>
-                        </Grid>
-                    </materialDesign:Card>
-                </Grid>
+                </StackPanel>
             </Grid>
-        </ScrollViewer>
+
+            <ScrollViewer Grid.Row="1"
+                    HorizontalScrollBarVisibility="Auto"
+                    VerticalScrollBarVisibility="Visible">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="400"></RowDefinition>
+                        <RowDefinition Height="400"></RowDefinition>
+                        <RowDefinition Height="350"></RowDefinition>
+                        <RowDefinition Height="350"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    
+                    <!--First Row-->
+                    <Grid Grid.Row="0" Margin="20,0,20,20">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                        </Grid.ColumnDefinitions>    
+                    </Grid>
+                    
+                    <!--Second Row-->
+                    <materialDesign:Card Grid.Row="1" Margin="20,0,20,10" Padding="20" UniformCornerRadius="15">
+                        <Grid>
+                            <TextBlock Text="Biểu đồ doanh thu theo thời gian" FontWeight="Bold" Foreground="Gray"/>
+
+                            <lvc:CartesianChart Series="{Binding RevenueSeries}" LegendLocation="None">
+                                <lvc:CartesianChart.AxisX>
+                                    <lvc:Axis Labels="{Binding RevenueLabels}" Title="Thời gian"></lvc:Axis>
+                                </lvc:CartesianChart.AxisX>
+
+                                <lvc:CartesianChart.AxisY>
+                                    <lvc:Axis LabelFormatter="{Binding CurrencyFormatter}" Title="Doanh thu (VNĐ)"></lvc:Axis>
+                                </lvc:CartesianChart.AxisY>
+                            </lvc:CartesianChart>
+                        </Grid>
+                    </materialDesign:Card>
+                    
+                    <!--Third Row-->
+                    <Grid Grid.Row="2" Margin="10,0,10,20">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <materialDesign:Card Grid.Column="0" Margin="10" Padding="10" UniformCornerRadius="15">
+                            <Grid>
+                                <TextBlock Text="Top 5 bán chạy" FontWeight="Bold" HorizontalAlignment="Center"/>
+                                <lvc:PieChart 
+                                    x:Name="pieChartTop5BestSeller"
+                                    Series="{Binding TopProductsSeries}" 
+                                    Style="{StaticResource PieChartCustomStyle}"
+                                    InnerRadius="0">
+                                    <lvc:PieChart.DataTooltip>
+                                        <lvc:DefaultTooltip
+                                            SelectionMode="OnlySender"
+                                            ></lvc:DefaultTooltip>
+                                    </lvc:PieChart.DataTooltip>
+                                </lvc:PieChart>
+                            </Grid>
+                        </materialDesign:Card>
+
+                        <materialDesign:Card Grid.Column="1" Margin="10" Padding="10" UniformCornerRadius="15">
+                            <Grid>
+                                <TextBlock Text="Danh mục" FontWeight="Bold" HorizontalAlignment="Center"/>
+                                <lvc:PieChart 
+                                    x:Name="pieChartCategory"
+                                    Series="{Binding CategorySeries}" 
+                                    Style="{StaticResource PieChartCustomStyle}"
+                                    InnerRadius="0">
+                                    <lvc:PieChart.DataTooltip>
+                                        <lvc:DefaultTooltip
+                                            SelectionMode="OnlySender"
+                                            ></lvc:DefaultTooltip>
+                                    </lvc:PieChart.DataTooltip>
+                                </lvc:PieChart>
+                            </Grid>
+                        </materialDesign:Card>
+
+                        <materialDesign:Card Grid.Column="2" Margin="10" Padding="10" UniformCornerRadius="15">
+                            <Grid>
+                                <TextBlock Text="Giảm giá" FontWeight="Bold" HorizontalAlignment="Center"/>
+                                <lvc:PieChart 
+                                    x:Name="pieChartDiscount"
+                                    Series="{Binding DiscountSeries}" 
+                                    Style="{StaticResource PieChartCustomStyle}">
+                                    <lvc:PieChart.DataTooltip>
+                                        <lvc:DefaultTooltip
+                                            SelectionMode="OnlySender"
+                                            ></lvc:DefaultTooltip>
+                                    </lvc:PieChart.DataTooltip>
+                                </lvc:PieChart>
+                                <ScrollBar HorizontalAlignment="Left" Margin="242,53,0,0" VerticalAlignment="Top"/>
+                            </Grid>
+                        </materialDesign:Card>
+                    </Grid>
+
+                    <!--Fourth Row-->
+                    <Grid Grid.Row="3" Margin="10,0,10,20">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+
+                        <materialDesign:Card Grid.Column="0" Margin="10 0 10 0" Padding="10" UniformCornerRadius="15">
+                            <Grid>
+                                <TextBlock Text="Hình thức thanh toán" FontWeight="Bold" HorizontalAlignment="Center"/>
+                                <lvc:PieChart 
+                                    x:Name="pieChartPaymentMethod"
+                                    Series="{Binding PaymentMethodSeries}" 
+                                    Style="{StaticResource PieChartCustomStyle}">
+                                    <lvc:PieChart.DataTooltip>
+                                        <lvc:DefaultTooltip
+                                            SelectionMode="OnlySender"
+                                            ></lvc:DefaultTooltip>
+                                    </lvc:PieChart.DataTooltip>
+                                </lvc:PieChart>
+                            </Grid>
+                        </materialDesign:Card>
+
+                        <materialDesign:Card Grid.Column="1" Margin="10 0 10 0" Padding="10" UniformCornerRadius="15">
+                            <Grid>
+                                <TextBlock Text="Hình thức sử dụng" FontWeight="Bold" HorizontalAlignment="Center"/>
+                                <lvc:PieChart 
+                                    x:Name="pieChartServiceOption"
+                                    Series="{Binding ServiceOptionSeries}" 
+                                    Style="{StaticResource PieChartCustomStyle}">
+                                    <lvc:PieChart.DataTooltip>
+                                        <lvc:DefaultTooltip
+                                            SelectionMode="OnlySender"
+                                            ></lvc:DefaultTooltip>
+                                    </lvc:PieChart.DataTooltip>
+                                </lvc:PieChart>
+                                <ScrollBar HorizontalAlignment="Left" Margin="242,53,0,0" VerticalAlignment="Top"/>
+                            </Grid>
+                        </materialDesign:Card>
+
+                        <materialDesign:Card Grid.Column="2" Margin="10 0 10 0" Padding="10" UniformCornerRadius="15">
+                            <Grid>
+                                <TextBlock Text="Khách hàng" FontWeight="Bold" HorizontalAlignment="Center"/>
+                                <lvc:PieChart 
+                                    x:Name="pieChartCustomer"
+                                    Series="{Binding CustomerSeries}" 
+                                    Style="{StaticResource PieChartCustomStyle}">
+                                    <lvc:PieChart.DataTooltip>
+                                        <lvc:DefaultTooltip
+                                            SelectionMode="OnlySender"
+                                            ></lvc:DefaultTooltip>
+                                    </lvc:PieChart.DataTooltip>
+                                </lvc:PieChart>
+                            </Grid>
+                        </materialDesign:Card>
+                    </Grid>
+                    
+                </Grid>
+            </ScrollViewer>
+        </Grid>
     </Grid>
 </Page>
