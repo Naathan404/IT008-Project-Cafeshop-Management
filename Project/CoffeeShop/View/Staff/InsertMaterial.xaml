@@ -1,11 +1,11 @@
-﻿<Window x:Class="CoffeeShop.View.Staff.InputWindow"
+﻿<Window x:Class="CoffeeShop.View.Staff.InsertMaterial"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CoffeeShop.View.Staff"
         mc:Ignorable="d"
-        Title="InputWindow"
+        Title="InsertMaterial"
         Height="300" Width="420"
         WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize">
@@ -70,7 +70,7 @@
             Style="{StaticResource depotButtonStyle}"
             HorizontalAlignment="Left"
             Width="150" Height="45"
-            Click="btnQuitInput_Click">
+            Command="{Binding CloseWindowCommand}">
         </Button>
 
 
@@ -80,7 +80,7 @@
             Style="{StaticResource depotButtonStyle}"
             HorizontalAlignment="Right"
             Width="150" Height="45"
-            Click="btnAddItem_Click">
+            Command="{Binding SaveCommand}">
         </Button>
 
     </Grid>
