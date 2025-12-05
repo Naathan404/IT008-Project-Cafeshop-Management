@@ -10,7 +10,7 @@
     d:DesignHeight="610" d:DesignWidth="1110"
     Title="Staff_Depot">
 
-    <Grid x:Name="MainGrid" Background="#E0CEB5" MouseDown="MainGrid_MouseDown">
+    <Grid x:Name="MainGrid" Background="#E0CEB5">
         <Grid.RowDefinitions>
             <RowDefinition Height="5*"/>
             <RowDefinition Height="25*"/>
@@ -68,14 +68,14 @@
                             Content="Bỏ lọc" Margin="0,15,0,0" Padding="5"
                             BorderBrush="Transparent" Background="#B18252"
                             Height="40" Width="100"
-                                HorizontalAlignment="Left"
-                            Click="btnClearFilter_Click"/>
+                            HorizontalAlignment="Left"
+                            Command="{Binding ClearFilterCommand}"/>
                         <Button x:Name="btnApplyFilter" 
                             Content="Áp dụng" Margin="0,15,0,0" Padding="5"
                             BorderBrush="Transparent" Background="#B18252"
                             Height="40" Width="100"
                             HorizontalAlignment="Right"
-                            Click="btnApplyFilter_Click"/>
+                            Command="{Binding ApplyFilterCommand}"/>
                     </Grid>
                 </StackPanel>
             </Border>
@@ -91,7 +91,7 @@
                         CanUserResizeColumns="False" CanUserReorderColumns="False"
                         HorizontalAlignment="Stretch"
                         GridLinesVisibility="None"
-                        IsReadOnly="true">
+                        IsReadOnly="true" ItemsSource="{Binding depotItems}">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="ID" Binding="{Binding MaterialId}" Width="0.6*" IsReadOnly="True">
                                 <DataGridTextColumn.ElementStyle>
@@ -163,6 +163,7 @@
                             <TextBox x:Name="txbSearchBar"
                                 Margin="0 0 5 0"
                                 Height="50"
+                                Text="{Binding SearchTerm, UpdateSourceTrigger=PropertyChanged}"
                                 VerticalAlignment="Top"
                                 HorizontalAlignment="Stretch"
                                 materialDesign:HintAssist.Hint="Tìm kiếm"
@@ -174,34 +175,35 @@
                                 materialDesign:TextFieldAssist.OutlinedBorderActiveThickness="3"
                                 BorderThickness="1"
                                 TextWrapping="Wrap"
-                                VerticalScrollBarVisibility="Auto"
-                                TextChanged="txbSearchBar_TextChanged"/>
+                                VerticalScrollBarVisibility="Auto"/>
                         </DockPanel>
 
 
                         <Button x:Name="btnUpdate"
                             Content="CẬP NHẬT"
-                            Grid.Row="1" Click="btnUpdate_Click"
-                            Style="{StaticResource depotButtonStyle}"/>
+                            Grid.Row="1" Command="{Binding UpdateItemCommand}"
+                            Style="{StaticResource depotButtonStyle}"
+                            CommandParameter="{Binding ElementName=dgDepot, Path=SelectedItem}"/>
 
                         <Button x:Name="btnAdd"
                             Content="THÊM"
-                            Grid.Row="2" Click="btnAdd_Click"
+                            Grid.Row="2" Command="{Binding AddItemCommand}"
                             Style="{StaticResource depotButtonStyle}"/>
 
                         <Button x:Name="btnDelete" 
                             Content="XOÁ"
-                            Grid.Row="3" Click="btnDelete_Click"
-                            Style="{StaticResource depotButtonStyle}"/>
+                            Grid.Row="3" Command="{Binding DeleteItemCommand}"
+                            Style="{StaticResource depotButtonStyle}"
+                            CommandParameter="{Binding ElementName=dgDepot, Path=SelectedItem}"/>
 
                         <Button x:Name="btnReport" 
                             Content="BÁO CÁO"
-                            Grid.Row="4" Click="btnReport_Click"
+                            Grid.Row="4" 
                             Style="{StaticResource depotButtonStyle}"/>
 
                         <Button x:Name="btnHistory"
                             Content="LỊCH SỬ"
-                            Grid.Row="5" Click="btnHistory_Click"
+                            Grid.Row="5" 
                             Style="{StaticResource depotButtonStyle}"/>
                     </Grid>
                 </materialDesign:Card>
