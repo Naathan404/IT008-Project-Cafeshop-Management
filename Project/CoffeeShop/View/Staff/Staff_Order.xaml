@@ -118,7 +118,7 @@
                                            FontSize="15"
                                            FontWeight="Bold"
                                            Foreground="#766839"
-                                           Margin="0 2 12 0"
+                                           Margin="0 2 12 5"
                                            HorizontalAlignment="Right"
                                            Loaded="ItemPrice_Loaded"/>
                             </StackPanel>
@@ -434,7 +434,8 @@
                                           FontFamily="Cascadia Code"
                                           FontSize="16"
                                           Margin="5"
-                                          AlternationCount="1000000">
+                                          AlternationCount="1000000"
+                                          MinRowHeight="40">
                                     <DataGrid.ColumnHeaderStyle>
                                         <Style TargetType="DataGridColumnHeader">
                                             <Setter Property="Background" Value="#F9F6F0"/>
