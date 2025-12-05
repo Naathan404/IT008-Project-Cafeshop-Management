@@ -8,7 +8,7 @@ namespace CoffeeShop.Service
     public class WindowService : IDialogService
     {
         // Triển khai hàm theo đúng hợp đồng của Interface
-        public void OpenInputWindow(ObservableCollection<StaffDepotViewModel.DepotItem> collection,
+        public void OpenInsertMaterialWindow(ObservableCollection<StaffDepotViewModel.DepotItem> collection,
                                  StaffDepotViewModel.DepotItem? itemToEdit)
         {
             if (itemToEdit != null)
@@ -23,6 +23,12 @@ namespace CoffeeShop.Service
                 InsertMaterial insertMaterial = new InsertMaterial(collection);
                 insertMaterial.ShowDialog();
             }
+        }
+
+        public void OpenDepotHistoryWindow()
+        {
+            DepotHistory depotHistory = new DepotHistory();
+            depotHistory.ShowDialog();
         }
     }
 }
