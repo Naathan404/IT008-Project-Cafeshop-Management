@@ -10,6 +10,7 @@
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Light.xaml" />
                 <ResourceDictionary Source="/Resources/MainResource.xaml" />
                 <ResourceDictionary Source="/Resources/DepotResource.xaml" />
+                <ResourceDictionary Source="/Resources/ChartResource.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
