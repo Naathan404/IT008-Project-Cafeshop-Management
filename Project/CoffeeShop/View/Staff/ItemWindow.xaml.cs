@@ -210,8 +210,21 @@ namespace CoffeeShop.View.Staff
                 .OfType<Border>()
                 .FirstOrDefault(b => (bool)(b.Tag ?? false));
 
-            string selectedSize = sizeBorder != null? (sizeBorder.Child as TextBlock)?.Text: item.ItemPrices.First().Size.SizeName; // nếu không chọn thì lấy size đầu
-            string note = txblItemNote.Text;
+            string selectedSize;
+
+            if (sizeBorder != null)
+            {
+                selectedSize = (sizeBorder.Child as TextBlock)?.Text ?? "";
+            }
+            else
+            {
+                // Nếu không có size được chọn, lấy size đầu tiên làm mặc định
+                var firstPrice = item.ItemPrices?.FirstOrDefault();
+                selectedSize = firstPrice?.Size?.SizeName ?? "";
+            }
+
+            var noteBox = this.FindName("txblItemNote") as TextBox;
+            string note = noteBox?.Text ?? "";
 
             // Lấy giá
             decimal price = 0;

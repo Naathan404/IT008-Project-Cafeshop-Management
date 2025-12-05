@@ -238,17 +238,13 @@ namespace CoffeeShop.View.Staff
         {
             if (sender is TextBlock txtblItemPrice)
             {
-                var stackPanel = FindParent<StackPanel>(txtblItemPrice);
-                if (stackPanel == null) return;
-                var item = stackPanel.DataContext as OrderItem;
-                if (item == null || item.ItemPrices == null) return;
+                var item = txtblItemPrice.DataContext as OrderItem;
+                if (item == null || item.ItemPrices == null || item.ItemPrices.Count == 0)
+                    return;
 
-                // Hiển thị giá mặc định (giá size đầu tiên)
-                var defaultPrice = item.ItemPrices.FirstOrDefault();
-                if (defaultPrice != null)
-                {
-                    ItemPrice_Changed(txtblItemPrice, defaultPrice.Price);
-                }
+                // Hiển thị giá mặc định (size đầu tiên)
+                var defaultPrice = item.ItemPrices.First();
+                txtblItemPrice.Text = string.Format("{0:N0} VND", defaultPrice.Price);
             }
         }
         private void Item_MouseDown(object sender, RoutedEventArgs e)

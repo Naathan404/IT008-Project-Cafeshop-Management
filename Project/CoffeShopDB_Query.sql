@@ -276,7 +276,7 @@ VALUES
 ('M'),
 ('L')
 GO
-
+select * from itemprice
 INSERT INTO ItemPrice (ItemID, SizeID, Price) 
 VALUES 
 (1, 1, 19000), (1, 2, 29000), (1, 3, 39000),   -- Cà phê sữa đá
@@ -302,7 +302,8 @@ VALUES
 (21, NULL, 35000),                             -- Bánh crossant (Food không có size)
 (22, NULL, 30000),                             -- Bánh bông lan trứng muối
 (23, NULL, 25000),                             -- Bánh tráng trộn
-(24, NULL, 25000);                             -- Bánh tráng cuộn
+(24, NULL, 25000),                             -- Bánh tráng cuộn
+(25, NULL, 25000);                             -- Panna cotta
 GO
 
 INSERT INTO Customer (CustomerName, PhoneNumber, Email, Point, Tier) 

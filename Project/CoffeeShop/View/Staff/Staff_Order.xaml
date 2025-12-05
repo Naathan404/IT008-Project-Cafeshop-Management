@@ -375,11 +375,6 @@
                                 <RowDefinition Height="1*"/>
                             </Grid.RowDefinitions>
                             <StackPanel Orientation="Horizontal" Margin="0 10 0 0" Grid.Row="0">
-                                <!--<materialDesign:PackIcon Kind="TableFurniture"
-                                                         Margin="8 0 2 0"
-                                                         Foreground="#766839"
-                                                         VerticalAlignment="Center"
-                                                         Height="23" Width="23"/>-->
                                 <ComboBox x:Name="cbTable"
                                           Width="90" Height="30" Margin="15 0 0 0"
                                           VerticalAlignment="Center"
@@ -435,7 +430,7 @@
                                           FontSize="16"
                                           Margin="5"
                                           AlternationCount="1000000"
-                                          MinRowHeight="40">
+                                          EnableRowVirtualization="False">
                                     <DataGrid.ColumnHeaderStyle>
                                         <Style TargetType="DataGridColumnHeader">
                                             <Setter Property="Background" Value="#F9F6F0"/>
@@ -459,8 +454,19 @@
                                             <Setter Property="Background" Value="#F9F6F0"/>
                                             <Setter Property="BorderBrush" Value="#A0A0A0"/>
                                             <Setter Property="BorderThickness" Value="0,0,1,1"/>
+                                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                            <Setter Property="VerticalContentAlignment" Value="Center"/>
                                         </Style>
                                     </DataGrid.CellStyle>
+
+                                    <DataGrid.RowStyle>
+                                        <Style TargetType="DataGridRow">
+                                            <Setter Property="Height" Value="Auto"/>
+                                            <Setter Property="MinHeight" Value="40"/>
+                                            <Setter Property="VerticalAlignment" Value="Stretch"/>
+                                        </Style>
+                                    </DataGrid.RowStyle>
+
                                     <DataGrid.Columns>
                                         <DataGridTemplateColumn Header="STT" Width="0.4*" IsReadOnly="True">
                                             <DataGridTemplateColumn.CellTemplate>
@@ -495,8 +501,7 @@
                                                     <StackPanel HorizontalAlignment="Left" 
                                                                 VerticalAlignment="Center"
                                                                 Margin="5">
-                                                        <TextBlock Text="{Binding ItemName}" 
-                                                                   HorizontalAlignment="Left"
+                                                        <TextBlock Text="{Binding ItemName}"
                                                                    FontWeight="Bold" FontSize="15" Foreground="#766839"
                                                                    TextWrapping="Wrap"/>
                                                         <TextBox x:Name="tbItemOrderedNote"
@@ -533,10 +538,10 @@
                                                         <Border Background="Transparent"
                                                                 Cursor="Hand"
                                                                 Margin="5 5 5 0"
-                                                                MouseDown="icPlusQuantity_MouseDown"
-                                                                MouseEnter="bdrPlusQuantity_MouseEnter"
-                                                                MouseLeave="bdrPlusQuantity_MouseLeave">
-                                                            <materialDesign:PackIcon Kind="PlusCircleOutline"
+                                                                MouseDown="icMinusQuantity_MouseDown"
+                                                                MouseEnter="bdrMinusQuantity_MouseEnter"
+                                                                MouseLeave="bdrMinusQuantity_MouseLeave">
+                                                            <materialDesign:PackIcon Kind="MinusCircleOutline"
                                                                                      Foreground="#B18252"
                                                                                      Width="20" Height="20"
                                                                                      HorizontalAlignment="Center"
@@ -554,10 +559,10 @@
                                                         <Border Background="Transparent"
                                                                 Cursor="Hand"
                                                                 Margin="5 5 5 0"
-                                                                MouseDown="icMinusQuantity_MouseDown"
-                                                                MouseEnter="bdrMinusQuantity_MouseEnter"
-                                                                MouseLeave="bdrMinusQuantity_MouseLeave">
-                                                            <materialDesign:PackIcon Kind="MinusCircleOutline"
+                                                                MouseDown="icPlusQuantity_MouseDown"
+                                                                MouseEnter="bdrPlusQuantity_MouseEnter"
+                                                                MouseLeave="bdrPlusQuantity_MouseLeave">
+                                                            <materialDesign:PackIcon Kind="PlusCircleOutline"
                                                                                      Foreground="#B18252"
                                                                                      Width="20" Height="20"
                                                                                      HorizontalAlignment="Center"
@@ -571,7 +576,7 @@
                                         <DataGridTemplateColumn Header="Đơn giá" Width="0.8*">
                                             <DataGridTemplateColumn.CellTemplate>
                                                 <DataTemplate>
-                                                    <TextBlock Text="{Binding Price}" 
+                                                    <TextBlock Text="{Binding Price, StringFormat={}{0:N0}}"
                                                                HorizontalAlignment="Center" VerticalAlignment="Center"
                                                                FontWeight="Bold" FontSize="15" Foreground="#766839"/>
                                                 </DataTemplate>
@@ -581,7 +586,7 @@
                                         <DataGridTemplateColumn Header="Thành tiền" Width="1*">
                                             <DataGridTemplateColumn.CellTemplate>
                                                 <DataTemplate>
-                                                    <TextBlock Text="{Binding TotalPrice}" 
+                                                    <TextBlock Text="{Binding TotalPrice, StringFormat={}{0:N0}}"
                                                                HorizontalAlignment="Center" VerticalAlignment="Center"
                                                                FontWeight="Bold" FontSize="15" Foreground="#766839"/>
                                                 </DataTemplate>
