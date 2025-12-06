@@ -11,6 +11,7 @@
                 <ResourceDictionary Source="/Resources/MainResource.xaml" />
                 <ResourceDictionary Source="/Resources/DepotResource.xaml" />
                 <ResourceDictionary Source="/Resources/ChartResource.xaml" />
+                <ResourceDictionary Source="/Resources/ControlResource.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
