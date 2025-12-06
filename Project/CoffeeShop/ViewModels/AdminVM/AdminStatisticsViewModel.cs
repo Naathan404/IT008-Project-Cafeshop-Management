@@ -1,11 +1,13 @@
 ﻿using CoffeeShop.Helper;
 using CoffeeShop.Models;
 using LiveCharts;
+using LiveCharts.Helpers;
 using LiveCharts.Wpf;
 using MaterialDesignThemes.Wpf;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using Org.BouncyCastle.Pqc.Crypto.Frodo;
+using System.ComponentModel;
 using System.Globalization;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -63,6 +65,17 @@ namespace CoffeeShop.ViewModels.AdminVM
                 _endDate = value;
                 OnPropertyChanged();
                 _ = LoadPageAsync();
+            }
+        }
+
+        private PackIconKind _showRevenueIcon;
+        public PackIconKind ShowRevenueIcon
+        {
+            get => _showRevenueIcon;
+            set
+            {
+                _showRevenueIcon = value;
+                OnPropertyChanged();
             }
         }
 
@@ -131,17 +144,39 @@ namespace CoffeeShop.ViewModels.AdminVM
             }
         }
 
-        private PackIconKind _showRevenueIcon;
-        public PackIconKind ShowRevenueIcon
+        // Fix for CS8618: Initialize _revenueLabels to an empty array to ensure non-nullability.
+        private string[] _revenueLabels = Array.Empty<string>();
+        public string[] RevenueLabels
         {
-            get => _showRevenueIcon;
+            get => _revenueLabels;
             set
             {
-                _showRevenueIcon = value;
+                _revenueLabels = value;
                 OnPropertyChanged();
             }
         }
 
+        private SeriesCollection _revenueSeries = new SeriesCollection();
+        public SeriesCollection RevenueSeries
+        {
+            get => _revenueSeries;
+            set
+            {
+                _revenueSeries = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private SeriesCollection _percentageFormatter = new SeriesCollection();
+        public SeriesCollection PercentageFormatter
+        {
+            get => _percentageFormatter;
+            set
+            {
+                _percentageFormatter = value;
+                OnPropertyChanged();
+            }
+        }
         #endregion
 
         public AdminStatisticsViewModel()
@@ -220,7 +255,6 @@ namespace CoffeeShop.ViewModels.AdminVM
             if(flan6 != null) _flanPalette.Add(flan6);
         }
 
-        #region Load Data To Charts
         /// <summary>
         /// Load statistics page's data and charts
         /// </summary>
@@ -231,12 +265,99 @@ namespace CoffeeShop.ViewModels.AdminVM
                 return;
             DateTime actualEnd = EndDate.Value.AddDays(1);
 
+            await LoadRevenueChart(StartDate.Value, actualEnd);
             await LoadTopProductChart(StartDate.Value, actualEnd);
             await LoadCategoryChart(StartDate.Value, actualEnd);
             await LoadDiscountChart(StartDate.Value, actualEnd);
             await LoadPaymentMethodChart(StartDate.Value, actualEnd);
             await LoadServiceOptionChart(StartDate.Value, actualEnd);
             await LoadCustomerChart(StartDate.Value, actualEnd);
+        }
+
+        #region Load Data For Charts
+        private async Task LoadRevenueChart(DateTime from, DateTime to)
+        {
+            RevenueLabels = Array.Empty<string>();
+            var labels = new List<string>();
+            for (DateTime date = from; date < to; date = date.AddDays(1))
+            {
+                labels.Add(date.ToString("dd/MM"));
+            }
+
+            using (var db = new CoffeeShopContext())
+            {
+                var rawData = await db.Orders
+                    .Where(o => o.OrderDate >= from && o.OrderDate < to)
+                    .Select(o => new
+                    {
+                        Datee = o.OrderDate.Date,
+                        Amount = o.TotalAmount,
+                        Method = o.PaymentMethod
+                    })
+                    .ToListAsync();
+
+                var cashValues = new ChartValues<decimal>();
+                var bankingValues = new ChartValues<decimal>();
+                var totalValues = new ChartValues<decimal>();
+
+                for (DateTime date = from; date < to; date = date.AddDays(1))
+                {
+                    decimal cashTotal = rawData
+                        .Where(x => x.Datee == date && x.Method == "Tiền mặt")
+                        .Sum(x => x.Amount);
+                    decimal bankingTotal = rawData
+                        .Where(x => x.Datee == date && x.Method == "Chuyển khoản")
+                        .Sum(x => x.Amount);
+                    decimal total = cashTotal + bankingTotal;
+
+                    cashValues.Add(cashTotal);
+                    bankingValues.Add(bankingTotal);
+                    totalValues.Add(total);
+                }
+
+                SeriesCollection revenueSeries = new SeriesCollection
+                {
+                    // Tiền mặt
+                    new StackedColumnSeries
+                    {
+                        ScalesYAt = 0,
+                        Title = "Tiền mặt:",
+                        Values = cashValues,
+                        DataLabels = true,
+                        LabelPoint = point => point.Y > 0 ? point.Y.ToString("N0", viVn) : "",
+                        Fill = new BrushConverter().ConvertFrom("#f1515e") as SolidColorBrush,
+                        StackMode = StackMode.Values
+                    },
+                    // Chuyển khoản
+                    new StackedColumnSeries
+                    {
+                        ScalesYAt = 0,
+                        Title = "Chuyển khoản:",
+                        Values = bankingValues,
+                        DataLabels = true,
+                        LabelPoint = point => point.Y > 0 ? point.Y.ToString("N0", viVn) + " " + point.X : "",
+                        Fill = new BrushConverter().ConvertFrom("#1dbde6") as SolidColorBrush,
+                        StackMode = StackMode.Values
+                    },
+
+                    new LineSeries
+                    {
+                        Title = "Tổng:",
+                        Values = totalValues,
+                        StrokeThickness = 0,                     
+                        PointGeometry = null,                     
+                        Fill = Brushes.Transparent, 
+                        DataLabels = true,
+                        LabelPoint = point => point.Y > 0 ? point.Y.ToString("N0", viVn) : "",
+                        Foreground = Brushes.Black,
+                        ScalesYAt = 0
+                    },
+                    
+                };
+                
+                RevenueLabels = labels.ToArray();
+                RevenueSeries = revenueSeries;
+            }
         }
 
         /// <summary>
@@ -301,7 +422,7 @@ namespace CoffeeShop.ViewModels.AdminVM
 
                 var series = new SeriesCollection();
                 int idx = 0;
-                foreach (var item in data)
+                foreach (var item in sortedData)
                 {
                     series.Add(new PieSeries
                     {
@@ -362,7 +483,7 @@ namespace CoffeeShop.ViewModels.AdminVM
         /// Load data for the payment methods chart
         /// </summary>
         /// <param name="from"></param>
-        /// <param name="to"></param>
+        /// <to></to>
         private async Task LoadPaymentMethodChart(DateTime from, DateTime to)
         {
             using (var db = new CoffeeShopContext())
@@ -393,7 +514,7 @@ namespace CoffeeShop.ViewModels.AdminVM
         /// Load data for the service options chart
         /// </summary>
         /// <param name="from"></param>
-        /// <param name="to"></param>
+        /// <to></to>
         private async Task LoadServiceOptionChart(DateTime from, DateTime to)
         {
             using (var db = new CoffeeShopContext())
@@ -442,7 +563,7 @@ namespace CoffeeShop.ViewModels.AdminVM
         /// Load data for the customers chart
         /// </summary>
         /// <param name="from"></param>
-        /// <param name="to"></param>
+        /// <to></to>
         /// <returns></returns>
         private async Task LoadCustomerChart(DateTime from, DateTime to)
         {

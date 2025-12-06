@@ -5,7 +5,9 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
       xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
+      xmlns:lvc2="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF"
       xmlns:local="clr-namespace:CoffeeShop.View.Admin"
+      xmlns:control="clr-namespace:CoffeeShop.View.Controls"
       mc:Ignorable="d" 
       d:DesignHeight="1600" d:DesignWidth="1110"
       Background="#E0CEB5"
@@ -140,7 +142,7 @@
                     <!--Second Row-->
                     <materialDesign:Card Grid.Row="1" Margin="20,0,20,10" Padding="20" UniformCornerRadius="15">
                         <Grid>
-                            <TextBlock Text="Biểu đồ doanh thu theo thời gian" FontWeight="Bold" Foreground="Gray"/>
+                            <TextBlock Margin="0 -15 0 0" Text="Biểu đồ doanh thu theo thời gian" FontWeight="Bold" Foreground="Gray"/>
 
                             <lvc:CartesianChart Series="{Binding RevenueSeries}" LegendLocation="None">
                                 <lvc:CartesianChart.AxisX>
@@ -149,7 +151,12 @@
 
                                 <lvc:CartesianChart.AxisY>
                                     <lvc:Axis LabelFormatter="{Binding CurrencyFormatter}" Title="Doanh thu (VNĐ)"></lvc:Axis>
+                                    <lvc:Axis LabelFormatter="{Binding PercentageFormatter}" Title="Tăng trưởng" Position="RightTop"/>
                                 </lvc:CartesianChart.AxisY>
+
+                                <lvc:CartesianChart.DataTooltip>
+                                    <control:RevenueTooltip/>
+                                </lvc:CartesianChart.DataTooltip>
                             </lvc:CartesianChart>
                         </Grid>
                     </materialDesign:Card>
@@ -169,11 +176,12 @@
                                     x:Name="pieChartTop5BestSeller"
                                     Series="{Binding TopProductsSeries}" 
                                     Style="{StaticResource PieChartCustomStyle}"
-                                    InnerRadius="0">
+                                    InnerRadius="0"
+                                    >
                                     <lvc:PieChart.DataTooltip>
-                                        <lvc:DefaultTooltip
+                                        <control:CleanTooltip
                                             SelectionMode="OnlySender"
-                                            ></lvc:DefaultTooltip>
+                                            ></control:CleanTooltip>
                                     </lvc:PieChart.DataTooltip>
                                 </lvc:PieChart>
                             </Grid>
@@ -188,9 +196,9 @@
                                     Style="{StaticResource PieChartCustomStyle}"
                                     InnerRadius="0">
                                     <lvc:PieChart.DataTooltip>
-                                        <lvc:DefaultTooltip
+                                        <control:CleanTooltip
                                             SelectionMode="OnlySender"
-                                            ></lvc:DefaultTooltip>
+                                            ></control:CleanTooltip>
                                     </lvc:PieChart.DataTooltip>
                                 </lvc:PieChart>
                             </Grid>
@@ -204,9 +212,9 @@
                                     Series="{Binding DiscountSeries}" 
                                     Style="{StaticResource PieChartCustomStyle}">
                                     <lvc:PieChart.DataTooltip>
-                                        <lvc:DefaultTooltip
+                                        <control:CleanTooltip
                                             SelectionMode="OnlySender"
-                                            ></lvc:DefaultTooltip>
+                                            ></control:CleanTooltip>
                                     </lvc:PieChart.DataTooltip>
                                 </lvc:PieChart>
                                 <ScrollBar HorizontalAlignment="Left" Margin="242,53,0,0" VerticalAlignment="Top"/>
@@ -231,9 +239,9 @@
                                     Series="{Binding PaymentMethodSeries}" 
                                     Style="{StaticResource PieChartCustomStyle}">
                                     <lvc:PieChart.DataTooltip>
-                                        <lvc:DefaultTooltip
+                                        <control:CleanTooltip
                                             SelectionMode="OnlySender"
-                                            ></lvc:DefaultTooltip>
+                                            ></control:CleanTooltip>
                                     </lvc:PieChart.DataTooltip>
                                 </lvc:PieChart>
                             </Grid>
@@ -247,9 +255,9 @@
                                     Series="{Binding ServiceOptionSeries}" 
                                     Style="{StaticResource PieChartCustomStyle}">
                                     <lvc:PieChart.DataTooltip>
-                                        <lvc:DefaultTooltip
+                                        <control:CleanTooltip
                                             SelectionMode="OnlySender"
-                                            ></lvc:DefaultTooltip>
+                                            ></control:CleanTooltip>
                                     </lvc:PieChart.DataTooltip>
                                 </lvc:PieChart>
                                 <ScrollBar HorizontalAlignment="Left" Margin="242,53,0,0" VerticalAlignment="Top"/>
@@ -264,9 +272,9 @@
                                     Series="{Binding CustomerSeries}" 
                                     Style="{StaticResource PieChartCustomStyle}">
                                     <lvc:PieChart.DataTooltip>
-                                        <lvc:DefaultTooltip
+                                        <control:CleanTooltip
                                             SelectionMode="OnlySender"
-                                            ></lvc:DefaultTooltip>
+                                            ></control:CleanTooltip>
                                     </lvc:PieChart.DataTooltip>
                                 </lvc:PieChart>
                             </Grid>
