@@ -1,5 +1,6 @@
 ﻿using CoffeeShop.Models;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Input;
@@ -50,9 +51,6 @@ namespace CoffeeShop.ViewModels.StaffVM
                 OnPropertyChanged(nameof(Customers));
             }
         }
-        // Danh sách gốc chứa toàn bộ khách hàng (không đổi)
-        private List<OrderCustomer> _allCustomers { get; set; } = new List<OrderCustomer>();
-
         // Món trong đơn hàng
         private ObservableCollection<OrderDetailItem> _orders = new ObservableCollection<OrderDetailItem>();
         public ObservableCollection<OrderDetailItem> Orders
@@ -238,21 +236,20 @@ namespace CoffeeShop.ViewModels.StaffVM
             {
                 using (var db = new CoffeeShopContext())
                 {
-                    _allCustomers = db.Customers
-                        .Select(customer => new OrderCustomer
+                    var customers = db.Customers.ToList();
+                    foreach (var customer in customers)
+                    {
+                        _customers.Add(new OrderCustomer
                         {
                             CustomerId = customer.CustomerId,
                             CustomerName = customer.CustomerName,
                             PhoneNumber = customer.PhoneNumber,
                             Email = customer.Email,
-                            Point = customer.Point
-                        })
-                        .ToList();
+                            Point = customer.Point,
+                            Tier = customer.Tier,
+                        });
+                    }
                 }
-
-                // Đổ lại vào ObservableCollection để hiển thị lên UI
-                foreach (var c in _allCustomers)
-                    Customers.Add(c);
             }
             catch (Exception ex)
             {
@@ -384,17 +381,14 @@ namespace CoffeeShop.ViewModels.StaffVM
             {
                 // Reset về danh sách gốc
                 Customers.Clear();
-                foreach (var c in _allCustomers)
-                    Customers.Add(c);
-
+                LoadCustomerFromDB();
                 return;
             }
-
+            // Lấy tất cả khách hàng từ DB
+            var allCustomers = _customers.ToList();
             // Lọc theo PhoneNumber trên danh sách gốc
-            var filteredCustomers = _allCustomers
-                .Where(c => !string.IsNullOrEmpty(c.PhoneNumber) &&
-                            c.PhoneNumber.Contains(SearchCustomerKeyword))
-                .ToList();
+            var filteredCustomers = allCustomers.Where(c => !string.IsNullOrEmpty(c.PhoneNumber) &&
+                            c.PhoneNumber.Contains(SearchCustomerKeyword)).ToList();
 
             Customers.Clear();
             foreach (var c in filteredCustomers)
