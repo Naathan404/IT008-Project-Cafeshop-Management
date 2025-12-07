@@ -16,16 +16,35 @@
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <StackPanel.Style>
+                                <Style TargetType="StackPanel">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Series.Title}" Value="Tốc độ tăng trưởng:">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </StackPanel.Style>
+
                             <Ellipse Width="10" Height="10" Fill="{Binding Series.Fill}" Margin="0,0,8,0"/>
 
-                            <TextBlock Text="{Binding Series.Title}" Foreground="#FF340D05" FontWeight="Bold" Margin="0,0,5,0"/>
-                            <TextBlock x:Name="txblValue" Text="{Binding ChartPoint.Y, StringFormat={}{0:N0}}" 
-                               Foreground="#FF340D05" FontWeight="Bold">
-                            </TextBlock>
+                            <TextBlock Text="{Binding Series.Title}" 
+                                       Foreground="#FF340D05" 
+                                       FontWeight="Bold" 
+                                       Margin="0,0,5,0"
+                                       FontFamily="Cascadia Code"/>
+
+                            <TextBlock Text="{Binding ChartPoint.Y, StringFormat={}{0:N0}}" 
+                                       Foreground="#FF340D05" 
+                                       FontWeight="Bold"
+                                       FontFamily="Cascadia Code"/>
+
                             <TextBlock Text=" "/>
-                            <TextBlock x:Name="txblPercent" 
-                               Foreground="#FF340D05" 
-                               FontStyle="Italic">
+
+                            <TextBlock Foreground="#FF340D05" 
+                                       FontStyle="Italic"
+                                       FontFamily="Cascadia Code">
                                 <TextBlock.Style>
                                     <Style TargetType="TextBlock">
                                         <Setter Property="Text" Value="{Binding ChartPoint.Participation, StringFormat={}({0:P1})}"/>
