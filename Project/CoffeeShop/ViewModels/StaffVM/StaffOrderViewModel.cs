@@ -17,6 +17,7 @@ namespace CoffeeShop.ViewModels.StaffVM
         #endregion
 
         #region Properties
+        // Món trong MenuPanel
         private ObservableCollection<OrderItem> _items = new ObservableCollection<OrderItem>();
         public ObservableCollection<OrderItem> Items
         {
@@ -27,7 +28,7 @@ namespace CoffeeShop.ViewModels.StaffVM
                 OnPropertyChanged(nameof(Items));
             }
         }
-
+        // Bàn
         private ObservableCollection<OrderTable> _tables = new ObservableCollection<OrderTable>();
         public ObservableCollection<OrderTable> Tables
         {
@@ -38,7 +39,7 @@ namespace CoffeeShop.ViewModels.StaffVM
                 OnPropertyChanged(nameof(Tables));
             }
         }
-
+        // Khách hàng
         private ObservableCollection<OrderCustomer> _customers = new ObservableCollection<OrderCustomer>();
         public ObservableCollection<OrderCustomer> Customers
         {
@@ -49,7 +50,10 @@ namespace CoffeeShop.ViewModels.StaffVM
                 OnPropertyChanged(nameof(Customers));
             }
         }
+        // Danh sách gốc chứa toàn bộ khách hàng (không đổi)
+        private List<OrderCustomer> _allCustomers { get; set; } = new List<OrderCustomer>();
 
+        // Món trong đơn hàng
         private ObservableCollection<OrderDetailItem> _orders = new ObservableCollection<OrderDetailItem>();
         public ObservableCollection<OrderDetailItem> Orders
         {
@@ -60,7 +64,7 @@ namespace CoffeeShop.ViewModels.StaffVM
                 OnPropertyChanged(nameof(Orders));
             }
         }
-
+        // Bàn trống có thể chọn để đặt món
         private ObservableCollection<OrderTable> _availableTables = new ObservableCollection<OrderTable>();
         public ObservableCollection<OrderTable> AvailableTables
         {
@@ -71,7 +75,7 @@ namespace CoffeeShop.ViewModels.StaffVM
                 OnPropertyChanged(nameof(AvailableTables));
             }
         }
-
+        // Bàn được chọn để đặt món
         private ObservableCollection<OrderTable> _selectedTable = new ObservableCollection<OrderTable>();
         public ObservableCollection<OrderTable> SelectedTable
         {
@@ -82,19 +86,46 @@ namespace CoffeeShop.ViewModels.StaffVM
                 OnPropertyChanged(nameof(SelectedTable));
             }
         }
-
-        private string _seachKeyword;
-        public string SearchKeyword
+        // Tìm kiếm món trong MenuPanel
+        private string _seachItemKeyword;
+        public string SearchItemKeyword
         {
-            get { return _seachKeyword; }
+            get { return _seachItemKeyword; }
             set
             {
-                _seachKeyword = value;
-                OnPropertyChanged(nameof(SearchKeyword));
+                _seachItemKeyword = value;
+                OnPropertyChanged(nameof(SearchItemKeyword));
                 SearchItems();
             }
         }
+        // Tìm kiếm khách hàng
+        private string _seachCustomerKeyword;
+        public string SearchCustomerKeyword
+        {
+            get { return _seachCustomerKeyword; }
+            set
+            {
+                _seachCustomerKeyword = value;
+                OnPropertyChanged(nameof(SearchCustomerKeyword));
+                SearchCustomer(null);
+                OnPropertyChanged(nameof(HasSearchResults)); // Notify để mở popup
+            }
+        }
+        // Kiểm tra có kết quả tìm kiếm khách hàng hay không
+        public bool HasSearchResults => Customers.Count > 0;
 
+        // Khách hàng được chọn
+        private OrderCustomer _selectedCustomer;
+        public OrderCustomer SelectedCustomer
+        {
+            get => _selectedCustomer;
+            set
+            {
+                _selectedCustomer = value;
+                OnPropertyChanged(nameof(SelectedCustomer));
+            }
+        }
+        // Tổng tiền đơn hàng
         private decimal _totalAmount;
         public decimal TotalAmount
         {
@@ -105,7 +136,7 @@ namespace CoffeeShop.ViewModels.StaffVM
                 OnPropertyChanged(nameof(TotalAmount));
             }
         }
-
+        // Giảm giá
         public decimal _discount;
         public decimal Discount
         {
@@ -162,14 +193,14 @@ namespace CoffeeShop.ViewModels.StaffVM
         #region Load Data Methods
         private void LoadData()
         {
-            LoadOrderItems();
+            LoadOrderItemsFromDB();
             LoadCustomerFromDB();
             LoadTableFromDB();
             LoadAvailableTable();
         }
 
         //Load dữ liệu từ DB vào MenuPanel
-        private void LoadOrderItems()
+        private void LoadOrderItemsFromDB()
         {
             _items.Clear();
             try
@@ -207,23 +238,25 @@ namespace CoffeeShop.ViewModels.StaffVM
             {
                 using (var db = new CoffeeShopContext())
                 {
-                    var customers = db.Customers.ToList();
-                    foreach (var customer in customers)
-                    {
-                        _customers.Add(new OrderCustomer
+                    _allCustomers = db.Customers
+                        .Select(customer => new OrderCustomer
                         {
                             CustomerId = customer.CustomerId,
                             CustomerName = customer.CustomerName,
                             PhoneNumber = customer.PhoneNumber,
                             Email = customer.Email,
-                            Point = customer.Point,
-                        });
-                    }
+                            Point = customer.Point
+                        })
+                        .ToList();
                 }
+
+                // Đổ lại vào ObservableCollection để hiển thị lên UI
+                foreach (var c in _allCustomers)
+                    Customers.Add(c);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error loading items: {ex.Message}");
+                Console.WriteLine($"Error loading customers: {ex.Message}");
             }
         }
         // Load danh sách bàn từ DB
@@ -332,12 +365,12 @@ namespace CoffeeShop.ViewModels.StaffVM
         // Tìm kiếm món trong MenuPanel
         private void SearchItems()
         {
-            if (string.IsNullOrWhiteSpace(SearchKeyword))
+            if (string.IsNullOrWhiteSpace(SearchItemKeyword))
             {
-                LoadOrderItems();
+                LoadOrderItemsFromDB();
                 return;
             }
-            var filteredItems = Items.Where(i => i.ItemName.IndexOf(SearchKeyword, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
+            var filteredItems = Items.Where(i => i.ItemName.IndexOf(SearchItemKeyword, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
             Items.Clear();
             foreach (var item in filteredItems)
             {
@@ -347,7 +380,25 @@ namespace CoffeeShop.ViewModels.StaffVM
         // Tìm kiếm khách hàng
         private void SearchCustomer(object parameter)
         {
+            if (string.IsNullOrWhiteSpace(SearchCustomerKeyword))
+            {
+                // Reset về danh sách gốc
+                Customers.Clear();
+                foreach (var c in _allCustomers)
+                    Customers.Add(c);
 
+                return;
+            }
+
+            // Lọc theo PhoneNumber trên danh sách gốc
+            var filteredCustomers = _allCustomers
+                .Where(c => !string.IsNullOrEmpty(c.PhoneNumber) &&
+                            c.PhoneNumber.Contains(SearchCustomerKeyword))
+                .ToList();
+
+            Customers.Clear();
+            foreach (var c in filteredCustomers)
+                Customers.Add(c);
         }
         // Thêm khách hàng mới
         private void AddCustomer(object parameter)

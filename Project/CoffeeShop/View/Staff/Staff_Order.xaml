@@ -384,25 +384,89 @@
                                           ItemsSource="{Binding LongIntegerList}"
                                           materialDesign:TextFieldAssist.UnderlineBrush="#766839"
                                           materialDesign:ListBoxItemAssist.SelectedFocusedBackground="#E0CEB5"
-                                          materialDesign:HintAssist.Hint="Chọn bàn"
-                                          SelectionChanged="cbTable_SelectionChanged"/>
+                                          materialDesign:HintAssist.Hint="Chọn bàn"/>
                                 <materialDesign:PackIcon x:Name="icSearchCustomer"
-                                                         Kind="AccountSearch"
+                                                         Kind="AccountSearchOutline"
                                                          Margin="30 0 0 0"
                                                          VerticalAlignment="Center"
                                                          Height="23" Width="23"
                                                          Foreground="#766839"
-                                                         MouseDown="icSearchCustomer_MouseDown"/>
+                                                         MouseDown="icSearchCustomer_MouseDown"
+                                                         MouseEnter="icSearchCustomer_MouseEnter"
+                                                         MouseLeave="icSearchCustomer_MouseLeave"/>
                                 <TextBox x:Name="tbCustomerPhone"
                                          Width="100" Height="30" VerticalAlignment="Center"
                                          FontFamily="Cascadia Code" FontSize="15" Foreground="#340D05"
-                                         materialDesign:TextFieldAssist.UnderlineBrush="#766839"/>
-                                <materialDesign:PackIcon x:Name="icAddCustomer"
-                                                         Kind="PlusCircleOutline"
-                                                         VerticalAlignment="Center"
-                                                         Height="20" Width="20"
-                                                         Foreground="#766839"
-                                                         MouseDown="icAddCustomer_MouseDown"/>
+                                         materialDesign:TextFieldAssist.UnderlineBrush="#766839"
+                                         TextChanged="tbCustomerPhone_TextChanged"/>
+                                <!-- Popup hiển thị gợi ý -->
+                                <Popup x:Name="popupCustomers"
+                                       PlacementTarget="{Binding ElementName=tbCustomerPhone}"
+                                       Placement="Bottom"
+                                       Width="Auto"
+                                       StaysOpen="False"
+                                       AllowsTransparency="True">
+                                    <Border BorderBrush="#766839" 
+                                            BorderThickness="2" 
+                                            Background="#F9F6F0"
+                                            CornerRadius="5"
+                                            MaxHeight="250">
+                                        <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                            <ItemsControl ItemsSource="{Binding Customers}">
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Border BorderBrush="#D4BA98" 
+                                                                BorderThickness="0 0 0 1"
+                                                                Background="Transparent"
+                                                                Cursor="Hand"
+                                                                MouseDown="CustomerItem_MouseDown"
+                                                                MouseEnter="CustomerItem_MouseEnter"
+                                                                MouseLeave="CustomerItem_MouseLeave">
+                                                            <StackPanel Margin="10 8">
+                                                                <TextBlock Text="{Binding CustomerName}" 
+                                                                           FontWeight="Bold" 
+                                                                           FontSize="14"
+                                                                           FontFamily="Cascadia Code"
+                                                                           Foreground="#766839"/>
+                                                                <StackPanel Orientation="Horizontal" Margin="0 3 0 0">
+                                                                    <materialDesign:PackIcon Kind="Phone" 
+                                                                                             Width="14" Height="14" 
+                                                                                             VerticalAlignment="Center"
+                                                                                             Foreground="#766839"
+                                                                                             Margin="0 0 5 0"/>
+                                                                    <TextBlock Text="{Binding PhoneNumber}" 
+                                                                               Foreground="#766839" 
+                                                                               FontSize="12"
+                                                                               FontFamily="Cascadia Code"/>
+                                                                </StackPanel>
+                                                                <StackPanel Orientation="Horizontal" Margin="0 2 0 0">
+                                                                    <materialDesign:PackIcon Kind="Email" 
+                                                                                             Width="14" Height="14" 
+                                                                                             VerticalAlignment="Center"
+                                                                                             Foreground="#766839"
+                                                                                             Margin="0 0 5 0"/>
+                                                                    <TextBlock Text="{Binding Email}" 
+                                                                               Foreground="#766839" 
+                                                                               FontSize="12"
+                                                                               FontFamily="Cascadia Code"/>
+                                                                </StackPanel>
+                                                            </StackPanel>
+                                                        </Border>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                        </ScrollViewer>
+                                    </Border>
+                                </Popup>
+                                <Border MouseEnter="icAddCustomer_MouseEnter"
+                                        MouseLeave="icAddCustomer_MouseLeave"
+                                        MouseDown="icAddCustomer_MouseDown">
+                                    <materialDesign:PackIcon x:Name="icAddCustomer"
+                                                             Kind="PlusCircleOutline"
+                                                             VerticalAlignment="Center"
+                                                             Height="20" Width="20"
+                                                             Foreground="#766839"/>
+                                </Border>
                                 <TextBlock Text="Khách hàng:" 
                                            VerticalAlignment="Center"
                                            Margin="30 0 0 0"

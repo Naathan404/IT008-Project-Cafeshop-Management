@@ -20,6 +20,7 @@ namespace CoffeeShop.View.Staff
             InitializeComponent();
             _viewModel = new StaffOrderViewModel();
             this.DataContext = _viewModel;
+            LoadTablesToComboBox();
         }
         private void ViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
@@ -224,10 +225,11 @@ namespace CoffeeShop.View.Staff
         {
             if (sender is TextBox tb)
             {
-                _viewModel.SearchKeyword = tb.Text;
+                _viewModel.SearchItemKeyword = tb.Text;
                 LoadItemsByCategory();
             }
         }
+        
         #endregion
 
         #region DataGrid Events
@@ -347,23 +349,114 @@ namespace CoffeeShop.View.Staff
         #endregion
 
         #region Customer Events
+        private void icSearchCustomer_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is PackIcon ic)
+            {
+                _viewModel.SearchCustomerCommand?.Execute(tbCustomerPhone.Text);
+            }
+        }
+        private void icSearchCustomer_MouseEnter(object sender, MouseEventArgs e)
+        {
+            var icon = sender as PackIcon;
+            icon.Kind = PackIconKind.AccountSearch;
+        }
+
+        private void icSearchCustomer_MouseLeave(object sender, MouseEventArgs e)
+        {
+            var icon = sender as PackIcon;
+            icon.Kind = PackIconKind.AccountSearchOutline;
+        }
+        //private void tbCustomerPhone_LostFocus(object sender, RoutedEventArgs e)
+        //{
+        //    // Delay để cho phép click vào popup item
+        //    System.Threading.Tasks.Task.Delay(200).ContinueWith(_ =>
+        //    {
+        //        Dispatcher.Invoke(() => popupCustomers.IsOpen = false);
+        //    });
+        //}
         private void icAddCustomer_MouseDown(object sender, MouseButtonEventArgs e)
         {
             _viewModel.AddCustomerCommand?.Execute(null);
         }
-
-        private void icSearchCustomer_MouseDown(object sender, MouseButtonEventArgs e)
+        private void icAddCustomer_MouseLeave(object sender, MouseEventArgs e)
         {
-            _viewModel.SearchCustomerCommand?.Execute(null);
+            if (sender is Border bdr)
+            {
+                var icon = bdr.Child as PackIcon;
+                icon.Kind = PackIconKind.PlusCircleOutline;
+            }
+        }
+
+        private void icAddCustomer_MouseEnter(object sender, MouseEventArgs e)
+        {
+            if (sender is Border bdr)
+            {
+                var icon = bdr.Child as PackIcon;
+                icon.Kind = PackIconKind.PlusCircle;
+            }
+        }
+
+        private void CustomerItem_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is Border border && border.DataContext is OrderCustomer customer)
+            {
+                _viewModel.SelectedCustomer = customer;
+                tbCustomerPhone.Text = customer.PhoneNumber;
+                popupCustomers.IsOpen = false;
+            }
+        }
+
+        private void CustomerItem_MouseEnter(object sender, MouseEventArgs e)
+        {
+            if (sender is Border border)
+            {
+                border.Background = (SolidColorBrush)new BrushConverter().ConvertFrom("#D4BA98");
+            }
+        }
+
+        private void CustomerItem_MouseLeave(object sender, MouseEventArgs e)
+        {
+            if (sender is Border border)
+            {
+                border.Background = Brushes.Transparent;
+            }
+        }
+        // Hiển thị popup khi có thay đổi text
+        private void tbCustomerPhone_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (sender is TextBox tb)
+            {
+                _viewModel.SearchCustomerKeyword = tb.Text;
+                popupCustomers.IsOpen = _viewModel.HasSearchResults;
+            }
         }
         #endregion
 
         #region Table Events
-        private void cbTable_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void LoadTablesToComboBox()
         {
-            // SelectedTable đã được bind trong XAML, không cần xử lý gì thêm
+            // Thêm các bàn trống vào ComboBox
+            cbTable.Items.Clear();
+            cbTable.Items.Add(new ComboBoxItem
+            {
+                Content = "Không",
+                Tag = null,
+                IsSelected = true
+            });
+            foreach (var table in _viewModel.AvailableTables)
+            {
+                ComboBoxItem comboBoxItem = new ComboBoxItem
+                {
+                    Content = table.TableName,
+                    Tag = table.TableId
+                };
+                cbTable.Items.Add(comboBoxItem);
+            }
         }
         #endregion
+
+        
     }
 
     // Converter để hiển thị số thứ tự trong DataGrid
