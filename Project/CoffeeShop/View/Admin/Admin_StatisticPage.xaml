@@ -5,7 +5,6 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
       xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
-      xmlns:lvc2="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF"
       xmlns:local="clr-namespace:CoffeeShop.View.Admin"
       xmlns:control="clr-namespace:CoffeeShop.View.Controls"
       mc:Ignorable="d" 
@@ -37,6 +36,7 @@
                             Height="Auto"
                             materialDesign:HintAssist.Hint="Từ ngày"
                             VerticalAlignment="Center"
+                        FontFamily="Cascadia Code"
                             Style="{StaticResource MaterialDesignOutlinedDatePicker}" />
 
                     <TextBlock Text="-" VerticalAlignment="Center" Margin="10,0" FontWeight="ExtraBlack" Foreground="#FF340D05"/>
@@ -45,6 +45,7 @@
                             SelectedDate="{Binding EndDate, Mode=TwoWay}"
                             materialDesign:HintAssist.Hint="Đến ngày"
                             VerticalAlignment="Center"
+                            FontFamily="Cascadia Code"
                             Style="{StaticResource MaterialDesignOutlinedDatePicker}"/>
 
                     <Button x:Name="btnCurrentDay" 
@@ -75,7 +76,7 @@
                             Padding="10" 
                             UniformCornerRadius="15"
                             HorizontalAlignment="Right"
-                            Width="Auto">
+                            Width="200">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="9*"></ColumnDefinition>
@@ -85,8 +86,8 @@
                                 Orientation="Horizontal">
                                 <materialDesign:PackIcon Kind="Dollar" VerticalAlignment="Center" Height="30" Width="30"/>
                                 <StackPanel Margin="10,0,0,0">
-                                    <TextBlock Text="Tổng doanh thu thống kê  " Opacity="0.6"/>
-                                    <TextBlock x:Name="txblTotalRevenue" Text="1.000.000.000 ₫" FontWeight="Bold" FontSize="18"/>
+                                    <TextBlock Text="Tổng số đơn" Opacity="0.6" FontFamily="Cascadia Code"/>
+                                    <TextBlock Text="{Binding TotalOrders}" FontWeight="Bold" FontSize="18"/>
                                 </StackPanel>
                             </StackPanel>
                             <ScrollBar Grid.Column="1" 
@@ -99,7 +100,7 @@
                         Padding="10" 
                         UniformCornerRadius="15"
                         HorizontalAlignment="Right"
-                        Width="Auto">
+                        Width="225">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="9*"></ColumnDefinition>
@@ -109,8 +110,8 @@
                                 Orientation="Horizontal">
                                 <materialDesign:PackIcon Kind="Dollar" VerticalAlignment="Center" Height="30" Width="30"/>
                                 <StackPanel Margin="10,0,0,0">
-                                    <TextBlock Text="Tổng doanh thu trong ngày " Opacity="0.6"/>
-                                    <TextBlock x:Name="txblTotalRevenueToday" Text="1.000.000.000 ₫" FontWeight="Bold" FontSize="18"/>
+                                    <TextBlock Text="Tổng doanh thu" Opacity="0.6" FontFamily="Cascadia Code"/>
+                                    <TextBlock Text="{Binding TotalRevenue}" FontWeight="Bold" FontSize="18"/>
                                 </StackPanel>
                             </StackPanel>
                             <ScrollBar Grid.Column="1" 
@@ -125,33 +126,354 @@
                     VerticalScrollBarVisibility="Visible">
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="400"></RowDefinition>
+                        <RowDefinition Height="350"></RowDefinition>
                         <RowDefinition Height="400"></RowDefinition>
                         <RowDefinition Height="350"></RowDefinition>
                         <RowDefinition Height="350"></RowDefinition>
                     </Grid.RowDefinitions>
-                    
-                    <!--First Row-->
+
+                    <!--HÀNG ĐÀU TIÊN-->
                     <Grid Grid.Row="0" Margin="20,0,20,20">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition></ColumnDefinition>
-                            <ColumnDefinition></ColumnDefinition>
-                        </Grid.ColumnDefinitions>    
-                    </Grid>
-                    
-                    <!--Second Row-->
-                    <materialDesign:Card Grid.Row="1" Margin="20,0,20,10" Padding="20" UniformCornerRadius="15">
-                        <Grid>
-                            <TextBlock Margin="0 -15 0 0" Text="Biểu đồ doanh thu theo thời gian" FontWeight="Bold" Foreground="Gray"/>
+                            <ColumnDefinition Width="6*"></ColumnDefinition>
+                            <ColumnDefinition Width="4*"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <!--Biểu đồ giờ cao điểm-->
+                        <materialDesign:Card Grid.Column="0" 
+                                             UniformCornerRadius="15"
+                                             Margin="0 0 20 0"
+                                             Padding="20 20 20 10">
+                            <Grid>
+                                <TextBlock Margin="0 -15 0 0"
+                                           Text="Biểu đồ giờ cao điểm (7 ngày gần nhất)" 
+                                           FontFamily="Cascadia Code"
+                                           FontWeight="Bold" 
+                                           Foreground="Gray"/>
+                                <lvc:CartesianChart Series="{Binding PeakHourSeries}" 
+                                                    Margin="0 10 0 0"
+                                                    LegendLocation="None"
+                                                    FontFamily="Cascadia Code">
+                                    <lvc:CartesianChart.AxisX>
+                                        <lvc:Axis Labels="{Binding HourLabels}" 
+                                                  LabelsRotation="0" 
+                                                  MinValue="0"
+                                                  MaxValue="14"
+                                                  Margin="0 0 0 0"
+                                                  FontFamily="Cascadia Code">
+                                            <lvc:Axis.Separator>
+                                                <lvc:Separator Step="1" 
+                                                               StrokeThickness="0"></lvc:Separator>
+                                            </lvc:Axis.Separator>
+                                        </lvc:Axis>
+                                    </lvc:CartesianChart.AxisX>
 
-                            <lvc:CartesianChart Series="{Binding RevenueSeries}" LegendLocation="None">
+                                    <lvc:CartesianChart.AxisY>
+                                        <lvc:Axis Labels="{Binding DayOfWeekLabels}" LabelsRotation="-25" FontFamily="Cascadia Code">
+                                            <lvc:Axis.Separator>
+                                                <lvc:Separator Step="1" StrokeThickness="-20"></lvc:Separator>
+                                            </lvc:Axis.Separator>
+                                        </lvc:Axis>
+                                    </lvc:CartesianChart.AxisY>
+                                    <lvc:CartesianChart.DataTooltip>
+                                        <control:PeakHourTooltip>
+
+                                        </control:PeakHourTooltip>
+                                    </lvc:CartesianChart.DataTooltip>
+                                </lvc:CartesianChart>
+                            </Grid>
+                        </materialDesign:Card>
+
+                        <!--Bảng thống kê doanh thu cơ bản-->
+                        <materialDesign:Card Grid.Column="1"
+                                             UniformCornerRadius="15"
+                                             >
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="30"/>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+
+                                <!--Hàng 0-->
+                                <Grid Grid.Row="0">
+                                    <TextBlock Margin="20 5 0 0" 
+                                        Text="Thống kê doanh thu trong ngày" 
+                                        FontFamily="Cascadia Code"
+                                        FontWeight="Bold" 
+                                        Foreground="Gray"
+                                        HorizontalAlignment="Center"/>
+                                </Grid>
+
+                                <!--Hàng 1-->
+                                <Grid Grid.Row="1">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBlock Grid.Column="0"
+                                        Text="Doanh thu trước giảm:" 
+                                        FontFamily="Cascadia Code"
+                                        FontWeight="Bold"
+                                        Margin="10,0,5,0"
+                                        FontSize="15"
+                                        VerticalAlignment="Center"/>
+                                    <TextBlock Grid.Column="1"
+                                        Text="{Binding SubTotal}" 
+                                        FontFamily="Cascadia Code"
+                                        FontWeight="Bold"
+                                        Margin="0,5,10,0"
+                                        FontSize="15"
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Right" />
+                                </Grid>
+
+                                <!--Hàng 2-->
+                                <Grid Grid.Row="2">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0"
+                                        Text="Giảm giá:" 
+                                        FontFamily="Cascadia Code"
+                                        FontWeight="Bold"
+                                        Margin="10,0,5,0"
+                                        FontSize="15"
+                                        VerticalAlignment="Center"/>
+                                    <TextBlock Grid.Column="1"
+                                        Text="{Binding DiscountTotal}" 
+                                        FontFamily="Cascadia Code"
+                                        FontWeight="Bold"
+                                        Margin="0,5,10,0"
+                                        FontSize="15"
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Right" />
+                                </Grid>
+
+                                <!--Hàng 3-->
+                                <Grid Grid.Row="3">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="29*"/>
+                                        <ColumnDefinition Width="108*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0"
+                                        Text="Doanh thu sau giảm:" 
+                                        FontFamily="Cascadia Code"
+                                        FontWeight="Bold"
+                                        Margin="10,0,5,0"
+                                        FontSize="15"
+                                        VerticalAlignment="Center" Grid.ColumnSpan="2"/>
+                                    <TextBlock Grid.Column="1"
+                                        Text="{Binding FinalTotal}" 
+                                        FontFamily="Cascadia Code"
+                                        FontWeight="Bold"
+                                        Margin="0,5,10,0"
+                                        FontSize="15"
+                                        VerticalAlignment="Top"
+                                        HorizontalAlignment="Right" />
+                                </Grid>
+
+
+                                <!--Hàng 4-->
+                                <Grid Grid.Row="4">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0"
+                                        Text="Tiền mặt:" 
+                                        FontFamily="Cascadia Code"
+                                        FontWeight="Bold"
+                                        Margin="10,0,5,0"
+                                        FontSize="15"
+                                        VerticalAlignment="Center"/>
+                                    <TextBlock Grid.Column="1"
+                                        Text="{Binding CashRevenue}" 
+                                        FontFamily="Cascadia Code"
+                                        FontWeight="Bold"
+                                        Margin="0,5,10,0"
+                                        FontSize="15"
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Right" />
+                                </Grid>
+
+                                <!--Hàng 5-->
+                                <Grid Grid.Row="5">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0"
+                                        Text="Ngân hàng:" 
+                                        FontFamily="Cascadia Code"
+                                        FontWeight="Bold"
+                                        Margin="10,0,5,0"
+                                        FontSize="15"
+                                        VerticalAlignment="Center"/>
+                                    <TextBlock Grid.Column="1"
+                                        Text="{Binding BankingRevenue}" 
+                                        FontFamily="Cascadia Code"
+                                        FontWeight="Bold"
+                                        Margin="0,5,10,0"
+                                        FontSize="15"
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Right" />
+                                </Grid>
+
+                                <!--Hàng 6-->
+                                <Grid Grid.Row="6">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0"
+                                        Text="Doanh thu 6h-10h:" 
+                                        FontFamily="Cascadia Code"
+                                        FontWeight="Bold"
+                                        Margin="10,0,5,0"
+                                        FontSize="15"
+                                        VerticalAlignment="Center"/>
+                                    <TextBlock Grid.Column="1"
+                                        Text="{Binding MorningRevenue}" 
+                                        FontFamily="Cascadia Code"
+                                        FontWeight="Bold"
+                                        Margin="0,5,10,0"
+                                        FontSize="15"
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Right" />
+                                </Grid>
+
+                                <!--Hàng 7-->
+                                <Grid Grid.Row="7">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0"
+                                        Text="Doanh thu 10h-14h:" 
+                                        FontFamily="Cascadia Code"
+                                        FontWeight="Bold"
+                                        Margin="10,0,5,0"
+                                        FontSize="15"
+                                        VerticalAlignment="Center"/>
+                                    <TextBlock Grid.Column="1"
+                                        Text="{Binding NoonRevenue}" 
+                                        FontFamily="Cascadia Code"
+                                        FontWeight="Bold"
+                                        Margin="0,5,10,0"
+                                        FontSize="15"
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Right" />
+                                </Grid>
+
+                                <!--Hàng 8-->
+                                <Grid Grid.Row="8">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0"
+                                        Text="Doanh thu 14h-18h:" 
+                                        FontFamily="Cascadia Code"
+                                        FontWeight="Bold"
+                                        Margin="10,0,5,0"
+                                        FontSize="15"
+                                        VerticalAlignment="Center"/>
+                                    <TextBlock Grid.Column="1"
+                                        Text="{Binding AfternoonRevenue}" 
+                                        FontFamily="Cascadia Code"
+                                        FontWeight="Bold"
+                                        Margin="0,5,10,0"
+                                        FontSize="15"
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Right" />
+                                </Grid>
+
+                                <!--Hàng 9-->
+                                <Grid Grid.Row="9">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0"
+                                        Text="Doanh thu 18h-22h:" 
+                                        FontFamily="Cascadia Code"
+                                        FontWeight="Bold"
+                                        Margin="10,0,5,0"
+                                        FontSize="15"
+                                        VerticalAlignment="Center"/>
+                                    <TextBlock Grid.Column="1"
+                                        Text="{Binding EveningRevenue}" 
+                                        FontFamily="Cascadia Code"
+                                        FontWeight="Bold"
+                                        Margin="0,5,10,0"
+                                        FontSize="15"
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Right" />
+                                </Grid>
+
+                                <!--Hàng 10-->
+                                <Grid Grid.Row="10">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0"
+                                        Text="Tổng số đơn:" 
+                                        FontFamily="Cascadia Code"
+                                        FontWeight="Bold"
+                                        Margin="10,0,5,0"
+                                        FontSize="15"
+                                        VerticalAlignment="Center"/>
+                                    <TextBlock Grid.Column="1"
+                                        Text="{Binding OrderTotal}" 
+                                        FontFamily="Cascadia Code"
+                                        FontWeight="Bold"
+                                        Margin="0,5,10,0"
+                                        FontSize="15"
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Right" />
+                                </Grid>
+                            </Grid>
+                        </materialDesign:Card>
+                    </Grid>
+
+                    <!--HÀNG THỨ HAI-->
+                    <!--Biểu đồ thống kê doanh thu-->
+                    <materialDesign:Card Grid.Row="1" Margin="20,0,20,5" Padding="20" UniformCornerRadius="15">
+                        <Grid>
+                            <TextBlock Margin="0 -15 0 0" 
+                                       Text="Biểu đồ doanh thu theo ngày" 
+                                       FontFamily="Cascadia Code"
+                                       FontWeight="Bold" 
+                                       Foreground="Gray"/>
+
+                            <lvc:CartesianChart Margin="0 5 0 0" 
+                                                Series="{Binding RevenueSeries}" 
+                                                LegendLocation="None">
                                 <lvc:CartesianChart.AxisX>
-                                    <lvc:Axis Labels="{Binding RevenueLabels}" Title="Thời gian"></lvc:Axis>
+                                    <lvc:Axis Labels="{Binding DayLabels}" FontFamily="Cascadia Code"></lvc:Axis>
                                 </lvc:CartesianChart.AxisX>
 
                                 <lvc:CartesianChart.AxisY>
-                                    <lvc:Axis LabelFormatter="{Binding CurrencyFormatter}" Title="Doanh thu (VNĐ)"></lvc:Axis>
-                                    <lvc:Axis LabelFormatter="{Binding PercentageFormatter}" Title="Tăng trưởng" Position="RightTop"/>
+                                    <lvc:Axis LabelFormatter="{Binding CurrencyFormatter}" 
+                                              Title="{Binding LeftXAxisRevenueChartName}"
+                                              LabelsRotation="30"
+                                              FontFamily="Cascadia Code"></lvc:Axis>
+                                    <lvc:Axis LabelFormatter="{Binding PercentFormatter}" 
+                                              Title="Tốc độ tăng trưởng" Position="RightTop"
+                                              FontFamily="Cascadia Code"/>
                                 </lvc:CartesianChart.AxisY>
 
                                 <lvc:CartesianChart.DataTooltip>
@@ -160,18 +482,21 @@
                             </lvc:CartesianChart>
                         </Grid>
                     </materialDesign:Card>
-                    
-                    <!--Third Row-->
+
+                    <!--HÀNG THỨ BA-->
                     <Grid Grid.Row="2" Margin="10,0,10,20">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-
+                        <!--Biểu đồ top bán chạy-->
                         <materialDesign:Card Grid.Column="0" Margin="10" Padding="10" UniformCornerRadius="15">
                             <Grid>
-                                <TextBlock Text="Top 5 bán chạy" FontWeight="Bold" HorizontalAlignment="Center"/>
+                                <TextBlock Text="Top 5 bán chạy" 
+                                           FontWeight="Bold" 
+                                           HorizontalAlignment="Center"
+                                           FontFamily="Cascadia Code"/>
                                 <lvc:PieChart 
                                     x:Name="pieChartTop5BestSeller"
                                     Series="{Binding TopProductsSeries}" 
@@ -186,10 +511,14 @@
                                 </lvc:PieChart>
                             </Grid>
                         </materialDesign:Card>
-
+                        <!--Danh mục-->
                         <materialDesign:Card Grid.Column="1" Margin="10" Padding="10" UniformCornerRadius="15">
                             <Grid>
-                                <TextBlock Text="Danh mục" FontWeight="Bold" HorizontalAlignment="Center"/>
+                                <TextBlock 
+                                    Text="Danh mục" 
+                                    FontWeight="Bold" 
+                                    HorizontalAlignment="Center"
+                                    FontFamily="Cascadia Code"/>
                                 <lvc:PieChart 
                                     x:Name="pieChartCategory"
                                     Series="{Binding CategorySeries}" 
@@ -203,10 +532,14 @@
                                 </lvc:PieChart>
                             </Grid>
                         </materialDesign:Card>
-
+                        <!--Giảm giá-->
                         <materialDesign:Card Grid.Column="2" Margin="10" Padding="10" UniformCornerRadius="15">
                             <Grid>
-                                <TextBlock Text="Giảm giá" FontWeight="Bold" HorizontalAlignment="Center"/>
+                                <TextBlock 
+                                    Text="Giảm giá" 
+                                    FontWeight="Bold" 
+                                    HorizontalAlignment="Center"
+                                    FontFamily="Cascadia Code"/>
                                 <lvc:PieChart 
                                     x:Name="pieChartDiscount"
                                     Series="{Binding DiscountSeries}" 
@@ -222,18 +555,21 @@
                         </materialDesign:Card>
                     </Grid>
 
-                    <!--Fourth Row-->
+                    <!--HÀNG THỨ TƯ-->
                     <Grid Grid.Row="3" Margin="10,0,10,20">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-
-
+                        <!--Hình thức thanh toán-->
                         <materialDesign:Card Grid.Column="0" Margin="10 0 10 0" Padding="10" UniformCornerRadius="15">
                             <Grid>
-                                <TextBlock Text="Hình thức thanh toán" FontWeight="Bold" HorizontalAlignment="Center"/>
+                                <TextBlock 
+                                    Text="Hình thức thanh toán" 
+                                    FontWeight="Bold" 
+                                    HorizontalAlignment="Center"
+                                    FontFamily="Cascadia Code"/>
                                 <lvc:PieChart 
                                     x:Name="pieChartPaymentMethod"
                                     Series="{Binding PaymentMethodSeries}" 
@@ -246,10 +582,14 @@
                                 </lvc:PieChart>
                             </Grid>
                         </materialDesign:Card>
-
+                        <!--Hình thức sử dụng-->
                         <materialDesign:Card Grid.Column="1" Margin="10 0 10 0" Padding="10" UniformCornerRadius="15">
                             <Grid>
-                                <TextBlock Text="Hình thức sử dụng" FontWeight="Bold" HorizontalAlignment="Center"/>
+                                <TextBlock 
+                                    Text="Hình thức sử dụng" 
+                                    FontWeight="Bold"
+                                    HorizontalAlignment="Center"
+                                    FontFamily="Cascadia Code"/>
                                 <lvc:PieChart 
                                     x:Name="pieChartServiceOption"
                                     Series="{Binding ServiceOptionSeries}" 
@@ -263,10 +603,14 @@
                                 <ScrollBar HorizontalAlignment="Left" Margin="242,53,0,0" VerticalAlignment="Top"/>
                             </Grid>
                         </materialDesign:Card>
-
+                        <!--Khách hàng-->
                         <materialDesign:Card Grid.Column="2" Margin="10 0 10 0" Padding="10" UniformCornerRadius="15">
                             <Grid>
-                                <TextBlock Text="Khách hàng" FontWeight="Bold" HorizontalAlignment="Center"/>
+                                <TextBlock 
+                                    Text="Khách hàng" 
+                                    FontWeight="Bold" 
+                                    HorizontalAlignment="Center"
+                                    FontFamily="Cascadia Code"/>
                                 <lvc:PieChart 
                                     x:Name="pieChartCustomer"
                                     Series="{Binding CustomerSeries}" 
@@ -280,7 +624,7 @@
                             </Grid>
                         </materialDesign:Card>
                     </Grid>
-                    
+
                 </Grid>
             </ScrollViewer>
         </Grid>
