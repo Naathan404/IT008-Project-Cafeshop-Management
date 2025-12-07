@@ -1,47 +1,49 @@
-﻿using System.Windows;
+﻿using CoffeeShop.ViewModels.StaffVM;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using static CoffeeShop.View.Staff.Staff_Order;
+using static CoffeeShop.ViewModels.StaffVM.StaffOrderViewModel;
 
 namespace CoffeeShop.View.Staff
 {
     public partial class ItemWindow : Window
     {
-        public event Action<OrderItem, string, string, decimal> OnAddItem; // Event để trả dữ liệu về Page Order
-        public ItemWindow(OrderItem item)
+        private readonly StaffOrderViewModel _viewModel;
+        private OrderItem _currentItem;
+        private string? _selectedSize;
+        private decimal _selectedPrice;
+        public ItemWindow(StaffOrderViewModel viewModel, OrderItem item)
         {
             InitializeComponent();
-            this.DataContext = item; // Gán DataContext cho cả Window
+            _viewModel = viewModel;
+            _currentItem = item;
+            this.DataContext = item;
+
+            // Tự động chọn size đầu tiên nếu có
+            if (item.ItemPrices != null && item.ItemPrices.Count > 0)
+            {
+                var firstSize = item.ItemPrices.First();
+                if (_currentItem.CategoryId == 7)
+                    _selectedSize = null; // food không có size
+                else
+                {
+                    _selectedSize = firstSize.Size.SizeName;
+                    _selectedPrice = firstSize.Price;
+                }
+            }
         }
 
         #region Item Events
-        private void ItemPrice_Changed(TextBlock txbl, decimal price)
+        private void ItemPrice_Changed(decimal price)
         {
-            if (txbl == null)
-                return;
-
-            txbl.Text = string.Format("{0:N0} VND", price);
-        }
-        private decimal GetPriceFromBorder(Border bdrItemSize) // Lấy giá theo size được click
-        {
-            if (bdrItemSize == null) return 0;
-
-            // Lấy tên size từ TextBlock bên trong
-            if (!(bdrItemSize.Child is TextBlock txtSize)) return 0;
-            string sizeName = txtSize.Text;
-
-            // Lấy item từ DataContext của StackPanel cha
-            var stackPanel = FindParent<StackPanel>(bdrItemSize);
-            if (stackPanel == null) return 0;
-
-            var item = stackPanel.DataContext as OrderItem;
-            if (item == null || item.ItemPrices == null) return 0;
-
-            // Tìm price tương ứng size
-            var selectedPrice = item.ItemPrices.FirstOrDefault(p => p.Size.SizeName == sizeName)?.Price ?? 0;
-
-            return selectedPrice;
+            // Cập nhật giá bằng FindName
+            var priceTextBlock = this.FindName("txblItemPrice") as TextBlock;
+            if (priceTextBlock != null)
+            {
+                priceTextBlock.Text = string.Format("{0:N0} VND", _selectedPrice);
+            }
         }
         private void ItemSize_Loaded(object sender, RoutedEventArgs e)
         {
@@ -84,15 +86,13 @@ namespace CoffeeShop.View.Staff
         {
             if (sender is TextBlock txtblItemPrice)
             {
-                var stackPanel = FindParent<StackPanel>(txtblItemPrice);
-                if (stackPanel == null) return;
-                var item = stackPanel.DataContext as OrderItem;
-                if (item == null || item.ItemPrices == null) return;
+                var item = txtblItemPrice.DataContext as OrderItem;
+                if (item == null || item.ItemPrices == null || item.ItemPrices.Count == 0)
+                    return;
 
-                // Hiển thị giá mặc định (giá size đầu tiên)
-                var defaultPrice = item.ItemPrices.FirstOrDefault();
-                if (defaultPrice != null)
-                    ItemPrice_Changed(txtblItemPrice, defaultPrice.Price);
+                // Hiển thị giá mặc định (size đầu tiên)
+                var defaultPrice = item.ItemPrices.First();
+                txtblItemPrice.Text = string.Format("{0:N0} VND", defaultPrice.Price);
             }
         }
 
@@ -123,32 +123,33 @@ namespace CoffeeShop.View.Staff
         }
         private void bdrItemSize_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            e.Handled = true; // Ngăn event bubble lên parent
-
             if (sender is Border bdrSize)
             {
-                // Cập nhật giá
-                decimal price = GetPriceFromBorder(bdrSize);
-                txblItemPrice.Text = string.Format("{0:N0} VND", price);
+                var stackPanel = FindParent<StackPanel>(bdrSize);
+                if (stackPanel == null) return;
 
-                // Tìm StackPanel chứa các size
-                var stkSizePanel = FindParent<StackPanel>(bdrSize);
-                if (stkSizePanel == null) return;
-
-                // Bỏ chọn tất cả size khác
-                foreach (var b in stkSizePanel.Children.OfType<Border>())
+                // Reset tất cả border
+                foreach (var bdr in stackPanel.Children.OfType<Border>())
                 {
-                    b.Tag = false;
-                    b.Background = Brushes.Transparent;
-                    if (b.Child is TextBlock t)
-                        t.Foreground = (SolidColorBrush)(new BrushConverter().ConvertFrom("#766839"));
+                    bdr.Tag = false;
+                    bdr.Background = Brushes.Transparent;
+                    if (bdr.Child is TextBlock t)
+                        t.Foreground = (SolidColorBrush)new BrushConverter().ConvertFrom("#766839");
                 }
 
-                // Chọn Border được click
+                // Tô màu border đang click
                 bdrSize.Tag = true;
-                bdrSize.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#766839"));
+                bdrSize.Background = (SolidColorBrush)new BrushConverter().ConvertFrom("#766839");
                 if (bdrSize.Child is TextBlock txt)
-                    txt.Foreground = (SolidColorBrush)(new BrushConverter().ConvertFrom("#EDE2D3"));
+                {
+                    txt.Foreground = (SolidColorBrush)new BrushConverter().ConvertFrom("#EDE2D3");
+                    _selectedSize = txt.Text.Trim();
+                }
+                // Lấy giá
+                _selectedPrice = GetPriceFromBorder(bdrSize);
+
+                // Cập nhật hiển thị giá
+                ItemPrice_Changed(_selectedPrice);
             }
         }
         #endregion
@@ -198,47 +199,61 @@ namespace CoffeeShop.View.Staff
                 txtb.Foreground = (SolidColorBrush)(new BrushConverter().ConvertFrom("#766839"));
             }
         }
-
         private void bdrAddToOrder_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            // Lấy item hiện tại
-            var item = this.DataContext as OrderItem;
-            if (item == null) return;
-
-            // Lấy size được chọn
-            var sizeBorder = stpnItemSize.Children
-                .OfType<Border>()
-                .FirstOrDefault(b => (bool)(b.Tag ?? false));
-
-            string selectedSize;
-
-            if (sizeBorder != null)
+            // Lấy note từ TextBox (nếu có)
+            string note = null;
+            var txtNote = FindName("txtNote") as TextBox;
+            if (txtNote != null)
             {
-                selectedSize = (sizeBorder.Child as TextBlock)?.Text ?? "";
-            }
-            else
-            {
-                // Nếu không có size được chọn, lấy size đầu tiên làm mặc định
-                var firstPrice = item.ItemPrices?.FirstOrDefault();
-                selectedSize = firstPrice?.Size?.SizeName ?? "";
+                note = txtNote.Text.Trim();
+                if (string.IsNullOrWhiteSpace(note))
+                    note = null;
             }
 
-            var noteBox = this.FindName("txblItemNote") as TextBox;
-            string note = noteBox?.Text ?? "";
+            // Kiểm tra đã chọn size chưa
+            if (string.IsNullOrEmpty(_selectedSize))
+            {
+                MessageBox.Show("Vui lòng chọn size!", "Thông báo",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
 
-            // Lấy giá
-            decimal price = 0;
-            if (sizeBorder != null)
-                price = GetPriceFromBorder(sizeBorder);
-            else
-                price = item.ItemPrices.First().Price;
+            // Thêm vào order thông qua ViewModel
+            _viewModel.AddItemToOrder(_currentItem, _selectedSize, note, _selectedPrice);
 
-            // Gọi event trả dữ liệu về Page
-            OnAddItem?.Invoke(item, selectedSize, note, price);
-
+            // Đóng window
             this.Close();
         }
         #endregion
-        
+
+        #region Helper Methods
+        // Hàm tìm kiếm phần tử cha trong Visual Tree
+        public static T FindParent<T>(DependencyObject child) where T : DependencyObject
+        {
+            DependencyObject parentObject = VisualTreeHelper.GetParent(child);
+            if (parentObject == null) return null;
+            if (parentObject is T parent)
+                return parent;
+            return FindParent<T>(parentObject);
+        }
+        private decimal GetPriceFromBorder(Border bdrItemSize)
+        {
+            if (bdrItemSize == null) return 0;
+
+            if (!(bdrItemSize.Child is TextBlock txtSize)) return 0;
+            string sizeName = txtSize.Text;
+
+            var stackPanel = FindParent<StackPanel>(bdrItemSize);
+            if (stackPanel == null) return 0;
+
+            var item = stackPanel.DataContext as OrderItem;
+            if (item == null || item.ItemPrices == null) return 0;
+
+            var selectedPrice = item.ItemPrices.FirstOrDefault(p => p.Size.SizeName == sizeName)?.Price ?? 0;
+
+            return selectedPrice;
+        }
+        #endregion
     }
 }

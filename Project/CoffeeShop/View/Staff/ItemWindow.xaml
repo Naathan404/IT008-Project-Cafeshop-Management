@@ -27,7 +27,8 @@
                 <ColumnDefinition Width="1.7*"/>
                 <ColumnDefinition Width="2*"/>
             </Grid.ColumnDefinitions>
-            <StackPanel Grid.Column="0" 
+            <StackPanel x:Name="stpnItemInfo"
+                        Grid.Column="0" 
                         Margin="10 40 0 30">
                 <TextBlock x:Name="txblItemName"
                            Text="{Binding ItemName}"

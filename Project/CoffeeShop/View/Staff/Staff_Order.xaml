@@ -10,7 +10,8 @@
       mc:Ignorable="d" 
       d:DesignHeight="700" d:DesignWidth="1310"
       MinHeight="0" MinWidth="1000"
-      Title="Staff_Order">
+      Title="Staff_Order"
+      Loaded="Page_Loaded">
     <Page.Resources>
         <local:IndexToNumberConverter x:Key="IndexToNumberConverter"/>
         <!-- Style for Item card -->
@@ -383,7 +384,8 @@
                                           ItemsSource="{Binding LongIntegerList}"
                                           materialDesign:TextFieldAssist.UnderlineBrush="#766839"
                                           materialDesign:ListBoxItemAssist.SelectedFocusedBackground="#E0CEB5"
-                                          materialDesign:HintAssist.Hint="Chọn bàn"/>
+                                          materialDesign:HintAssist.Hint="Chọn bàn"
+                                          SelectionChanged="cbTable_SelectionChanged"/>
                                 <materialDesign:PackIcon x:Name="icSearchCustomer"
                                                          Kind="AccountSearch"
                                                          Margin="30 0 0 0"
@@ -421,6 +423,7 @@
                                     Background="#F9F6F0"
                                     Grid.Row="1">
                                 <DataGrid x:Name="dtgListOrder"
+                                          ItemsSource="{Binding Orders}"
                                           AutoGenerateColumns="False"
                                           IsReadOnly="True"
                                           HeadersVisibility="Column"
