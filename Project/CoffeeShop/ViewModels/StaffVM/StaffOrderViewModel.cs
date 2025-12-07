@@ -1,14 +1,8 @@
 ﻿using CoffeeShop.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
-using System.Printing;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
-using static CoffeeShop.View.Staff.Staff_Order;
 
 namespace CoffeeShop.ViewModels.StaffVM
 {
@@ -97,7 +91,7 @@ namespace CoffeeShop.ViewModels.StaffVM
             {
                 _seachKeyword = value;
                 OnPropertyChanged(nameof(SearchKeyword));
-                //SearchItems();
+                SearchItems();
             }
         }
 
@@ -133,7 +127,6 @@ namespace CoffeeShop.ViewModels.StaffVM
         public ICommand AddCustomerCommand { get; set; }
         public ICommand PlaceOrderCommand { get; set; }
         #endregion
-
 
         #region Constructor
         public StaffOrderViewModel()
