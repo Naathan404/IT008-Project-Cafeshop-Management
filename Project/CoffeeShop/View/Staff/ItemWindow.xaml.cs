@@ -3,7 +3,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using static CoffeeShop.View.Staff.Staff_Order;
 using static CoffeeShop.ViewModels.StaffVM.StaffOrderViewModel;
 
 namespace CoffeeShop.View.Staff
@@ -202,17 +201,12 @@ namespace CoffeeShop.View.Staff
         private void bdrAddToOrder_MouseDown(object sender, MouseButtonEventArgs e)
         {
             // Lấy note từ TextBox (nếu có)
-            string note = null;
-            var txtNote = FindName("txtNote") as TextBox;
-            if (txtNote != null)
-            {
-                note = txtNote.Text.Trim();
-                if (string.IsNullOrWhiteSpace(note))
-                    note = null;
-            }
+            string? note = txblItemNote.Text;
+            if (string.IsNullOrEmpty(note))
+                note = null;
 
             // Kiểm tra đã chọn size chưa
-            if (string.IsNullOrEmpty(_selectedSize))
+            if (string.IsNullOrEmpty(_selectedSize) && _currentItem.CategoryId != 7)
             {
                 MessageBox.Show("Vui lòng chọn size!", "Thông báo",
                     MessageBoxButton.OK, MessageBoxImage.Warning);

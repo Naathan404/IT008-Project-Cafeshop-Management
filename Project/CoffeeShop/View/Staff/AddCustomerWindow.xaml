@@ -1,0 +1,146 @@
+﻿<Window x:Class="CoffeeShop.View.Staff.AddCustomerWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CoffeeShop.View.Staff"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        mc:Ignorable="d"
+        Title="Thêm Khách hàng mới"
+        Icon="/Assets/icoCoffee.ico"
+        Height="370" Width="700"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen">
+    <Window.Background>
+        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#D4BA98" Offset="0"/>
+            <GradientStop Color="#C8B48C" Offset="0.5"/>
+            <GradientStop Color="#B18252" Offset="1"/>
+        </LinearGradientBrush>
+    </Window.Background>
+    <Border CornerRadius="15"
+            Background="#EDE2D3"
+            Margin="15">
+        <StackPanel Margin="30">
+            <StackPanel x:Name="stpnCustomerName"
+                        Orientation="Horizontal"
+                        Margin="10 25 0 0"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top">
+                <TextBlock Text="Tên khách hàng:"
+                           FontSize="25"
+                           FontWeight="Bold" 
+                           FontFamily="Cascadia Code"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"/>
+                <TextBox x:Name="txbCustomerName"
+                         Text="{Binding CustomerName, UpdateSourceTrigger=PropertyChanged}"
+                         Width="320" Height="40"
+                         Margin="50 0 0 0"
+                         HorizontalAlignment="Center"
+                         VerticalAlignment="Center"
+                         materialDesign:HintAssist.Hint="Nhập tên khách hàng"
+                         materialDesign:HintAssist.IsFloating="False"
+                         FontFamily="Cascadia Code"
+                         Foreground="#766839"
+                         FontSize="20" 
+                         FontWeight="Bold"
+                         materialDesign:TextFieldAssist.UnderlineBrush="#766839"
+                         materialDesign:HintAssist.Foreground="#766839"
+                         Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
+            </StackPanel>
+            <StackPanel x:Name="stpnCustomerPhoneNumber"
+                        Orientation="Horizontal"
+                        Margin="10 15 0 0"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top">
+                <TextBlock Text="SĐT khách hàng:"
+                           FontSize="25"
+                           FontWeight="Bold" 
+                           FontFamily="Cascadia Code"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"/>
+                <TextBox x:Name="txbCustomerPhoneNumber"
+                         Text="{Binding CustomerPhoneNumber, UpdateSourceTrigger=PropertyChanged}"
+                         Width="320" Height="40"
+                         Margin="50 0 0 0"
+                         HorizontalAlignment="Center"
+                         VerticalAlignment="Center"
+                         materialDesign:HintAssist.Hint="Nhập số điện thoại"
+                         materialDesign:HintAssist.IsFloating="False"
+                         FontFamily="Cascadia Code"
+                         Foreground="#766839"
+                         FontSize="20" 
+                         FontWeight="Bold"
+                         materialDesign:TextFieldAssist.UnderlineBrush="#766839"
+                         materialDesign:HintAssist.Foreground="#766839"
+                         Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
+            </StackPanel>
+            <StackPanel x:Name="stpnCustomerEmail"
+                        Orientation="Horizontal"
+                        Margin="10 15 0 0"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top">
+                <TextBlock Text="Email khách hàng:"
+                           FontSize="25"
+                           FontWeight="Bold" 
+                           FontFamily="Cascadia Code"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"/>
+                <TextBox x:Name="txbCustomerEmail"
+                         Text="{Binding CustomerEmail, UpdateSourceTrigger=PropertyChanged}"
+                         Width="320" Height="40"
+                         Margin="20 0 0 0"
+                         HorizontalAlignment="Center"
+                         VerticalAlignment="Center"
+                         materialDesign:HintAssist.Hint="Nhập email"
+                         materialDesign:HintAssist.IsFloating="False"
+                         FontFamily="Cascadia Code"
+                         Foreground="#766839"
+                         FontSize="20" 
+                         FontWeight="Bold"
+                         materialDesign:TextFieldAssist.UnderlineBrush="#766839"
+                         materialDesign:HintAssist.Foreground="#766839"
+                         Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0 20 10 0">
+                <Border x:Name="bdrAddNewCustomer"
+                        BorderBrush="#766839"
+                        BorderThickness="2"
+                        Margin="0 0 30 0" Width="80" Height="40"
+                        CornerRadius="12"
+                        HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                        MouseEnter="btn_MouseEnter"
+                        MouseLeave="btn_MouseLeave">
+                    <Border.InputBindings>
+                        <MouseBinding Command="{Binding ConfirmAddCustomerCommand}" MouseAction="LeftClick"/>
+                    </Border.InputBindings>
+                    <TextBlock Text="Thêm"
+                               FontSize="20"
+                               FontWeight="Bold"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               FontFamily="Cascadia Code"
+                               Foreground="#766839"/>
+                </Border>
+                <Border x:Name="bdrExit"
+                        BorderBrush="#766839"
+                        BorderThickness="2"
+                        Width="90" Height="40"
+                        CornerRadius="12"
+                        HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                        MouseDown="bdrExit_MouseDown"
+                        MouseEnter="btn_MouseEnter"
+                        MouseLeave="btn_MouseLeave">
+                    <TextBlock Text="Thoát"
+                               FontSize="20"
+                               FontWeight="Bold"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               FontFamily="Cascadia Code"
+                               Foreground="#766839"/>
+                </Border>
+            </StackPanel>
+        </StackPanel>
+    </Border>
+</Window>

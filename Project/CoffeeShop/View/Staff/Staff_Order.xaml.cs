@@ -1,6 +1,8 @@
 ﻿using CoffeeShop.ViewModels.StaffVM;
 using MaterialDesignThemes.Wpf;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -20,22 +22,7 @@ namespace CoffeeShop.View.Staff
             InitializeComponent();
             _viewModel = new StaffOrderViewModel();
             this.DataContext = _viewModel;
-            LoadTablesToComboBox();
         }
-        private void ViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(_viewModel.Items))
-            {
-                LoadItemsByCategory();
-            }
-        }
-
-        #region Page Events
-        private void Page_Loaded(object sender, RoutedEventArgs e)
-        {
-            LoadItemsByCategory();
-        }
-        #endregion
 
         #region Helper Methods
         // Hàm tìm kiếm phần tử cha trong Visual Tree
@@ -49,21 +36,18 @@ namespace CoffeeShop.View.Staff
         }
         #endregion
 
-        #region TabItem Loading
-        private void LoadItemsByCategory()
+        #region TabControl Methods
+        private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (_viewModel == null || _viewModel.Items.Count == 0)
-                return;
-            for (int i = 1; i <= _viewModel.Items.Max(x => x.CategoryId); i++)
+            if (sender is TabControl tabControl && tabControl.SelectedItem is TabItem tab)
             {
-                var ic = tabMain.FindName($"icCategory{i}") as ItemsControl;
-                if (ic != null)
+                if (DataContext is StaffOrderViewModel vm)
                 {
-                    ic.ItemsSource = null;
-                    ic.ItemsSource = _viewModel.Items.Where(x => x.CategoryId == i).ToList();
+                    vm.CurrentCategoryId = int.Parse(tab.Tag.ToString());
                 }
             }
         }
+
         #endregion
 
         #region Item Events
@@ -88,9 +72,20 @@ namespace CoffeeShop.View.Staff
             if (data == null) return;
             var thisItem = data as OrderItem;
             if (thisItem == null) return;
+            bool isFoodWithoutDetailWindow = thisItem.CategoryId == 7 &&
+                                             (thisItem.ItemPrices?.Count == 1 || thisItem.ItemPrices?.Count == 0);
 
-            var detailWindow = new ItemWindow(_viewModel, thisItem);
-            detailWindow.ShowDialog();
+            if (isFoodWithoutDetailWindow)
+            {
+                // Thêm trực tiếp Food vào Order
+                decimal price = thisItem.ItemPrices?.FirstOrDefault()?.Price ?? 0;
+                _viewModel.AddItemToOrder(thisItem, string.Empty, null, price);
+            }
+            else
+            {
+                var detailWindow = new ItemWindow(_viewModel, thisItem);
+                detailWindow.ShowDialog();
+            }
         }
         private void ItemSize_Loaded(object sender, RoutedEventArgs e)
         {
@@ -226,7 +221,6 @@ namespace CoffeeShop.View.Staff
             if (sender is TextBox tb)
             {
                 _viewModel.SearchItemKeyword = tb.Text;
-                LoadItemsByCategory();
             }
         }
         
@@ -367,17 +361,15 @@ namespace CoffeeShop.View.Staff
             var icon = sender as PackIcon;
             icon.Kind = PackIconKind.AccountSearchOutline;
         }
-        //private void tbCustomerPhone_LostFocus(object sender, RoutedEventArgs e)
-        //{
-        //    // Delay để cho phép click vào popup item
-        //    System.Threading.Tasks.Task.Delay(200).ContinueWith(_ =>
-        //    {
-        //        Dispatcher.Invoke(() => popupCustomers.IsOpen = false);
-        //    });
-        //}
         private void icAddCustomer_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            _viewModel.AddCustomerCommand?.Execute(null);
+            AddCustomerWindow addCustomer;
+            if (string.IsNullOrEmpty(tbCustomerPhone.Text))
+                addCustomer = new AddCustomerWindow(_viewModel);
+            else
+                addCustomer = new AddCustomerWindow(_viewModel, tbCustomerPhone.Text);
+
+            addCustomer.Show();
         }
         private void icAddCustomer_MouseLeave(object sender, MouseEventArgs e)
         {
@@ -434,29 +426,7 @@ namespace CoffeeShop.View.Staff
         #endregion
 
         #region Table Events
-        private void LoadTablesToComboBox()
-        {
-            // Thêm các bàn trống vào ComboBox
-            cbTable.Items.Clear();
-            cbTable.Items.Add(new ComboBoxItem
-            {
-                Content = "Không",
-                Tag = null,
-                IsSelected = true
-            });
-            foreach (var table in _viewModel.AvailableTables)
-            {
-                ComboBoxItem comboBoxItem = new ComboBoxItem
-                {
-                    Content = table.TableName,
-                    Tag = table.TableId
-                };
-                cbTable.Items.Add(comboBoxItem);
-            }
-        }
         #endregion
-
-        
     }
 
     // Converter để hiển thị số thứ tự trong DataGrid
@@ -475,4 +445,5 @@ namespace CoffeeShop.View.Staff
             throw new NotImplementedException();
         }
     }
+
 }

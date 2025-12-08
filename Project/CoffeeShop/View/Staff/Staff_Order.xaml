@@ -6,14 +6,18 @@
       xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
       xmlns:sys="clr-namespace:System;assembly=mscorlib"
       xmlns:local="clr-namespace:CoffeeShop.View.Staff"
-      xmlns:models="clr-namespace:CoffeeShop.Models"
+      xmlns:vm="clr-namespace:CoffeeShop.ViewModels.StaffVM"
       mc:Ignorable="d" 
       d:DesignHeight="700" d:DesignWidth="1310"
       MinHeight="0" MinWidth="1000"
-      Title="Staff_Order"
-      Loaded="Page_Loaded">
+      Title="Staff_Order">
+    <Page.DataContext>
+        <vm:StaffOrderViewModel/>
+    </Page.DataContext>
+
     <Page.Resources>
         <local:IndexToNumberConverter x:Key="IndexToNumberConverter"/>
+
         <!-- Style for Item card -->
         <Style x:Key="RoundedCard" TargetType="ContentControl">
             <Setter Property="Margin" Value="5"/>
@@ -24,12 +28,12 @@
                                 ClipToBounds="True" 
                                 MinWidth="130" MinHeight="150" 
                                 MaxHeight="220" MaxWidth="200"
-                                MouseDown="Item_MouseDown">
+                                MouseDown="Item_MouseDown"
+                                Cursor="Hand">
                             <StackPanel>
                                 <!--Item Image-->
                                 <Image x:Name="imgItem"
                                        Margin="10" MaxHeight="80"
-                                       Grid.Row="0"
                                        Stretch="UniformToFill"
                                        Source="{Binding ImagePath}"
                                        d:Source="/Assets/Images/imgItemExample.jpg"/>
@@ -43,28 +47,24 @@
                                            Foreground="#340D05"
                                            HorizontalAlignment="Left"
                                            VerticalAlignment="Center"
-                                           Grid.Row="1"
                                            TextWrapping="Wrap"/>
                                 <!--Item Size-->
                                 <StackPanel x:Name="stpnItemSize"
                                             Orientation="Horizontal" 
-                                            Margin="0 0 10 0" Grid.Row="2" 
+                                            Margin="0 5 10 0"
                                             HorizontalAlignment="Right"
                                             VerticalAlignment="Top"
-                                            Visibility="Collapsed"
                                             Loaded="ItemSize_Loaded">
                                     <Border x:Name="bdrItemSize0"
                                             BorderBrush="#766839"
                                             BorderThickness="2"
                                             CornerRadius="15"
-                                            Width="20"
-                                            Height="20"
+                                            Width="20" Height="20"
                                             MouseDown="bdrItemSize_MouseDown"
                                             MouseEnter="bdrItemSize_MouseEnter"
                                             MouseLeave="bdrItemSize_MouseLeave"
                                             Visibility="Collapsed">
                                         <TextBlock x:Name="txtSize0"
-                                                   d:Text="S"
                                                    FontSize="10"
                                                    FontWeight="Bold"
                                                    HorizontalAlignment="Center"
@@ -76,15 +76,13 @@
                                             BorderBrush="#766839"
                                             BorderThickness="2"
                                             CornerRadius="15"
-                                            Width="20"
-                                            Height="20"
-                                            Margin="2.5"
+                                            Width="20" Height="20"
+                                            Margin="2.5 0"
                                             MouseDown="bdrItemSize_MouseDown"
                                             MouseEnter="bdrItemSize_MouseEnter"
                                             MouseLeave="bdrItemSize_MouseLeave"
                                             Visibility="Collapsed">
                                         <TextBlock x:Name="txtSize1"
-                                                   d:Text="M"
                                                    FontSize="10"
                                                    FontWeight="Bold"
                                                    HorizontalAlignment="Center"
@@ -96,14 +94,12 @@
                                             BorderBrush="#766839"
                                             BorderThickness="2"
                                             CornerRadius="15"
-                                            Width="20"
-                                            Height="20"
+                                            Width="20" Height="20"
                                             MouseDown="bdrItemSize_MouseDown"
                                             MouseEnter="bdrItemSize_MouseEnter"
                                             MouseLeave="bdrItemSize_MouseLeave"
                                             Visibility="Collapsed">
                                         <TextBlock x:Name="txtSize2"
-                                                   d:Text="L"
                                                    FontSize="10"
                                                    FontWeight="Bold"
                                                    HorizontalAlignment="Center"
@@ -114,7 +110,6 @@
                                 </StackPanel>
                                 <!--Item Price-->
                                 <TextBlock x:Name="txtblItemPrice"
-                                           Grid.Row="3"
                                            FontFamily="Bahnschrift"
                                            FontSize="15"
                                            FontWeight="Bold"
@@ -141,12 +136,12 @@
                             </Grid.RowDefinitions>
                             <!-- Tab headers -->
                             <TabPanel Grid.Row="0"
-                              IsItemsHost="True"
-                              Margin="0"
-                              HorizontalAlignment="Stretch"/>
+                                      IsItemsHost="True"
+                                      Margin="0"
+                                      HorizontalAlignment="Stretch"/>
                             <!-- Tab content -->
                             <ContentPresenter Grid.Row="1"
-                                      ContentSource="SelectedContent"/>
+                                              ContentSource="SelectedContent"/>
                         </Grid>
                     </ControlTemplate>
                 </Setter.Value>
@@ -164,25 +159,27 @@
                     <ColumnDefinition Width="2*"/>
                 </Grid.ColumnDefinitions>
 
+                <!-- Menu Panel -->
                 <Grid Grid.Column="0">
                     <Border x:Name="bdrMenuTab"
                             Margin="10 10 10 15"
                             Background="#EDE2D3"
                             CornerRadius="15">
                         <Border.Effect>
-                            <DropShadowEffect BlurRadius="-20"
+                            <DropShadowEffect BlurRadius="20"
                                               Opacity="0.3"
                                               Color="Black"
                                               ShadowDepth="8"/>
                         </Border.Effect>
                         <Grid>
                             <TabControl x:Name="tabMain"
-                                    Margin="10 10 10 0"
-                                    materialDesign:ColorZoneAssist.Mode="Standard"
-                                    Background="#C7A57A"
-                                    HorizontalAlignment="Stretch"
-                                    VerticalContentAlignment="Stretch"
-                                    materialDesign:ThemeAssist.Theme="Light">
+                                        Margin="10 10 10 0"
+                                        materialDesign:ColorZoneAssist.Mode="Standard"
+                                        Background="#C7A57A"
+                                        HorizontalAlignment="Stretch"
+                                        VerticalContentAlignment="Stretch"
+                                        materialDesign:ThemeAssist.Theme="Light"
+                                        SelectionChanged="TabControl_SelectionChanged">
                                 <TabControl.ItemContainerStyle>
                                     <!-- Style cho từng TabItem -->
                                     <Style TargetType="TabItem" BasedOn="{StaticResource MaterialDesignTabItem}">
@@ -194,215 +191,251 @@
                                         <Setter Property="HeaderTemplate">
                                             <Setter.Value>
                                                 <DataTemplate>
-                                                    <TextBlock Text="{Binding}" FontSize="15" FontFamily="Cascadia Code" FontWeight="Bold"
-                                                           HorizontalAlignment="Center"/>
+                                                    <TextBlock Text="{Binding}" 
+                                                               FontSize="15" 
+                                                               FontFamily="Cascadia Code" 
+                                                               FontWeight="Bold"
+                                                               HorizontalAlignment="Center"/>
                                                 </DataTemplate>
                                             </Setter.Value>
                                         </Setter>
                                     </Style>
                                 </TabControl.ItemContainerStyle>
 
-                                <TabItem x:Name="tabItemCategory1" Header="Cà phê">
-                                    <ScrollViewer VerticalScrollBarVisibility="Auto" SizeChanged="ItemsContainer_SizeChanged">
-                                        <!-- Binding items từ cơ sở dữ liệu -->
-                                        <ItemsControl x:Name="icCategory1">
+                                <!-- Cà phê - CategoryId = 1 -->
+                                <TabItem Header="Cà phê" Tag="1">
+                                    <ScrollViewer VerticalScrollBarVisibility="Auto" 
+                                                  SizeChanged="ItemsContainer_SizeChanged">
+                                        <ItemsControl ItemsSource="{Binding FilteredItems}">
                                             <ItemsControl.ItemsPanel>
                                                 <ItemsPanelTemplate>
-                                                    <UniformGrid HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                                                    <UniformGrid VerticalAlignment="Top" HorizontalAlignment="Left"/>
                                                 </ItemsPanelTemplate>
                                             </ItemsControl.ItemsPanel>
+
                                             <ItemsControl.ItemTemplate>
-                                                <DataTemplate DataType="{x:Type models:Item}">
-                                                    <ContentControl Style="{StaticResource RoundedCard}" 
-                                                                Content="{Binding}"
-                                                                MouseDown="Item_MouseDown"/>
+                                                <DataTemplate>
+                                                    <ContentControl Style="{StaticResource RoundedCard}"
+                                                                    Content="{Binding}"/>
                                                 </DataTemplate>
                                             </ItemsControl.ItemTemplate>
                                         </ItemsControl>
                                     </ScrollViewer>
                                 </TabItem>
-                                <TabItem x:Name="tabItemCategory2" Header="Trà sữa">
-                                    <ScrollViewer VerticalScrollBarVisibility="Auto" SizeChanged="ItemsContainer_SizeChanged">
-                                        <!-- Binding items từ cơ sở dữ liệu -->
-                                        <ItemsControl x:Name="icCategory2">
+
+                                <!-- Trà sữa - CategoryId = 2 -->
+                                <TabItem Header="Trà sữa" Tag="2">
+                                    <ScrollViewer VerticalScrollBarVisibility="Auto" 
+                                                  SizeChanged="ItemsContainer_SizeChanged">
+                                        <ItemsControl ItemsSource="{Binding FilteredItems}">
                                             <ItemsControl.ItemsPanel>
                                                 <ItemsPanelTemplate>
-                                                    <UniformGrid HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                                                    <UniformGrid VerticalAlignment="Top" HorizontalAlignment="Left"/>
                                                 </ItemsPanelTemplate>
                                             </ItemsControl.ItemsPanel>
+
                                             <ItemsControl.ItemTemplate>
-                                                <DataTemplate DataType="{x:Type models:Item}">
-                                                    <ContentControl Style="{StaticResource RoundedCard}" 
-                                                                Content="{Binding}"
-                                                                MouseDown="Item_MouseDown"/>
+                                                <DataTemplate>
+                                                    <ContentControl Style="{StaticResource RoundedCard}"
+                                                                    Content="{Binding}"/>
                                                 </DataTemplate>
                                             </ItemsControl.ItemTemplate>
                                         </ItemsControl>
                                     </ScrollViewer>
                                 </TabItem>
-                                <TabItem x:Name="tabItemCategory3" Header="Đá xay">
-                                    <ScrollViewer VerticalScrollBarVisibility="Auto" SizeChanged="ItemsContainer_SizeChanged">
-                                        <!-- Binding items từ cơ sở dữ liệu -->
-                                        <ItemsControl x:Name="icCategory3">
+
+                                <!-- Đá xay - CategoryId = 3 -->
+                                <TabItem Header="Đá xay" Tag="3">
+                                    <ScrollViewer VerticalScrollBarVisibility="Auto" 
+                                                  SizeChanged="ItemsContainer_SizeChanged">
+                                        <ItemsControl ItemsSource="{Binding FilteredItems}">
                                             <ItemsControl.ItemsPanel>
                                                 <ItemsPanelTemplate>
-                                                    <UniformGrid HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                                                    <UniformGrid VerticalAlignment="Top" HorizontalAlignment="Left"/>
                                                 </ItemsPanelTemplate>
                                             </ItemsControl.ItemsPanel>
+
                                             <ItemsControl.ItemTemplate>
-                                                <DataTemplate DataType="{x:Type models:Item}">
-                                                    <ContentControl Style="{StaticResource RoundedCard}" 
-                                                                Content="{Binding}"
-                                                                MouseDown="Item_MouseDown"/>
+                                                <DataTemplate>
+                                                    <ContentControl Style="{StaticResource RoundedCard}"
+                                                                    Content="{Binding}"/>
                                                 </DataTemplate>
                                             </ItemsControl.ItemTemplate>
                                         </ItemsControl>
                                     </ScrollViewer>
                                 </TabItem>
-                                <TabItem x:Name="tabItemCategory4" Header="Trà">
-                                    <ScrollViewer VerticalScrollBarVisibility="Auto" SizeChanged="ItemsContainer_SizeChanged">
-                                        <!-- Binding items từ cơ sở dữ liệu -->
-                                        <ItemsControl x:Name="icCategory4">
+
+                                <!-- Trà - CategoryId = 4 -->
+                                <TabItem Header="Trà" Tag="4">
+                                    <ScrollViewer VerticalScrollBarVisibility="Auto" 
+                                                  SizeChanged="ItemsContainer_SizeChanged">
+                                        <ItemsControl ItemsSource="{Binding FilteredItems}">
                                             <ItemsControl.ItemsPanel>
                                                 <ItemsPanelTemplate>
-                                                    <UniformGrid HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                                                    <UniformGrid VerticalAlignment="Top" HorizontalAlignment="Left"/>
                                                 </ItemsPanelTemplate>
                                             </ItemsControl.ItemsPanel>
+
                                             <ItemsControl.ItemTemplate>
-                                                <DataTemplate DataType="{x:Type models:Item}">
-                                                    <ContentControl Style="{StaticResource RoundedCard}" 
-                                                                Content="{Binding}"
-                                                                MouseDown="Item_MouseDown"/>
+                                                <DataTemplate>
+                                                    <ContentControl Style="{StaticResource RoundedCard}"
+                                                                    Content="{Binding}"/>
                                                 </DataTemplate>
                                             </ItemsControl.ItemTemplate>
                                         </ItemsControl>
                                     </ScrollViewer>
                                 </TabItem>
-                                <TabItem x:Name="tabItemCategory5" Header="Nước ép">
-                                    <ScrollViewer VerticalScrollBarVisibility="Auto" SizeChanged="ItemsContainer_SizeChanged">
-                                        <!-- Binding items từ cơ sở dữ liệu -->
-                                        <ItemsControl x:Name="icCategory5">
+
+                                <!-- Nước ép - CategoryId = 5 -->
+                                <TabItem Header="Nước ép" Tag="5">
+                                    <ScrollViewer VerticalScrollBarVisibility="Auto" 
+                                                  SizeChanged="ItemsContainer_SizeChanged">
+                                        <ItemsControl ItemsSource="{Binding FilteredItems}">
                                             <ItemsControl.ItemsPanel>
                                                 <ItemsPanelTemplate>
-                                                    <UniformGrid HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                                                    <UniformGrid VerticalAlignment="Top" HorizontalAlignment="Left"/>
                                                 </ItemsPanelTemplate>
                                             </ItemsControl.ItemsPanel>
+
                                             <ItemsControl.ItemTemplate>
-                                                <DataTemplate DataType="{x:Type models:Item}">
-                                                    <ContentControl Style="{StaticResource RoundedCard}" 
-                                                                Content="{Binding}"
-                                                                MouseDown="Item_MouseDown"/>
+                                                <DataTemplate>
+                                                    <ContentControl Style="{StaticResource RoundedCard}"
+                                                                    Content="{Binding}"/>
                                                 </DataTemplate>
                                             </ItemsControl.ItemTemplate>
                                         </ItemsControl>
                                     </ScrollViewer>
                                 </TabItem>
-                                <TabItem x:Name="tabItemCategory6" Header="Sinh tố">
-                                    <ScrollViewer VerticalScrollBarVisibility="Auto" SizeChanged="ItemsContainer_SizeChanged">
-                                        <!-- Binding items từ cơ sở dữ liệu -->
-                                        <ItemsControl x:Name="icCategory6">
+
+                                <!-- Sinh tố - CategoryId = 6 -->
+                                <TabItem Header="Sinh tố" Tag="6">
+                                    <ScrollViewer VerticalScrollBarVisibility="Auto" 
+                                                  SizeChanged="ItemsContainer_SizeChanged">
+                                        <ItemsControl ItemsSource="{Binding FilteredItems}">
                                             <ItemsControl.ItemsPanel>
                                                 <ItemsPanelTemplate>
-                                                    <UniformGrid HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                                                    <UniformGrid VerticalAlignment="Top" HorizontalAlignment="Left"/>
                                                 </ItemsPanelTemplate>
                                             </ItemsControl.ItemsPanel>
+
                                             <ItemsControl.ItemTemplate>
-                                                <DataTemplate DataType="{x:Type models:Item}">
-                                                    <ContentControl Style="{StaticResource RoundedCard}" 
-                                                                Content="{Binding}"
-                                                                MouseDown="Item_MouseDown"/>
+                                                <DataTemplate>
+                                                    <ContentControl Style="{StaticResource RoundedCard}"
+                                                                    Content="{Binding}"/>
                                                 </DataTemplate>
                                             </ItemsControl.ItemTemplate>
                                         </ItemsControl>
                                     </ScrollViewer>
                                 </TabItem>
-                                <TabItem x:Name="tabItemCategory7" Header="Food">
-                                    <ScrollViewer VerticalScrollBarVisibility="Auto" SizeChanged="ItemsContainer_SizeChanged">
-                                        <ItemsControl x:Name="icCategory7">
+
+                                <!-- Food - CategoryId = 7 -->
+                                <TabItem Header="Food" Tag="7">
+                                    <ScrollViewer VerticalScrollBarVisibility="Auto" 
+                                                  SizeChanged="ItemsContainer_SizeChanged">
+                                        <ItemsControl ItemsSource="{Binding FilteredItems}">
                                             <ItemsControl.ItemsPanel>
                                                 <ItemsPanelTemplate>
-                                                    <UniformGrid HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                                                    <UniformGrid VerticalAlignment="Top" HorizontalAlignment="Left"/>
                                                 </ItemsPanelTemplate>
                                             </ItemsControl.ItemsPanel>
+
                                             <ItemsControl.ItemTemplate>
-                                                <DataTemplate DataType="{x:Type models:Item}">
-                                                    <ContentControl Style="{StaticResource RoundedCard}" 
-                                                                Content="{Binding}"
-                                                                MouseDown="Item_MouseDown"/>
+                                                <DataTemplate>
+                                                    <ContentControl Style="{StaticResource RoundedCard}"
+                                                                    Content="{Binding}"/>
                                                 </DataTemplate>
                                             </ItemsControl.ItemTemplate>
                                         </ItemsControl>
                                     </ScrollViewer>
                                 </TabItem>
                             </TabControl>
+
+                            <!-- Search Box -->
                             <StackPanel Orientation="Horizontal" 
                                         Height="50" Margin="0 0 10 10"
-                                        HorizontalAlignment="Right" VerticalAlignment="Top">
-                                <materialDesign:PackIcon x:Name="icSearchItem"
-                                                         Kind="Magnify" 
+                                        HorizontalAlignment="Right" 
+                                        VerticalAlignment="Top">
+                                <materialDesign:PackIcon Kind="Magnify" 
                                                          Margin="450,20,0,0"
                                                          Width="20" Height="20"
                                                          Foreground="#766839"/>
                                 <TextBox x:Name="txblSearchItem"
+                                         Text="{Binding SearchItemKeyword, UpdateSourceTrigger=PropertyChanged}"
                                          Width="120" Height="40"
                                          materialDesign:HintAssist.Hint="Tìm kiếm"
                                          materialDesign:HintAssist.IsFloating="False"
                                          FontFamily="Cascadia Code"
-                                         Foreground="#766839" FontSize="15" FontWeight="Bold"
+                                         Foreground="#766839" 
+                                         FontSize="15" 
+                                         FontWeight="Bold"
                                          materialDesign:TextFieldAssist.UnderlineBrush="#766839"
                                          materialDesign:HintAssist.Foreground="#766839"
-                                         Style="{StaticResource MaterialDesignFloatingHintTextBox}"
-                                         TextChanged="txblSearchItem_TextChanged"/>
+                                         Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
                             </StackPanel>
                         </Grid>
                     </Border>
                 </Grid>
 
+                <!-- Order Panel -->
                 <Grid Grid.Column="1">
                     <Border x:Name="bdrOrderBox"
                             Margin="5 10 15 15"
                             Background="#EDE2D3"
                             CornerRadius="15">
                         <Border.Effect>
-                            <DropShadowEffect BlurRadius="-20"
+                            <DropShadowEffect BlurRadius="20"
                                               Opacity="0.3"
                                               Color="Black"
                                               ShadowDepth="8"/>
                         </Border.Effect>
                         <Grid>
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="0.2*"/>
+                                <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="2.5*"/>
-                                <RowDefinition Height="1*"/>
+                                <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
-                            <StackPanel Orientation="Horizontal" Margin="0 10 0 0" Grid.Row="0">
+
+                            <!-- Customer & Table Selection -->
+                            <StackPanel Orientation="Horizontal" 
+                                        Margin="15 10 15 0" 
+                                        Grid.Row="0">
                                 <ComboBox x:Name="cbTable"
-                                          Width="90" Height="30" Margin="15 0 0 0"
+                                          Width="90" Height="30"
                                           VerticalAlignment="Center"
-                                          FontFamily="Cascadia Code" FontSize="15" Foreground="#766839"
-                                          materialDesign:HintAssist.ApplyHintPaddingBrush="True"
-                                          ItemsSource="{Binding LongIntegerList}"
+                                          FontFamily="Cascadia Code" 
+                                          FontSize="15" 
+                                          Foreground="#766839"
+                                          ItemsSource="{Binding AvailableTables}"
+                                          SelectedItem="{Binding SelectedTable}"
+                                          DisplayMemberPath="TableName"
                                           materialDesign:TextFieldAssist.UnderlineBrush="#766839"
-                                          materialDesign:ListBoxItemAssist.SelectedFocusedBackground="#E0CEB5"
                                           materialDesign:HintAssist.Hint="Chọn bàn"/>
-                                <materialDesign:PackIcon x:Name="icSearchCustomer"
-                                                         Kind="AccountSearchOutline"
+
+                                <materialDesign:PackIcon Kind="AccountSearchOutline"
                                                          Margin="30 0 0 0"
                                                          VerticalAlignment="Center"
                                                          Height="23" Width="23"
                                                          Foreground="#766839"
+                                                         Cursor="Hand"
                                                          MouseDown="icSearchCustomer_MouseDown"
                                                          MouseEnter="icSearchCustomer_MouseEnter"
                                                          MouseLeave="icSearchCustomer_MouseLeave"/>
+
                                 <TextBox x:Name="tbCustomerPhone"
-                                         Width="100" Height="30" VerticalAlignment="Center"
-                                         FontFamily="Cascadia Code" FontSize="15" Foreground="#340D05"
+                                         Text="{Binding SearchCustomerKeyword, UpdateSourceTrigger=PropertyChanged}"
+                                         Width="100" Height="30" 
+                                         VerticalAlignment="Center"
+                                         FontFamily="Cascadia Code" 
+                                         FontSize="15" 
+                                         Foreground="#340D05"
                                          materialDesign:TextFieldAssist.UnderlineBrush="#766839"
                                          TextChanged="tbCustomerPhone_TextChanged"/>
+
                                 <!-- Popup hiển thị gợi ý -->
                                 <Popup x:Name="popupCustomers"
                                        PlacementTarget="{Binding ElementName=tbCustomerPhone}"
                                        Placement="Bottom"
+                                       IsOpen="False"
                                        Width="Auto"
                                        StaysOpen="False"
                                        AllowsTransparency="True">
@@ -458,32 +491,43 @@
                                         </ScrollViewer>
                                     </Border>
                                 </Popup>
-                                <Border MouseEnter="icAddCustomer_MouseEnter"
+
+                                <Border Background="Transparent"
+                                        Cursor="Hand"
+                                        MouseEnter="icAddCustomer_MouseEnter"
                                         MouseLeave="icAddCustomer_MouseLeave"
                                         MouseDown="icAddCustomer_MouseDown">
-                                    <materialDesign:PackIcon x:Name="icAddCustomer"
-                                                             Kind="PlusCircleOutline"
+                                    <materialDesign:PackIcon Kind="PlusCircleOutline"
                                                              VerticalAlignment="Center"
                                                              Height="20" Width="20"
                                                              Foreground="#766839"/>
                                 </Border>
+
                                 <TextBlock Text="Khách hàng:" 
                                            VerticalAlignment="Center"
                                            Margin="30 0 0 0"
-                                           FontFamily="Cascadia Code" FontWeight="Bold" FontSize="17" Foreground="#766839"/>
-                                <TextBlock x:Name="tblCustomerName"
-                                           Text="Customer Name"
+                                           FontFamily="Cascadia Code" 
+                                           FontWeight="Bold" 
+                                           FontSize="17" 
+                                           Foreground="#766839"/>
+
+                                <TextBlock Text="{Binding SelectedCustomer.CustomerName, TargetNullValue='--'}"
                                            HorizontalAlignment="Left"
                                            VerticalAlignment="Center"
                                            TextWrapping="WrapWithOverflow"
                                            MaxWidth="180"
                                            Margin="7 0 0 0"
-                                           FontFamily="Cascadia Code" FontWeight="Bold" FontSize="17" Foreground="#340D05"/>
+                                           FontFamily="Cascadia Code" 
+                                           FontWeight="Bold" 
+                                           FontSize="17" 
+                                           Foreground="#340D05"/>
                             </StackPanel>
+
+                            <!-- Order DataGrid -->
                             <Border BorderBrush="#766839" 
                                     BorderThickness="3"
                                     CornerRadius="15" 
-                                    Margin="10 20 10 0"
+                                    Margin="10 20 10 10"
                                     Background="#F9F6F0"
                                     Grid.Row="1">
                                 <DataGrid x:Name="dtgListOrder"
@@ -553,8 +597,8 @@
                                                         <materialDesign:PackIcon Kind="DeleteOutline"
                                                                                  Foreground="#BC9466"
                                                                                  Width="20" Height="20"
-                                                                                 MouseDown="DeleteOrderItem_MouseDown"
                                                                                  Cursor="Hand"
+                                                                                 MouseDown="DeleteOrderItem_MouseDown"
                                                                                  MouseEnter="icDeleteItem_MouseEnter"
                                                                                  MouseLeave="icDeleteItem_MouseLeave"/>
                                                     </StackPanel>
@@ -569,14 +613,16 @@
                                                                 VerticalAlignment="Center"
                                                                 Margin="5">
                                                         <TextBlock Text="{Binding ItemName}"
-                                                                   FontWeight="Bold" FontSize="15" Foreground="#766839"
+                                                                   FontWeight="Bold" 
+                                                                   FontSize="15" 
+                                                                   Foreground="#766839"
                                                                    TextWrapping="Wrap"/>
-                                                        <TextBox x:Name="tbItemOrderedNote"
-                                                                 Text="{Binding Note, UpdateSourceTrigger=PropertyChanged}"
+                                                        <TextBox Text="{Binding Note, UpdateSourceTrigger=PropertyChanged}"
                                                                  Width="130" Height="25" 
                                                                  VerticalAlignment="Center"
                                                                  FontFamily="Cascadia Code"
-                                                                 FontSize="15" Foreground="#C7A57A"
+                                                                 FontSize="15" 
+                                                                 Foreground="#C7A57A"
                                                                  materialDesign:HintAssist.Hint="Ghi chú"
                                                                  materialDesign:TextFieldAssist.UnderlineBrush="#E0CEB5"
                                                                  KeyDown="tbItemOrderedNote_KeyDown"/>
@@ -589,8 +635,11 @@
                                             <DataGridTemplateColumn.CellTemplate>
                                                 <DataTemplate>
                                                     <TextBlock Text="{Binding SizeName}" 
-                                                               HorizontalAlignment="Center" VerticalAlignment="Center"
-                                                               FontWeight="Bold" FontSize="15" Foreground="#766839"/>
+                                                               HorizontalAlignment="Center" 
+                                                               VerticalAlignment="Center"
+                                                               FontWeight="Bold" 
+                                                               FontSize="15" 
+                                                               Foreground="#766839"/>
                                                 </DataTemplate>
                                             </DataGridTemplateColumn.CellTemplate>
                                         </DataGridTemplateColumn>
@@ -614,12 +663,12 @@
                                                                                      HorizontalAlignment="Center"
                                                                                      VerticalAlignment="Center"/>
                                                         </Border>
-                                                        <TextBox x:Name="tbItemOrderedQuantity"
-                                                                 Text="{Binding Quantity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                        <TextBox Text="{Binding Quantity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                                  Width="25" Height="25"
                                                                  VerticalAlignment="Center"
                                                                  FontFamily="Cascadia Code"
-                                                                 FontSize="15" Foreground="#766839"
+                                                                 FontSize="15" 
+                                                                 Foreground="#766839"
                                                                  materialDesign:TextFieldAssist.UnderlineBrush="#766839"
                                                                  KeyDown="tbItemOrderedQuantity_KeyDown"
                                                                  PreviewTextInput="tbItemOrderedQuantity_PreviewTextInput"/>
@@ -644,8 +693,11 @@
                                             <DataGridTemplateColumn.CellTemplate>
                                                 <DataTemplate>
                                                     <TextBlock Text="{Binding Price, StringFormat={}{0:N0}}"
-                                                               HorizontalAlignment="Center" VerticalAlignment="Center"
-                                                               FontWeight="Bold" FontSize="15" Foreground="#766839"/>
+                                                               HorizontalAlignment="Center" 
+                                                               VerticalAlignment="Center"
+                                                               FontWeight="Bold" 
+                                                               FontSize="15" 
+                                                               Foreground="#766839"/>
                                                 </DataTemplate>
                                             </DataGridTemplateColumn.CellTemplate>
                                         </DataGridTemplateColumn>
@@ -654,61 +706,77 @@
                                             <DataGridTemplateColumn.CellTemplate>
                                                 <DataTemplate>
                                                     <TextBlock Text="{Binding TotalPrice, StringFormat={}{0:N0}}"
-                                                               HorizontalAlignment="Center" VerticalAlignment="Center"
-                                                               FontWeight="Bold" FontSize="15" Foreground="#766839"/>
+                                                               HorizontalAlignment="Center" 
+                                                               VerticalAlignment="Center"
+                                                               FontWeight="Bold" 
+                                                               FontSize="15" 
+                                                               Foreground="#766839"/>
                                                 </DataTemplate>
                                             </DataGridTemplateColumn.CellTemplate>
                                         </DataGridTemplateColumn>
                                     </DataGrid.Columns>
                                 </DataGrid>
                             </Border>
-                            <StackPanel Grid.Row="2">
+
+                            <!-- Total & Payment Section -->
+                            <StackPanel Grid.Row="2" Margin="0 10 0 10">
                                 <StackPanel Orientation="Horizontal" 
                                             HorizontalAlignment="Right" 
-                                            VerticalAlignment="Bottom"
-                                            Margin="0 10 20 0">
+                                            Margin="0 0 20 5">
                                     <TextBlock Text="Tổng cộng: "
-                                               FontSize="20" FontFamily="Cascadia Code"
+                                               FontSize="20" 
+                                               FontFamily="Cascadia Code"
                                                Foreground="#462812"/>
-                                    <TextBlock x:Name="tbTotalPrice"
-                                               d:Text="10000000000 VND"
-                                               FontFamily="Cascadia Code" FontSize="20" Foreground="#340D05"
-                                               HorizontalAlignment="Right"/>
+                                    <TextBlock Text="{Binding TotalAmount, StringFormat={}{0:N0} VND}"
+                                               FontFamily="Cascadia Code" 
+                                               FontSize="20" 
+                                               Foreground="#340D05"/>
                                 </StackPanel>
+
                                 <StackPanel Orientation="Horizontal" 
                                             HorizontalAlignment="Right" 
-                                            VerticalAlignment="Bottom"
-                                            Margin="0 10 20 0">
+                                            Margin="0 0 20 5">
                                     <TextBlock Text="Giảm giá: "
-                                               FontSize="20" FontFamily="Cascadia Code"
+                                               FontSize="20" 
+                                               FontFamily="Cascadia Code"
                                                Foreground="#462812"/>
-                                    <TextBlock x:Name="tbTotalDiscount"
-                                               d:Text="10000000000 VND"
-                                               FontFamily="Cascadia Code" FontSize="20" Foreground="#340D05"
-                                               HorizontalAlignment="Right"/>
+                                    <TextBlock Text="{Binding Discount, StringFormat={}{0:N0} VND}"
+                                               FontFamily="Cascadia Code" 
+                                               FontSize="20" 
+                                               Foreground="#340D05"/>
                                 </StackPanel>
+
                                 <StackPanel Orientation="Horizontal" 
                                             HorizontalAlignment="Right" 
-                                            VerticalAlignment="Bottom"
-                                            Margin="0 10 20 0">
+                                            Margin="0 0 20 10">
                                     <TextBlock Text="Thành tiền: "
-                                               FontSize="25" FontFamily="Cascadia Code" FontWeight="Bold"
+                                               FontSize="25" 
+                                               FontFamily="Cascadia Code" 
+                                               FontWeight="Bold"
                                                Foreground="#462812"/>
-                                    <TextBlock x:Name="tbTotalAmount"
-                                               d:Text="10000000000 VND"
-                                               FontFamily="Cascadia Code" FontSize="25" FontWeight="Bold" Foreground="#340D05"
-                                               HorizontalAlignment="Right"/>
+                                    <TextBlock FontFamily="Cascadia Code" 
+                                               FontSize="25" 
+                                               FontWeight="Bold" 
+                                               Foreground="#340D05">
+                                        <TextBlock.Text>
+                                            <MultiBinding StringFormat="{}{0:N0} VND">
+                                                <Binding Path="TotalAmount"/>
+                                                <Binding Path="Discount"/>
+                                            </MultiBinding>
+                                        </TextBlock.Text>
+                                    </TextBlock>
                                 </StackPanel>
 
                                 <StackPanel Orientation="Horizontal" 
                                             HorizontalAlignment="Right"
-                                            Margin="0 15 20 0">
+                                            Margin="0 0 20 0">
                                     <Border x:Name="bdrCancelOrder"
                                             BorderBrush="#766839"
                                             BorderThickness="2"
                                             Padding="10"
                                             CornerRadius="15"
-                                            HorizontalAlignment="Right" VerticalAlignment="Bottom">
+                                            Cursor="Hand"
+                                            Background="Transparent">
                                         <TextBlock Text="Hủy bỏ"
                                                    FontSize="25"
                                                    FontWeight="Bold"
@@ -717,13 +785,15 @@
                                                    FontFamily="Cascadia Code"
                                                    Foreground="#766839"/>
                                     </Border>
+
                                     <Border x:Name="bdrPayOrder"
                                             BorderBrush="#766839"
                                             BorderThickness="2"
                                             Margin="30 0 0 0"
                                             Padding="10"
                                             CornerRadius="15"
-                                            HorizontalAlignment="Right" VerticalAlignment="Bottom">
+                                            Cursor="Hand"
+                                            Background="Transparent">
                                         <TextBlock Text="Thanh toán"
                                                    FontSize="25"
                                                    FontWeight="Bold"

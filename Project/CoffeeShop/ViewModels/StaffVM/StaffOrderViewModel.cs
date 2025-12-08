@@ -1,162 +1,12 @@
 ﻿using CoffeeShop.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Windows.Input;
+using System.Windows;
 
 namespace CoffeeShop.ViewModels.StaffVM
 {
-    public class StaffOrderViewModel : INotifyPropertyChanged
+    public partial class StaffOrderViewModel
     {
-        #region INotifyPropertyChanged
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void OnPropertyChanged(string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-        #endregion
-
-        #region Properties
-        // Món trong MenuPanel
-        private ObservableCollection<OrderItem> _items = new ObservableCollection<OrderItem>();
-        public ObservableCollection<OrderItem> Items
-        {
-            get { return _items; }
-            set
-            {
-                _items = value;
-                OnPropertyChanged(nameof(Items));
-            }
-        }
-        // Bàn
-        private ObservableCollection<OrderTable> _tables = new ObservableCollection<OrderTable>();
-        public ObservableCollection<OrderTable> Tables
-        {
-            get { return _tables; }
-            set
-            {
-                _tables = value;
-                OnPropertyChanged(nameof(Tables));
-            }
-        }
-        // Khách hàng
-        private ObservableCollection<OrderCustomer> _customers = new ObservableCollection<OrderCustomer>();
-        public ObservableCollection<OrderCustomer> Customers
-        {
-            get { return _customers; }
-            set
-            {
-                _customers = value;
-                OnPropertyChanged(nameof(Customers));
-            }
-        }
-        // Món trong đơn hàng
-        private ObservableCollection<OrderDetailItem> _orders = new ObservableCollection<OrderDetailItem>();
-        public ObservableCollection<OrderDetailItem> Orders
-        {
-            get { return _orders; }
-            set
-            {
-                _orders = value;
-                OnPropertyChanged(nameof(Orders));
-            }
-        }
-        // Bàn trống có thể chọn để đặt món
-        private ObservableCollection<OrderTable> _availableTables = new ObservableCollection<OrderTable>();
-        public ObservableCollection<OrderTable> AvailableTables
-        {
-            get { return _availableTables; }
-            set
-            {
-                _availableTables = value;
-                OnPropertyChanged(nameof(AvailableTables));
-            }
-        }
-        // Bàn được chọn để đặt món
-        private ObservableCollection<OrderTable> _selectedTable = new ObservableCollection<OrderTable>();
-        public ObservableCollection<OrderTable> SelectedTable
-        {
-            get { return _selectedTable; }
-            set
-            {
-                _selectedTable = value;
-                OnPropertyChanged(nameof(SelectedTable));
-            }
-        }
-        // Tìm kiếm món trong MenuPanel
-        private string _seachItemKeyword;
-        public string SearchItemKeyword
-        {
-            get { return _seachItemKeyword; }
-            set
-            {
-                _seachItemKeyword = value;
-                OnPropertyChanged(nameof(SearchItemKeyword));
-                SearchItems();
-            }
-        }
-        // Tìm kiếm khách hàng
-        private string _seachCustomerKeyword;
-        public string SearchCustomerKeyword
-        {
-            get { return _seachCustomerKeyword; }
-            set
-            {
-                _seachCustomerKeyword = value;
-                OnPropertyChanged(nameof(SearchCustomerKeyword));
-                SearchCustomer(null);
-                OnPropertyChanged(nameof(HasSearchResults)); // Notify để mở popup
-            }
-        }
-        // Kiểm tra có kết quả tìm kiếm khách hàng hay không
-        public bool HasSearchResults => Customers.Count > 0;
-
-        // Khách hàng được chọn
-        private OrderCustomer _selectedCustomer;
-        public OrderCustomer SelectedCustomer
-        {
-            get => _selectedCustomer;
-            set
-            {
-                _selectedCustomer = value;
-                OnPropertyChanged(nameof(SelectedCustomer));
-            }
-        }
-        // Tổng tiền đơn hàng
-        private decimal _totalAmount;
-        public decimal TotalAmount
-        {
-            get => _totalAmount;
-            set
-            {
-                _totalAmount = value;
-                OnPropertyChanged(nameof(TotalAmount));
-            }
-        }
-        // Giảm giá
-        public decimal _discount;
-        public decimal Discount
-        {
-            get => _discount;
-            set
-            {
-                _discount = value;
-                OnPropertyChanged(nameof(Discount));
-            }
-        }
-        #endregion
-
-        #region Commands
-        public ICommand AddItemCommand { get; set; }
-        public ICommand RemoveItemCommand { get; set; }
-        public ICommand IncreaseQuantityCommand { get; set; }
-        public ICommand DecreaseQuantityCommand { get; set; }
-        public ICommand SearchCustomerCommand { get; set; }
-        public ICommand AddCustomerCommand { get; set; }
-        public ICommand PlaceOrderCommand { get; set; }
-        #endregion
-
         #region Constructor
         public StaffOrderViewModel()
         {
@@ -165,6 +15,9 @@ namespace CoffeeShop.ViewModels.StaffVM
             Customers = new ObservableCollection<OrderCustomer>();
             Orders = new ObservableCollection<OrderDetailItem>();
             AvailableTables = new ObservableCollection<OrderTable>();
+            FilteredItems = new ObservableCollection<OrderItem>();
+            CurrentCategoryId = 1; // mặc định mở tab đầu tiên
+
             InitializeCommands();
             LoadData();
             Orders.CollectionChanged += (s, e) => CalculateTotalAmount();
@@ -183,8 +36,24 @@ namespace CoffeeShop.ViewModels.StaffVM
             IncreaseQuantityCommand = new RelayCommand<OrderDetailItem>(IncreaseQuantity);
             DecreaseQuantityCommand = new RelayCommand<OrderDetailItem>(DecreaseQuantity);
             SearchCustomerCommand = new RelayCommand<object>(SearchCustomer);
-            AddCustomerCommand = new RelayCommand<object>(AddCustomer);
-            //PlaceOrderCommand = new RelayCommand<object>(PlaceOrder, CanPlaceOrder);
+            AddCustomerCommand = new RelayCommand<object>(param =>
+            {
+                if (param is Tuple<string, string, string> data)
+                    AddCustomer(data.Item1, data.Item2, data.Item3);
+            });
+            ChooseCustomerCommand = new RelayCommand<Customer>(c =>
+            {
+                SelectedCustomer = new OrderCustomer
+                {
+                    CustomerId = c.CustomerId,
+                    CustomerName = c.CustomerName,
+                    PhoneNumber = c.PhoneNumber,
+                    Email = c.Email,
+                    Point = c.Point,
+                    Tier = c.Tier
+                };
+            });
+            ChooseTableCommand = new RelayCommand<OrderTable>(ChooseTable);
         }
         #endregion
 
@@ -195,6 +64,7 @@ namespace CoffeeShop.ViewModels.StaffVM
             LoadCustomerFromDB();
             LoadTableFromDB();
             LoadAvailableTable();
+            FilterItemsByCategory();
         }
 
         //Load dữ liệu từ DB vào MenuPanel
@@ -256,6 +126,7 @@ namespace CoffeeShop.ViewModels.StaffVM
                 Console.WriteLine($"Error loading customers: {ex.Message}");
             }
         }
+
         // Load danh sách bàn từ DB
         private void LoadTableFromDB()
         {
@@ -282,6 +153,7 @@ namespace CoffeeShop.ViewModels.StaffVM
                 Console.WriteLine($"Error loading items: {ex.Message}");
             }
         }
+
         // Load danh sách bàn trống
         private void LoadAvailableTable()
         {
@@ -292,9 +164,29 @@ namespace CoffeeShop.ViewModels.StaffVM
                 AvailableTables.Add(table);
             }
         }
+
+        private void FilterItemsByCategory()
+        {
+            // Đảm bảo FilteredItems được khởi tạo
+            if (_filteredItems == null)
+            {
+                _filteredItems = new ObservableCollection<OrderItem>();
+            }
+            _filteredItems.Clear();
+
+            var itemsToDisplay = _items.Where(i => i.CategoryId == CurrentCategoryId);
+
+            foreach (var item in itemsToDisplay)
+            {
+                _filteredItems.Add(item);
+            }
+
+            // Thông báo cho View rằng danh sách đã thay đổi
+            OnPropertyChanged(nameof(FilteredItems));
+        }
         #endregion
 
-        #region Management Methods
+        #region Management Orders Methods 
         // Thêm món vào đơn hàng  
         public void AddItemToOrder(OrderItem item, string selectedSize, string note, decimal price)
         {
@@ -323,6 +215,7 @@ namespace CoffeeShop.ViewModels.StaffVM
             }
             CalculateTotalAmount();
         }
+
         // Xóa món khỏi đơn hàng
         private void RemoveItemFromOrder(OrderDetailItem item)
         {
@@ -331,7 +224,9 @@ namespace CoffeeShop.ViewModels.StaffVM
                 Orders.Remove(item);
                 CalculateTotalAmount();
             }
-        }// Tăng số lượng món trong đơn hàng
+        }
+
+        // Tăng số lượng món trong đơn hàng
         private void IncreaseQuantity(OrderDetailItem item)
         {
             if (item != null)
@@ -340,6 +235,7 @@ namespace CoffeeShop.ViewModels.StaffVM
                 CalculateTotalAmount();
             }
         }
+
         // Giảm số lượng món trong đơn hàng
         private void DecreaseQuantity(OrderDetailItem item)
         {
@@ -350,12 +246,12 @@ namespace CoffeeShop.ViewModels.StaffVM
                 Orders.Remove(item);
             CalculateTotalAmount();
         }
+
         // Tính tổng tiền đơn hàng
         private void CalculateTotalAmount()
         {
             TotalAmount = Orders.Sum(o => o.TotalPrice);
         }
-
         #endregion
 
         #region Search Methods
@@ -374,6 +270,7 @@ namespace CoffeeShop.ViewModels.StaffVM
                 Items.Add(item);
             }
         }
+
         // Tìm kiếm khách hàng
         private void SearchCustomer(object parameter)
         {
@@ -394,296 +291,76 @@ namespace CoffeeShop.ViewModels.StaffVM
             foreach (var c in filteredCustomers)
                 Customers.Add(c);
         }
+        #endregion
+
+        #region Management Customers Methods
         // Thêm khách hàng mới
-        private void AddCustomer(object parameter)
+        public OrderCustomer AddCustomer(string customerName, string customerPhoneNumber, string customerEmail)
         {
+            if (string.IsNullOrWhiteSpace(customerName) || string.IsNullOrWhiteSpace(customerPhoneNumber))
+            {
+                MessageBox.Show("Vui lòng nhập tên và số điện thoại khách hàng.", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                return null;
+            }
+            using (var db = new CoffeeShopContext())
+            {
+                // Kiểm tra khách hàng đã tồn tại chưa theo số điện thoại
+                var existingCustomer = db.Customers.FirstOrDefault(c => c.PhoneNumber == customerPhoneNumber);
+                if (existingCustomer != null)
+                {
+                    MessageBox.Show("Khách hàng với số điện thoại này đã tồn tại.", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                    // Trả về khách hàng đã tồn tại (dùng để chọn vào SelectedCustomer)
+                    var exist = new OrderCustomer
+                    {
+                        CustomerName = existingCustomer.CustomerName,
+                        PhoneNumber = existingCustomer.PhoneNumber,
+                        Email = existingCustomer.Email,
+                        Point = existingCustomer.Point,
+                        Tier = existingCustomer.Tier
+                    };
+                    SelectedCustomer = exist;
+                    return exist;
+                }
 
+                // Thêm khách hàng mới
+                var newcustomer = new Customer
+                {
+                    CustomerName = customerName,
+                    PhoneNumber = customerPhoneNumber,
+                    Email = customerEmail,
+                };
+                db.Customers.Add(newcustomer);
+                db.SaveChanges();
+                MessageBox.Show("Thêm khách hàng thành công.", "Thành công", MessageBoxButton.OK, MessageBoxImage.Information);
+                // Reload danh sách khách hàng
+                LoadCustomerFromDB();
+
+                var oc = new OrderCustomer
+                {
+                    CustomerId = newcustomer.CustomerId,
+                    CustomerName = newcustomer.CustomerName,
+                    PhoneNumber = newcustomer.PhoneNumber,
+                    Email = newcustomer.Email
+                };
+
+                SelectedCustomer = oc;
+                return oc;
+            }
         }
         #endregion
 
-        #region Order Placement
-        //private bool CanPlaceOrder(object parameter)
-        //{
-        //    return Orders.Count > 0 && SelectedTable != null;
-        //}
-
-        //private void PlaceOrder(object parameter)
-        //{
-        //    if (!CanPlaceOrder(parameter))
-        //        return;
-
-        //    try
-        //    {
-        //        using (var db = new CoffeeShopContext())
-        //        {
-        //            // Create new order
-        //            var newOrder = new Order
-        //            {
-        //                TableId = SelectedTable.TableId,
-        //                OrderDate = DateTime.Now,
-        //                OrderStatus = 0, // Pending
-        //                TotalAmount = TotalAmount
-        //            };
-
-        //            db.Orders.Add(newOrder);
-        //            db.SaveChanges();
-
-        //            // Add order details
-        //            foreach (var orderDetail in Orders)
-        //            {
-        //                // Find the correct size ID from ItemPrices
-        //                int? sizeId = null;
-        //                using (var tempDb = new CoffeeShopContext())
-        //                {
-        //                    var itemPrice = tempDb.ItemPrices
-        //                        .Include(ip => ip.Size)
-        //                        .FirstOrDefault(ip => ip.ItemId == orderDetail.ItemId &&
-        //                                             ip.Size.SizeName == orderDetail.SizeName);
-        //                    sizeId = itemPrice?.SizeId;
-        //                }
-
-        //                db.OrderDetails.Add(new OrderDetail
-        //                {
-        //                    OrderId = newOrder.OrderId,
-        //                    ItemId = orderDetail.ItemId,
-        //                    SizeId = sizeId,
-        //                    Quantity = orderDetail.Quantity,
-        //                    Price = orderDetail.Price,
-        //                    Note = orderDetail.Note
-        //                });
-        //            }
-
-        //            // Update table status
-        //            var table = db.CafeTables.Find(SelectedTable.TableId);
-        //            if (table != null)
-        //            {
-        //                table.TableStatus = 1; // Occupied
-        //            }
-
-        //            db.SaveChanges();
-
-        //            // Clear order after successful placement
-        //            Orders.Clear();
-        //            SelectedTable = null;
-        //            LoadTableFromDB();
-        //            LoadAvailableTable();
-        //            CalculateTotalAmount();
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Console.WriteLine($"Error placing order: {ex.Message}");
-        //        // You can add error notification to user here
-        //    }
-        //}
-        #endregion
-
-        #region Helper Methods
-        public class OrderItem : NotificationBase
+        #region Management Tables Methods
+        private void ChooseTable(OrderTable table)
         {
-            private int _itemId;
-            private string _itemName;
-            private int _categoryId;
-            private int _quantity;
-            private bool _isAvailable;
-            private ObservableCollection<ItemPrice> _itemPrices;
-            private string _imagePath;
+            if (table == null) return;
 
-            public int ItemId
+            if (SelectedTable != null && SelectedTable.TableId != table.TableId)
             {
-                get => _itemId;
-                set { _itemId = value; OnPropertyChanged(); }
+                if (MessageBox.Show($"Bạn đang chọn {SelectedTable.TableName}. Đổi sang {table.TableName}?",
+                            "Xác nhận đổi bàn", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.No)
+                    return;
             }
-
-            public string ItemName
-            {
-                get => _itemName;
-                set { _itemName = value; OnPropertyChanged(); }
-            }
-
-            public int CategoryId
-            {
-                get => _categoryId;
-                set { _categoryId = value; OnPropertyChanged(); }
-            }
-
-            public int Quantity
-            {
-                get => _quantity;
-                set { _quantity = value; OnPropertyChanged(); }
-            }
-
-            public bool IsAvailable
-            {
-                get => _isAvailable;
-                set { _isAvailable = value; OnPropertyChanged(); }
-            }
-
-            public ObservableCollection<ItemPrice> ItemPrices
-            {
-                get => _itemPrices;
-                set { _itemPrices = value; OnPropertyChanged(); }
-            }
-
-            public string ImagePath
-            {
-                get => _imagePath;
-                set { _imagePath = value; OnPropertyChanged(); }
-            }
-
-            public OrderItem()
-            {
-                _itemPrices = new ObservableCollection<ItemPrice>();
-                _imagePath = "/Assets/Images/imgItemExample.jpg";
-            }
-        }
-
-        public class OrderCustomer : NotificationBase
-        {
-            private int _customerId;
-            private string _customerName = string.Empty;
-            private string _phoneNumber;
-            private string _email;
-            private int _point;
-            private string _tier;
-
-            public int CustomerId
-            {
-                get => _customerId;
-                set { _customerId = value; OnPropertyChanged(); }
-            }
-
-            public string CustomerName
-            {
-                get => _customerName;
-                set { _customerName = value; OnPropertyChanged(); }
-            }
-
-            public string PhoneNumber
-            {
-                get => _phoneNumber;
-                set { _phoneNumber = value; OnPropertyChanged(); }
-            }
-
-            public string Email
-            {
-                get => _email;
-                set { _email = value; OnPropertyChanged(); }
-            }
-
-            public int Point
-            {
-                get => _point;
-                set { _point = value; OnPropertyChanged(); }
-            }
-
-            public string Tier
-            {
-                get => _tier;
-                set { _tier = value; OnPropertyChanged(); }
-            }
-        }
-        public class OrderTable : NotificationBase
-        {
-            private int _tableId;
-            private string _tableName = string.Empty;
-            private int _tableStatus;
-            private string _note;
-
-            public int TableId
-            {
-                get => _tableId;
-                set { _tableId = value; OnPropertyChanged(); }
-            }
-
-            public string TableName
-            {
-                get => _tableName;
-                set { _tableName = value ?? string.Empty; OnPropertyChanged(); }
-            }
-
-            public int TableStatus
-            {
-                get => _tableStatus;
-                set { _tableStatus = value; OnPropertyChanged(); }
-            }
-
-            public string Note
-            {
-                get => _note;
-                set { _note = value; OnPropertyChanged(); }
-            }
-        }
-        public class OrderDetailItem : NotificationBase
-        {
-            private int _itemId;
-            private string _itemName = string.Empty;
-            private string _sizeName = string.Empty;
-            private int _quantity;
-            private decimal _price;
-            private decimal _totalPrice;
-            private string? _note;
-
-            public int ItemId
-            {
-                get => _itemId;
-                set { _itemId = value; OnPropertyChanged(); }
-            }
-
-            public string ItemName
-            {
-                get => _itemName;
-                set { _itemName = value; OnPropertyChanged(); }
-            }
-
-            public string SizeName
-            {
-                get => _sizeName;
-                set { _sizeName = value; OnPropertyChanged(); }
-            }
-
-            public int Quantity
-            {
-                get => _quantity;
-                set
-                {
-                    _quantity = value;
-                    OnPropertyChanged();
-                    TotalPrice = _quantity * _price;
-                }
-            }
-
-            public decimal Price
-            {
-                get => _price;
-                set
-                {
-                    _price = value;
-                    OnPropertyChanged();
-                    TotalPrice = _quantity * _price;
-                }
-            }
-
-            public decimal TotalPrice
-            {
-                get => _totalPrice;
-                set { _totalPrice = value; OnPropertyChanged(); }
-            }
-
-            public string Note
-            {
-                get => _note;
-                set { _note = value; OnPropertyChanged(); }
-            }
-        }
-        public class NotificationBase : INotifyPropertyChanged
-        {
-            public event PropertyChangedEventHandler PropertyChanged;
-
-            protected virtual void OnPropertyChanged([System.Runtime.CompilerServices.CallerMemberName] string propertyName = null)
-            {
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-            }
+            SelectedTable = table;
         }
         #endregion
     }
