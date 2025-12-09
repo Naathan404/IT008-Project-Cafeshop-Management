@@ -754,7 +754,7 @@
                                                FontSize="20" 
                                                FontFamily="Cascadia Code"
                                                Foreground="#462812"/>
-                                    <TextBlock Text="{Binding Discount, StringFormat={}{0:N0} VND}"
+                                    <TextBlock Text="{Binding FinalDiscount, StringFormat={}{0:N0} VND}"
                                                FontFamily="Cascadia Code" 
                                                FontSize="20" 
                                                Foreground="#340D05"/>
@@ -771,14 +771,8 @@
                                     <TextBlock FontFamily="Cascadia Code" 
                                                FontSize="25" 
                                                FontWeight="Bold" 
-                                               Foreground="#340D05">
-                                        <TextBlock.Text>
-                                            <MultiBinding StringFormat="{}{0:N0} VND">
-                                                <Binding Path="TotalAmount"/>
-                                                <Binding Path="Discount"/>
-                                            </MultiBinding>
-                                        </TextBlock.Text>
-                                    </TextBlock>
+                                               Foreground="#340D05"
+                                               Text="{Binding FinalTotal, StringFormat={}{0:N0} VND}"/>
                                 </StackPanel>
 
                                 <StackPanel Orientation="Horizontal" 

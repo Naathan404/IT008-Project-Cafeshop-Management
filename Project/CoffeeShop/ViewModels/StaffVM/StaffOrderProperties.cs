@@ -102,6 +102,7 @@ namespace CoffeeShop.ViewModels.StaffVM
             {
                 _selectedCustomer = value;
                 OnPropertyChanged(nameof(SelectedCustomer));
+                OnPropertyChanged(nameof(SelectedDiscount));
             }
         }
 
@@ -184,18 +185,53 @@ namespace CoffeeShop.ViewModels.StaffVM
             {
                 _totalAmount = value;
                 OnPropertyChanged(nameof(TotalAmount));
+                CalculateFinalTotal();
             }
         }
 
         // Giảm giá
-        public decimal _discount;
-        public decimal Discount
+        public ObservableCollection<OrderDiscount> _discounts = new ObservableCollection<OrderDiscount>();
+        public ObservableCollection<OrderDiscount> Discounts
         {
-            get => _discount;
+            get { return _discounts; }
             set
             {
-                _discount = value;
-                OnPropertyChanged(nameof(Discount));
+                _discounts = value;
+                OnPropertyChanged(nameof(Discounts));
+                CalculateFinalTotal();
+            }
+        }
+        // Giảm giá được áp dụng cho order
+        private OrderDiscount _selectedDiscount;
+        public OrderDiscount SelectedDiscount
+        {
+            get => _selectedDiscount;
+            set
+            {
+                _selectedDiscount = value;
+                OnPropertyChanged(nameof(SelectedDiscount));
+            }
+        }
+        // Số tiền giảm giá thực tế
+        private decimal _finalDiscount = 0;
+        public decimal FinalDiscount
+        {
+            get => _finalDiscount;
+            set
+            {
+                _finalDiscount = value;
+                OnPropertyChanged(nameof(FinalDiscount));
+            }
+        }
+        // Tổng tiền cuối cùng (sau khi áp dụng giảm giá)
+        private decimal _finalTotal;
+        public decimal FinalTotal
+        {
+            get => _finalTotal;
+            set
+            {
+                _finalTotal = value;
+                OnPropertyChanged(nameof(FinalTotal));
             }
         }
         #endregion
@@ -426,6 +462,27 @@ namespace CoffeeShop.ViewModels.StaffVM
             {
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
             }
+        }
+
+        public class OrderDiscount
+        {
+            public int DiscountId { get; set; }
+
+            public string DiscountCode { get; set; } = null!;
+
+            public string DiscountName { get; set; } = null!;
+
+            public int DiscountType { get; set; }
+
+            public decimal DiscountValue { get; set; }
+
+            public decimal? MinimumOrderValue { get; set; }
+
+            public decimal? MaximumDiscountAmount { get; set; }
+
+            public bool IsActive { get; set; }
+
+            public int? UsedCount { get; set; }
         }
         #endregion
     }
