@@ -3,7 +3,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Animation;
-using CoffeeShop.View.General;
 
 namespace CoffeeShop.View.Staff
 {

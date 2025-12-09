@@ -15,6 +15,8 @@ public partial class OrderDetail
 
     public decimal UnitPrice { get; set; }
 
+    public decimal? Discount { get; set; }
+
     public decimal TotalPrice { get; set; }
 
     public string? Note { get; set; }

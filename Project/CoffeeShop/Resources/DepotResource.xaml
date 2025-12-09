@@ -3,41 +3,38 @@
     <!-- Template cho nút trong kho -->
     <ControlTemplate x:Key="depotButtonTemplate" TargetType="Button">
         <Border Background="{TemplateBinding Background}"
-            BorderBrush="#340D05"
-            BorderThickness="1.5"
-            CornerRadius="5"
-            Height="{TemplateBinding Height}">
+             BorderBrush="{TemplateBinding BorderBrush}"
+             CornerRadius="5"
+             Height="{TemplateBinding Height}">
             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"
-                Content="{TemplateBinding Content}"/>
+                       Content="{TemplateBinding Content}"/>
         </Border>
     </ControlTemplate>
 
     <!-- Style cho nút trong kho -->
     <Style x:Key="depotButtonStyle" TargetType="Button">
         <Setter Property="Template" Value="{StaticResource depotButtonTemplate}"/>
-        <Setter Property="Height" Value="50"/>
-        <Setter Property="Margin" Value="10,0,10,0"/>
+        <Setter Property="Height" Value="40"/>
         <Setter Property="Background" Value="#C7A57A"/>
-        <Setter Property="Foreground" Value="#F9F6F0"/>
-        <Setter Property="FontFamily" Value="Cascadia Code"/>
+        <Setter Property="Foreground" Value="Black"/>
+        <Setter Property="FontFamily" Value="Times New Roman"/>
         <Setter Property="FontWeight" Value="Bold"/>
-        <Setter Property="FontSize" Value="20"/>
+        <Setter Property="FontSize" Value="18"/>
     </Style>
 
     <!-- Style DataGrid áp dụng HeaderTemplate -->
-    <Style x:Key="dgHeaderStyle" TargetType="DataGridColumnHeader">
+    <Style x:Key="dgTemplate" TargetType="DataGridColumnHeader">
         <Setter Property="Background" Value="#E0CEB5"/>
-        <Setter Property="Foreground" Value="#340D05"/>
-        <Setter Property="FontWeight" Value="ExtraBold"/>
-        <Setter Property="FontFamily" Value="Cascadia Code"/>
+        <Setter Property="Foreground" Value="Black"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="FontFamily" Value="Times New Roman"/>
         <Setter Property="Height" Value="27"/>
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
-        <Setter Property="BorderBrush" Value="#340D05"/>
+        <Setter Property="BorderBrush" Value="Black"/>
         <Setter Property="BorderThickness" Value="0.6"/>
     </Style>
 
     <!-- Style cho datagrid cell -->
-    <!-- Template -->
     <ControlTemplate x:Key="dgCellTemplate" TargetType="{x:Type DataGridCell}">
         <Border 
              BorderBrush="{TemplateBinding BorderBrush}" 
@@ -51,26 +48,15 @@
         </Border>
     </ControlTemplate>
 
-    <!-- Style -->
     <Style TargetType="DataGridCell">
-        <Setter Property="Background" Value="#F9F6F0"/>
-        <Setter Property="BorderBrush" Value="#766839"/>
-        <Setter Property="BorderThickness" Value="0.2"/>
-        <Setter Property="Template" Value="{StaticResource dgCellTemplate}"/>
-        <Setter Property="FontFamily" Value="Cascadia Code"/>
-        <!-- Thay đổi màu chữ khi chọn -->
-        <Style.Triggers>
-            <Trigger Property="IsSelected" Value="True">
-                <Setter Property="Background" Value="#EDE2D3"/>
-                <Setter Property="Foreground" Value="#340D05"/>
 
-            </Trigger>
-        </Style.Triggers>
-    </Style>
-    
-    <!-- Style cho datagrid row -->
-    <Style TargetType="DataGridRow">
+        <Setter Property="Padding" Value="0"/>
+        <Setter Property="BorderBrush" Value="Gray"/>
+        <Setter Property="BorderThickness" Value="0.2"/>
         <Setter Property="Height" Value="30"/>
-        <Setter Property="Background" Value="Transparent"/>
+
+        <Setter Property="OverridesDefaultStyle" Value="True"/>
+
+        <Setter Property="Template" Value="{StaticResource dgCellTemplate}"></Setter>
     </Style>
 </ResourceDictionary>
