@@ -96,8 +96,8 @@ CREATE TABLE Discount
 	DiscountValue DECIMAL(18, 2) NOT NULL,
 	MinimumOrderValue MONEY DEFAULT 0,
 	MaximumDiscountAmount MONEY NULL,
-	IsActive BIT DEFAULT 1,
-	UsedCount INT DEFAULT 0,
+	IsActive BIT DEFAULT 1 NOT NULL,
+	UsedCount INT DEFAULT 0 NOT NULL,
 )
 
 -- Tạo bảng Order
@@ -267,7 +267,12 @@ VALUES
 (N'Bánh bông lan trứng muối', 7, 1),
 (N'Bánh tráng trộn', 7, 1),
 (N'Bánh tráng cuộn', 7, 1),
-(N'Panna cotta', 7, 1);
+(N'Panna cotta', 7, 1),
+(N'Cà phê đá xay', 3, 1),       -- Coffee Ice Blended
+(N'Matcha đá xay', 3, 1),       -- Matcha Ice Blended
+(N'Chocolate đá xay', 3, 1),    -- Chocolate Ice Blended
+(N'Cookies đá xay', 3, 1),      -- Cookies & Cream
+(N'Mocha đá xay', 3, 1);        -- Mocha Ice Blended;
 GO
 
 INSERT INTO Size (SizeName)
@@ -303,7 +308,12 @@ VALUES
 (22, NULL, 30000),                             -- Bánh bông lan trứng muối
 (23, NULL, 25000),                             -- Bánh tráng trộn
 (24, NULL, 25000),                             -- Bánh tráng cuộn
-(25, NULL, 25000);                             -- Panna cotta
+(25, NULL, 25000),                             -- Panna cotta
+(26, 1, 29000), (26, 2, 35000), (26, 3, 39000),
+(27, 1, 29000), (27, 2, 35000), (27, 3, 39000),
+(28, 1, 29000), (28, 2, 35000), (28, 3, 39000),
+(29, 1, 34000), (29, 2, 39000), (29, 3, 45000),
+(30, 1, 29000), (30, 2, 35000), (30, 3, 39000);
 GO
 
 INSERT INTO Customer (CustomerName, PhoneNumber, Email, Point, Tier) 
@@ -453,17 +463,18 @@ VALUES
 GO
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------
 select * from [order]
+select * from staff
 
--- =================================================================================
 -- KHAI BÁO CÁC BIẾN CẤU HÌNH
--- =================================================================================
-DECLARE @TotalOrdersToCreate INT = 1500; 
-DECLARE @StartDate DATETIME = '2025-11-25'; 
-DECLARE @DaysRange INT = 37; 
+DECLARE @StartDate DATE = '2025-11-01'; -- Ngày bắt đầu
+DECLARE @DaysRange INT = 61;            -- Chạy dữ liệu cho 61 ngày (2 tháng)
+
+-- Cấu hình khoảng số lượng đơn mỗi ngày (Min - Max)
+DECLARE @MinOrdersPerDay INT = 15;      -- Ít nhất 15 đơn/ngày
+DECLARE @MaxOrdersPerDay INT = 40;      -- Nhiều nhất 40 đơn/ngày
 
 -- Bảng tạm để lưu dữ liệu "nháp"
 DECLARE @StagingOrders TABLE (
-    TempID INT IDENTITY(1,1),
     RandomDate DATETIME,
     RandomStaffID INT,
     RandomCustomerID INT,
@@ -471,10 +482,17 @@ DECLARE @StagingOrders TABLE (
     RandomPaymentMethod NVARCHAR(20)
 );
 
+DECLARE @MaxPriceID INT = (SELECT MAX(PriceID) FROM ItemPrice);
+IF @MaxPriceID IS NULL SET @MaxPriceID = 50; -- Fallback nếu chưa có dữ liệu giá
+
 -- =================================================================================
--- BƯỚC 1: SINH DỮ LIỆU NGẪU NHIÊN VÀO BẢNG TẠM
+-- BƯỚC 1: SINH DỮ LIỆU (DUYỆT THEO TỪNG NGÀY)
 -- =================================================================================
-DECLARE @i INT = 1;
+DECLARE @CurrentDate DATE = @StartDate;
+DECLARE @EndDate DATE = DATEADD(day, @DaysRange, @StartDate);
+
+DECLARE @OrdersToday INT; -- Biến lưu số lượng đơn của ngày đang xét
+DECLARE @k INT;           -- Biến đếm vòng lặp con
 DECLARE @R_Date DATETIME;
 DECLARE @R_Staff INT;
 DECLARE @R_Cust INT;
@@ -482,32 +500,52 @@ DECLARE @R_Table INT;
 DECLARE @R_Pay NVARCHAR(20);
 DECLARE @CustomerRate INT = 7;
 
-WHILE @i <= @TotalOrdersToCreate
+-- VÒNG LẶP NGOÀI: Duyệt qua từng ngày
+WHILE @CurrentDate <= @EndDate
 BEGIN
-    -- 1. Random Ngày giờ
-    SET @R_Date = DATEADD(hour, ABS(CHECKSUM(NEWID()) % 15) + 7, DATEADD(day, ABS(CHECKSUM(NEWID()) % (@DaysRange + 1)), @StartDate));
-    SET @R_Date = DATEADD(minute, ABS(CHECKSUM(NEWID()) % 60), @R_Date);
+    -- 1. Random số lượng đơn cho ngày hiện tại (@CurrentDate)
+    -- Công thức: Random trong khoảng (Max - Min) + Min
+    SET @OrdersToday = (ABS(CHECKSUM(NEWID()) % (@MaxOrdersPerDay - @MinOrdersPerDay + 1)) + @MinOrdersPerDay);
 
-    -- 2. Random Nhân viên
-    SET @R_Staff = CASE ABS(CHECKSUM(NEWID()) % 2) WHEN 0 THEN 3 ELSE 4 END;
+    -- [Tùy chọn] Logic cuối tuần: Nếu là Thứ 7 (7) hoặc Chủ Nhật (1) thì tăng 50% lượng đơn
+    IF DATEPART(dw, @CurrentDate) IN (1, 7)
+    BEGIN
+        SET @OrdersToday = @OrdersToday * 1.5;
+    END
 
-    -- 3. Random Khách hàng (70% vãng lai)
-    SET @R_Cust = CASE WHEN (ABS(CHECKSUM(NEWID()) % 10) < @CustomerRate) THEN NULL ELSE (ABS(CHECKSUM(NEWID()) % 20) + 1) END;
+    -- VÒNG LẶP TRONG: Tạo từng đơn hàng cho ngày hôm đó
+    SET @k = 1;
+    WHILE @k <= @OrdersToday
+    BEGIN
+        -- a. Random Giờ trong ngày (Từ 7h sáng đến 22h đêm = 15 tiếng mở cửa)
+        SET @R_Date = DATEADD(hour, ABS(CHECKSUM(NEWID()) % 15) + 7, CAST(@CurrentDate AS DATETIME));
+        SET @R_Date = DATEADD(minute, ABS(CHECKSUM(NEWID()) % 60), @R_Date);
 
-    -- 4. Random Bàn
-    SET @R_Table = CASE WHEN (ABS(CHECKSUM(NEWID()) % 10) < 3) THEN NULL ELSE (ABS(CHECKSUM(NEWID()) % 20) + 1) END;
+        -- b. Random Nhân viên
+        SET @R_Staff = CASE ABS(CHECKSUM(NEWID()) % 2) WHEN 0 THEN 3 ELSE 4 END;
 
-    -- 5. Random Phương thức
-    SET @R_Pay = CASE WHEN (ABS(CHECKSUM(NEWID()) % 2) = 0) THEN N'Tiền mặt' ELSE N'Chuyển khoản' END;
+        -- c. Random Khách hàng
+        SET @R_Cust = CASE WHEN (ABS(CHECKSUM(NEWID()) % 10) < @CustomerRate) THEN NULL ELSE (ABS(CHECKSUM(NEWID()) % 20) + 1) END;
 
-    INSERT INTO @StagingOrders (RandomDate, RandomStaffID, RandomCustomerID, RandomTableID, RandomPaymentMethod)
-    VALUES (@R_Date, @R_Staff, @R_Cust, @R_Table, @R_Pay);
+        -- d. Random Bàn
+        SET @R_Table = CASE WHEN (ABS(CHECKSUM(NEWID()) % 10) < 3) THEN NULL ELSE (ABS(CHECKSUM(NEWID()) % 20) + 1) END;
 
-    SET @i = @i + 1;
+        -- e. Random Phương thức thanh toán
+        SET @R_Pay = CASE WHEN (ABS(CHECKSUM(NEWID()) % 2) = 0) THEN N'Tiền mặt' ELSE N'Chuyển khoản' END;
+
+        INSERT INTO @StagingOrders (RandomDate, RandomStaffID, RandomCustomerID, RandomTableID, RandomPaymentMethod)
+        VALUES (@R_Date, @R_Staff, @R_Cust, @R_Table, @R_Pay);
+
+        SET @k = @k + 1;
+    END
+
+    -- Chuyển sang ngày tiếp theo
+    SET @CurrentDate = DATEADD(day, 1, @CurrentDate);
 END
 
 -- =================================================================================
 -- BƯỚC 2: CHÈN VÀO BẢNG CHÍNH (SẮP XẾP THEO THỜI GIAN)
+-- (Phần này giữ nguyên logic cũ của bạn, chỉ thêm biến @RandPercent để random số lượng món chuẩn hơn)
 -- =================================================================================
 DECLARE OrderCursor CURSOR FOR 
 SELECT RandomDate, RandomStaffID, RandomCustomerID, RandomTableID, RandomPaymentMethod 
@@ -520,23 +558,37 @@ DECLARE @NewOrderID INT;
 
 WHILE @@FETCH_STATUS = 0
 BEGIN
-    -- Chèn Order (Để DiscountID là NULL tạm thời, tính sau)
+    -- Chèn Order
     INSERT INTO [Order] (TableID, CustomerID, StaffID, OrderDate, SubTotal, DiscountID, DiscountMoney, TotalAmount, PaymentMethod)
     VALUES (@R_Table, @R_Cust, @R_Staff, @R_Date, 0, NULL, 0, 0, @R_Pay);
 
     SET @NewOrderID = SCOPE_IDENTITY();
 
-    -- Tạo chi tiết món ăn (Random 1-4 món để dễ đạt mốc 100k)
-    DECLARE @NumItems INT = (ABS(CHECKSUM(NEWID()) % 4) + 1); 
+    -- Random số lượng món theo tỷ lệ phần trăm (Logic bạn yêu cầu ở câu trước)
+    DECLARE @RandPercent INT = (ABS(CHECKSUM(NEWID()) % 100) + 1);
+    DECLARE @NumItems INT = CASE 
+        WHEN @RandPercent <= 30 THEN 1  -- 30% mua 1 món
+        WHEN @RandPercent <= 55 THEN 2  -- 25% mua 2 món
+        WHEN @RandPercent <= 75 THEN 3  -- 20% mua 3 món
+        WHEN @RandPercent <= 90 THEN 4  -- 15% mua 4 món
+        WHEN @RandPercent <= 97 THEN 5  -- 7%  mua 5 món
+        ELSE 6                          -- 3%  mua 6 món
+    END;
+
     DECLARE @j INT = 1;
     WHILE @j <= @NumItems
     BEGIN
-        DECLARE @RandomPriceID INT = (ABS(CHECKSUM(NEWID()) % 62) + 1);
-        DECLARE @RandomQty INT = CASE WHEN (ABS(CHECKSUM(NEWID()) % 20) < 19) THEN (ABS(CHECKSUM(NEWID()) % 2) + 1) ELSE 3 END; -- 95% số lượng 1 hoặc 2, 5% số lượng 3
+        DECLARE @RandomPriceID INT = (ABS(CHECKSUM(NEWID()) % @MaxPriceID) + 1);
         
-        INSERT INTO OrderDetail (OrderID, PriceID, Quantity, UnitPrice, TotalPrice, Note)
-        SELECT @NewOrderID, @RandomPriceID, @RandomQty, Price, Price * @RandomQty, NULL
-        FROM ItemPrice WHERE PriceID = @RandomPriceID;
+        -- Logic kiểm tra PriceID tồn tại (An toàn hơn)
+        IF EXISTS (SELECT 1 FROM ItemPrice WHERE PriceID = @RandomPriceID)
+        BEGIN
+            DECLARE @RandomQty INT = CASE WHEN (ABS(CHECKSUM(NEWID()) % 20) < 19) THEN (ABS(CHECKSUM(NEWID()) % 2) + 1) ELSE 3 END;
+            
+            INSERT INTO OrderDetail (OrderID, PriceID, Quantity, UnitPrice, TotalPrice, Note)
+            SELECT @NewOrderID, @RandomPriceID, @RandomQty, Price, Price * @RandomQty, NULL
+            FROM ItemPrice WHERE PriceID = @RandomPriceID;
+        END
         
         SET @j = @j + 1;
     END
@@ -549,56 +601,51 @@ DEALLOCATE OrderCursor;
 GO
 
 -- =================================================================================
--- BƯỚC 3: TÍNH TOÁN VÀ ÁP DỤNG LOGIC KHUYẾN MÃI
+-- BƯỚC 3: TÍNH TOÁN KHUYẾN MÃI (GIỮ NGUYÊN)
 -- =================================================================================
 
--- A. Tính SubTotal (Tổng tiền hàng) trước cho các đơn mới
+-- A. Tính SubTotal
 UPDATE O
-SET O.SubTotal = (SELECT SUM(TotalPrice) FROM OrderDetail WHERE OrderID = O.OrderID)
+SET O.SubTotal = (SELECT ISNULL(SUM(TotalPrice),0) FROM OrderDetail WHERE OrderID = O.OrderID)
 FROM [Order] O
 WHERE O.TotalAmount = 0; 
 
--- B. LOGIC 1: ÁP DỤNG MÃ VIP (Ưu tiên cao nhất)
--- Nếu khách hàng có Tier là 'VIP1', 'VIP10',... và bảng Discount có mã trùng tên đó -> Áp dụng
+-- B. ÁP DỤNG MÃ VIP
 UPDATE O
 SET O.DiscountID = D.DiscountID
 FROM [Order] O
 JOIN Customer C ON O.CustomerID = C.CustomerID
-JOIN Discount D ON C.Tier = D.DiscountCode -- Khớp Tier với Mã giảm giá
-WHERE O.TotalAmount = 0; -- Chỉ áp dụng cho đơn mới
+JOIN Discount D ON C.Tier = D.DiscountCode
+WHERE O.TotalAmount = 0;
 
--- C. LOGIC 2: ÁP DỤNG MÃ 'CF05' (Cho đơn chưa có Discount)
--- Điều kiện: SubTotal >= 100k VÀ Có món thuộc CategoryID = 1 (Giả sử 1 là Cà phê)
+-- C. ÁP DỤNG MÃ 'CF05'
 DECLARE @CF05_ID INT = (SELECT DiscountID FROM Discount WHERE DiscountCode = 'CF05');
-
 IF @CF05_ID IS NOT NULL
 BEGIN
     UPDATE O
     SET O.DiscountID = @CF05_ID
     FROM [Order] O
-    WHERE O.TotalAmount = 0       -- Đơn mới
-      AND O.DiscountID IS NULL    -- Chưa được giảm giá VIP
-      AND O.SubTotal >= 100000    -- Điều kiện 1: Trên 100k
-      AND EXISTS (                -- Điều kiện 2: Có mua Cà phê
+    WHERE O.TotalAmount = 0 
+      AND O.DiscountID IS NULL 
+      AND O.SubTotal >= 100000 
+      AND EXISTS (
           SELECT 1 
           FROM OrderDetail OD
           JOIN ItemPrice IP ON OD.PriceID = IP.PriceID
           JOIN Item I ON IP.ItemID = I.ItemID
-          WHERE OD.OrderID = O.OrderID AND I.CategoryID = 1 -- Giả sử CategoryID 1 là Cà phê
+          WHERE OD.OrderID = O.OrderID AND I.CategoryID = 1 
       );
 END
 
--- D. Tính DiscountMoney dựa trên DiscountID đã gán
+-- D. Tính DiscountMoney
 UPDATE O
 SET O.DiscountMoney = CASE 
-        -- Giảm tiền mặt
         WHEN D.DiscountType = 1 THEN D.DiscountValue
-        -- Giảm % (Kiểm tra trần tối đa MaxDiscountAmount)
         WHEN D.DiscountType = 0 THEN 
             CASE 
-                WHEN (O.SubTotal * D.DiscountValue / 100) > ISNULL(D.MaximumDiscountAmount, 999999999) 
+                WHEN (O.SubTotal * D.DiscountValue / 100.0) > ISNULL(D.MaximumDiscountAmount, 999999999) 
                 THEN D.MaximumDiscountAmount 
-                ELSE (O.SubTotal * D.DiscountValue / 100) 
+                ELSE (O.SubTotal * D.DiscountValue / 100.0) 
             END
         ELSE 0 
     END
@@ -606,9 +653,9 @@ FROM [Order] O
 JOIN Discount D ON O.DiscountID = D.DiscountID
 WHERE O.TotalAmount = 0;
 
--- E. Chốt TotalAmount cuối cùng
+-- E. Chốt TotalAmount
 UPDATE [Order]
 SET TotalAmount = SubTotal - ISNULL(DiscountMoney, 0)
 WHERE TotalAmount = 0;
 
-PRINT 'Done! Orders created with VIP and CF05 Logic.';
+PRINT 'Done! Daily order volume randomized.';
