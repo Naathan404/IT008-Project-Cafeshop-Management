@@ -10,16 +10,17 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace CoffeeShop.View.Staff
+namespace CoffeeShop.View.Admin
 {
     /// <summary>
-    /// Interaction logic for DetailDepotHistoryWindow.xaml
+    /// Interaction logic for HistoryManagementPage.xaml
     /// </summary>
-    public partial class DetailDepotHistoryWindow : Window
+    public partial class HistoryManagementPage : Page
     {
-        public DetailDepotHistoryWindow()
+        public HistoryManagementPage()
         {
             InitializeComponent();
         }
