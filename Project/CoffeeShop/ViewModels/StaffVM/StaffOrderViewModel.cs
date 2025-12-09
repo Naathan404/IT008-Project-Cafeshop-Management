@@ -20,6 +20,12 @@ namespace CoffeeShop.ViewModels.StaffVM
 
             InitializeCommands();
             LoadData();
+
+            // Mặc định chọn khách hàng là vãng lai (ID = 0)
+            SelectedCustomer = _customers.FirstOrDefault(c => c.CustomerId == 0);
+            // Mặc định chọn bàn có ID = 0 (mang về)
+            SelectedTable = _availableTables.FirstOrDefault(t => t.TableId == 0);
+
             Orders.CollectionChanged += (s, e) => CalculateTotalAmount();
         }
         #endregion
@@ -103,11 +109,23 @@ namespace CoffeeShop.ViewModels.StaffVM
         private void LoadCustomerFromDB()
         {
             _customers.Clear();
+            // Khởi tạo đối tượng khách hàng vãng lai
+            var defaultCustomer = new OrderCustomer
+            {
+                CustomerId = 0, // ID = 0 không được tồn tại trong DB
+                CustomerName = "Khách vãng lai",
+                PhoneNumber = null,
+                Email = null,
+            };
             try
             {
                 using (var db = new CoffeeShopContext())
                 {
                     var customers = db.Customers.ToList();
+
+                    // Thêm khách vãng lai vào đầu danh sách KH
+                    _customers.Insert(0, defaultCustomer);
+
                     foreach (var customer in customers)
                     {
                         _customers.Add(new OrderCustomer
@@ -164,6 +182,17 @@ namespace CoffeeShop.ViewModels.StaffVM
             {
                 AvailableTables.Add(table);
             }
+            // Thêm bàn mặc định
+            var placeholderTable = new OrderTable
+            {
+                TableId = 0, // ID = 0 không được tồn tại trong DB
+                TableName = "Không",
+                TableStatus = 0,
+                Note = null
+            };
+
+            // Thêm bàn mặc định vào đầu danh sách
+            AvailableTables.Insert(0, placeholderTable);
         }
 
         private void FilterItemsByCategory()
@@ -254,12 +283,17 @@ namespace CoffeeShop.ViewModels.StaffVM
             TotalAmount = Orders.Sum(o => o.TotalPrice);
         }
 
+        // Xóa order đã chọn, khôi phục các biến về trạng thái ban đầu 
         private void CancelOrder(object param)
         {
             Orders.Clear();
             CalculateTotalAmount();
             SelectedCustomer = null;
-            SelectedTable = null;
+
+            // Mặc định chọn bàn có ID = 0 (mang về)
+            SelectedTable = _availableTables.FirstOrDefault(t => t.TableId == 0);
+            // Mặc định chọn khách hàng là vãng lai (ID = 0)
+            SelectedCustomer = _customers.FirstOrDefault(c => c.CustomerId == 0);
         }
         #endregion
 
