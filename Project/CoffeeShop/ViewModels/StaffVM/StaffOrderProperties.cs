@@ -211,6 +211,7 @@ namespace CoffeeShop.ViewModels.StaffVM
         public ICommand AddCustomerCommand { get; set; }
         public ICommand ChooseTableCommand { get; set; }
         public ICommand ChooseCustomerCommand { get; set; }
+        public ICommand CancelOrderCommand { get; set; }
         #endregion
 
         #region Helper Classes

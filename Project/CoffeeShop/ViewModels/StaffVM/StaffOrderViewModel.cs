@@ -54,6 +54,7 @@ namespace CoffeeShop.ViewModels.StaffVM
                 };
             });
             ChooseTableCommand = new RelayCommand<OrderTable>(ChooseTable);
+            CancelOrderCommand = new RelayCommand<object>(CancelOrder);
         }
         #endregion
 
@@ -251,6 +252,14 @@ namespace CoffeeShop.ViewModels.StaffVM
         private void CalculateTotalAmount()
         {
             TotalAmount = Orders.Sum(o => o.TotalPrice);
+        }
+
+        private void CancelOrder(object param)
+        {
+            Orders.Clear();
+            CalculateTotalAmount();
+            SelectedCustomer = null;
+            SelectedTable = null;
         }
         #endregion
 

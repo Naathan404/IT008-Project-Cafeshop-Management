@@ -1,14 +1,13 @@
 ﻿using CoffeeShop.ViewModels.StaffVM;
 using MaterialDesignThemes.Wpf;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Effects;
 using static CoffeeShop.ViewModels.StaffVM.StaffOrderViewModel;
 
 namespace CoffeeShop.View.Staff
@@ -137,28 +136,6 @@ namespace CoffeeShop.View.Staff
                 txtblItemPrice.Text = string.Format("{0:N0} VND", defaultPrice.Price);
             }
         }
-        private void bdrItemSize_MouseEnter(object sender, MouseEventArgs e)
-        {
-            if (sender is Border border && !(border.Tag as bool? ?? false))
-            {
-                border.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#D4BA98"));
-                var txtb = border.Child as TextBlock;
-                if (txtb != null)
-                    txtb.Foreground = (SolidColorBrush)(new BrushConverter().ConvertFrom("#340D05"));
-            }
-        }
-
-        private void bdrItemSize_MouseLeave(object sender, MouseEventArgs e)
-        {
-            if (sender is Border border && !(border.Tag as bool? ?? false))
-            {
-                border.Background = Brushes.Transparent;
-                var txtb = border.Child as TextBlock;
-                if (txtb != null)
-                    txtb.Foreground = (SolidColorBrush)(new BrushConverter().ConvertFrom("#766839"));
-            }
-        }
-
         private void bdrItemSize_MouseDown(object sender, MouseButtonEventArgs e)
         {
             e.Handled = true;
@@ -234,7 +211,117 @@ namespace CoffeeShop.View.Staff
                 _viewModel.RemoveItemCommand?.Execute(item);
             }
         }
+        private void icPlusQuantity_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is Border bdr && bdr.DataContext is OrderDetailItem item)
+            {
+                _viewModel.IncreaseQuantityCommand?.Execute(item);
+            }
+        }
 
+        private void icMinusQuantity_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is Border bdr && bdr.DataContext is OrderDetailItem item)
+            {
+                _viewModel.DecreaseQuantityCommand?.Execute(item);
+            }
+        }
+        private void tbItemOrderedQuantity_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                if (sender is TextBox tb)
+                {
+                    tb.GetBindingExpression(TextBox.TextProperty)?.UpdateSource();
+
+                    if (tb.DataContext is OrderDetailItem item)
+                    {
+                        if (item.Quantity <= 0)
+                        {
+                            _viewModel.RemoveItemCommand?.Execute(item);
+                        }
+                    }
+                    Keyboard.ClearFocus();
+                }
+            }
+        }
+        private void tbItemOrderedNote_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter && sender is TextBox tb && tb.DataContext is OrderDetailItem item)
+            {
+                item.Note = tb.Text.Trim();
+            }
+        }
+        private static bool IsTextNumeric(string text)
+        {
+            return int.TryParse(text, out _);
+        }
+        private void tbItemOrderedQuantity_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            e.Handled = !IsTextNumeric(e.Text);
+        }
+        #endregion
+
+        #region Customer Events
+        private void icSearchCustomer_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is PackIcon ic)
+            {
+                _viewModel.SearchCustomerCommand?.Execute(tbCustomerPhone.Text);
+            }
+        }
+        private void icAddCustomer_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            AddCustomerWindow addCustomer;
+            if (string.IsNullOrEmpty(tbCustomerPhone.Text))
+                addCustomer = new AddCustomerWindow(_viewModel);
+            else
+                addCustomer = new AddCustomerWindow(_viewModel, tbCustomerPhone.Text);
+
+            addCustomer.Show();
+        }
+        private void CustomerItem_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is Border border && border.DataContext is OrderCustomer customer)
+            {
+                _viewModel.SelectedCustomer = customer;
+                tbCustomerPhone.Text = customer.PhoneNumber;
+                popupCustomers.IsOpen = false;
+            }
+        }
+        // Hiển thị popup khi có thay đổi text
+        private void tbCustomerPhone_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (sender is TextBox tb)
+            {
+                _viewModel.SearchCustomerKeyword = tb.Text;
+                popupCustomers.IsOpen = _viewModel.HasSearchResults;
+            }
+        }
+        #endregion
+
+        #region Button Events
+        private void bdrItemSize_MouseEnter(object sender, MouseEventArgs e)
+        {
+            if (sender is Border border && !(border.Tag as bool? ?? false))
+            {
+                border.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#D4BA98"));
+                var txtb = border.Child as TextBlock;
+                if (txtb != null)
+                    txtb.Foreground = (SolidColorBrush)(new BrushConverter().ConvertFrom("#340D05"));
+            }
+        }
+
+        private void bdrItemSize_MouseLeave(object sender, MouseEventArgs e)
+        {
+            if (sender is Border border && !(border.Tag as bool? ?? false))
+            {
+                border.Background = Brushes.Transparent;
+                var txtb = border.Child as TextBlock;
+                if (txtb != null)
+                    txtb.Foreground = (SolidColorBrush)(new BrushConverter().ConvertFrom("#766839"));
+            }
+        }
         private void icDeleteItem_MouseEnter(object sender, MouseEventArgs e)
         {
             if (sender is PackIcon icon)
@@ -286,91 +373,6 @@ namespace CoffeeShop.View.Staff
                     icon.Kind = PackIconKind.MinusCircleOutline;
             }
         }
-
-        private void icPlusQuantity_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            if (sender is Border bdr && bdr.DataContext is OrderDetailItem item)
-            {
-                _viewModel.IncreaseQuantityCommand?.Execute(item);
-            }
-        }
-
-        private void icMinusQuantity_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            if (sender is Border bdr && bdr.DataContext is OrderDetailItem item)
-            {
-                _viewModel.DecreaseQuantityCommand?.Execute(item);
-            }
-        }
-
-        private void tbItemOrderedQuantity_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Enter)
-            {
-                if (sender is TextBox tb)
-                {
-                    tb.GetBindingExpression(TextBox.TextProperty)?.UpdateSource();
-
-                    if (tb.DataContext is OrderDetailItem item)
-                    {
-                        if (item.Quantity <= 0)
-                        {
-                            _viewModel.RemoveItemCommand?.Execute(item);
-                        }
-                    }
-                    Keyboard.ClearFocus();
-                }
-            }
-        }
-
-        private void tbItemOrderedNote_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Enter && sender is TextBox tb && tb.DataContext is OrderDetailItem item)
-            {
-                item.Note = tb.Text.Trim();
-            }
-        }
-
-        private static bool IsTextNumeric(string text)
-        {
-            return int.TryParse(text, out _);
-        }
-
-        private void tbItemOrderedQuantity_PreviewTextInput(object sender, TextCompositionEventArgs e)
-        {
-            e.Handled = !IsTextNumeric(e.Text);
-        }
-        #endregion
-
-        #region Customer Events
-        private void icSearchCustomer_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            if (sender is PackIcon ic)
-            {
-                _viewModel.SearchCustomerCommand?.Execute(tbCustomerPhone.Text);
-            }
-        }
-        private void icSearchCustomer_MouseEnter(object sender, MouseEventArgs e)
-        {
-            var icon = sender as PackIcon;
-            icon.Kind = PackIconKind.AccountSearch;
-        }
-
-        private void icSearchCustomer_MouseLeave(object sender, MouseEventArgs e)
-        {
-            var icon = sender as PackIcon;
-            icon.Kind = PackIconKind.AccountSearchOutline;
-        }
-        private void icAddCustomer_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            AddCustomerWindow addCustomer;
-            if (string.IsNullOrEmpty(tbCustomerPhone.Text))
-                addCustomer = new AddCustomerWindow(_viewModel);
-            else
-                addCustomer = new AddCustomerWindow(_viewModel, tbCustomerPhone.Text);
-
-            addCustomer.Show();
-        }
         private void icAddCustomer_MouseLeave(object sender, MouseEventArgs e)
         {
             if (sender is Border bdr)
@@ -388,17 +390,6 @@ namespace CoffeeShop.View.Staff
                 icon.Kind = PackIconKind.PlusCircle;
             }
         }
-
-        private void CustomerItem_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            if (sender is Border border && border.DataContext is OrderCustomer customer)
-            {
-                _viewModel.SelectedCustomer = customer;
-                tbCustomerPhone.Text = customer.PhoneNumber;
-                popupCustomers.IsOpen = false;
-            }
-        }
-
         private void CustomerItem_MouseEnter(object sender, MouseEventArgs e)
         {
             if (sender is Border border)
@@ -414,18 +405,49 @@ namespace CoffeeShop.View.Staff
                 border.Background = Brushes.Transparent;
             }
         }
-        // Hiển thị popup khi có thay đổi text
-        private void tbCustomerPhone_TextChanged(object sender, TextChangedEventArgs e)
+        private void icSearchCustomer_MouseEnter(object sender, MouseEventArgs e)
         {
-            if (sender is TextBox tb)
+            var icon = sender as PackIcon;
+            icon.Kind = PackIconKind.AccountSearch;
+        }
+
+        private void icSearchCustomer_MouseLeave(object sender, MouseEventArgs e)
+        {
+            var icon = sender as PackIcon;
+            icon.Kind = PackIconKind.AccountSearchOutline;
+        }
+        private void border_MouseEnter(object sender, MouseEventArgs e)
+        {
+            if (sender is Border bdr)
             {
-                _viewModel.SearchCustomerKeyword = tb.Text;
-                popupCustomers.IsOpen = _viewModel.HasSearchResults;
+                bdr.Background = (SolidColorBrush)new BrushConverter().ConvertFrom("#766839");
+                var tb = bdr.Child as TextBlock;
+                if (tb != null)
+                    tb.Foreground = (SolidColorBrush)new BrushConverter().ConvertFrom("#EDE2D3");
+
+                bdr.Effect = new DropShadowEffect
+                {
+                    Color = ((SolidColorBrush)new BrushConverter().ConvertFrom("#766839")).Color, // Màu bóng tối
+                    Direction = 315, // Góc đổ bóng
+                    ShadowDepth = 4, // Độ sâu/khoảng cách của bóng
+                    BlurRadius = 10, // Độ mờ của bóng
+                    Opacity = 0.6 // Độ trong suốt của bóng
+                };
             }
         }
-        #endregion
 
-        #region Table Events
+        private void border_MouseLeave(object sender, MouseEventArgs e)
+        {
+            if (sender is Border bdr)
+            {
+                bdr.Background = (SolidColorBrush)new BrushConverter().ConvertFrom("#EDE2D3");
+                var tb = bdr.Child as TextBlock;
+                if (tb != null)
+                    tb.Foreground = (SolidColorBrush)new BrushConverter().ConvertFrom("#766839");
+
+                bdr.Effect = null;
+            }
+        }
         #endregion
     }
 

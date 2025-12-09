@@ -24,8 +24,8 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ContentControl">
-                        <Border Background="#E0CEB5" CornerRadius="15" 
-                                ClipToBounds="True" 
+                        <Border x:Name="BorderContainer"
+                                Background="#E0CEB5" CornerRadius="15"
                                 MinWidth="130" MinHeight="150" 
                                 MaxHeight="220" MaxWidth="200"
                                 MouseDown="Item_MouseDown"
@@ -119,6 +119,19 @@
                                            Loaded="ItemPrice_Loaded"/>
                             </StackPanel>
                         </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="BorderContainer" Property="Effect">
+                                    <Setter.Value>
+                                        <DropShadowEffect Color="#340D05" 
+                                                          Direction="315" 
+                                                          ShadowDepth="3" 
+                                                          BlurRadius="10" 
+                                                          Opacity="0.5" />
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
@@ -776,7 +789,13 @@
                                             Padding="10"
                                             CornerRadius="15"
                                             Cursor="Hand"
-                                            Background="Transparent">
+                                            Background="Transparent"
+                                            MouseEnter="border_MouseEnter"
+                                            MouseLeave="border_MouseLeave">
+                                        <Border.InputBindings>
+                                            <MouseBinding Command="{Binding CancelOrderCommand}"
+                                                          MouseAction="LeftClick" />
+                                        </Border.InputBindings>
                                         <TextBlock Text="Hủy bỏ"
                                                    FontSize="25"
                                                    FontWeight="Bold"
@@ -793,7 +812,9 @@
                                             Padding="10"
                                             CornerRadius="15"
                                             Cursor="Hand"
-                                            Background="Transparent">
+                                            Background="Transparent"
+                                            MouseEnter="border_MouseEnter"
+                                            MouseLeave="border_MouseLeave">
                                         <TextBlock Text="Thanh toán"
                                                    FontSize="25"
                                                    FontWeight="Bold"
