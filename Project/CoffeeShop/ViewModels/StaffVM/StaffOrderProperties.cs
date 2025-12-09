@@ -53,8 +53,6 @@ namespace CoffeeShop.ViewModels.StaffVM
             set
             {
                 _filteredItems = value;
-                // Bạn cần một phương thức để thông báo thay đổi property cho View
-                // (Giả sử bạn đã implement INotifyPropertyChanged và có OnPropertyChanged)
                 OnPropertyChanged(nameof(FilteredItems));
             }
         }
@@ -270,7 +268,7 @@ namespace CoffeeShop.ViewModels.StaffVM
             public OrderItem()
             {
                 _itemPrices = new ObservableCollection<ItemPrice>();
-                _imagePath = "/Assets/Images/imgItemExample.jpg";
+                _imagePath = "/Assets/Images/imgItemExample.jpg"; // Ví dụ hình ảnh
             }
         }
 
@@ -359,9 +357,8 @@ namespace CoffeeShop.ViewModels.StaffVM
             private string _sizeName = string.Empty;
             private int _quantity;
             private decimal _price;
-            private decimal _totalPrice;
             private string? _note;
-
+            public Action<OrderDetailItem>? NoteChangedCallback { get; set; }
             public int ItemId
             {
                 get => _itemId;
@@ -386,8 +383,8 @@ namespace CoffeeShop.ViewModels.StaffVM
                 set
                 {
                     _quantity = value;
-                    OnPropertyChanged();
-                    TotalPrice = _quantity * _price;
+                    OnPropertyChanged(nameof(Quantity));
+                    OnPropertyChanged(nameof(TotalPrice));
                 }
             }
 
@@ -397,21 +394,27 @@ namespace CoffeeShop.ViewModels.StaffVM
                 set
                 {
                     _price = value;
-                    OnPropertyChanged();
-                    TotalPrice = _quantity * _price;
+                    OnPropertyChanged(nameof(Price));
+                    OnPropertyChanged(nameof(TotalPrice));
                 }
             }
 
             public decimal TotalPrice
             {
-                get => _totalPrice;
-                set { _totalPrice = value; OnPropertyChanged(); }
+                get
+                {
+                    return _quantity * _price;
+                }
             }
 
             public string Note
             {
                 get => _note;
-                set { _note = value; OnPropertyChanged(nameof(Note)); }
+                set 
+                { 
+                    _note = value; 
+                    OnPropertyChanged(nameof(Note));
+                }
             }
         }
 

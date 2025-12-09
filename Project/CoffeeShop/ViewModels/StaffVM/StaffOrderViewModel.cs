@@ -217,6 +217,24 @@ namespace CoffeeShop.ViewModels.StaffVM
         #endregion
 
         #region Management Orders Methods 
+
+        // Gộp Item trong orders khi trùng note
+        private void MergeItemOnNoteChange(OrderDetailItem modifiedItem)
+        {
+            // Tìm kiếm mục khác có ItemId và Note trùng với modifiedItem
+            var existingItem = Orders.FirstOrDefault(o =>
+                o != modifiedItem &&
+                o.ItemId == modifiedItem.ItemId &&
+                o.Note == modifiedItem.Note
+            );
+
+            if (existingItem != null)
+            {
+                existingItem.Quantity += modifiedItem.Quantity;
+                Orders.Remove(modifiedItem);
+                CalculateTotalAmount();
+            }
+        }
         // Thêm món vào đơn hàng  
         public void AddItemToOrder(OrderItem item, string selectedSize, string note, decimal price)
         {
@@ -224,25 +242,23 @@ namespace CoffeeShop.ViewModels.StaffVM
             selectedSize = selectedSize ?? string.Empty;
             note = string.IsNullOrEmpty(note) ? null : note.Trim();
 
+            var newItem = new OrderDetailItem
+            {
+                ItemId = item.ItemId,
+                ItemName = item.ItemName,
+                SizeName = selectedSize,
+                Quantity = 1,
+                Price = price,
+                Note = note
+            };
+            newItem.NoteChangedCallback = MergeItemOnNoteChange;
+
             var existingItem = Orders.FirstOrDefault(i => i.ItemId == item.ItemId && i.SizeName == selectedSize && i.Note == note);
 
             if (existingItem != null)
-            {
                 existingItem.Quantity++;
-            }
             else
-            {
-                Orders.Add(new OrderDetailItem
-                {
-                    ItemId = item.ItemId,
-                    ItemName = item.ItemName,
-                    SizeName = selectedSize,
-                    Quantity = 1,
-                    Price = price,
-                    Note = note,
-                    TotalPrice = price
-                });
-            }
+                Orders.Add(newItem);
             CalculateTotalAmount();
         }
 

@@ -638,7 +638,8 @@
                                                                  Foreground="#C7A57A"
                                                                  materialDesign:HintAssist.Hint="Ghi chú"
                                                                  materialDesign:TextFieldAssist.UnderlineBrush="#E0CEB5"
-                                                                 KeyDown="tbItemOrderedNote_KeyDown"/>
+                                                                 KeyDown="tbItemOrderedNote_KeyDown"
+                                                                 LostFocus="tbNote_LostFocus"/>
                                                     </StackPanel>
                                                 </DataTemplate>
                                             </DataGridTemplateColumn.CellTemplate>

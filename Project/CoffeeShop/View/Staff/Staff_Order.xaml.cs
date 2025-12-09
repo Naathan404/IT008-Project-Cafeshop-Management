@@ -252,6 +252,13 @@ namespace CoffeeShop.View.Staff
                 item.Note = tb.Text.Trim();
             }
         }
+        private void tbNote_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (sender is TextBox textBox && textBox.DataContext is OrderDetailItem modifiedItem)
+            {
+                modifiedItem.NoteChangedCallback?.Invoke(modifiedItem);
+            }
+        }
         private static bool IsTextNumeric(string text)
         {
             return int.TryParse(text, out _);
@@ -449,6 +456,8 @@ namespace CoffeeShop.View.Staff
             }
         }
         #endregion
+
+        
     }
 
     // Converter để hiển thị số thứ tự trong DataGrid
