@@ -1,12 +1,6 @@
 ﻿using CoffeeShop.Models;
-using MailKit.Search;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using static CoffeeShop.ViewModels.StaffVM.StaffDepotViewModel;
@@ -18,6 +12,7 @@ namespace CoffeeShop.ViewModels.StaffVM
         public ICommand ApplyFilterCommand { get; private set; } = null!;
         public ICommand ClearFilterCommand { get; private set; } = null!;
         public ICommand TogglePopupCommand { get; private set; } = null!;
+        public ICommand ShowDetailDepotHistoryCommand { get; private set; } = null!;
 
         public class DepotHistoryItem : BaseViewModel
         {
@@ -63,19 +58,19 @@ namespace CoffeeShop.ViewModels.StaffVM
                 }
             }
 
-            private decimal? _price;
-            public decimal? Price
-            {
-                get => _price;
-                set
-                {
-                    if (_price != value)
-                    {
-                        _price = value;
-                        OnPropertyChanged();
-                    }
-                }
-            }
+            //private decimal? _price;
+            //public decimal? Price
+            //{
+            //    get => _price;
+            //    set
+            //    {
+            //        if (_price != value)
+            //        {
+            //            _price = value;
+            //            OnPropertyChanged();
+            //        }
+            //    }
+            //}
 
             private DateTime? _date;
             public DateTime? Date
@@ -243,6 +238,37 @@ namespace CoffeeShop.ViewModels.StaffVM
                     OnPropertyChanged();
                 }
             }
+
+        }
+
+        private DateTime? _startDateFilter;
+        public DateTime? StartDateFilter
+        {
+            get => _startDateFilter;
+            set
+            {
+                if (_startDateFilter != value)
+                {
+                    _startDateFilter = value;
+                    OnPropertyChanged();
+                    ApplyFilterCommand.Execute(null);
+                }
+            }
+        }
+
+        private DateTime? _endDateFilter;
+        public DateTime? EndDateFilter
+        {
+            get => _endDateFilter;
+            set
+            {
+                if (_endDateFilter != value)
+                {
+                    _endDateFilter = value;
+                    OnPropertyChanged();
+                    ApplyFilterCommand.Execute(null);
+                }
+            }
         }
 
         public DepotHistoryViewModel()
@@ -269,7 +295,7 @@ namespace CoffeeShop.ViewModels.StaffVM
                     if (!string.IsNullOrEmpty(SearchTerm))
                     {
                         string searchLower = SearchTerm.ToLower();
-                        query = query.Where(o => o != null && o.Material.MaterialName.ToLower().Contains(searchLower));
+                        query = query.Where(h => h != null && h.Material.MaterialName.ToLower().Contains(searchLower));
                     }
 
                     // 2. LỌC THEO SỐ LƯỢNG (Min/Max)
@@ -277,14 +303,14 @@ namespace CoffeeShop.ViewModels.StaffVM
                     if (MinQuantity.HasValue && MinQuantity > 0)
                     {
                         // Kiểm tra Quantity trong DB >= MinValue
-                        query = query.Where(o => o != null && o.Quantity >= MinQuantity);
+                        query = query.Where(h => h != null && h.Quantity >= MinQuantity);
                     }
 
                     // Lọc theo Max (Chỉ lọc nếu MaxValue > 0, hoặc MaxValue > MinValue)
                     if (MaxQuantity.HasValue && MaxQuantity > 0)
                     {
                         // Kiểm tra Quantity trong DB <= MaxValue
-                        query = query.Where(o => o != null && o.Quantity <= MaxQuantity);
+                        query = query.Where(h => h != null && h.Quantity <= MaxQuantity);
                     }
 
                     // 3. LỌC THEO GIÁ (Min/Max)
@@ -293,28 +319,40 @@ namespace CoffeeShop.ViewModels.StaffVM
                     if (MinPrice.HasValue && MinPrice > 0)
                     {
                         // Kiểm tra Price trong DB >= MinValue
-                        query = query.Where(o => o != null && o.InputPrice >= MinPrice);
+                        query = query.Where(h => h != null && h.InputPrice >= MinPrice);
                     }
 
                     // Lọc theo Max (Chỉ lọc nếu MaxValue > 0, hoặc MaxValue > MinValue)
                     if (MaxPrice.HasValue && MaxPrice > 0)
                     {
                         // Kiểm tra Price trong DB <= MaxValue
-                        query = query.Where(o => o != null && o.InputPrice <= MaxPrice);
+                        query = query.Where(h => h != null && h.InputPrice <= MaxPrice);
                     }
 
                     // 4. LỌC THEO HÀNH ĐỘNG
                     if (SelectedAction.ToLower() != "tất cả")
                     {
                         // Kiểm tra Unit trong DB khớp với SelectedUnit
-                        query = query.Where(o => o != null && o.ActionType != null && o.ActionType.ActionName.ToLower() == SelectedAction.ToLower());
+                        query = query.Where(h => h != null && h.ActionType != null && h.ActionType.ActionName.ToLower() == SelectedAction.ToLower());
                     }
 
                     // 5. LỌC THEO NHÂN VIÊN
                     if (SelectedStaff.ToLower() != "tất cả")
                     {
                         // Kiểm tra Unit trong DB khớp với SelectedUnit
-                        query = query.Where(o => o != null && o.Staff != null && o.Staff.StaffName.ToLower() == SelectedStaff.ToLower());
+                        query = query.Where(h => h != null && h.Staff != null && h.Staff.StaffName.ToLower() == SelectedStaff.ToLower());
+                    }
+
+                    // 6. Lọc theo thời gian
+                    if (StartDateFilter.HasValue)
+                    {
+                        //DateTime startDateTime = DateTime.Today.Add(StartDateFilter.Value.TimeOfDay);
+                        query = query.Where(h => h.Date >= StartDateFilter.Value);
+                    }
+                    if (EndDateFilter.HasValue)
+                    {
+                        //DateTime endDateTime = DateTime.Today.Add(EndDateFilter.Value.TimeOfDay);
+                        query = query.Where(h => h.Date < EndDateFilter.Value.AddDays(1));
                     }
 
                     // 4. THỰC THI TRUY VẤN VÀ CẬP NHẬT COLLECTION
@@ -328,7 +366,7 @@ namespace CoffeeShop.ViewModels.StaffVM
                             MaterialName = item.Material.MaterialName ?? string.Empty,
                             Quantity = item.Quantity,
                             ActionName = item.ActionType.ActionName,
-                            Price = item.InputPrice,
+                            //Price = item.InputPrice,
                             Date = item.Date,
                             StaffName = item.Staff.StaffName ?? string.Empty
                         });
@@ -353,6 +391,8 @@ namespace CoffeeShop.ViewModels.StaffVM
             MaxPrice = null;
             SelectedAction = "Tất cả";
             SelectedStaff = "Tất cả";
+            StartDateFilter = null;
+            EndDateFilter = null;
 
             // Chạy lại bộ lọc để hiển thị toàn bộ dữ liệu
             ExecuteApplyFilter(null);
@@ -387,7 +427,7 @@ namespace CoffeeShop.ViewModels.StaffVM
                         StaffName = historyItem.Staff.StaffName,
                         MaterialName = historyItem.Material.MaterialName,
                         Quantity = historyItem.Quantity,
-                        Price = historyItem.InputPrice,
+                        //Price = historyItem.InputPrice,
                         Date = historyItem.Date,
                         ActionName = historyItem.ActionType.ActionName
                     });
@@ -397,7 +437,6 @@ namespace CoffeeShop.ViewModels.StaffVM
 
         private void LoadCommands()
         {
-            // 1. COMMANDS LỌC/TÌM KIẾM
             ApplyFilterCommand = new RelayCommand<object>(ExecuteApplyFilter);
             ClearFilterCommand = new RelayCommand<object>(ExecuteClearFilter);
             TogglePopupCommand = new RelayCommand<object>(ExecuteTogglePopup);

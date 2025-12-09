@@ -150,45 +150,121 @@ namespace CoffeeShop.ViewModels.StaffVM
 
                     if (itemToUpdate != null)
                     {
-                        // Cập nhật giá trị mới vào DB
-                        itemToUpdate.MaterialName = MaterialName;
-                        itemToUpdate.Quantity = Quantity;
-                        itemToUpdate.Unit = SelectedUnit;
-                        itemToUpdate.Note = Note;
-                        db.SaveChanges();
+                        int ACTION_TYPE_NHAP; // 3 = Cập nhật
+                        if (itemToUpdate.Quantity >= Quantity)
+                        {
+                            ACTION_TYPE_NHAP = 3;
+                        }
+                        else ACTION_TYPE_NHAP = 2;
+                            const int STAFF_ID = 1; // ID nhân viên đang đăng nhập
 
-                        // Cập nhật lại đối tượng trong ObservableCollection
-                        _itemToEdit.MaterialName = MaterialName;
-                        _itemToEdit.Quantity = Quantity;
-                        _itemToEdit.Unit = SelectedUnit;
-                        _itemToEdit.Note = Note;
+                        Inventory newItem = new Inventory()
+                                                {
+                                                    MaterialName = MaterialName,
+                                                    Quantity = Math.Abs(itemToUpdate.Quantity -  Quantity),
+                                                    Unit = SelectedUnit,
+                                                    Note = Note
+                                                };
+                        db.Inventories.Add(newItem); // Đưa vào bộ theo dõi
+
+                        // Bắt đầu Transaction
+                        using (var transaction = db.Database.BeginTransaction()) // Transaction - All or nothing
+                        {
+                            try
+                            {
+                                // Cập nhật giá trị mới vào DB
+                                itemToUpdate.MaterialName = MaterialName;
+                                itemToUpdate.Quantity = Quantity;
+                                itemToUpdate.Unit = SelectedUnit;
+                                itemToUpdate.Note = Note;
+                                db.SaveChanges();
+
+                                // Ghi lại hành động cập nhật vào lịch sử kho
+                                InventoryHistory newHistory = new InventoryHistory
+                                {
+                                    MaterialId = newItem.MaterialId,
+                                    ActionTypeId = ACTION_TYPE_NHAP,
+                                    Quantity = newItem.Quantity,
+                                    //InputPrice = InputPrice,
+                                    Date = DateTime.Now,
+                                    StaffId = STAFF_ID
+                                };
+
+                                db.InventoryHistories.Add(newHistory);
+                                db.SaveChanges(); // Lưu bản ghi lịch sử
+
+                                transaction.Commit(); // Hoàn tất cả hai
+
+                                // Cập nhật lại đối tượng trong ObservableCollection
+                                _itemToEdit.MaterialName = MaterialName;
+                                _itemToEdit.Quantity = Quantity;
+                                _itemToEdit.Unit = SelectedUnit;
+                                _itemToEdit.Note = Note;
+                            }
+                            catch (Exception ex)
+                            {
+                                transaction.Rollback(); // Hủy bỏ cả hai
+                                MessageBox.Show($"Lỗi: {ex.Message}");
+                            }
+                        }
                     }
                 }
                 else
                 {
-                    // Add
-                    Inventory newItem = new Inventory
-                    {
-                        MaterialName = MaterialName,
-                        Quantity = Quantity,
-                        Unit = SelectedUnit,
-                        Note = Note
-                    };
+                    const int ACTION_TYPE_NHAP = 1; // 1 = Nhập
+                    const int STAFF_ID = 1; // ID nhân viên đang đăng nhập
 
-                    db.Inventories.Add(newItem);
-                    db.SaveChanges(); // Thêm item vào csdl
-
-                    // Ánh xạ ngược và thêm vào ObservableCollection
-                    StaffDepotViewModel.DepotItem newDepotItem = new StaffDepotViewModel.DepotItem
+                    // Bắt đầu Transaction
+                    using (var transaction = db.Database.BeginTransaction()) // Transaction - All or nothing
                     {
-                        MaterialId = newItem.MaterialId, // Lấy ID từ DB
-                        MaterialName = newItem.MaterialName,
-                        Quantity = newItem.Quantity,
-                        Unit = newItem.Unit,
-                        Note = newItem.Note
-                    };
-                    // Cập nhật item vào dg
-                    _depotItems.Add(newDepotItem);
+                        try
+                        {
+                            // Add
+                            Inventory newItem = new Inventory
+                            {
+                                MaterialName = MaterialName,
+                                Quantity = Quantity,
+                                Unit = SelectedUnit,
+                                Note = Note
+                            };
+
+                            db.Inventories.Add(newItem);
+                            db.SaveChanges(); // Thêm item vào csdl
+
+                            // Ghi lại hành động cập nhật vào lịch sử kho
+                            InventoryHistory inventoryHistory = new InventoryHistory
+                            {
+                                MaterialId = newItem.MaterialId,
+                                ActionTypeId = ACTION_TYPE_NHAP,
+                                Quantity = newItem.Quantity,
+                                //InputPrice = InputPrice,
+                                Date = DateTime.Now,
+                                StaffId = STAFF_ID
+                            };
+
+                            db.InventoryHistories.Add(inventoryHistory);
+                            db.SaveChanges(); // Lưu bản ghi lịch sử
+
+                            transaction.Commit(); // Hoàn tất cả hai
+
+                            // Ánh xạ ngược và thêm vào ObservableCollection
+                            StaffDepotViewModel.DepotItem newDepotItem = new StaffDepotViewModel.DepotItem
+                            {
+                                MaterialId = newItem.MaterialId, // Lấy ID từ DB
+                                MaterialName = newItem.MaterialName,
+                                Quantity = newItem.Quantity,
+                                Unit = newItem.Unit,
+                                Note = newItem.Note
+                            };
+                            // Cập nhật item vào dg
+                            _depotItems.Add(newDepotItem);
+                        }
+                        catch (Exception ex)
+                        {
+                            transaction.Rollback(); // Hủy bỏ cả hai
+                            MessageBox.Show($"Lỗi: {ex.Message}");
+                        }
+                    }
                 }
                 // Đóng cửa sổ sau khi thao tác xong
                 window?.Close();

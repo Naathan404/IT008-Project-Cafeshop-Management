@@ -106,7 +106,7 @@
                 IsReadOnly="true" ItemsSource="{Binding depotHistoryItems}">
                 <DataGrid.Columns>
 
-                    <DataGridTextColumn Header="Tên material"  Binding="{Binding MaterialName}" Width="*"/>
+                    <DataGridTextColumn Header="Tên material"  Binding="{Binding MaterialName}" Width="1.4*"/>
                     <DataGridTextColumn Header="Hành động" Binding="{Binding ActionName}" Width="0.7*">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
@@ -121,21 +121,21 @@
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
-                    <DataGridTextColumn Header="Giá" Binding="{Binding Price, StringFormat={}{0:N0}}" Width="0.7*">
+                    <DataGridTextColumn Header="Thời gian" Binding="{Binding Date, StringFormat={}{0:dd/MM/yyyy}}" Width="0.8*"/>
+                    <!-- <DataGridTextColumn Header="Giá" Binding="{Binding Price, StringFormat={}{0:N0}}" Width="0.7*"> 
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
-                                <Setter Property="HorizontalAlignment" Value="Center"></Setter>
+                                <Setter Property="HorizontalAlignment" Value="Right"></Setter>
                             </Style>
                         </DataGridTextColumn.ElementStyle>
-                    </DataGridTextColumn>
-                    <DataGridTextColumn Header="Thời gian" Binding="{Binding Date}" Width="1.2*"/>
+                    </DataGridTextColumn> -->
                     <DataGridTextColumn Header="Tên NV" Binding="{Binding StaffName}" Width="1.2*"/>
                 </DataGrid.Columns>
             </DataGrid>
         </Border>
 
         <materialDesign:Card Grid.Column="1"
-             Height="190" Margin="0,15,15,0"
+             Height="210" Margin="0,15,15,0"
              VerticalAlignment="Top"
              UniformCornerRadius="10">
             <Grid Grid.Row="0" Margin="0,0,0,10">
@@ -175,7 +175,7 @@
                     TextWrapping="Wrap"
                     VerticalScrollBarVisibility="Auto"/>
                 </DockPanel>
-                <!-- TIME FILTER-->
+                <!-- DATE FILTER-->
                 <Grid Grid.Row="1" Margin="10,15,10,0">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="3*"></RowDefinition>
@@ -190,20 +190,13 @@
                             <ColumnDefinition Width="9*"></ColumnDefinition>
                             <ColumnDefinition Width="52*"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
-                        <materialDesign:TimePicker
-                            x:Name="timePickerStartTime"
-                            Grid.Column="0"
-                            Height="48"
-                            HorizontalAlignment="Stretch"
-                            materialDesign:HintAssist.Hint="Từ..."
-                            materialDesign:HintAssist.Foreground="#462812"
-                            materialDesign:HintAssist.Background="Transparent"
-                            materialDesign:TextFieldAssist.UnderlineBrush="#462812"                            
-                            materialDesign:TextFieldAssist.OutlinedBorderActiveThickness="3"
-                            BorderThickness="1"
-                            Is24Hours="True"
-                            Style="{StaticResource MaterialDesignOutlinedTimePicker}" 
-                            ToolTip="Thời gian bắt đầu"/>
+                        <DatePicker x:Name="dateStartDate"
+                              Width="100"
+                              BorderThickness="2"
+                              materialDesign:HintAssist.Hint="Pick Date"
+                              SelectedDate="{Binding StartDateFilter}"
+                              Style="{StaticResource MaterialDesignOutlinedDatePicker}"/>            
+
                         <TextBlock Grid.Column ="1"
                             Text=" _ "
                             FontSize="10"
@@ -212,30 +205,12 @@
                             HorizontalAlignment="Center"
                             Foreground="#FF340D05">
                         </TextBlock>
-                        <materialDesign:TimePicker
-                            x:Name="timePickerEndTime"
-                            Grid.Column="2"
-                            Height="48"
-                            HorizontalAlignment="Stretch"
-                            materialDesign:HintAssist.Hint="Đến..."
-                            materialDesign:HintAssist.Foreground="#462812"
-                            materialDesign:HintAssist.Background="Transparent"
-                            materialDesign:TextFieldAssist.UnderlineBrush="#462812"                            
-                            materialDesign:TextFieldAssist.OutlinedBorderActiveThickness="3"
-                            BorderThickness="1"
-                            Is24Hours="True"
-                            Style="{StaticResource MaterialDesignOutlinedTimePicker}"
-                            ToolTip="Thời gian kết thúc">
-                            <materialDesign:TimePicker.Resources>
-                                <SolidColorBrush x:Key="PrimaryHueMidBrush" Color="#391B05"/>
-
-                                <SolidColorBrush x:Key="PrimaryHueMidForegroundBrush" Color="#E0CEB5"/>
-
-                                <SolidColorBrush x:Key="SecondaryAccentBrush" Color="#B18252"/>
-
-                                <SolidColorBrush x:Key="MaterialDesignPaper" Color="#F9F6F0"/>
-                            </materialDesign:TimePicker.Resources>
-                        </materialDesign:TimePicker>
+                        <DatePicker x:Name="dateEndDate"
+                              Width="100" Grid.Column="2"
+                              BorderThickness="2"
+                              materialDesign:HintAssist.Hint="Pick Date"
+                              SelectedDate="{Binding EndDateFilter}"
+                              Style="{StaticResource MaterialDesignOutlinedDatePicker}"/>
                     </Grid>
                 </Grid>
             </Grid>

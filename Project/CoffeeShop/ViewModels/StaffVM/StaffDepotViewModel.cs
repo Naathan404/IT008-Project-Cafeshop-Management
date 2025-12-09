@@ -306,17 +306,47 @@ namespace CoffeeShop.ViewModels.StaffVM
 
                     if (deletedItem != null) // Tim thay item
                     {
-                        db.Inventories.Remove(deletedItem);
-                        // Lưu thay đổi -> chính thức bị xóa
-                        int recordsAffected = db.SaveChanges();
-
-                        if (recordsAffected > 0) // Khi có thay đổi (bị xóa) -> xóa cả dữ liệu trong dg và thông báo
+                        const int ACTION_TYPE_NHAP = 4; // 4 =  Hủy
+                        const int STAFF_ID = 1; // ID nhân viên đang đăng nhập
+                        using (var transaction = db.Database.BeginTransaction()) // Transaction - All or nothing
                         {
-                            depotItems.Remove(itemToDelete);
-                            MessageBox.Show($"Đã xóa thành công {itemToDelete.MaterialName} khỏi DB!", "Thành công");
+                            try
+                            {
+                                db.Inventories.Remove(deletedItem);
+                                // Lưu thay đổi -> chính thức bị xóa
+                                int recordsAffected = db.SaveChanges();
+                                
+                                // Ghi lại hành động cập nhật vào lịch sử kho
+                                InventoryHistory newHistory = new InventoryHistory
+                                {
+                                    MaterialId = deletedItem.MaterialId,
+                                    ActionTypeId = ACTION_TYPE_NHAP,
+                                    Quantity = deletedItem.Quantity,
+                                    //InputPrice = InputPrice,
+                                    Date = DateTime.Now,
+                                    StaffId = STAFF_ID
+                                };
+
+                                db.InventoryHistories.Add(newHistory);
+                                db.SaveChanges(); // Lưu bản ghi lịch sử
+
+                                transaction.Commit(); // Hoàn tất cả hai
+
+                                if (recordsAffected > 0) // Khi có thay đổi (bị xóa) -> xóa cả dữ liệu trong dg và thông báo
+                                {
+                                    depotItems.Remove(itemToDelete);
+                                    MessageBox.Show($"Đã xóa thành công {itemToDelete.MaterialName} khỏi DB!", "Thành công");
+                                }
+
+                                depotItems.Remove(itemToDelete);
+                            }
+                            catch (Exception ex)
+                            {
+                                transaction.Rollback(); // Hủy bỏ cả hai
+                                MessageBox.Show($"Lỗi: {ex.Message}");
+                            }
                         }
                     }
-                    depotItems.Remove(itemToDelete);
                 }
             }
         }
