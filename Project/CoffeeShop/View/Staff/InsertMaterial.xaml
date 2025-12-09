@@ -1,0 +1,90 @@
+﻿<Window x:Class="CoffeeShop.View.Staff.InsertMaterial"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CoffeeShop.View.Staff"
+        mc:Ignorable="d"
+        x:Name="InsertMaterialWindow"
+        Title="{Binding WindowTitle}"
+        Height="300" Width="420"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize">
+    <Grid Background="#E0CEB5">
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition Height="1.4*"/>
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="4*"/>
+            <ColumnDefinition Width="9*"/>
+        </Grid.ColumnDefinitions>
+
+        <TextBlock x:Name="tblName" Text="Tên" Margin="10" Grid.Row="0" Grid.Column="0"
+            HorizontalAlignment="Left" VerticalAlignment="Center"
+            FontSize="20" FontFamily="Cascadia Code" Foreground="#340D05"/>
+
+        <TextBlock x:Name="tblQuantity" Text="Số lượng" Margin="10" Grid.Row="1" Grid.Column="0"
+            HorizontalAlignment="Left" VerticalAlignment="Center"
+            FontSize="20" FontFamily="Cascadia Code" Foreground="#340D05"/>
+
+        <TextBlock x:Name="tblUnit" Text="Đơn vị" Margin="10" Grid.Row="2" Grid.Column="0"
+            HorizontalAlignment="Left" VerticalAlignment="Center"
+            FontSize="20" FontFamily="Cascadia Code" Foreground="#340D05"/>
+
+        <TextBlock x:Name="tblNote" Text="Ghi chú" Margin="10" Grid.Row="3" Grid.Column="0"
+            HorizontalAlignment="Left" VerticalAlignment="Center"
+            FontSize="20" FontFamily="Cascadia Code" Foreground="#340D05"/>
+
+        <Border Grid.Row="0" Grid.Column="1" Margin="20,0,0,0"
+            HorizontalAlignment="Left" VerticalAlignment="Center"
+            Height="30" Width="250" CornerRadius="10">
+            <TextBox x:Name="txbName" 
+            Background="#F9F6F0" Text="{Binding MaterialName}"/>
+        </Border>
+
+        <Border Grid.Row="1" Grid.Column="1" Margin="20,0,0,0"
+            HorizontalAlignment="Left" VerticalAlignment="Center"
+            Height="30" Width="250" CornerRadius="10">
+            <TextBox x:Name="txbQuantity" 
+            Background="#F9F6F0" Text="{Binding Quantity}"/>
+        </Border>
+
+        <ComboBox x:Name="cbInputUnit" Grid.Row="2" Grid.Column="1" Margin="20,0,0,0"
+            Height="30" Width="250"
+            HorizontalAlignment="Left" VerticalAlignment="Center"
+            Background="#F9F6F0" SelectedIndex="0" ItemsSource="{Binding Units}"/>
+
+        <Border Grid.Row="3" Grid.Column="1" Margin="20,0,0,0"
+            HorizontalAlignment="Left" VerticalAlignment="Center"
+            Height="30" Width="250" CornerRadius="10">
+            <TextBox x:Name="txbNote" 
+            Background="#F9F6F0" Text="{Binding Note}"/>
+        </Border>
+
+        <Button x:Name="btnQuitInput" Content="THOÁT"
+            Grid.Row="4" Grid.ColumnSpan="2" Margin="20,0,0,0"
+            Style="{StaticResource depotButtonStyle}"
+            HorizontalAlignment="Left"
+            Width="150" Height="45"
+            Command="{Binding CloseWindowCommand}"
+            CommandParameter="{Binding ElementName=InsertMaterialWindow}">
+        </Button>
+
+
+        <!-- Nút thêm mới item -->
+        <Button x:Name="btnAddItem" Content="{Binding SaveButtonContent}"
+            Grid.Row="4" Grid.ColumnSpan="2" Margin="0,0,20,0"
+            Style="{StaticResource depotButtonStyle}"
+            HorizontalAlignment="Right"
+            Width="150" Height="45"
+            Command="{Binding SaveCommand}"
+            CommandParameter="{Binding ElementName=InsertMaterialWindow}">
+        </Button>
+
+    </Grid>
+</Window>

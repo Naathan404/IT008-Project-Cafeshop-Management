@@ -5,30 +5,30 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace CoffeeShop.View.Staff
+
+namespace CoffeeShop.View.Admin
 {
     /// <summary>
-    /// Interaction logic for Staff_History.xaml
+    /// Interaction logic for HistoryManagementPage.xaml
     /// </summary>
-    public partial class Staff_History : Page
+    public partial class HistoryManagementPage : Page
     {
         private List<OrderHistory> orderHistoryItems = new List<OrderHistory>();
         CultureInfo viVn = new CultureInfo("vn-VN");
 
-        public Staff_History()
+        public HistoryManagementPage()
         {
             InitializeComponent();
-            LoadOrderHistoryOfCurrentDay();
+            LoadOrderHistory();
         }
 
-        private void LoadOrderHistoryOfCurrentDay()
+        private void LoadOrderHistory()
         {
             using (var db = new CoffeeShopContext())
             {
                 var orders = db.Orders
                     .Include(o => o.Customer)
                     .Include(o => o.Staff)
-                    .Where(o => o.OrderDate >=  DateTime.Today && o.OrderDate < DateTime.Today.AddDays(1))
                     .ToList();
                 foreach (var order in orders)
                 {
@@ -44,7 +44,7 @@ namespace CoffeeShop.View.Staff
                     });
                 }
                 dgOrdersHistory.ItemsSource = orderHistoryItems;
-            }    
+            }
         }
 
         public class OrderHistory
@@ -81,7 +81,6 @@ namespace CoffeeShop.View.Staff
                 var query = db.Orders
                               .Include(o => o.Customer)
                               .Include(o => o.Staff)
-                              .Where(o => o.OrderDate >= DateTime.Today && o.OrderDate < DateTime.Today.AddDays(1))
                               .AsQueryable();
 
                 if (!string.IsNullOrEmpty(keyword))
@@ -125,7 +124,7 @@ namespace CoffeeShop.View.Staff
 
         private void DetailClickEvt(object sender, RoutedEventArgs e)
         {
-            OrderHistory? selectedItem =  dgOrdersHistory.SelectedItem as OrderHistory;
+            OrderHistory? selectedItem = dgOrdersHistory.SelectedItem as OrderHistory;
             if (selectedItem == null)
                 return;
             OrderDetailWindow orderDetailWindow = new OrderDetailWindow(selectedItem.OrderID);

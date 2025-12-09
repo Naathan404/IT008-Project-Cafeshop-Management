@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Windows;
 
-namespace CoffeeShop.View.Staff
+namespace CoffeeShop.View.General
 {
     /// <summary>
     /// Interaction logic for AccountWindow.xaml
