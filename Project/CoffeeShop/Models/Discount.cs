@@ -19,9 +19,9 @@ public partial class Discount
 
     public decimal? MaximumDiscountAmount { get; set; }
 
-    public bool? IsActive { get; set; }
+    public bool IsActive { get; set; }
 
-    public int? UsedCount { get; set; }
+    public int UsedCount { get; set; }
 
     public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
 }
