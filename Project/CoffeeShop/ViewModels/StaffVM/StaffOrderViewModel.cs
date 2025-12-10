@@ -1,6 +1,9 @@
 ﻿using CoffeeShop.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Windows;
 
 namespace CoffeeShop.ViewModels.StaffVM
@@ -22,11 +25,11 @@ namespace CoffeeShop.ViewModels.StaffVM
             LoadData();
 
             // Mặc định chọn khách hàng là vãng lai (ID = 0)
-            SelectedCustomer = _customers.FirstOrDefault(c => c.CustomerId == 0);
+            SelectedCustomer = Customers.FirstOrDefault(c => c.CustomerId == 0);
             // Mặc định chọn bàn có ID = 0 (mang về)
-            SelectedTable = _availableTables.FirstOrDefault(t => t.TableId == 0);
-
-            Orders.CollectionChanged += (s, e) => CalculateTotalAmount();
+            SelectedTable = AvailableTables.FirstOrDefault(t => t.TableId == 0);
+            LoadDiscountByCustomer();
+            Orders.CollectionChanged += Orders_CollectionChanged;
         }
         #endregion
 
@@ -72,7 +75,6 @@ namespace CoffeeShop.ViewModels.StaffVM
             LoadTableFromDB();
             LoadAvailableTable();
             FilterItemsByCategory();
-            LoadDiscountFromDB();
         }
 
         //Load dữ liệu từ DB vào MenuPanel
@@ -195,37 +197,59 @@ namespace CoffeeShop.ViewModels.StaffVM
             // Thêm bàn mặc định vào đầu danh sách
             AvailableTables.Insert(0, placeholderTable);
         }
-        // Load các mã Discount từ DB
-        private void LoadDiscountFromDB()
+
+        private void LoadDiscountByCustomer()
         {
-            _discounts.Clear();
-            try
+            if (SelectedCustomer == null)
             {
-                using (var db = new CoffeeShopContext())
+                SelectedDiscount = null;
+                CalculateFinalTotal();
+                return;
+            }
+            _discounts.Clear();
+
+            // Load các discount đang activated
+            using (var context = new CoffeeShopContext())
+            {
+                var allDiscounts = context.Discounts
+                    .Where(d => d.IsActive == true)
+                    .ToList();
+
+                foreach (var d in allDiscounts)
                 {
-                    var discounts = db.Discounts.ToList();
-                    foreach (var d in discounts)
+                    _discounts.Add(new OrderDiscount
                     {
-                        _discounts.Add(new OrderDiscount
-                        {
-                            DiscountId = d.DiscountId,
-                            DiscountName = d.DiscountName,
-                            DiscountCode = d.DiscountCode,
-                            DiscountType = d.DiscountType,
-                            DiscountValue = d.DiscountValue,
-                            MinimumOrderValue = d.MinimumOrderValue,
-                            MaximumDiscountAmount = d.MaximumDiscountAmount,
-                            IsActive = d.IsActive,
-                            UsedCount = d.UsedCount
-                        });
-                    }
+                        DiscountId = d.DiscountId,
+                        DiscountCode = d.DiscountCode,
+                        DiscountName = d.DiscountName,
+                        DiscountType = d.DiscountType,
+                        DiscountValue = d.DiscountValue,
+                        MinimumOrderValue = d.MinimumOrderValue,
+                        MaximumDiscountAmount = d.MaximumDiscountAmount,
+                        IsActive = d.IsActive,
+                        UsedCount = d.UsedCount
+                    });
                 }
             }
-            catch (Exception ex)
+
+            // Tự động gán SelectedDiscount theo tier của khách hàng
+            if (SelectedCustomer.CustomerId == 0 || SelectedCustomer == null) // Khách vãng lai hoặc null
             {
-                Console.WriteLine($"Error loading discounts: {ex.Message}");
+                SelectedDiscount = null;
             }
+            else
+            {
+                string customerTier = SelectedCustomer.Tier;
+
+                // Tìm discount theo tier (VIP1, VIP10, VIP100)
+                var tierDiscount = Discounts.FirstOrDefault(d => d.DiscountCode.Equals(customerTier, StringComparison.OrdinalIgnoreCase));
+
+                SelectedDiscount = tierDiscount;
+            }
+            // Tính lại FinalTotal
+            CalculateFinalTotal();
         }
+
         private void FilterItemsByCategory()
         {
             // Đảm bảo FilteredItems được khởi tạo
@@ -248,6 +272,35 @@ namespace CoffeeShop.ViewModels.StaffVM
         #endregion
 
         #region Management Orders Methods 
+        private void Orders_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.NewItems != null)
+            {
+                foreach (OrderDetailItem item in e.NewItems)
+                {
+                    item.PropertyChanged += OrderItem_PropertyChanged;
+                }
+            }
+
+            if (e.OldItems != null)
+            {
+                foreach (OrderDetailItem item in e.OldItems)
+                {
+                    item.PropertyChanged -= OrderItem_PropertyChanged;
+                }
+            }
+            CalculateTotalAmount();
+        }
+
+        private void OrderItem_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            // Khi total price thay đổi → cập nhật total amount
+            if (e.PropertyName == nameof(OrderDetailItem.TotalPrice))
+            {
+                CalculateTotalAmount();
+            }
+        }
+
 
         // Gộp Item trong orders khi trùng note
         private void MergeItemOnNoteChange(OrderDetailItem modifiedItem)
@@ -323,43 +376,41 @@ namespace CoffeeShop.ViewModels.StaffVM
                 Orders.Remove(item);
             CalculateTotalAmount();
         }
-
         // Tính tổng tiền đơn hàng
         private void CalculateTotalAmount()
         {
             TotalAmount = Orders.Sum(o => o.TotalPrice);
+            CalculateFinalTotal();
         }
 
-        public void CalculateFinalTotal()
+        private void CalculateFinalTotal()
         {
             decimal totalAfterDiscount = TotalAmount;
             decimal discountValueApplied = 0;
 
             if (SelectedDiscount != null)
             {
-                // Nếu Order chưa đạt giá trị tối thiểu của discount hoặc chưa Active, ko áp dụng discount
-                if (TotalAmount >= SelectedDiscount.MinimumOrderValue && SelectedDiscount.IsActive == true)
+                if (TotalAmount >= (SelectedDiscount.MinimumOrderValue ?? 0)
+                    && SelectedDiscount.IsActive == true)
                 {
-                    if (SelectedDiscount.DiscountType == 1) // 1: Giảm giá cố định (Tiền)
+                    if (SelectedDiscount.DiscountType == 0) // Fixed amount
                     {
                         discountValueApplied = SelectedDiscount.DiscountValue;
                     }
-                    else if (SelectedDiscount.DiscountType == 0) // 0: Giảm giá phần trăm (%)
+                    else if (SelectedDiscount.DiscountType == 1) // Percent
                     {
-                        // Tính toán giá trị giảm theo phần trăm
-                        discountValueApplied = TotalAmount * SelectedDiscount.DiscountValue / 100;
+                        discountValueApplied = TotalAmount * SelectedDiscount.DiscountValue / 100m;
                     }
 
-                    // nếu discountapplied > maximum --> gán discountapplied = maximum
-                    if (SelectedDiscount.MaximumDiscountAmount.HasValue && discountValueApplied > SelectedDiscount.MaximumDiscountAmount.Value)
-                        discountValueApplied = SelectedDiscount.MaximumDiscountAmount.Value;
-                }
-            }
+                    // Giới hạn theo MaximumDiscountAmount
+                    if (SelectedDiscount.MaximumDiscountAmount.HasValue)
+                    {
+                        discountValueApplied = Math.Min(discountValueApplied, SelectedDiscount.MaximumDiscountAmount.Value);
+                    }
 
-            // Đảm bảo không giảm giá vượt quá Tổng tiền đơn hàng
-            if (discountValueApplied > TotalAmount)
-            {
-                discountValueApplied = TotalAmount;
+                    // Giới hạn discount không được vượt quá tổng tiền
+                    discountValueApplied = Math.Min(discountValueApplied, TotalAmount);
+                }
             }
 
             // Cập nhật thuộc tính Discount (Số tiền giảm thực tế)
@@ -368,6 +419,7 @@ namespace CoffeeShop.ViewModels.StaffVM
             // Tính toán tổng tiền cuối cùng
             FinalTotal = TotalAmount - FinalDiscount;
 
+            OnPropertyChanged(nameof(FinalDiscount));
             OnPropertyChanged(nameof(FinalTotal));
         }
         private void CancelOrder(object param)
@@ -375,11 +427,14 @@ namespace CoffeeShop.ViewModels.StaffVM
             Orders.Clear();
             CalculateTotalAmount();
             SelectedCustomer = null;
+            SearchCustomerKeyword = "";
 
             // Mặc định chọn bàn có ID = 0 (mang về)
             SelectedTable = _availableTables.FirstOrDefault(t => t.TableId == 0);
             // Mặc định chọn khách hàng là vãng lai (ID = 0)
             SelectedCustomer = _customers.FirstOrDefault(c => c.CustomerId == 0);
+            // cập nhật discount sau khi reset
+            LoadDiscountByCustomer();
         }
         #endregion
 
@@ -473,6 +528,9 @@ namespace CoffeeShop.ViewModels.StaffVM
                 };
 
                 SelectedCustomer = oc;
+                // cập nhật khuyến mãi & tổng tiền sau khi chọn khách mới
+                LoadDiscountByCustomer();
+                CalculateTotalAmount();
                 return oc;
             }
         }

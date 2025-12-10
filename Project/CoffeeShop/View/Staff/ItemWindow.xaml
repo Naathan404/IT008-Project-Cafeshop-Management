@@ -151,7 +151,6 @@
                              FontSize="15" 
                              FontWeight="Bold"
                              materialDesign:TextFieldAssist.UnderlineBrush="#766839"
-                             materialDesign:HintAssist.Foreground="#766839"
                              Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
                 </StackPanel>
             </StackPanel>

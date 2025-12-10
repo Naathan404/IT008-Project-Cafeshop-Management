@@ -102,7 +102,7 @@ namespace CoffeeShop.ViewModels.StaffVM
             {
                 _selectedCustomer = value;
                 OnPropertyChanged(nameof(SelectedCustomer));
-                OnPropertyChanged(nameof(SelectedDiscount));
+                LoadDiscountByCustomer();
             }
         }
 
