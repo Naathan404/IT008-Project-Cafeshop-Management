@@ -202,7 +202,7 @@
                                         Margin="10 10 10 0"
                                         materialDesign:ColorZoneAssist.Mode="Standard"
                                         Background="#C7A57A"
-                                        HorizontalAlignment="Stretch"
+                                        HorizontalAlignment="Left"
                                         VerticalContentAlignment="Stretch"
                                         materialDesign:ThemeAssist.Theme="Light"
                                         SelectionChanged="TabControl_SelectionChanged">
@@ -211,7 +211,7 @@
                                     <Style TargetType="TabItem" BasedOn="{StaticResource MaterialDesignTabItem}">
                                         <Setter Property="Height" Value="40"/>
                                         <Setter Property="MinWidth" Value="0"/>
-                                        <Setter Property="Padding" Value="7"/>
+                                        <Setter Property="Padding" Value="5"/>
                                         <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
                                         <!-- Font cho header -->
                                         <Setter Property="HeaderTemplate">
@@ -227,6 +227,27 @@
                                         </Setter>
                                     </Style>
                                 </TabControl.ItemContainerStyle>
+
+                                <!-- Tab Tất cả các món -->
+                                <TabItem Header="Tất cả" Tag="0">
+                                    <ScrollViewer VerticalScrollBarVisibility="Auto" 
+                                                  SizeChanged="ItemsContainer_SizeChanged">
+                                        <ItemsControl ItemsSource="{Binding FilteredItems}">
+                                            <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <UniformGrid VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                                                </ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <ContentControl Style="{StaticResource RoundedCard}"
+                                                                    Content="{Binding}"/>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </ScrollViewer>
+                                </TabItem>
 
                                 <!-- Cà phê - CategoryId = 1 -->
                                 <TabItem Header="Cà phê" Tag="1">
@@ -377,17 +398,21 @@
                             </TabControl>
 
                             <!-- Search Box -->
-                            <StackPanel Orientation="Horizontal" 
-                                        Height="50" Margin="0 0 10 10"
-                                        HorizontalAlignment="Right" 
-                                        VerticalAlignment="Top">
-                                <materialDesign:PackIcon Kind="Magnify" 
-                                                         Margin="450,20,0,0"
+                            <Grid HorizontalAlignment="Right" VerticalAlignment="Top"
+                                  Margin="0 0 10 0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <materialDesign:PackIcon Grid.Column="0"
+                                                         Kind="Magnify"
+                                                         Margin="450,20,0,10"
                                                          Width="20" Height="20"
                                                          Foreground="#766839"/>
                                 <TextBox x:Name="txblSearchItem"
+                                         Grid.Column="1"
                                          Text="{Binding SearchItemKeyword, UpdateSourceTrigger=PropertyChanged}"
-                                         Width="120" Height="40"
+                                         Height="40" MinWidth="80"
                                          materialDesign:HintAssist.Hint="Tìm kiếm"
                                          materialDesign:HintAssist.IsFloating="False"
                                          FontFamily="Cascadia Code"
@@ -397,7 +422,7 @@
                                          materialDesign:TextFieldAssist.UnderlineBrush="#766839"
                                          materialDesign:HintAssist.Foreground="#766839"
                                          Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
-                            </StackPanel>
+                            </Grid>
                         </Grid>
                     </Border>
                 </Grid>

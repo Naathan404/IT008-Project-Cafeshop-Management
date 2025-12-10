@@ -104,6 +104,9 @@ namespace CoffeeShop.ViewModels.StaffVM
                         });
                     }
                 }
+                // Sau khi load, filtered = toàn bộ danh sách
+                FilteredItems = new ObservableCollection<OrderItem>(_items);
+                OnPropertyChanged(nameof(FilteredItems));
             }
             catch (Exception ex)
             {
@@ -255,23 +258,9 @@ namespace CoffeeShop.ViewModels.StaffVM
 
         private void FilterItemsByCategory()
         {
-            // Đảm bảo FilteredItems được khởi tạo
-            if (_filteredItems == null)
-            {
-                _filteredItems = new ObservableCollection<OrderItem>();
-            }
-            _filteredItems.Clear();
-
-            var itemsToDisplay = _items.Where(i => i.CategoryId == CurrentCategoryId);
-
-            foreach (var item in itemsToDisplay)
-            {
-                _filteredItems.Add(item);
-            }
-
-            // Thông báo cho View rằng danh sách đã thay đổi
-            OnPropertyChanged(nameof(FilteredItems));
+            SearchItems();
         }
+
         #endregion
 
         #region Management Orders Methods 
@@ -458,18 +447,30 @@ namespace CoffeeShop.ViewModels.StaffVM
         // Tìm kiếm món trong MenuPanel
         private void SearchItems()
         {
+            IEnumerable<OrderItem> source;
+
+            // Tab "Tất cả"
+            if (CurrentCategoryId == 0)
+                source = Items;
+            else
+                source = Items.Where(i => i.CategoryId == CurrentCategoryId);
+
+            // Không có keyword --> trả danh sách theo tab
             if (string.IsNullOrWhiteSpace(SearchItemKeyword))
             {
-                LoadOrderItemsFromDB();
+                FilteredItems = new ObservableCollection<OrderItem>(source);
                 return;
             }
-            var filteredItems = Items.Where(i => i.ItemName.IndexOf(SearchItemKeyword, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
-            Items.Clear();
-            foreach (var item in filteredItems)
-            {
-                Items.Add(item);
-            }
+
+            var keyword = SearchItemKeyword.Trim();
+
+            var result = source
+                .Where(i => i.ItemName.IndexOf(keyword, StringComparison.OrdinalIgnoreCase) >= 0)
+                .ToList();
+
+            FilteredItems = new ObservableCollection<OrderItem>(result);
         }
+
 
         // Tìm kiếm khách hàng
         private void SearchCustomer(object parameter)
