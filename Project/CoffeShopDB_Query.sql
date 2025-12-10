@@ -281,7 +281,7 @@ VALUES
 ('M'),
 ('L')
 GO
-
+select * from itemprice
 INSERT INTO ItemPrice (ItemID, SizeID, Price) 
 VALUES 
 (1, 1, 19000), (1, 2, 29000), (1, 3, 39000),   -- Cà phê sữa đá
@@ -384,13 +384,15 @@ VALUES
 (N'EMPLOYEE', '1', N'bf0dbd74174039131b667de9f31b5d8012baaf82011b934b2cc0e3bd53a02a1f', N'Employee', '0865320821', N'nathannguyen6002@gmail.com', 1, 20000)
 GO
 
-INSERT INTO Discount (DiscountCode, DiscountName, DiscountType, DiscountValue, MinimumOrderValue, MaximumDiscountAmount) 
+INSERT INTO Discount 
+(DiscountCode, DiscountName, DiscountType, DiscountValue, MinimumOrderValue, MaximumDiscountAmount) 
 VALUES 
-('VIP1', N'Giảm 3K cho VIP1', 1, 3000, 0, NULL),
-('VIP10', N'Giảm 6K cho VIP10', 1, 6000, 0, NULL),
-('VIP100', N'Giảm 10K cho VIP100', 1, 10000, 0, NULL),
-('CF05', N'Giảm 5% cho hóa đơn từ 100K có mua cà phê', 0, 5, 100000, 10000)
+('VIP1',   N'Giảm 3K cho VIP1',     0, 3000,   0,       NULL),
+('VIP10',  N'Giảm 6K cho VIP10',    0, 6000,   0,       NULL),
+('VIP100', N'Giảm 10K cho VIP100',  0, 10000,  0,       NULL),
+('CF05',   N'Giảm 5% cho hóa đơn từ 100K có mua cà phê', 1, 5, 100000, 10000)
 GO
+
 
 --INSERT INTO [Order] (TableID, CustomerID, StaffID, OrderDate, SubTotal, DiscountID, DiscountMoney, TotalAmount, PaymentMethod) 
 --VALUES 

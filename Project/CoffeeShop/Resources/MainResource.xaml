@@ -2,8 +2,8 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes">
     <Style TargetType="ScrollBar">
-        <Setter Property="Width" Value="10"/>
-        <Setter Property="Background" Value="#EEE"/>
+        <Setter Property="Width" Value="1"/>
+        <Setter Property="Background" Value="#EDE2D3"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ScrollBar">
