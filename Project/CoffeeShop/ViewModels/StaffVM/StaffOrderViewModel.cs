@@ -24,6 +24,8 @@ namespace CoffeeShop.ViewModels.StaffVM
 
             InitializeCommands();
             LoadData();
+            // Load toàn bộ customers vào FilteredCustomers ban đầu
+            LoadAllCustomersToFiltered();
 
             // Mặc định chọn khách hàng là vãng lai (ID = 0)
             SelectedCustomer = Customers.FirstOrDefault(c => c.CustomerId == 0);
@@ -472,21 +474,50 @@ namespace CoffeeShop.ViewModels.StaffVM
         // Tìm kiếm khách hàng
         private void SearchCustomer(object parameter)
         {
+            if (FilteredCustomers == null)
+                FilteredCustomers = new ObservableCollection<OrderCustomer>();
+
             FilteredCustomers.Clear();
 
+            // Nếu ko nhập gì --> hiển thị toàn bộ customer trong DB
             if (string.IsNullOrWhiteSpace(SearchCustomerKeyword))
-                return;
+            {
+                foreach (var c in _customers)
+                    FilteredCustomers.Add(c);
+            }
+            else
+            {
+                var filtered = _customers.Where(c =>
+                    !string.IsNullOrEmpty(c.PhoneNumber) &&
+                    c.PhoneNumber.Contains(SearchCustomerKeyword, StringComparison.OrdinalIgnoreCase)
+                );
 
-            var filtered = _customers.Where(c =>
-                !string.IsNullOrEmpty(c.PhoneNumber) &&
-                c.PhoneNumber.Contains(SearchCustomerKeyword)
-            );
+                foreach (var c in filtered)
+                    FilteredCustomers.Add(c);
+            }
 
-            foreach (var c in filtered)
-                FilteredCustomers.Add(c);
-
+            OnPropertyChanged(nameof(FilteredCustomers));
             OnPropertyChanged(nameof(HasSearchResults));
         }
+
+        // Chỉ load toàn bộ khách hàng vào FilteredCustomers
+        public void LoadAllCustomersToFiltered()
+        {
+            if (_customers == null || _customers.Count == 0) return;
+
+            if (FilteredCustomers == null)
+                FilteredCustomers = new ObservableCollection<OrderCustomer>();
+
+            FilteredCustomers.Clear();
+
+            foreach (var c in _customers)
+                FilteredCustomers.Add(c);
+
+            OnPropertyChanged(nameof(FilteredCustomers));
+            OnPropertyChanged(nameof(HasSearchResults));
+        }
+
+
         #endregion
 
         #region Management Customers Methods

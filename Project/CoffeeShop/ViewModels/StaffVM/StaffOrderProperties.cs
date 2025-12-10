@@ -93,7 +93,19 @@ namespace CoffeeShop.ViewModels.StaffVM
             }
         }
         // List khách hàng tìm kiếm theo keyword
-        public ObservableCollection<OrderCustomer> FilteredCustomers { get; set; }
+        private ObservableCollection<OrderCustomer> _filteredCustomers;
+        public ObservableCollection<OrderCustomer> FilteredCustomers
+        {
+            get => _filteredCustomers;
+            set
+            {
+                _filteredCustomers = value;
+                OnPropertyChanged(nameof(FilteredCustomers));
+                OnPropertyChanged(nameof(HasSearchResults));
+            }
+        }
+        // Kiểm tra có kết quả tìm kiếm khách hàng hay không
+        public bool HasSearchResults => FilteredCustomers != null && FilteredCustomers.Count > 0;
 
         // Khách hàng được chọn
         private OrderCustomer _selectedCustomer;
@@ -174,9 +186,6 @@ namespace CoffeeShop.ViewModels.StaffVM
                 OnPropertyChanged(nameof(HasSearchResults)); // Notify để mở popup
             }
         }
-
-        // Kiểm tra có kết quả tìm kiếm khách hàng hay không
-        public bool HasSearchResults => Customers.Count > 0;
 
         // Tổng tiền đơn hàng
         private decimal _totalAmount;

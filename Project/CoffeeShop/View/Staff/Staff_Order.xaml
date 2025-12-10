@@ -496,6 +496,17 @@
                                                                                FontSize="12"
                                                                                FontFamily="Cascadia Code"/>
                                                                 </StackPanel>
+                                                                <StackPanel Orientation="Horizontal" Margin="0 2 0 0">
+                                                                    <materialDesign:PackIcon Kind="Star" 
+                                                                                             Width="14" Height="14" 
+                                                                                             VerticalAlignment="Center"
+                                                                                             Foreground="#766839"
+                                                                                             Margin="0 0 5 0"/>
+                                                                    <TextBlock Text="{Binding Tier}" 
+                                                                               Foreground="#766839" 
+                                                                               FontSize="12"
+                                                                               FontFamily="Cascadia Code"/>
+                                                                </StackPanel>
                                                             </StackPanel>
                                                         </Border>
                                                     </DataTemplate>

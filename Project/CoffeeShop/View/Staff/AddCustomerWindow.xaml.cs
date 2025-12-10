@@ -21,7 +21,7 @@ namespace CoffeeShop.View.Staff
             _viewModel = new AddCustomerViewModel(parent_viewModel);
             this.DataContext = _viewModel;
             // Gán phone number đã nhập cho window
-            txbCustomerPhoneNumber.Text = phonenumber;
+            _viewModel.CustomerPhoneNumber = phonenumber;
             _viewModel.CloseWindowAction = new Action(() => this.Close());
         }
         #region Button Events

@@ -305,6 +305,16 @@ namespace CoffeeShop.View.Staff
                 popupCustomers.IsOpen = _viewModel.HasSearchResults;
             }
         }
+        private void tbCustomerPhone_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            var vm = DataContext as StaffOrderViewModel;
+            if (vm == null) return;
+
+            // Load toàn bộ khách hàng
+            vm.LoadAllCustomersToFiltered();
+
+            popupCustomers.IsOpen = true;
+        }
         #endregion
 
         #region Button Events
@@ -455,8 +465,9 @@ namespace CoffeeShop.View.Staff
                 bdr.Effect = null;
             }
         }
-        #endregion
 
+
+        #endregion
     }
 
     // Converter để hiển thị số thứ tự trong DataGrid
