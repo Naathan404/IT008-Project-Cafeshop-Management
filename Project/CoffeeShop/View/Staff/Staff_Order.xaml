@@ -17,6 +17,7 @@
 
     <Page.Resources>
         <local:IndexToNumberConverter x:Key="IndexToNumberConverter"/>
+        <local:AndBooleanConverter x:Key="AndBooleanConverter"/>
 
         <!-- Style for Item card -->
         <Style x:Key="RoundedCard" TargetType="ContentControl">
@@ -460,10 +461,14 @@
                                 <Popup x:Name="popupCustomers"
                                        PlacementTarget="{Binding ElementName=tbCustomerPhone}"
                                        Placement="Bottom"
-                                       IsOpen="False"
                                        Width="Auto"
-                                       StaysOpen="False"
                                        AllowsTransparency="True">
+                                    <Popup.IsOpen>
+                                        <MultiBinding Converter="{StaticResource AndBooleanConverter}" Mode="OneWay">
+                                            <Binding ElementName="tbCustomerPhone" Path="IsKeyboardFocusWithin" />
+                                            <Binding Path="HasSearchResults" Mode="OneWay" />
+                                        </MultiBinding>
+                                    </Popup.IsOpen>
                                     <Border BorderBrush="#766839" 
                                             BorderThickness="2" 
                                             Background="#F9F6F0"

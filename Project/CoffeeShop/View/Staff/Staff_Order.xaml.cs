@@ -1,6 +1,7 @@
 ﻿using CoffeeShop.ViewModels.StaffVM;
 using MaterialDesignThemes.Wpf;
 using System.ComponentModel;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -328,16 +329,6 @@ namespace CoffeeShop.View.Staff
                 popupCustomers.IsOpen = _viewModel.HasSearchResults;
             }
         }
-        private void tbCustomerPhone_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            var vm = DataContext as StaffOrderViewModel;
-            if (vm == null) return;
-
-            // Load toàn bộ khách hàng
-            vm.LoadAllCustomersToFiltered();
-
-            popupCustomers.IsOpen = true;
-        }
         #endregion
 
         #region Button Events
@@ -509,5 +500,17 @@ namespace CoffeeShop.View.Staff
             throw new NotImplementedException();
         }
     }
+    // Converter AND hai biến boolean
+    public class AndBooleanConverter : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            return values.All(v => v is bool b && b);
+        }
 
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }

@@ -1,7 +1,9 @@
 ﻿using CoffeeShop.Models;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Globalization;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 
 namespace CoffeeShop.ViewModels.StaffVM
@@ -106,7 +108,6 @@ namespace CoffeeShop.ViewModels.StaffVM
         }
         // Kiểm tra có kết quả tìm kiếm khách hàng hay không
         public bool HasSearchResults => FilteredCustomers != null && FilteredCustomers.Count > 0;
-
         // Khách hàng được chọn
         private OrderCustomer _selectedCustomer;
         public OrderCustomer SelectedCustomer
