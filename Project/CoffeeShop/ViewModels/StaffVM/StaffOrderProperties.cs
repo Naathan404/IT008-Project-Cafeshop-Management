@@ -81,7 +81,7 @@ namespace CoffeeShop.ViewModels.StaffVM
             }
         }
 
-        // Khách hàng
+        // Khách hàng 
         private ObservableCollection<OrderCustomer> _customers = new ObservableCollection<OrderCustomer>();
         public ObservableCollection<OrderCustomer> Customers
         {
@@ -92,6 +92,8 @@ namespace CoffeeShop.ViewModels.StaffVM
                 OnPropertyChanged(nameof(Customers));
             }
         }
+        // List khách hàng tìm kiếm theo keyword
+        public ObservableCollection<OrderCustomer> FilteredCustomers { get; set; }
 
         // Khách hàng được chọn
         private OrderCustomer _selectedCustomer;

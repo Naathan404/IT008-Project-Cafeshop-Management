@@ -458,7 +458,7 @@
                                             CornerRadius="5"
                                             MaxHeight="250">
                                         <ScrollViewer VerticalScrollBarVisibility="Auto">
-                                            <ItemsControl ItemsSource="{Binding Customers}">
+                                            <ItemsControl ItemsSource="{Binding FilteredCustomers}">
                                                 <ItemsControl.ItemTemplate>
                                                     <DataTemplate>
                                                         <Border BorderBrush="#D4BA98" 

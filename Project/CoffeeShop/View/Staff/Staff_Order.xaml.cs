@@ -457,7 +457,6 @@ namespace CoffeeShop.View.Staff
         }
         #endregion
 
-        
     }
 
     // Converter để hiển thị số thứ tự trong DataGrid

@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:CoffeeShop.View.Staff"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
-        Title="Thêm Khách hàng mới"
+        Title="Thêm khách hàng mới"
         Icon="/Assets/icoCoffee.ico"
         Height="370" Width="700"
         ResizeMode="NoResize"

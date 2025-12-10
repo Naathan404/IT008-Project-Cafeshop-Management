@@ -19,6 +19,7 @@ namespace CoffeeShop.ViewModels.StaffVM
             Orders = new ObservableCollection<OrderDetailItem>();
             AvailableTables = new ObservableCollection<OrderTable>();
             FilteredItems = new ObservableCollection<OrderItem>();
+            FilteredCustomers = new ObservableCollection<OrderCustomer>();
             CurrentCategoryId = 1; // mặc định mở tab đầu tiên
 
             InitializeCommands();
@@ -63,7 +64,7 @@ namespace CoffeeShop.ViewModels.StaffVM
                 };
             });
             ChooseTableCommand = new RelayCommand<OrderTable>(ChooseTable);
-            CancelOrderCommand = new RelayCommand<object>(CancelOrder);
+            CancelOrderCommand = new RelayCommand<object>(ConfirmCancelOrder);
         }
         #endregion
 
@@ -422,6 +423,19 @@ namespace CoffeeShop.ViewModels.StaffVM
             OnPropertyChanged(nameof(FinalDiscount));
             OnPropertyChanged(nameof(FinalTotal));
         }
+        private void ConfirmCancelOrder(object param)
+        {
+            var result = MessageBox.Show(
+                "Bạn có chắc muốn hủy đơn này không?",
+                "Xác nhận hủy đơn",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Warning);
+
+            if (result == MessageBoxResult.Yes)
+            {
+                CancelOrder(param);
+            }
+        }
         private void CancelOrder(object param)
         {
             Orders.Clear();
@@ -458,22 +472,20 @@ namespace CoffeeShop.ViewModels.StaffVM
         // Tìm kiếm khách hàng
         private void SearchCustomer(object parameter)
         {
-            if (string.IsNullOrWhiteSpace(SearchCustomerKeyword))
-            {
-                // Reset về danh sách gốc
-                Customers.Clear();
-                LoadCustomerFromDB();
-                return;
-            }
-            // Lấy tất cả khách hàng từ DB
-            var allCustomers = _customers.ToList();
-            // Lọc theo PhoneNumber trên danh sách gốc
-            var filteredCustomers = allCustomers.Where(c => !string.IsNullOrEmpty(c.PhoneNumber) &&
-                            c.PhoneNumber.Contains(SearchCustomerKeyword)).ToList();
+            FilteredCustomers.Clear();
 
-            Customers.Clear();
-            foreach (var c in filteredCustomers)
-                Customers.Add(c);
+            if (string.IsNullOrWhiteSpace(SearchCustomerKeyword))
+                return;
+
+            var filtered = _customers.Where(c =>
+                !string.IsNullOrEmpty(c.PhoneNumber) &&
+                c.PhoneNumber.Contains(SearchCustomerKeyword)
+            );
+
+            foreach (var c in filtered)
+                FilteredCustomers.Add(c);
+
+            OnPropertyChanged(nameof(HasSearchResults));
         }
         #endregion
 
