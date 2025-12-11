@@ -385,11 +385,11 @@ namespace CoffeeShop.ViewModels.StaffVM
                 if (TotalAmount >= (SelectedDiscount.MinimumOrderValue ?? 0)
                     && SelectedDiscount.IsActive == true)
                 {
-                    if (SelectedDiscount.DiscountType == 0) // Fixed amount
+                    if (SelectedDiscount.DiscountType == 1) // Fixed amount
                     {
                         discountValueApplied = SelectedDiscount.DiscountValue;
                     }
-                    else if (SelectedDiscount.DiscountType == 1) // Percent
+                    else if (SelectedDiscount.DiscountType == 0) // Percent
                     {
                         discountValueApplied = TotalAmount * SelectedDiscount.DiscountValue / 100m;
                     }
@@ -410,9 +410,6 @@ namespace CoffeeShop.ViewModels.StaffVM
 
             // Tính toán tổng tiền cuối cùng
             FinalTotal = TotalAmount - FinalDiscount;
-
-            OnPropertyChanged(nameof(FinalDiscount));
-            OnPropertyChanged(nameof(FinalTotal));
         }
         private void ConfirmCancelOrder(object param)
         {

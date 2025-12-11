@@ -210,7 +210,6 @@ namespace CoffeeShop.ViewModels.StaffVM
             {
                 _discounts = value;
                 OnPropertyChanged(nameof(Discounts));
-                CalculateFinalTotal();
             }
         }
         // Giảm giá được áp dụng cho order
@@ -222,6 +221,7 @@ namespace CoffeeShop.ViewModels.StaffVM
             {
                 _selectedDiscount = value;
                 OnPropertyChanged(nameof(SelectedDiscount));
+                CalculateFinalTotal();
             }
         }
         // Số tiền giảm giá thực tế
