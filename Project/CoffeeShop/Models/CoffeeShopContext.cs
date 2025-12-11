@@ -23,8 +23,6 @@ public partial class CoffeeShopContext : DbContext
 
     public virtual DbSet<Customer> Customers { get; set; }
 
-    public virtual DbSet<Discount> Discounts { get; set; }
-
     public virtual DbSet<Inventory> Inventories { get; set; }
 
     public virtual DbSet<InventoryHistory> InventoryHistories { get; set; }
@@ -45,12 +43,15 @@ public partial class CoffeeShopContext : DbContext
 
     public virtual DbSet<Staff> Staff { get; set; }
 
+    public virtual DbSet<StaffAttendance> StaffAttendances { get; set; }
+
+    // Scaffold-DbContext "Server=LAPTOP-UEB0IP6O;Database=CoffeeShopDB;Trusted_Connection=True;TrustServerCertificate=True;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models -ContextDir Data -Context CoffeeShopContext -Force
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
         => optionsBuilder.UseSqlServer("Server=localhost;Database=CoffeeShopDB;Trusted_Connection=True;TrustServerCertificate=True;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
+    { 
         modelBuilder.Entity<ActionType>(entity =>
         {
             entity.HasKey(e => e.ActionTypeId).HasName("PK__ActionTy__62FE4C0486F75E6D");
@@ -95,8 +96,8 @@ public partial class CoffeeShopContext : DbContext
             entity.Property(e => e.Email).HasMaxLength(200);
             entity.Property(e => e.PhoneNumber).HasMaxLength(20);
             entity.Property(e => e.Tier)
-                .HasMaxLength(10)
-                .HasDefaultValue("VIP1");
+                .HasMaxLength(50)
+                .HasDefaultValue("Silver");
         });
 
         modelBuilder.Entity<Discount>(entity =>
@@ -209,26 +210,20 @@ public partial class CoffeeShopContext : DbContext
 
             entity.Property(e => e.OrderId).HasColumnName("OrderID");
             entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
-            entity.Property(e => e.DiscountId).HasColumnName("DiscountID");
-            entity.Property(e => e.DiscountMoney)
-                .HasDefaultValue(0m)
-                .HasColumnType("money");
             entity.Property(e => e.OrderDate)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
+            entity.Property(e => e.OrderStatus)
+                .HasMaxLength(40)
+                .HasDefaultValue("Chờ thanh toán");
             entity.Property(e => e.PaymentMethod).HasMaxLength(40);
             entity.Property(e => e.StaffId).HasColumnName("StaffID");
-            entity.Property(e => e.SubTotal).HasColumnType("money");
             entity.Property(e => e.TableId).HasColumnName("TableID");
             entity.Property(e => e.TotalAmount).HasColumnType("money");
 
             entity.HasOne(d => d.Customer).WithMany(p => p.Orders)
                 .HasForeignKey(d => d.CustomerId)
                 .HasConstraintName("FK_Order_Customer");
-
-            entity.HasOne(d => d.Discount).WithMany(p => p.Orders)
-                .HasForeignKey(d => d.DiscountId)
-                .HasConstraintName("FK_Order_Discount");
 
             entity.HasOne(d => d.Staff).WithMany(p => p.Orders)
                 .HasForeignKey(d => d.StaffId)
@@ -247,6 +242,7 @@ public partial class CoffeeShopContext : DbContext
             entity.ToTable("OrderDetail");
 
             entity.Property(e => e.OrderDetailId).HasColumnName("OrderDetailID");
+            entity.Property(e => e.Discount).HasColumnType("money");
             entity.Property(e => e.Note).HasMaxLength(200);
             entity.Property(e => e.OrderId).HasColumnName("OrderID");
             entity.Property(e => e.PriceId).HasColumnName("PriceID");
@@ -319,6 +315,25 @@ public partial class CoffeeShopContext : DbContext
             entity.HasOne(d => d.Shift).WithMany(p => p.Staff)
                 .HasForeignKey(d => d.ShiftId)
                 .HasConstraintName("FK_Staff_Shift");
+        });
+
+        modelBuilder.Entity<StaffAttendance>(entity =>
+        {
+            entity.HasKey(e => e.AttendanceId).HasName("PK__StaffAtt__8B69263C47FEAFDC");
+
+            entity.ToTable("StaffAttendance");
+
+            entity.Property(e => e.AttendanceId).HasColumnName("AttendanceID");
+            entity.Property(e => e.CheckIn)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.CheckOut).HasColumnType("datetime");
+            entity.Property(e => e.StaffId).HasColumnName("StaffID");
+
+            entity.HasOne(d => d.Staff).WithMany(p => p.StaffAttendances)
+                .HasForeignKey(d => d.StaffId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Attendance_Staff");
         });
 
         OnModelCreatingPartial(modelBuilder);

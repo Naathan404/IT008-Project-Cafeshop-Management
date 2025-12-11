@@ -61,7 +61,7 @@ CREATE TABLE Customer
 	PhoneNumber NVARCHAR(20) UNIQUE NULL,
 	Email NVARCHAR(200) NULL,
 	Point INT NOT NULL DEFAULT 0,
-	Tier NVARCHAR(10) DEFAULT 'VIP1'		-- VIP1, VIP10, VIP100
+	Tier NVARCHAR(50) DEFAULT 'Silver'		-- Silver, Gold, Platinum, Diamond
 );
 
 -- Tạo bảng Shift
@@ -108,15 +108,12 @@ CREATE TABLE [Order]
 	CustomerID INT NULL,	-- null la khach vang lai
 	StaffID INT NOT NULL,
 	OrderDate DATETIME NOT NULL DEFAULT GETDATE(),
-	SubTotal MONEY NOT NULL,
-	DiscountID INT NULL,
-	DiscountMoney MONEY DEFAULT 0,
-	TotalAmount MONEY NOT NULL,
+	OrderStatus NVARCHAR(40) NOT NULL DEFAULT N'Chờ thanh toán',	-- Cho thanh toan, da thanh toan, da huy
+	TotalAmount MONEY NOT NULL DEFAULT 0,
 	PaymentMethod NVARCHAR(40) NOT NULL,							-- Tien mat, chuyen khoan
 	CONSTRAINT FK_Order_Table FOREIGN KEY (TableID) REFERENCES CafeTable(TableID),
 	CONSTRAINT FK_Order_Customer FOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID),
-	CONSTRAINT FK_Order_Staff FOREIGN KEY (StaffID) REFERENCES Staff(StaffID),
-	CONSTRAINT FK_Order_Discount FOREIGN KEY (DiscountID) REFERENCES Discount(DiscountID)
+	CONSTRAINT FK_Order_Staff FOREIGN KEY (StaffID) REFERENCES Staff(StaffID)
 );
 
 -- Tạo bảng OrderDetail
@@ -126,6 +123,7 @@ CREATE TABLE OrderDetail (
     PriceID INT NOT NULL,
     Quantity INT NOT NULL DEFAULT 1,
 	UnitPrice MONEY NOT NULL,
+	Discount MONEY NULL,
     TotalPrice MONEY NOT NULL,
     Note NVARCHAR(200) NULL,
     CONSTRAINT FK_OrderDetail_Order FOREIGN KEY (OrderID) REFERENCES [Order](OrderID),
@@ -133,14 +131,14 @@ CREATE TABLE OrderDetail (
 );
 
 -- Tạo bảng StaffAttendance
--- CREATE TABLE StaffAttendance
--- (
---	AttendanceID INT IDENTITY(1,1) PRIMARY KEY,
---	StaffID INT NOT NULL, 
---	CheckIn DATETIME NOT NULL DEFAULT GETDATE(),
---	CheckOut DATETIME NULL,
---	CONSTRAINT FK_Attendance_Staff FOREIGN KEY(StaffID) REFERENCES Staff(StaffID),
--- );
+CREATE TABLE StaffAttendance
+(
+	AttendanceID INT IDENTITY(1,1) PRIMARY KEY,
+	StaffID INT NOT NULL, 
+	CheckIn DATETIME NOT NULL DEFAULT GETDATE(),
+	CheckOut DATETIME NULL,
+	CONSTRAINT FK_Attendance_Staff FOREIGN KEY(StaffID) REFERENCES Staff(StaffID),
+);
 
 -- Tạo bảng Inventory
 CREATE TABLE Inventory
@@ -188,14 +186,13 @@ CREATE TABLE OTPRequest
 -- DROP các BẢNG
 -- Xóa các bảng có khóa ngoại
 DROP TABLE IF EXISTS InventoryHistory;
+DROP TABLE IF EXISTS StaffAttendance;
 DROP TABLE IF EXISTS OrderDetail;
 DROP TABLE IF EXISTS [Order];
 DROP TABLE IF EXISTS ItemPrice;
 DROP TABLE IF EXISTS Item;
-DROP TABLE IF EXISTS StaffAttendance;
 
 -- Xóa các bảng được khóa ngoại tham chiếu đến
-DROP TABLE IF EXISTS Discount;
 DROP TABLE IF EXISTS Staff;
 DROP TABLE IF EXISTS Shift;
 DROP TABLE IF EXISTS Inventory;
@@ -210,11 +207,11 @@ DROP TABLE IF EXISTS OTPRequest;
 
 -- XÓA DỮ LIỆU các BẢNG
 DELETE FROM InventoryHistory;
+DELETE FROM StaffAttendance;
 DELETE FROM OrderDetail;
 DELETE FROM [Order];
 DELETE FROM ItemPrice;
 DELETE FROM Item;
-DELETE FROM Discount;
 DELETE FROM Staff;
 DELETE FROM Shift;
 DELETE FROM Inventory;
@@ -227,7 +224,6 @@ DELETE FROM OTPRequest;
 
 -- SELECT 
 SELECT * FROM Staff
-SELECT * FROM [Order]
 
 ------------------------------------------------------------------SEED DATA----------------------------------------------------------------------------------------------
 INSERT INTO Category (CategoryName) 
@@ -277,9 +273,9 @@ GO
 
 INSERT INTO Size (SizeName)
 VALUES
-('S'),
 ('M'),
-('L')
+('L'),
+('XL')
 GO
 select * from itemprice
 INSERT INTO ItemPrice (ItemID, SizeID, Price) 
@@ -318,26 +314,12 @@ GO
 
 INSERT INTO Customer (CustomerName, PhoneNumber, Email, Point, Tier) 
 VALUES 
-(N'Nguyễn Văn An', '0901234567', 'annguyen@gmail.com', 3350, 'VIP100'),
-(N'Trần Thị Bích', '0918889999', 'bichtran@gmail.com', 1200, 'VIP10'),
-(N'Lê Hoàng Nam', '0987654321', 'namle@gmail.com', 600, 'VIP1'),
-(N'Phạm Minh Tuấn', '0933445566', 'tuanpham@gmail.com', 150, 'VIP1'), 
-(N'Võ Thị Mai', '0912341234', 'maivo@gmail.com', 50, 'VIP1'),
-(N'Đặng Thu Thảo', '0909112233', 'thuthao.dang@gmail.com', 3200, 'VIP100'),
-(N'Hoàng Văn Minh', '0913556677', 'minh.hoang123@gmail.com', 850, 'VIP1'),
-(N'Lý Gia Hân', '0988776655', 'hanly.cute@gmail.com', 100, 'VIP1'),
-(N'Phan Thanh Tâm', '0933998877', 'tamphan.dev@gmail.com', 1800, 'VIP10'),
-(N'Bùi Quốc Đạt', '0977445566', 'datbui.quoc@gmail.com', 4500, 'VIP100'),
-(N'Trương Mỹ Lan', '0905123456', 'lantruong.my@gmail.com', 50, 'VIP1'),
-(N'Vũ Đức Đam', '0912345678', 'damvu.duc@gmail.com', 1100, 'VIP10'),
-(N'Đỗ Thị Hồng', '0966889900', 'hongdo.thi88@gmail.com', 200, 'VIP1'),
-(N'Ngô Bảo Châu', '0944556677', 'chau.ngo.math@gmail.com', 5600, 'VIP100'),
-(N'Lâm Chấn Huy', '0932112233', 'huychanlam.singer@gmail.com', 950, 'VIP1'),
-(N'Phạm Thu Hà', '0909998877', 'phamthuha.joy@gmail.com', 2100, 'VIP100'),
-(N'Đinh Văn Hùng', '0912223344', 'hungdinh.sport@gmail.com', 1300, 'VIP10'),
-(N'Nguyễn Thị Lan', '0988665544', 'lanthi.nguyen99@gmail.com', 500, 'VIP1'),
-(N'Hoàng Quốc Việt', '0977112233', 'viethoang.tech@gmail.com', 80, 'VIP1'),
-(N'Lê Bảo Ngọc', '0933557799', 'ngocle.bao@gmail.com', 530, 'VIP1')
+(N'Nguyễn Văn An', '0901234567', 'annguyen@gmail.com', 2500, 'Diamond'),
+(N'Trần Thị Bích', '0918889999', 'bichtran@gmail.com', 1200, 'Gold'),
+(N'Lê Hoàng Nam', '0987654321', 'namle@gmail.com', 600, 'Silver'),
+(N'Phạm Minh Tuấn', '0933445566', 'tuanpham@gmail.com', 150, 'Silver'), 
+(N'Võ Thị Mai', '0912341234', 'maivo@gmail.com', 50, 'Silver'),
+(N'Nguyễn Chí Nguyên', '0865320821', '24521186@gm.uit.edu.vn', 1500, 'Gold');
 GO
 
 INSERT INTO CafeTable (TableName, TableStatus, Note) 
@@ -378,10 +360,9 @@ GO
 INSERT INTO Staff
 VALUES
 (N'ADMIN', 'admin', N'bf0dbd74174039131b667de9f31b5d8012baaf82011b934b2cc0e3bd53a02a1f', N'Admin', '0865320821', N'coffeeshop2g1g@gmail.com', NULL, NULL),
-(N'Nguyễn Chí Nguyên', N'ngnguyen', N'bf0dbd74174039131b667de9f31b5d8012baaf82011b934b2cc0e3bd53a02a1f', N'Admin', '0865320821', N'nathannguyen6002@gmail.com', NULL, NULL),
+(N'Nguyễn Chí Nguyên', N'ngnguyen', N'38d180985d1b2e7a6014190e2cbd3c967408837188354ec93d27bfd86d09a017', N'Admin', '0865320821', N'nathannguyen6002@gmail.com', NULL, NULL),
 (N'Nguyễn Ngọc Lan Anh', N'ngnlananh', N'bf0dbd74174039131b667de9f31b5d8012baaf82011b934b2cc0e3bd53a02a1f', N'Employee', '0988888888', N'ngnlananh@gmail.com', 2, 25000),
-(N'Lê Thành Nghĩa', N'ltnghia', N'bf0dbd74174039131b667de9f31b5d8012baaf82011b934b2cc0e3bd53a02a1f', N'Employee', '0977778888', N'24521143@gm.uit.edu.vn', 1, 20000),
-(N'EMPLOYEE', '1', N'bf0dbd74174039131b667de9f31b5d8012baaf82011b934b2cc0e3bd53a02a1f', N'Employee', '0865320821', N'nathannguyen6002@gmail.com', 1, 20000)
+(N'Lê Thành Nghĩa', N'ltnghia', N'fa980dbf4533c98fa5ed792374bea691610dfaabc62558182f4cc814ef0d69db', N'Employee', '0977778888', N'24521143@gm.uit.edu.vn', 1, 20000)
 GO
 
 INSERT INTO Discount 
@@ -404,21 +385,12 @@ GO
 --(10, NULL, 3, '2025-12-1 20:20:00', 55000, NULL, 0, 55000, N'Tiền mặt') --6
 --GO
 
---INSERT INTO OrderDetail (OrderID, PriceID, Quantity, UnitPrice, TotalPrice, Note) 
---VALUES 
---(1, 1, 1, 19000, 19000, N'Ít sữa, nhiều cafe'),
---(1, 8, 1, 35000, 35000, N'70% đường, 30% đá'),
---(2, 12, 1, 18000, 18000, N'Đá để riêng'),
---(3, 13, 1, 23000, 23000, NULL),
---(3, 60, 1, 30000, 30000, NULL),
---(4, 40, 2, 28000, 56000, NULL),
---(5, 1, 2, 19000, 38000, N'1 ly không đường, 1 ly bình thường'),
---(5, 16, 1, 39000, 39000, N'Không lấy sữa đặc'),
---(5, 23, 1, 29000, 23000, N'Không cay'),
---(5, 5, 1, 25000, 25000, NULL),
---(6, 17, 1, 20000, 20000, N'Ít ngọt'),
---(6, 21, 1, 35000, 35000, N'Hâm nóng')
---GO
+INSERT INTO StaffAttendance (StaffID, CheckIn, CheckOut) 
+VALUES 
+(1, '2025-11-16 07:00:00', '2025-11-16 11:30:00'),
+(1, '2025-11-17 07:05:00', NULL),
+(1, '2025-11-18 07:00:00', NULL)
+GO
 
 INSERT INTO Inventory (MaterialName, Quantity, Unit, Threshold, Note) 
 VALUES 
