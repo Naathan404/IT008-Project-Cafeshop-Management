@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -31,6 +32,7 @@ namespace CoffeeShop.View.Staff
         public StaffWindow(CoffeeShop.Models.Staff account)
         {
             InitializeComponent();
+            Debug.WriteLine($"Width = {this.ActualWidth}, Height = {this.ActualHeight}");
             StaffFrame.Navigate(new Staff_Order());
             bdrStaffWindowFunction.Width = _minimumNavigationBarWidth;
             _account = account;
