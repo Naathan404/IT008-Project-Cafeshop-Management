@@ -26,7 +26,7 @@ namespace CoffeeShop.ViewModels.AdminVM
             IsShowRevenue = true;
             ShowRevenueIcon = PackIconKind.CashOff;
             CurrencyFormatter = value => value.ToString("N0");
-            PercentFormatter = value => value.ToString("P1");
+            PercentFormatter = value => value.ToString("P0");
 
             ResetToCurrentDayCommand = new RelayCommand<object>((p) =>
             {
