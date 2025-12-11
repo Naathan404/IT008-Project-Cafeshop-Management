@@ -13,6 +13,8 @@ public partial class ItemPrice
 
     public decimal Price { get; set; }
 
+    public bool IsDeleted { get; set; }
+
     public virtual Item Item { get; set; } = null!;
 
     public virtual ICollection<OrderDetail> OrderDetails { get; set; } = new List<OrderDetail>();

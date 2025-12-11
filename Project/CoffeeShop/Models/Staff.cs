@@ -23,6 +23,8 @@ public partial class Staff
 
     public decimal? BaseSalary { get; set; }
 
+    public bool IsDeleted { get; set; }
+
     public virtual ICollection<InventoryHistory> InventoryHistories { get; set; } = new List<InventoryHistory>();
 
     public virtual ICollection<Order> Orders { get; set; } = new List<Order>();

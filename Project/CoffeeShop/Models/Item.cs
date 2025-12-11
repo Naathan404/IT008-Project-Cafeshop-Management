@@ -13,6 +13,8 @@ public partial class Item
 
     public bool IsAvailable { get; set; }
 
+    public bool IsDeleted { get; set; }
+
     public virtual Category Category { get; set; } = null!;
 
     public virtual ICollection<ItemPrice> ItemPrices { get; set; } = new List<ItemPrice>();

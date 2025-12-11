@@ -17,5 +17,7 @@ public partial class Inventory
 
     public string? Note { get; set; }
 
+    public bool IsDeleted { get; set; }
+
     public virtual ICollection<InventoryHistory> InventoryHistories { get; set; } = new List<InventoryHistory>();
 }

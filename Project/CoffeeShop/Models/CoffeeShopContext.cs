@@ -53,7 +53,7 @@ public partial class CoffeeShopContext : DbContext
     {
         modelBuilder.Entity<ActionType>(entity =>
         {
-            entity.HasKey(e => e.ActionTypeId).HasName("PK__ActionTy__62FE4C0486F75E6D");
+            entity.HasKey(e => e.ActionTypeId).HasName("PK__ActionTy__62FE4C04A87518BB");
 
             entity.ToTable("ActionType");
 
@@ -63,7 +63,7 @@ public partial class CoffeeShopContext : DbContext
 
         modelBuilder.Entity<CafeTable>(entity =>
         {
-            entity.HasKey(e => e.TableId).HasName("PK__CafeTabl__7D5F018E601D3649");
+            entity.HasKey(e => e.TableId).HasName("PK__CafeTabl__7D5F018E880FEECA");
 
             entity.ToTable("CafeTable");
 
@@ -74,7 +74,7 @@ public partial class CoffeeShopContext : DbContext
 
         modelBuilder.Entity<Category>(entity =>
         {
-            entity.HasKey(e => e.CategoryId).HasName("PK__Category__19093A2B65C7839A");
+            entity.HasKey(e => e.CategoryId).HasName("PK__Category__19093A2BA76FFA39");
 
             entity.ToTable("Category");
 
@@ -84,11 +84,11 @@ public partial class CoffeeShopContext : DbContext
 
         modelBuilder.Entity<Customer>(entity =>
         {
-            entity.HasKey(e => e.CustomerId).HasName("PK__Customer__A4AE64B8AD33051A");
+            entity.HasKey(e => e.CustomerId).HasName("PK__Customer__A4AE64B89B9BBD81");
 
             entity.ToTable("Customer");
 
-            entity.HasIndex(e => e.PhoneNumber, "UQ__Customer__85FB4E387FFD92A0").IsUnique();
+            entity.HasIndex(e => e.PhoneNumber, "UQ__Customer__85FB4E385FB655EC").IsUnique();
 
             entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
             entity.Property(e => e.CustomerName).HasMaxLength(200);
@@ -101,11 +101,11 @@ public partial class CoffeeShopContext : DbContext
 
         modelBuilder.Entity<Discount>(entity =>
         {
-            entity.HasKey(e => e.DiscountId).HasName("PK__Discount__E43F6DF6AD79E9D9");
+            entity.HasKey(e => e.DiscountId).HasName("PK__Discount__E43F6DF654D3D7A5");
 
             entity.ToTable("Discount");
 
-            entity.HasIndex(e => e.DiscountCode, "UQ__Discount__A1120AF57DF2268F").IsUnique();
+            entity.HasIndex(e => e.DiscountCode, "UQ__Discount__A1120AF5FFAC7CFB").IsUnique();
 
             entity.Property(e => e.DiscountId).HasColumnName("DiscountID");
             entity.Property(e => e.DiscountCode).HasMaxLength(10);
@@ -120,7 +120,7 @@ public partial class CoffeeShopContext : DbContext
 
         modelBuilder.Entity<Inventory>(entity =>
         {
-            entity.HasKey(e => e.MaterialId).HasName("PK__Inventor__C50613179E56A6CC");
+            entity.HasKey(e => e.MaterialId).HasName("PK__Inventor__C506131748295EDA");
 
             entity.ToTable("Inventory");
 
@@ -134,7 +134,7 @@ public partial class CoffeeShopContext : DbContext
 
         modelBuilder.Entity<InventoryHistory>(entity =>
         {
-            entity.HasKey(e => e.HistoryId).HasName("PK__Inventor__4D7B4ADD3FE4EC18");
+            entity.HasKey(e => e.HistoryId).HasName("PK__Inventor__4D7B4ADD85A2BA09");
 
             entity.ToTable("InventoryHistory");
 
@@ -166,7 +166,7 @@ public partial class CoffeeShopContext : DbContext
 
         modelBuilder.Entity<Item>(entity =>
         {
-            entity.HasKey(e => e.ItemId).HasName("PK__Item__727E83EB01736F8A");
+            entity.HasKey(e => e.ItemId).HasName("PK__Item__727E83EBE885C4E4");
 
             entity.ToTable("Item");
 
@@ -182,7 +182,7 @@ public partial class CoffeeShopContext : DbContext
 
         modelBuilder.Entity<ItemPrice>(entity =>
         {
-            entity.HasKey(e => e.PriceId).HasName("PK__ItemPric__4957584FB200DEAE");
+            entity.HasKey(e => e.PriceId).HasName("PK__ItemPric__4957584FD0A45F56");
 
             entity.ToTable("ItemPrice");
 
@@ -203,7 +203,7 @@ public partial class CoffeeShopContext : DbContext
 
         modelBuilder.Entity<Order>(entity =>
         {
-            entity.HasKey(e => e.OrderId).HasName("PK__Order__C3905BAFA6A49C4E");
+            entity.HasKey(e => e.OrderId).HasName("PK__Order__C3905BAFD30978F5");
 
             entity.ToTable("Order");
 
@@ -242,7 +242,7 @@ public partial class CoffeeShopContext : DbContext
 
         modelBuilder.Entity<OrderDetail>(entity =>
         {
-            entity.HasKey(e => e.OrderDetailId).HasName("PK__OrderDet__D3B9D30CB650373D");
+            entity.HasKey(e => e.OrderDetailId).HasName("PK__OrderDet__D3B9D30C70C7E1AA");
 
             entity.ToTable("OrderDetail");
 
@@ -267,7 +267,7 @@ public partial class CoffeeShopContext : DbContext
 
         modelBuilder.Entity<Otprequest>(entity =>
         {
-            entity.HasKey(e => e.RequestId).HasName("PK__OTPReque__33A8519A149D8770");
+            entity.HasKey(e => e.RequestId).HasName("PK__OTPReque__33A8519AA5204E2F");
 
             entity.ToTable("OTPRequest");
 
@@ -282,7 +282,7 @@ public partial class CoffeeShopContext : DbContext
 
         modelBuilder.Entity<Shift>(entity =>
         {
-            entity.HasKey(e => e.ShiftId).HasName("PK__Shift__C0A838E19ECFBE31");
+            entity.HasKey(e => e.ShiftId).HasName("PK__Shift__C0A838E16E02261C");
 
             entity.ToTable("Shift");
 
@@ -292,7 +292,7 @@ public partial class CoffeeShopContext : DbContext
 
         modelBuilder.Entity<Size>(entity =>
         {
-            entity.HasKey(e => e.SizeId).HasName("PK__Size__83BD095A1719902A");
+            entity.HasKey(e => e.SizeId).HasName("PK__Size__83BD095A963B4D51");
 
             entity.ToTable("Size");
 
@@ -302,9 +302,9 @@ public partial class CoffeeShopContext : DbContext
 
         modelBuilder.Entity<Staff>(entity =>
         {
-            entity.HasKey(e => e.StaffId).HasName("PK__Staff__96D4AAF79EE93366");
+            entity.HasKey(e => e.StaffId).HasName("PK__Staff__96D4AAF7788F6404");
 
-            entity.HasIndex(e => e.Username, "UQ__Staff__536C85E4066555BF").IsUnique();
+            entity.HasIndex(e => e.Username, "UQ__Staff__536C85E445A02E47").IsUnique();
 
             entity.Property(e => e.StaffId).HasColumnName("StaffID");
             entity.Property(e => e.BaseSalary).HasColumnType("money");
