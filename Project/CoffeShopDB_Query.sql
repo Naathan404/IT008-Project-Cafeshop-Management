@@ -281,7 +281,7 @@ VALUES
 ('M'),
 ('L')
 GO
-
+select * from itemprice
 INSERT INTO ItemPrice (ItemID, SizeID, Price) 
 VALUES 
 (1, 1, 19000), (1, 2, 29000), (1, 3, 39000),   -- Cà phê sữa đá

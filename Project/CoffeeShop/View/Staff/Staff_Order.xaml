@@ -4,53 +4,79 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-      xmlns:local="clr-namespace:CoffeeShop"
+      xmlns:sys="clr-namespace:System;assembly=mscorlib"
+      xmlns:local="clr-namespace:CoffeeShop.View.Staff"
+      xmlns:vm="clr-namespace:CoffeeShop.ViewModels.StaffVM"
       mc:Ignorable="d" 
-      d:DesignHeight="520" d:DesignWidth="850"
+      d:DesignHeight="700" d:DesignWidth="1310"
+      MinHeight="0" MinWidth="1000"
       Title="Staff_Order">
+    <Page.DataContext>
+        <vm:StaffOrderViewModel/>
+    </Page.DataContext>
+
     <Page.Resources>
+        <local:IndexToNumberConverter x:Key="IndexToNumberConverter"/>
+        <local:AndBooleanConverter x:Key="AndBooleanConverter"/>
+
         <!-- Style for Item card -->
         <Style x:Key="RoundedCard" TargetType="ContentControl">
-            <Setter Property="Margin" Value="7"/>
+            <Setter Property="Margin" Value="5"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ContentControl">
-                        <Border Background="#E0CEB5" CornerRadius="15" ClipToBounds="True" Width="130" Height="150">
+                        <Border x:Name="BorderContainer"
+                                Background="#E0CEB5" CornerRadius="15"
+                                MinWidth="130" MinHeight="150" 
+                                MaxHeight="220" MaxWidth="200"
+                                MouseDown="Item_MouseDown"
+                                Cursor="Hand">
                             <Grid>
                                 <Grid.RowDefinitions>
-                                    <RowDefinition Height="80"/>
-                                    <RowDefinition Height="20"/>
-                                    <RowDefinition Height="25"/>
-                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="Auto"/><!-- Ảnh -->
+                                    <RowDefinition Height="Auto"/><!-- Tên -->
+                                    <RowDefinition Height="*"/><!-- EMPTY SPACE -->
+                                    <RowDefinition Height="Auto"/><!-- Size -->
+                                    <RowDefinition Height="Auto"/><!-- Giá -->
                                 </Grid.RowDefinitions>
                                 <!--Item Image-->
                                 <Image x:Name="imgItem"
-                                       Margin="10"
                                        Grid.Row="0"
+                                       Margin="10" MaxHeight="80"
                                        Stretch="UniformToFill"
-                                       Source="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}"
+                                       Source="{Binding ImagePath}"
                                        d:Source="/Assets/Images/imgItemExample.jpg"/>
                                 <!--Item Name-->
                                 <TextBlock x:Name="txtblItemName"
-                                           Text="{Binding Content, RelativeSource={RelativeSource TemplatedParent}}"
+                                           Text="{Binding ItemName}"
+                                           Grid.Row="1"
                                            FontSize="15"
                                            FontWeight="Bold"
-                                           Margin="10 0 0 0"
+                                           Margin="10 0 10 0"
                                            FontFamily="Bahnschrift"
                                            Foreground="#340D05"
                                            HorizontalAlignment="Left"
                                            VerticalAlignment="Center"
-                                           Grid.Row="1"/>
+                                           TextWrapping="Wrap"/>
+                                <Grid Grid.Row="2"></Grid>
                                 <!--Item Size-->
-                                <StackPanel x:Name="stpnItemSize" Orientation="Horizontal" Margin="0 0 10 0" Grid.Row="2" HorizontalAlignment="Right" VerticalAlignment="Top">
-                                    <Border x:Name="bdrItemSizeS"
+                                <StackPanel x:Name="stpnItemSize"
+                                            Orientation="Horizontal" 
+                                            Margin="0 5 10 0"
+                                            Grid.Row="3"
+                                            HorizontalAlignment="Right"
+                                            VerticalAlignment="Top"
+                                            Loaded="ItemSize_Loaded">
+                                    <Border x:Name="bdrItemSize0"
                                             BorderBrush="#766839"
                                             BorderThickness="2"
                                             CornerRadius="15"
-                                            Width="20"
-                                            Height="20"
-                                            MouseDown="bdrItemSizeS_MouseDown">
-                                        <TextBlock Text="S"
+                                            Width="20" Height="20"
+                                            MouseDown="bdrItemSize_MouseDown"
+                                            MouseEnter="bdrItemSize_MouseEnter"
+                                            MouseLeave="bdrItemSize_MouseLeave"
+                                            Visibility="Collapsed">
+                                        <TextBlock x:Name="txtSize0"
                                                    FontSize="10"
                                                    FontWeight="Bold"
                                                    HorizontalAlignment="Center"
@@ -58,15 +84,17 @@
                                                    FontFamily="Bahnschrift"
                                                    Foreground="#766839"/>
                                     </Border>
-                                    <Border x:Name="bdrItemSizeM"
+                                    <Border x:Name="bdrItemSize1"
                                             BorderBrush="#766839"
                                             BorderThickness="2"
                                             CornerRadius="15"
-                                            Width="20"
-                                            Height="20"
-                                            Margin="2.5"
-                                            MouseDown="bdrItemSizeM_MouseDown">
-                                        <TextBlock Text="M"
+                                            Width="20" Height="20"
+                                            Margin="2.5 0"
+                                            MouseDown="bdrItemSize_MouseDown"
+                                            MouseEnter="bdrItemSize_MouseEnter"
+                                            MouseLeave="bdrItemSize_MouseLeave"
+                                            Visibility="Collapsed">
+                                        <TextBlock x:Name="txtSize1"
                                                    FontSize="10"
                                                    FontWeight="Bold"
                                                    HorizontalAlignment="Center"
@@ -74,14 +102,16 @@
                                                    FontFamily="Bahnschrift"
                                                    Foreground="#766839"/>
                                     </Border>
-                                    <Border x:Name="bdrItemSizeL"
+                                    <Border x:Name="bdrItemSize2"
                                             BorderBrush="#766839"
                                             BorderThickness="2"
                                             CornerRadius="15"
-                                            Width="20"
-                                            Height="20"
-                                            MouseDown="bdrItemSizeL_MouseDown">
-                                        <TextBlock Text="L"
+                                            Width="20" Height="20"
+                                            MouseDown="bdrItemSize_MouseDown"
+                                            MouseEnter="bdrItemSize_MouseEnter"
+                                            MouseLeave="bdrItemSize_MouseLeave"
+                                            Visibility="Collapsed">
+                                        <TextBlock x:Name="txtSize2"
                                                    FontSize="10"
                                                    FontWeight="Bold"
                                                    HorizontalAlignment="Center"
@@ -92,207 +122,761 @@
                                 </StackPanel>
                                 <!--Item Price-->
                                 <TextBlock x:Name="txtblItemPrice"
-                                           Text="35.000đ"
-                                           Grid.Row="3"
+                                           Grid.Row="4"
                                            FontFamily="Bahnschrift"
                                            FontSize="15"
                                            FontWeight="Bold"
                                            Foreground="#766839"
-                                           Margin="0 2 12 0"
-                                           HorizontalAlignment="Right"/>
+                                           Margin="0 2 12 5"
+                                           HorizontalAlignment="Right"
+                                           Loaded="ItemPrice_Loaded"/>
                             </Grid>
                         </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="BorderContainer" Property="Effect">
+                                    <Setter.Value>
+                                        <DropShadowEffect Color="#340D05" 
+                                                          Direction="315" 
+                                                          ShadowDepth="3" 
+                                                          BlurRadius="10" 
+                                                          Opacity="0.5" />
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!--Style cho TabControl (xuống dòng khi không đủ độ rộng) -->
+        <Style TargetType="{x:Type TabControl}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabControl">
+                        <Grid ClipToBounds="True">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <!-- Tab headers -->
+                            <TabPanel Grid.Row="0"
+                                      IsItemsHost="True"
+                                      Margin="0"
+                                      HorizontalAlignment="Stretch"/>
+                            <!-- Tab content -->
+                            <ContentPresenter Grid.Row="1"
+                                              ContentSource="SelectedContent"/>
+                        </Grid>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
         </Style>
     </Page.Resources>
-    
+
     <Grid>
         <Border Background="#D4BA98"
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Stretch">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="2.5*"/>
+                    <ColumnDefinition Width="2*"/>
                     <ColumnDefinition Width="2*"/>
                 </Grid.ColumnDefinitions>
 
+                <!-- Menu Panel -->
                 <Grid Grid.Column="0">
                     <Border x:Name="bdrMenuTab"
-                        Margin="15 15 10 15"
-                        Background="#EDE2D3"
-                        CornerRadius="15">
+                            Margin="10 10 10 15"
+                            Background="#EDE2D3"
+                            CornerRadius="15">
                         <Border.Effect>
-                            <DropShadowEffect BlurRadius="-20"
+                            <DropShadowEffect BlurRadius="20"
                                               Opacity="0.3"
                                               Color="Black"
                                               ShadowDepth="8"/>
                         </Border.Effect>
-                        <TabControl x:Name="tabMain"
-                                    Margin="10 10 10 0"
-                                    materialDesign:ColorZoneAssist.Mode="Standard"
-                                    Background="#C7A57A"
-                                    HorizontalAlignment="Left"
-                                    VerticalContentAlignment="Top"
-                                    VirtualizingStackPanel.IsVirtualizing="False"
-                                    materialDesign:ThemeAssist.Theme="Light"
-                                    materialDesign:TabAssist.HasUniformTabWidth="False">
+                        <Grid>
+                            <TabControl x:Name="tabMain"
+                                        Margin="10 10 10 0"
+                                        materialDesign:ColorZoneAssist.Mode="Standard"
+                                        Background="#C7A57A"
+                                        HorizontalAlignment="Left"
+                                        VerticalContentAlignment="Stretch"
+                                        materialDesign:ThemeAssist.Theme="Light"
+                                        SelectionChanged="TabControl_SelectionChanged">
+                                <TabControl.ItemContainerStyle>
+                                    <!-- Style cho từng TabItem -->
+                                    <Style TargetType="TabItem" BasedOn="{StaticResource MaterialDesignTabItem}">
+                                        <Setter Property="Height" Value="40"/>
+                                        <Setter Property="MinWidth" Value="0"/>
+                                        <Setter Property="Padding" Value="5"/>
+                                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                        <!-- Font cho header -->
+                                        <Setter Property="HeaderTemplate">
+                                            <Setter.Value>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding}" 
+                                                               FontSize="15" 
+                                                               FontFamily="Cascadia Code" 
+                                                               FontWeight="Bold"
+                                                               HorizontalAlignment="Center"/>
+                                                </DataTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </TabControl.ItemContainerStyle>
 
-                            <TabControl.ItemContainerStyle>
-                                <!-- Style cho từng TabItem -->
-                                <Style TargetType="TabItem" BasedOn="{StaticResource MaterialDesignTabItem}">
-                                    <Setter Property="Height" Value="40"/>
-                                    <Setter Property="Width" Value="Auto"/>
-                                    <Setter Property="MinWidth" Value="0"/>
-                                    <Setter Property="Margin" Value="2,0"/>
-                                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                                    <Setter Property="FontSize" Value="16"/>
-                                    <Setter Property="FontFamily" Value="Cascadia Code"/>
-                                </Style>
-                            </TabControl.ItemContainerStyle>
+                                <!-- Tab Tất cả các món -->
+                                <TabItem Header="Tất cả" Tag="0">
+                                    <ScrollViewer VerticalScrollBarVisibility="Auto" 
+                                                  SizeChanged="ItemsContainer_SizeChanged">
+                                        <ItemsControl ItemsSource="{Binding FilteredItems}">
+                                            <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <UniformGrid VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                                                </ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
 
-                            <TabItem Header="Cà phê">
-                                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                                    <WrapPanel Width="{Binding ActualWidth, ElementName=tabMain}">
-                                        <ContentControl x:Name="crdItem1"
-                                                            Style="{StaticResource RoundedCard}"
-                                                            Content="Cà phê"
-                                                            Tag="/Assets/Images/imgItemExample.jpg"/>
-                                        <ContentControl x:Name="crdItem2"
-                                                            Style="{StaticResource RoundedCard}"
-                                                            Content="Cà phê sữa"/>
-                                        <ContentControl x:Name="crdItem3"
-                                                            Style="{StaticResource RoundedCard}"
-                                                            Content="Cà phê sữa"/>
-                                        <ContentControl x:Name="crdItem4"
-                                                            Style="{StaticResource RoundedCard}"
-                                                            Content="Cà phê sữa"/>
-                                        <ContentControl x:Name="crdItem5"
-                                                            Style="{StaticResource RoundedCard}"
-                                                            Content="Cà phê sữa"/>
-                                        <ContentControl x:Name="crdItem6"
-                                                            Style="{StaticResource RoundedCard}"
-                                                            Content="Cà phê sữa"/>
-                                        <ContentControl x:Name="crdItem11"
-                                                            Style="{StaticResource RoundedCard}"/>
-                                        <ContentControl x:Name="crdItem7"
-                                                            Style="{StaticResource RoundedCard}"/>
-                                        <ContentControl x:Name="crdItem8"
-                                                            Style="{StaticResource RoundedCard}"/>
-                                        <ContentControl x:Name="crdItem9"
-                                                            Style="{StaticResource RoundedCard}"/>
-                                        <ContentControl x:Name="crdItem10"
-                                                            Style="{StaticResource RoundedCard}"/>
-                                        <ContentControl Style="{StaticResource RoundedCard}"/>
-                                        <ContentControl Style="{StaticResource RoundedCard}"/>
-                                        <ContentControl Style="{StaticResource RoundedCard}"/>
-                                        <ContentControl Style="{StaticResource RoundedCard}"/>
-                                        <ContentControl Style="{StaticResource RoundedCard}"/>
-                                        <ContentControl Style="{StaticResource RoundedCard}"/>
-                                        <ContentControl Style="{StaticResource RoundedCard}"/>
-                                    </WrapPanel>
-                                </ScrollViewer>
-                            </TabItem>
-                            <TabItem Header="Trà sữa">
-                                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                                    <WrapPanel Width="{Binding ActualWidth, ElementName=tabMain}">
-                                        <ContentControl Style="{StaticResource RoundedCard}"/>
-                                        <ContentControl Style="{StaticResource RoundedCard}"/>
-                                        <ContentControl Style="{StaticResource RoundedCard}"/>
-                                        <ContentControl Style="{StaticResource RoundedCard}"/>
-                                        <ContentControl Style="{StaticResource RoundedCard}"/>
-                                        <ContentControl Style="{StaticResource RoundedCard}"/>
-                                        <ContentControl Style="{StaticResource RoundedCard}"/>
-                                        <ContentControl Style="{StaticResource RoundedCard}"/>
-                                        <ContentControl Style="{StaticResource RoundedCard}"/>
-                                        <ContentControl Style="{StaticResource RoundedCard}"/>
-                                        <ContentControl Style="{StaticResource RoundedCard}"/>
-                                        <ContentControl Style="{StaticResource RoundedCard}"/>
-                                        <ContentControl Style="{StaticResource RoundedCard}"/>
-                                        <ContentControl Style="{StaticResource RoundedCard}"/>
-                                        <ContentControl Style="{StaticResource RoundedCard}"/>
-                                        <ContentControl Style="{StaticResource RoundedCard}"/>
-                                        <ContentControl Style="{StaticResource RoundedCard}"/>
-                                        <ContentControl Style="{StaticResource RoundedCard}"/>
-                                        <ContentControl Style="{StaticResource RoundedCard}"/>
-                                        <ContentControl Style="{StaticResource RoundedCard}"/>
-                                        <ContentControl Style="{StaticResource RoundedCard}"/>
-                                        <ContentControl Style="{StaticResource RoundedCard}"/>
-                                    </WrapPanel>
-                                </ScrollViewer>
-                            </TabItem>
-                            <TabItem Header="Đá xay">
-                                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                                    <WrapPanel Width="{Binding ActualWidth, ElementName=tabMain}">
-                                        <ContentControl Style="{StaticResource RoundedCard}"/>
-                                    </WrapPanel>
-                                </ScrollViewer>
-                            </TabItem>
-                            <TabItem Header="Trà">
-                                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                                    <WrapPanel Width="{Binding ActualWidth, ElementName=tabMain}">
-                                        <ContentControl Style="{StaticResource RoundedCard}"/>
-                                    </WrapPanel>
-                                </ScrollViewer>
-                            </TabItem>
-                            <TabItem Header="Nước ép">
-                                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                                    <WrapPanel Width="{Binding ActualWidth, ElementName=tabMain}">
-                                        <ContentControl Style="{StaticResource RoundedCard}"/>
-                                    </WrapPanel>
-                                </ScrollViewer>
-                            </TabItem>
-                            <TabItem Header="Sinh tố">
-                                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                                    <WrapPanel Width="{Binding ActualWidth, ElementName=tabMain}">
-                                        <ContentControl Style="{StaticResource RoundedCard}"/>
-                                    </WrapPanel>
-                                </ScrollViewer>
-                            </TabItem>
-                            <TabItem Header="Food">
-                                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                                    <WrapPanel Width="{Binding ActualWidth, ElementName=tabMain}">
-                                        <ContentControl Style="{StaticResource RoundedCard}"/>
-                                    </WrapPanel>
-                                </ScrollViewer>
-                            </TabItem>
-                        </TabControl>
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <ContentControl Style="{StaticResource RoundedCard}"
+                                                                    Content="{Binding}"/>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </ScrollViewer>
+                                </TabItem>
+
+                                <!-- Cà phê - CategoryId = 1 -->
+                                <TabItem Header="Cà phê" Tag="1">
+                                    <ScrollViewer VerticalScrollBarVisibility="Auto" 
+                                                  SizeChanged="ItemsContainer_SizeChanged">
+                                        <ItemsControl ItemsSource="{Binding FilteredItems}">
+                                            <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <UniformGrid VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                                                </ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <ContentControl Style="{StaticResource RoundedCard}"
+                                                                    Content="{Binding}"/>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </ScrollViewer>
+                                </TabItem>
+
+                                <!-- Trà sữa - CategoryId = 2 -->
+                                <TabItem Header="Trà sữa" Tag="2">
+                                    <ScrollViewer VerticalScrollBarVisibility="Auto" 
+                                                  SizeChanged="ItemsContainer_SizeChanged">
+                                        <ItemsControl ItemsSource="{Binding FilteredItems}">
+                                            <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <UniformGrid VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                                                </ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <ContentControl Style="{StaticResource RoundedCard}"
+                                                                    Content="{Binding}"/>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </ScrollViewer>
+                                </TabItem>
+
+                                <!-- Đá xay - CategoryId = 3 -->
+                                <TabItem Header="Đá xay" Tag="3">
+                                    <ScrollViewer VerticalScrollBarVisibility="Auto" 
+                                                  SizeChanged="ItemsContainer_SizeChanged">
+                                        <ItemsControl ItemsSource="{Binding FilteredItems}">
+                                            <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <UniformGrid VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                                                </ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <ContentControl Style="{StaticResource RoundedCard}"
+                                                                    Content="{Binding}"/>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </ScrollViewer>
+                                </TabItem>
+
+                                <!-- Trà - CategoryId = 4 -->
+                                <TabItem Header="Trà" Tag="4">
+                                    <ScrollViewer VerticalScrollBarVisibility="Auto" 
+                                                  SizeChanged="ItemsContainer_SizeChanged">
+                                        <ItemsControl ItemsSource="{Binding FilteredItems}">
+                                            <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <UniformGrid VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                                                </ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <ContentControl Style="{StaticResource RoundedCard}"
+                                                                    Content="{Binding}"/>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </ScrollViewer>
+                                </TabItem>
+
+                                <!-- Nước ép - CategoryId = 5 -->
+                                <TabItem Header="Nước ép" Tag="5">
+                                    <ScrollViewer VerticalScrollBarVisibility="Auto" 
+                                                  SizeChanged="ItemsContainer_SizeChanged">
+                                        <ItemsControl ItemsSource="{Binding FilteredItems}">
+                                            <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <UniformGrid VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                                                </ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <ContentControl Style="{StaticResource RoundedCard}"
+                                                                    Content="{Binding}"/>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </ScrollViewer>
+                                </TabItem>
+
+                                <!-- Sinh tố - CategoryId = 6 -->
+                                <TabItem Header="Sinh tố" Tag="6">
+                                    <ScrollViewer VerticalScrollBarVisibility="Auto" 
+                                                  SizeChanged="ItemsContainer_SizeChanged">
+                                        <ItemsControl ItemsSource="{Binding FilteredItems}">
+                                            <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <UniformGrid VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                                                </ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <ContentControl Style="{StaticResource RoundedCard}"
+                                                                    Content="{Binding}"/>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </ScrollViewer>
+                                </TabItem>
+
+                                <!-- Food - CategoryId = 7 -->
+                                <TabItem Header="Food" Tag="7">
+                                    <ScrollViewer VerticalScrollBarVisibility="Auto" 
+                                                  SizeChanged="ItemsContainer_SizeChanged">
+                                        <ItemsControl ItemsSource="{Binding FilteredItems}">
+                                            <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <UniformGrid VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                                                </ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <ContentControl Style="{StaticResource RoundedCard}"
+                                                                    Content="{Binding}"/>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </ScrollViewer>
+                                </TabItem>
+                            </TabControl>
+
+                            <!-- Search Box -->
+                            <Grid HorizontalAlignment="Right" VerticalAlignment="Top"
+                                  Margin="0 0 10 0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <materialDesign:PackIcon Grid.Column="0"
+                                                         Kind="Magnify"
+                                                         Margin="450,20,0,10"
+                                                         Width="20" Height="20"
+                                                         Foreground="#766839"/>
+                                <TextBox x:Name="txblSearchItem"
+                                         Grid.Column="1"
+                                         Text="{Binding SearchItemKeyword, UpdateSourceTrigger=PropertyChanged}"
+                                         Height="40" MinWidth="80"
+                                         materialDesign:HintAssist.Hint="Tìm kiếm"
+                                         materialDesign:HintAssist.IsFloating="False"
+                                         FontFamily="Cascadia Code"
+                                         Foreground="#766839" 
+                                         FontSize="15" 
+                                         FontWeight="Bold"
+                                         materialDesign:TextFieldAssist.UnderlineBrush="#766839"
+                                         materialDesign:HintAssist.Foreground="#766839"
+                                         Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
+                            </Grid>
+                        </Grid>
                     </Border>
                 </Grid>
 
+                <!-- Order Panel -->
                 <Grid Grid.Column="1">
                     <Border x:Name="bdrOrderBox"
-                        Margin="10 15 15 15"
-                        Background="#EDE2D3"
-                        CornerRadius="15">
+                            Margin="5 10 15 15"
+                            Background="#EDE2D3"
+                            CornerRadius="15">
                         <Border.Effect>
-                            <DropShadowEffect BlurRadius="-20"
-                                          Opacity="0.3"
-                                          Color="Black"
-                                          ShadowDepth="8"/>
+                            <DropShadowEffect BlurRadius="20"
+                                              Opacity="0.3"
+                                              Color="Black"
+                                              ShadowDepth="8"/>
                         </Border.Effect>
-                        <StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <materialDesign:PackIcon Kind="TableFurniture"
-                                                     Margin="10"
-                                                     Foreground="#766839"
-                                                     Height="30" Width="30"/>
-                                <ComboBox MinWidth="72"
-                                          materialDesign:HintAssist.Hint="(editable)"
-                                          IsEditable="True"
-                                          ItemsSource="{Binding LongIntegerList}">
-                                    <ComboBox.Text>
-                                        <Binding Mode="TwoWay"
-                                                 Path="SelectedTextTwo"
-                                                 UpdateSourceTrigger="PropertyChanged">
-                                            
-                                        </Binding>
-                                    </ComboBox.Text>
-                                </ComboBox>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="2.5*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
 
+                            <!-- Customer & Table Selection -->
+                            <StackPanel Orientation="Horizontal" 
+                                        Margin="15 10 15 0" 
+                                        Grid.Row="0">
+                                <ComboBox x:Name="cbTable"
+                                          Width="90" Height="30"
+                                          VerticalAlignment="Center"
+                                          FontFamily="Cascadia Code" 
+                                          FontSize="15" 
+                                          Foreground="#766839"
+                                          ItemsSource="{Binding AvailableTables}"
+                                          SelectedItem="{Binding SelectedTable}"
+                                          DisplayMemberPath="TableName"
+                                          materialDesign:TextFieldAssist.UnderlineBrush="#766839"
+                                          materialDesign:HintAssist.Hint="Chọn bàn"/>
+
+                                <materialDesign:PackIcon Kind="AccountSearchOutline"
+                                                         Margin="30 0 0 0"
+                                                         VerticalAlignment="Center"
+                                                         Height="23" Width="23"
+                                                         Foreground="#766839"
+                                                         Cursor="Hand"
+                                                         MouseDown="icSearchCustomer_MouseDown"
+                                                         MouseEnter="icSearchCustomer_MouseEnter"
+                                                         MouseLeave="icSearchCustomer_MouseLeave"/>
+
+                                <TextBox x:Name="tbCustomerPhone"
+                                         Text="{Binding SearchCustomerKeyword, UpdateSourceTrigger=PropertyChanged}"
+                                         Width="100" Height="30" 
+                                         VerticalAlignment="Center"
+                                         FontFamily="Cascadia Code" 
+                                         FontSize="15" 
+                                         Foreground="#340D05"
+                                         materialDesign:TextFieldAssist.UnderlineBrush="#766839"
+                                         TextChanged="tbCustomerPhone_TextChanged"/>
+
+                                <!-- Popup hiển thị gợi ý -->
+                                <Popup x:Name="popupCustomers"
+                                       PlacementTarget="{Binding ElementName=tbCustomerPhone}"
+                                       Placement="Bottom"
+                                       Width="Auto"
+                                       AllowsTransparency="True">
+                                    <Popup.IsOpen>
+                                        <MultiBinding Converter="{StaticResource AndBooleanConverter}" Mode="OneWay">
+                                            <Binding ElementName="tbCustomerPhone" Path="IsKeyboardFocusWithin" />
+                                            <Binding Path="HasSearchResults" Mode="OneWay" />
+                                        </MultiBinding>
+                                    </Popup.IsOpen>
+                                    <Border BorderBrush="#766839" 
+                                            BorderThickness="2" 
+                                            Background="#F9F6F0"
+                                            CornerRadius="5"
+                                            MaxHeight="250">
+                                        <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                            <ItemsControl ItemsSource="{Binding FilteredCustomers}">
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Border BorderBrush="#D4BA98" 
+                                                                BorderThickness="0 0 0 1"
+                                                                Background="Transparent"
+                                                                Cursor="Hand"
+                                                                MouseDown="CustomerItem_MouseDown"
+                                                                MouseEnter="CustomerItem_MouseEnter"
+                                                                MouseLeave="CustomerItem_MouseLeave">
+                                                            <StackPanel Margin="10 8">
+                                                                <TextBlock Text="{Binding CustomerName}" 
+                                                                           FontWeight="Bold" 
+                                                                           FontSize="14"
+                                                                           FontFamily="Cascadia Code"
+                                                                           Foreground="#766839"/>
+                                                                <StackPanel Orientation="Horizontal" Margin="0 3 0 0">
+                                                                    <materialDesign:PackIcon Kind="Phone" 
+                                                                                             Width="14" Height="14" 
+                                                                                             VerticalAlignment="Center"
+                                                                                             Foreground="#766839"
+                                                                                             Margin="0 0 5 0"/>
+                                                                    <TextBlock Text="{Binding PhoneNumber}" 
+                                                                               Foreground="#766839" 
+                                                                               FontSize="12"
+                                                                               FontFamily="Cascadia Code"/>
+                                                                </StackPanel>
+                                                                <StackPanel Orientation="Horizontal" Margin="0 2 0 0">
+                                                                    <materialDesign:PackIcon Kind="Email" 
+                                                                                             Width="14" Height="14" 
+                                                                                             VerticalAlignment="Center"
+                                                                                             Foreground="#766839"
+                                                                                             Margin="0 0 5 0"/>
+                                                                    <TextBlock Text="{Binding Email}" 
+                                                                               Foreground="#766839" 
+                                                                               FontSize="12"
+                                                                               FontFamily="Cascadia Code"/>
+                                                                </StackPanel>
+                                                                <StackPanel Orientation="Horizontal" Margin="0 2 0 0">
+                                                                    <materialDesign:PackIcon Kind="Star" 
+                                                                                             Width="14" Height="14" 
+                                                                                             VerticalAlignment="Center"
+                                                                                             Foreground="#766839"
+                                                                                             Margin="0 0 5 0"/>
+                                                                    <TextBlock Text="{Binding Tier}" 
+                                                                               Foreground="#766839" 
+                                                                               FontSize="12"
+                                                                               FontFamily="Cascadia Code"/>
+                                                                </StackPanel>
+                                                            </StackPanel>
+                                                        </Border>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                        </ScrollViewer>
+                                    </Border>
+                                </Popup>
+
+                                <Border Background="Transparent"
+                                        Cursor="Hand"
+                                        MouseEnter="icAddCustomer_MouseEnter"
+                                        MouseLeave="icAddCustomer_MouseLeave"
+                                        MouseDown="icAddCustomer_MouseDown">
+                                    <materialDesign:PackIcon Kind="PlusCircleOutline"
+                                                             VerticalAlignment="Center"
+                                                             Height="20" Width="20"
+                                                             Foreground="#766839"/>
+                                </Border>
+
+                                <TextBlock Text="Khách hàng:" 
+                                           VerticalAlignment="Center"
+                                           Margin="30 0 0 0"
+                                           FontFamily="Cascadia Code" 
+                                           FontWeight="Bold" 
+                                           FontSize="17" 
+                                           Foreground="#766839"/>
+
+                                <TextBlock Text="{Binding SelectedCustomer.CustomerName, TargetNullValue='--'}"
+                                           HorizontalAlignment="Left"
+                                           VerticalAlignment="Center"
+                                           TextWrapping="WrapWithOverflow"
+                                           MaxWidth="180"
+                                           Margin="7 0 0 0"
+                                           FontFamily="Cascadia Code" 
+                                           FontWeight="Bold" 
+                                           FontSize="17" 
+                                           Foreground="#340D05"/>
                             </StackPanel>
-                        </StackPanel>
+
+                            <!-- Order DataGrid -->
+                            <Border BorderBrush="#766839" 
+                                    BorderThickness="3"
+                                    CornerRadius="15" 
+                                    Margin="10 20 10 10"
+                                    Background="#F9F6F0"
+                                    Grid.Row="1">
+                                <DataGrid x:Name="dtgListOrder"
+                                          ItemsSource="{Binding Orders}"
+                                          AutoGenerateColumns="False"
+                                          IsReadOnly="False"
+                                          CanUserAddRows="False"
+                                          HeadersVisibility="Column"
+                                          GridLinesVisibility="None"
+                                          Background="#F9F6F0"
+                                          FontFamily="Cascadia Code"
+                                          FontSize="16"
+                                          Margin="5"
+                                          AlternationCount="1000000"
+                                          EnableRowVirtualization="False"
+                                          CanUserReorderColumns="False"
+                                          CanUserResizeColumns="False">
+                                    <DataGrid.ColumnHeaderStyle>
+                                        <Style TargetType="DataGridColumnHeader">
+                                            <Setter Property="Background" Value="#F9F6F0"/>
+                                            <Setter Property="Foreground" Value="#462812"/>
+                                            <Setter Property="FontWeight" Value="Bold"/>
+                                            <Setter Property="FontFamily" Value="Cascadia Code"/>
+                                            <Setter Property="FontSize" Value="18"/>
+                                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                            <Setter Property="VerticalAlignment" Value="Center"/>
+                                            <Setter Property="Padding" Value="5"/>
+                                            <Setter Property="BorderThickness" Value="0 0 1 1"/>
+                                            <Setter Property="BorderBrush" Value="#766839"/>
+                                        </Style>
+                                    </DataGrid.ColumnHeaderStyle>
+
+                                    <DataGrid.CellStyle>
+                                        <Style TargetType="DataGridCell">
+                                            <Setter Property="Foreground" Value="#766839"/>
+                                            <Setter Property="FontSize" Value="15"/>
+                                            <Setter Property="FontFamily" Value="Cascadia Code"/>
+                                            <Setter Property="Background" Value="#F9F6F0"/>
+                                            <Setter Property="BorderBrush" Value="#A0A0A0"/>
+                                            <Setter Property="BorderThickness" Value="0,0,1,1"/>
+                                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                            <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                        </Style>
+                                    </DataGrid.CellStyle>
+
+                                    <DataGrid.RowStyle>
+                                        <Style TargetType="DataGridRow">
+                                            <Setter Property="Height" Value="Auto"/>
+                                            <Setter Property="MinHeight" Value="40"/>
+                                            <Setter Property="VerticalAlignment" Value="Stretch"/>
+                                        </Style>
+                                    </DataGrid.RowStyle>
+
+                                    <DataGrid.Columns>
+                                        <DataGridTemplateColumn Header="STT" Width="0.4*" IsReadOnly="True">
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <StackPanel HorizontalAlignment="Center"
+                                                                VerticalAlignment="Center">
+                                                        <TextBlock HorizontalAlignment="Center"
+                                                                   FontWeight="Bold" FontSize="15">
+                                                            <TextBlock.Text>
+                                                                <MultiBinding StringFormat="{}{0}">
+                                                                    <Binding RelativeSource="{RelativeSource AncestorType=DataGridRow}" 
+                                                                             Path="AlternationIndex" 
+                                                                             Converter="{StaticResource IndexToNumberConverter}"/>
+                                                                </MultiBinding>
+                                                            </TextBlock.Text>
+                                                        </TextBlock>
+                                                        <materialDesign:PackIcon Kind="DeleteOutline"
+                                                                                 Foreground="#BC9466"
+                                                                                 Width="20" Height="20"
+                                                                                 Cursor="Hand"
+                                                                                 MouseDown="DeleteOrderItem_MouseDown"
+                                                                                 MouseEnter="icDeleteItem_MouseEnter"
+                                                                                 MouseLeave="icDeleteItem_MouseLeave"/>
+                                                    </StackPanel>
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+
+                                        <DataGridTemplateColumn Header="Tên sản phẩm" Width="1.2*">
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <StackPanel HorizontalAlignment="Left" 
+                                                                VerticalAlignment="Center"
+                                                                Margin="5">
+                                                        <TextBlock Text="{Binding ItemName}"
+                                                                   FontWeight="Bold" 
+                                                                   FontSize="15" 
+                                                                   Foreground="#766839"
+                                                                   TextWrapping="Wrap"/>
+                                                        <TextBox Text="{Binding Note, UpdateSourceTrigger=PropertyChanged}"
+                                                                 Width="130" Height="25" 
+                                                                 VerticalAlignment="Center"
+                                                                 FontFamily="Cascadia Code"
+                                                                 FontSize="15" 
+                                                                 Foreground="#C7A57A"
+                                                                 materialDesign:HintAssist.Hint="Ghi chú"
+                                                                 materialDesign:TextFieldAssist.UnderlineBrush="#E0CEB5"
+                                                                 KeyDown="tbItemOrderedNote_KeyDown"
+                                                                 LostFocus="tbNote_LostFocus"/>
+                                                    </StackPanel>
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+
+                                        <DataGridTemplateColumn Header="Size" Width="0.5*">
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding SizeName}" 
+                                                               HorizontalAlignment="Center" 
+                                                               VerticalAlignment="Center"
+                                                               FontWeight="Bold" 
+                                                               FontSize="15" 
+                                                               Foreground="#766839"/>
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+
+                                        <DataGridTemplateColumn Header="Số lượng" Width="0.8*">
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <StackPanel Orientation="Horizontal" 
+                                                                HorizontalAlignment="Center" 
+                                                                VerticalAlignment="Center" 
+                                                                Margin="3">
+                                                        <Border Background="Transparent"
+                                                                Cursor="Hand"
+                                                                Margin="5 5 5 0"
+                                                                MouseDown="icMinusQuantity_MouseDown"
+                                                                MouseEnter="bdrMinusQuantity_MouseEnter"
+                                                                MouseLeave="bdrMinusQuantity_MouseLeave">
+                                                            <materialDesign:PackIcon Kind="MinusCircleOutline"
+                                                                                     Foreground="#B18252"
+                                                                                     Width="20" Height="20"
+                                                                                     HorizontalAlignment="Center"
+                                                                                     VerticalAlignment="Center"/>
+                                                        </Border>
+                                                        <TextBox Text="{Binding Quantity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                                 Width="25" Height="25"
+                                                                 VerticalAlignment="Center"
+                                                                 FontFamily="Cascadia Code"
+                                                                 FontSize="15" 
+                                                                 Foreground="#766839"
+                                                                 materialDesign:TextFieldAssist.UnderlineBrush="#766839"
+                                                                 KeyDown="tbItemOrderedQuantity_KeyDown"
+                                                                 PreviewTextInput="tbItemOrderedQuantity_PreviewTextInput"/>
+                                                        <Border Background="Transparent"
+                                                                Cursor="Hand"
+                                                                Margin="5 5 5 0"
+                                                                MouseDown="icPlusQuantity_MouseDown"
+                                                                MouseEnter="bdrPlusQuantity_MouseEnter"
+                                                                MouseLeave="bdrPlusQuantity_MouseLeave">
+                                                            <materialDesign:PackIcon Kind="PlusCircleOutline"
+                                                                                     Foreground="#B18252"
+                                                                                     Width="20" Height="20"
+                                                                                     HorizontalAlignment="Center"
+                                                                                     VerticalAlignment="Center"/>
+                                                        </Border>
+                                                    </StackPanel>
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+
+                                        <DataGridTemplateColumn Header="Đơn giá" Width="0.8*">
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding Price, StringFormat={}{0:N0}}"
+                                                               HorizontalAlignment="Center" 
+                                                               VerticalAlignment="Center"
+                                                               FontWeight="Bold" 
+                                                               FontSize="15" 
+                                                               Foreground="#766839"/>
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+
+                                        <DataGridTemplateColumn Header="Thành tiền" Width="1*">
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding TotalPrice, StringFormat={}{0:N0}}"
+                                                               HorizontalAlignment="Center" 
+                                                               VerticalAlignment="Center"
+                                                               FontWeight="Bold" 
+                                                               FontSize="15" 
+                                                               Foreground="#766839"/>
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </Border>
+
+                            <!-- Total & Payment Section -->
+                            <StackPanel Grid.Row="2" Margin="0 10 0 10">
+                                <StackPanel Orientation="Horizontal" 
+                                            HorizontalAlignment="Right" 
+                                            Margin="0 0 20 5">
+                                    <TextBlock Text="Tổng cộng: "
+                                               FontSize="20" 
+                                               FontFamily="Cascadia Code"
+                                               Foreground="#462812"/>
+                                    <TextBlock Text="{Binding TotalAmount, StringFormat={}{0:N0} VND}"
+                                               FontFamily="Cascadia Code" 
+                                               FontSize="20" 
+                                               Foreground="#340D05"/>
+                                </StackPanel>
+
+                                <StackPanel Orientation="Horizontal" 
+                                            HorizontalAlignment="Right" 
+                                            Margin="0 0 20 5">
+                                    <TextBlock Text="Giảm giá: "
+                                               FontSize="20" 
+                                               FontFamily="Cascadia Code"
+                                               Foreground="#462812"/>
+                                    <TextBlock Text="{Binding FinalDiscount, StringFormat={}{0:N0} VND}"
+                                               FontFamily="Cascadia Code" 
+                                               FontSize="20" 
+                                               Foreground="#340D05"/>
+                                </StackPanel>
+
+                                <StackPanel Orientation="Horizontal" 
+                                            HorizontalAlignment="Right" 
+                                            Margin="0 0 20 10">
+                                    <TextBlock Text="Thành tiền: "
+                                               FontSize="25" 
+                                               FontFamily="Cascadia Code" 
+                                               FontWeight="Bold"
+                                               Foreground="#462812"/>
+                                    <TextBlock FontFamily="Cascadia Code" 
+                                               FontSize="25" 
+                                               FontWeight="Bold" 
+                                               Foreground="#340D05"
+                                               Text="{Binding FinalTotal, StringFormat={}{0:N0} VND}"/>
+                                </StackPanel>
+
+                                <StackPanel Orientation="Horizontal" 
+                                            HorizontalAlignment="Right"
+                                            Margin="0 0 20 0">
+                                    <Border x:Name="bdrCancelOrder"
+                                            BorderBrush="#766839"
+                                            BorderThickness="2"
+                                            Padding="10"
+                                            CornerRadius="15"
+                                            Cursor="Hand"
+                                            Background="Transparent"
+                                            MouseEnter="border_MouseEnter"
+                                            MouseLeave="border_MouseLeave">
+                                        <Border.InputBindings>
+                                            <MouseBinding Command="{Binding CancelOrderCommand}"
+                                                          MouseAction="LeftClick" />
+                                        </Border.InputBindings>
+                                        <TextBlock Text="Hủy bỏ"
+                                                   FontSize="25"
+                                                   FontWeight="Bold"
+                                                   HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center"
+                                                   FontFamily="Cascadia Code"
+                                                   Foreground="#766839"/>
+                                    </Border>
+
+                                    <Border x:Name="bdrPayOrder"
+                                            BorderBrush="#766839"
+                                            BorderThickness="2"
+                                            Margin="30 0 0 0"
+                                            Padding="10"
+                                            CornerRadius="15"
+                                            Cursor="Hand"
+                                            Background="Transparent"
+                                            MouseEnter="border_MouseEnter"
+                                            MouseLeave="border_MouseLeave">
+                                        <TextBlock Text="Thanh toán"
+                                                   FontSize="25"
+                                                   FontWeight="Bold"
+                                                   HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center"
+                                                   FontFamily="Cascadia Code"
+                                                   Foreground="#766839"/>
+                                    </Border>
+                                </StackPanel>
+                            </StackPanel>
+                        </Grid>
                     </Border>
                 </Grid>
             </Grid>
