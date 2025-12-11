@@ -17,6 +17,7 @@
 
     <Page.Resources>
         <local:IndexToNumberConverter x:Key="IndexToNumberConverter"/>
+        <local:AndBooleanConverter x:Key="AndBooleanConverter"/>
 
         <!-- Style for Item card -->
         <Style x:Key="RoundedCard" TargetType="ContentControl">
@@ -30,9 +31,17 @@
                                 MaxHeight="220" MaxWidth="200"
                                 MouseDown="Item_MouseDown"
                                 Cursor="Hand">
-                            <StackPanel>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/><!-- Ảnh -->
+                                    <RowDefinition Height="Auto"/><!-- Tên -->
+                                    <RowDefinition Height="*"/><!-- EMPTY SPACE -->
+                                    <RowDefinition Height="Auto"/><!-- Size -->
+                                    <RowDefinition Height="Auto"/><!-- Giá -->
+                                </Grid.RowDefinitions>
                                 <!--Item Image-->
                                 <Image x:Name="imgItem"
+                                       Grid.Row="0"
                                        Margin="10" MaxHeight="80"
                                        Stretch="UniformToFill"
                                        Source="{Binding ImagePath}"
@@ -40,6 +49,7 @@
                                 <!--Item Name-->
                                 <TextBlock x:Name="txtblItemName"
                                            Text="{Binding ItemName}"
+                                           Grid.Row="1"
                                            FontSize="15"
                                            FontWeight="Bold"
                                            Margin="10 0 10 0"
@@ -48,10 +58,12 @@
                                            HorizontalAlignment="Left"
                                            VerticalAlignment="Center"
                                            TextWrapping="Wrap"/>
+                                <Grid Grid.Row="2"></Grid>
                                 <!--Item Size-->
                                 <StackPanel x:Name="stpnItemSize"
                                             Orientation="Horizontal" 
                                             Margin="0 5 10 0"
+                                            Grid.Row="3"
                                             HorizontalAlignment="Right"
                                             VerticalAlignment="Top"
                                             Loaded="ItemSize_Loaded">
@@ -110,6 +122,7 @@
                                 </StackPanel>
                                 <!--Item Price-->
                                 <TextBlock x:Name="txtblItemPrice"
+                                           Grid.Row="4"
                                            FontFamily="Bahnschrift"
                                            FontSize="15"
                                            FontWeight="Bold"
@@ -117,7 +130,7 @@
                                            Margin="0 2 12 5"
                                            HorizontalAlignment="Right"
                                            Loaded="ItemPrice_Loaded"/>
-                            </StackPanel>
+                            </Grid>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
@@ -189,7 +202,7 @@
                                         Margin="10 10 10 0"
                                         materialDesign:ColorZoneAssist.Mode="Standard"
                                         Background="#C7A57A"
-                                        HorizontalAlignment="Stretch"
+                                        HorizontalAlignment="Left"
                                         VerticalContentAlignment="Stretch"
                                         materialDesign:ThemeAssist.Theme="Light"
                                         SelectionChanged="TabControl_SelectionChanged">
@@ -198,7 +211,7 @@
                                     <Style TargetType="TabItem" BasedOn="{StaticResource MaterialDesignTabItem}">
                                         <Setter Property="Height" Value="40"/>
                                         <Setter Property="MinWidth" Value="0"/>
-                                        <Setter Property="Padding" Value="7"/>
+                                        <Setter Property="Padding" Value="5"/>
                                         <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
                                         <!-- Font cho header -->
                                         <Setter Property="HeaderTemplate">
@@ -214,6 +227,27 @@
                                         </Setter>
                                     </Style>
                                 </TabControl.ItemContainerStyle>
+
+                                <!-- Tab Tất cả các món -->
+                                <TabItem Header="Tất cả" Tag="0">
+                                    <ScrollViewer VerticalScrollBarVisibility="Auto" 
+                                                  SizeChanged="ItemsContainer_SizeChanged">
+                                        <ItemsControl ItemsSource="{Binding FilteredItems}">
+                                            <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <UniformGrid VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                                                </ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <ContentControl Style="{StaticResource RoundedCard}"
+                                                                    Content="{Binding}"/>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </ScrollViewer>
+                                </TabItem>
 
                                 <!-- Cà phê - CategoryId = 1 -->
                                 <TabItem Header="Cà phê" Tag="1">
@@ -364,17 +398,21 @@
                             </TabControl>
 
                             <!-- Search Box -->
-                            <StackPanel Orientation="Horizontal" 
-                                        Height="50" Margin="0 0 10 10"
-                                        HorizontalAlignment="Right" 
-                                        VerticalAlignment="Top">
-                                <materialDesign:PackIcon Kind="Magnify" 
-                                                         Margin="450,20,0,0"
+                            <Grid HorizontalAlignment="Right" VerticalAlignment="Top"
+                                  Margin="0 0 10 0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <materialDesign:PackIcon Grid.Column="0"
+                                                         Kind="Magnify"
+                                                         Margin="450,20,0,10"
                                                          Width="20" Height="20"
                                                          Foreground="#766839"/>
                                 <TextBox x:Name="txblSearchItem"
+                                         Grid.Column="1"
                                          Text="{Binding SearchItemKeyword, UpdateSourceTrigger=PropertyChanged}"
-                                         Width="120" Height="40"
+                                         Height="40" MinWidth="80"
                                          materialDesign:HintAssist.Hint="Tìm kiếm"
                                          materialDesign:HintAssist.IsFloating="False"
                                          FontFamily="Cascadia Code"
@@ -384,7 +422,7 @@
                                          materialDesign:TextFieldAssist.UnderlineBrush="#766839"
                                          materialDesign:HintAssist.Foreground="#766839"
                                          Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
-                            </StackPanel>
+                            </Grid>
                         </Grid>
                     </Border>
                 </Grid>
@@ -448,10 +486,14 @@
                                 <Popup x:Name="popupCustomers"
                                        PlacementTarget="{Binding ElementName=tbCustomerPhone}"
                                        Placement="Bottom"
-                                       IsOpen="False"
                                        Width="Auto"
-                                       StaysOpen="False"
                                        AllowsTransparency="True">
+                                    <Popup.IsOpen>
+                                        <MultiBinding Converter="{StaticResource AndBooleanConverter}" Mode="OneWay">
+                                            <Binding ElementName="tbCustomerPhone" Path="IsKeyboardFocusWithin" />
+                                            <Binding Path="HasSearchResults" Mode="OneWay" />
+                                        </MultiBinding>
+                                    </Popup.IsOpen>
                                     <Border BorderBrush="#766839" 
                                             BorderThickness="2" 
                                             Background="#F9F6F0"
@@ -492,6 +534,17 @@
                                                                                              Foreground="#766839"
                                                                                              Margin="0 0 5 0"/>
                                                                     <TextBlock Text="{Binding Email}" 
+                                                                               Foreground="#766839" 
+                                                                               FontSize="12"
+                                                                               FontFamily="Cascadia Code"/>
+                                                                </StackPanel>
+                                                                <StackPanel Orientation="Horizontal" Margin="0 2 0 0">
+                                                                    <materialDesign:PackIcon Kind="Star" 
+                                                                                             Width="14" Height="14" 
+                                                                                             VerticalAlignment="Center"
+                                                                                             Foreground="#766839"
+                                                                                             Margin="0 0 5 0"/>
+                                                                    <TextBlock Text="{Binding Tier}" 
                                                                                Foreground="#766839" 
                                                                                FontSize="12"
                                                                                FontFamily="Cascadia Code"/>
@@ -555,7 +608,9 @@
                                           FontSize="16"
                                           Margin="5"
                                           AlternationCount="1000000"
-                                          EnableRowVirtualization="False">
+                                          EnableRowVirtualization="False"
+                                          CanUserReorderColumns="False"
+                                          CanUserResizeColumns="False">
                                     <DataGrid.ColumnHeaderStyle>
                                         <Style TargetType="DataGridColumnHeader">
                                             <Setter Property="Background" Value="#F9F6F0"/>

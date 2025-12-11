@@ -1,6 +1,7 @@
 ﻿using CoffeeShop.ViewModels.StaffVM;
 using MaterialDesignThemes.Wpf;
 using System.ComponentModel;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -33,6 +34,27 @@ namespace CoffeeShop.View.Staff
                 return parent;
             return FindParent<T>(parentObject);
         }
+        // Hàm tìm kiếm phần tử con trong Visual Tree
+        public static T FindChild<T>(DependencyObject parent) where T : DependencyObject
+        {
+            if (parent == null) return null;
+
+            int count = VisualTreeHelper.GetChildrenCount(parent);
+            for (int i = 0; i < count; i++)
+            {
+                var child = VisualTreeHelper.GetChild(parent, i);
+
+                if (child is T tChild)
+                    return tChild;
+
+                var result = FindChild<T>(child);
+                if (result != null)
+                    return result;
+            }
+
+            return null;
+        }
+
         #endregion
 
         #region TabControl Methods
@@ -53,12 +75,14 @@ namespace CoffeeShop.View.Staff
         private void ItemsContainer_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             if (sender is not ScrollViewer sv) return;
-            if (sv.Content is not UniformGrid ug) return;
+
+            // Tìm UniformGrid bên trong ScrollViewer
+            UniformGrid ug = FindChild<UniformGrid>(sv);
+            if (ug == null) return;
 
             double w = sv.ActualWidth;
-            if (w <= 50) return;
-
             int minItemWidth = 150;
+
             int columns = Math.Max(1, (int)(w / minItemWidth));
             ug.Columns = columns;
         }
@@ -455,8 +479,9 @@ namespace CoffeeShop.View.Staff
                 bdr.Effect = null;
             }
         }
-        #endregion
 
+
+        #endregion
     }
 
     // Converter để hiển thị số thứ tự trong DataGrid
@@ -475,5 +500,17 @@ namespace CoffeeShop.View.Staff
             throw new NotImplementedException();
         }
     }
+    // Converter AND hai biến boolean
+    public class AndBooleanConverter : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            return values.All(v => v is bool b && b);
+        }
 
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }
