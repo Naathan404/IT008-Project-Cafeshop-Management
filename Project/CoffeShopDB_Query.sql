@@ -17,6 +17,7 @@ CREATE TABLE CafeTable
 	TableName NVARCHAR(40) NOT NULL,
 	TableStatus INT NOT NULL DEFAULT 0,		-- 0: trong, 1: dang phuc vu, 2: da dat truoc
 	Note NVARCHAR(200) NULL,
+    IsDeleted BIT NOT NULL DEFAULT 0
 );
 
 -- Tạo bảng Category
@@ -24,6 +25,7 @@ CREATE TABLE Category
 (
 	CategoryID INT IDENTITY(1,1) PRIMARY KEY,
 	CategoryName NVARCHAR(40) NOT NULL,
+    IsDeleted BIT NOT NULL DEFAULT 0
 );
 
 -- Tạo bảng Item
@@ -33,6 +35,8 @@ CREATE TABLE Item
 	ItemName NVARCHAR(50) NOT NULL,
 	CategoryID INT NOT NULL,				-- FK -> Category(CategoryID)
 	IsAvailable BIT NOT NULL,
+    IsDeleted BIT NOT NULL DEFAULT 0
+
 	CONSTRAINT FK_Item_Category FOREIGN KEY (CategoryID) REFERENCES Category(CategoryID),
 );
 
@@ -41,6 +45,7 @@ CREATE TABLE Size
 (
 	SizeID INT IDENTITY(1,1) PRIMARY KEY,
 	SizeName NVARCHAR(5) NOT NULL,
+    IsDeleted BIT NOT NULL DEFAULT 0
 );
 
 -- Tạo bảng ItemPrice
@@ -49,6 +54,8 @@ CREATE TABLE ItemPrice (
     ItemID INT NOT NULL,
     SizeID INT NULL, -- Nếu là thức ăn thì NULL
     Price MONEY NOT NULL,
+    IsDeleted BIT NOT NULL DEFAULT 0
+
     CONSTRAINT FK_ItemPrice_Item FOREIGN KEY (ItemID) REFERENCES Item(ItemID),
     CONSTRAINT FK_ItemPrice_Size FOREIGN KEY (SizeID) REFERENCES Size(SizeID)
 );
@@ -61,7 +68,8 @@ CREATE TABLE Customer
 	PhoneNumber NVARCHAR(20) UNIQUE NULL,
 	Email NVARCHAR(200) NULL,
 	Point INT NOT NULL DEFAULT 0,
-	Tier NVARCHAR(10) DEFAULT 'VIP1'		-- VIP1, VIP10, VIP100
+	Tier NVARCHAR(10) DEFAULT 'VIP1',		-- VIP1, VIP10, VIP100
+    IsDeleted BIT NOT NULL DEFAULT 0
 );
 
 -- Tạo bảng Shift
@@ -69,7 +77,8 @@ CREATE TABLE Shift (
     ShiftID INT PRIMARY KEY IDENTITY(1,1),
     ShiftName NVARCHAR(10) NOT NULL, -- Sáng, Chiều, Tối
 	StartTime TIME NOT NULL,
-	EndTime TIME NOT NULL
+	EndTime TIME NOT NULL,
+    IsDeleted BIT NOT NULL DEFAULT 0
 );
 
 -- Tạo bảng Staff
@@ -84,6 +93,8 @@ CREATE TABLE Staff
 	Email NVARCHAR(50) NOT NULL,
 	ShiftID INT NULL,
 	BaseSalary MONEY NULL, 
+    IsDeleted BIT NOT NULL DEFAULT 0
+
 	CONSTRAINT FK_Staff_Shift FOREIGN KEY (ShiftID) REFERENCES Shift(ShiftID)
 );
 
@@ -150,7 +161,8 @@ CREATE TABLE Inventory
 	Quantity DECIMAL(18,2) NOT NULL DEFAULT 0,
 	Unit NVARCHAR(50) NOT NULL,
 	Threshold DECIMAL(18,2) NOT NULL,
-	Note NVARCHAR(200) NULL
+	Note NVARCHAR(200) NULL,
+    IsDeleted BIT NOT NULL DEFAULT 0
 );
 
 -- Tạo bảng ActionType
@@ -281,7 +293,7 @@ VALUES
 ('M'),
 ('L')
 GO
-select * from itemprice
+
 INSERT INTO ItemPrice (ItemID, SizeID, Price) 
 VALUES 
 (1, 1, 19000), (1, 2, 29000), (1, 3, 39000),   -- Cà phê sữa đá
@@ -375,7 +387,18 @@ VALUES
 (N'Tối', '17:00:00', '23:00:00');    -- Ca 6 tiếng part time
 GO
 
-INSERT INTO Staff
+	StaffID INT IDENTITY(1,1) PRIMARY KEY,
+	StaffName NVARCHAR(100) NOT NULL,
+	Username NVARCHAR(100) UNIQUE NOT NULL,
+	PasswordHash NVARCHAR(150) NOT NULL,
+	StaffRole NVARCHAR(50) NOT NULL,			-- Admin, Employee
+	Phonenumber NVARCHAR(20) NOT NULL,
+	Email NVARCHAR(50) NOT NULL,
+	ShiftID INT NULL,
+	BaseSalary MONEY NULL, 
+    IsDeleted BIT NOT NULL DEFAULT 0
+
+INSERT INTO Staff (StaffName, Username, PasswordHash, StaffRole, Phonenumber, Email, ShiftID, BaseSalary)
 VALUES
 (N'ADMIN', 'admin', N'bf0dbd74174039131b667de9f31b5d8012baaf82011b934b2cc0e3bd53a02a1f', N'Admin', '0865320821', N'coffeeshop2g1g@gmail.com', NULL, NULL),
 (N'Nguyễn Chí Nguyên', N'ngnguyen', N'bf0dbd74174039131b667de9f31b5d8012baaf82011b934b2cc0e3bd53a02a1f', N'Admin', '0865320821', N'nathannguyen6002@gmail.com', NULL, NULL),
@@ -460,12 +483,11 @@ VALUES
 (6, 1, 0.5, 450000, GETDATE(), 1)                    -- Nhập thêm 0.5kg Matcha xịn
 GO
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------
-select * from [order]
-select * from staff
+
 
 -- KHAI BÁO CÁC BIẾN CẤU HÌNH
-DECLARE @StartDate DATE = '2025-11-01'; -- Ngày bắt đầu
-DECLARE @DaysRange INT = 61;            -- Chạy dữ liệu cho 61 ngày (2 tháng)
+DECLARE @StartDate DATE = '2025-10-01'; -- Ngày bắt đầu
+DECLARE @DaysRange INT = 100;            -- Chạy dữ liệu cho 61 ngày (2 tháng)
 
 -- Cấu hình khoảng số lượng đơn mỗi ngày (Min - Max)
 DECLARE @MinOrdersPerDay INT = 15;      -- Ít nhất 15 đơn/ngày

@@ -13,5 +13,7 @@ public partial class CafeTable
 
     public string? Note { get; set; }
 
+    public bool IsDeleted { get; set; }
+
     public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
 }
