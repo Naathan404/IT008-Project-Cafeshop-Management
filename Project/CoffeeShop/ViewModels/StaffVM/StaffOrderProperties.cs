@@ -160,13 +160,13 @@ namespace CoffeeShop.ViewModels.StaffVM
         public string SelectedTableDisplay => SelectedTable?.TableName ?? "Không";
 
         // Tìm kiếm món trong MenuPanel
-        private string _seachItemKeyword;
+        private string _searchItemKeyword;
         public string SearchItemKeyword
         {
-            get { return _seachItemKeyword; }
+            get { return _searchItemKeyword; }
             set
             {
-                _seachItemKeyword = value;
+                _searchItemKeyword = value;
                 OnPropertyChanged(nameof(SearchItemKeyword));
                 SearchItems();
             }
@@ -244,6 +244,41 @@ namespace CoffeeShop.ViewModels.StaffVM
                 OnPropertyChanged(nameof(FinalTotal));
             }
         }
+        public bool CanCancelOrder => Orders.Count > 0;
+        public bool CanPayOrder => Orders.Count > 0 && SelectedCustomer != null && SelectedTable != null;
+
+        private List<string> _paymentMethod = new List<string>(); // Tiền mặt - Chuyển khoản
+        public List<string> PaymentMethod
+        {
+            get => _paymentMethod;
+            set
+            {
+                _paymentMethod = value;
+                OnPropertyChanged(nameof(PaymentMethod));
+            }
+        }
+        private string _selectedPaymentMethod;
+        public string SelectedPaymentMethod
+        {
+            get => _selectedPaymentMethod;
+            set
+            {
+                _selectedPaymentMethod = value;
+                OnPropertyChanged(SelectedPaymentMethod);
+            }
+        }
+
+        // Yêu cầu in Bill
+        private bool _isCheckedPrintBill;
+        public bool IsCheckedPrintBill
+        {
+            get => _isCheckedPrintBill;
+            set
+            {
+                _isCheckedPrintBill = value;
+                OnPropertyChanged(nameof(IsCheckedPrintBill));
+            }
+        }
         #endregion
 
         #region Commands
@@ -256,6 +291,9 @@ namespace CoffeeShop.ViewModels.StaffVM
         public ICommand ChooseTableCommand { get; set; }
         public ICommand ChooseCustomerCommand { get; set; }
         public ICommand CancelOrderCommand { get; set; }
+        public ICommand PayOrderCommand { get; set; }
+        public ICommand ChoosePaymentMethodCommand { get; set; }
+        public ICommand ConfirmPayOrderCommand { get; set; }
         #endregion
 
         #region Helper Classes

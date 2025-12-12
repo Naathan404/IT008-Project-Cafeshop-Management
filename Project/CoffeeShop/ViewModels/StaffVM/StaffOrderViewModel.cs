@@ -30,6 +30,10 @@ namespace CoffeeShop.ViewModels.StaffVM
             SelectedCustomer = Customers.FirstOrDefault(c => c.CustomerId == 0);
             // Mặc định chọn bàn có ID = 0 (mang về)
             SelectedTable = AvailableTables.FirstOrDefault(t => t.TableId == 0);
+            // Mặc định chọn thanh toán bằng tiền mặt
+            SelectedPaymentMethod = PaymentMethod.FirstOrDefault(p => p.Equals("Tiền mặt")) ?? "";
+            // Mặc định không in bill
+            IsCheckedPrintBill = false;
             LoadDiscountByCustomer();
             Orders.CollectionChanged += Orders_CollectionChanged;
         }
@@ -66,6 +70,8 @@ namespace CoffeeShop.ViewModels.StaffVM
             });
             ChooseTableCommand = new RelayCommand<OrderTable>(ChooseTable);
             CancelOrderCommand = new RelayCommand<object>(ConfirmCancelOrder);
+            PayOrderCommand = new RelayCommand<object>(PayOrderWindow);
+            ConfirmPayOrderCommand = new RelayCommand<object>(ConfirmPayOrder);
         }
         #endregion
 
@@ -77,6 +83,7 @@ namespace CoffeeShop.ViewModels.StaffVM
             LoadTableFromDB();
             LoadAvailableTable();
             FilterItemsByCategory();
+            LoadPaymentMethod();
         }
 
         //Load dữ liệu từ DB vào MenuPanel
@@ -260,6 +267,12 @@ namespace CoffeeShop.ViewModels.StaffVM
             SearchItems();
         }
 
+        private void LoadPaymentMethod()
+        {
+            PaymentMethod.Add("Tiền mặt");
+            PaymentMethod.Add("Chuyển khoản");
+        }
+
         #endregion
 
         #region Management Orders Methods 
@@ -412,16 +425,21 @@ namespace CoffeeShop.ViewModels.StaffVM
         }
         private void ConfirmCancelOrder(object param)
         {
-            var result = MessageBox.Show(
-                "Bạn có chắc muốn hủy đơn này không?",
-                "Xác nhận hủy đơn",
-                MessageBoxButton.YesNo,
-                MessageBoxImage.Warning);
-
-            if (result == MessageBoxResult.Yes)
+            if (CanCancelOrder)
             {
-                CancelOrder(param);
+                var result = MessageBox.Show(
+                    "Bạn có chắc muốn hủy đơn này không?",
+                    "Xác nhận hủy đơn",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Warning);
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    CancelOrder(param);
+                }
             }
+            else
+                MessageBox.Show("Chưa chọn mặt hàng nào để hủy đơn hàng!", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
         }
         private void CancelOrder(object param)
         {
@@ -434,6 +452,10 @@ namespace CoffeeShop.ViewModels.StaffVM
             SelectedTable = _availableTables.FirstOrDefault(t => t.TableId == 0);
             // Mặc định chọn khách hàng là vãng lai (ID = 0)
             SelectedCustomer = _customers.FirstOrDefault(c => c.CustomerId == 0);
+            // Mặc định chọn thanh toán bằng tiền mặt
+            SelectedPaymentMethod = PaymentMethod.FirstOrDefault(p => p.Equals("Tiền mặt"));
+            // Mặc định không in bill
+            IsCheckedPrintBill = false;
             // cập nhật discount sau khi reset
             LoadDiscountByCustomer();
         }
@@ -588,6 +610,34 @@ namespace CoffeeShop.ViewModels.StaffVM
                     return;
             }
             SelectedTable = table;
+        }
+        #endregion
+
+        #region PayOrder Methods
+        private void PayOrderWindow (object param)
+        {
+            if (CanPayOrder)
+            {
+                PaymentWindow payWindow = new PaymentWindow(this);
+                payWindow.Show();
+            }
+            else
+            {
+                MessageBox.Show("Chưa chọn mặt hàng nào để thanh toán!", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+        private void ConfirmPayOrder(object param)
+        {
+            var result = MessageBox.Show(
+                    "Bạn có chắc muốn thanh toán đơn hàng này không?",
+                    "Xác nhận thanh toán",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Warning);
+
+            if (result == MessageBoxResult.Yes)
+            {
+                
+            }
         }
         #endregion
     }
