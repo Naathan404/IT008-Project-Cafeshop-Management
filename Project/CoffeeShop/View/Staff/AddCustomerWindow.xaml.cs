@@ -29,9 +29,11 @@ namespace CoffeeShop.View.Staff
         {
             if (sender is Border border)
             {
-                border.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#D4BA98"));
-                var txtb = border.Child as TextBlock;
-                txtb.Foreground = (SolidColorBrush)(new BrushConverter().ConvertFrom("#340D05"));
+                border.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#D4BA98"));
+                if (border.Child is TextBlock txtb)
+                {
+                    txtb.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#340D05"));
+                }
             }
         }
         private void btn_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
@@ -39,8 +41,10 @@ namespace CoffeeShop.View.Staff
             if (sender is Border border)
             {
                 border.Background = Brushes.Transparent; // trả về nền mặc định
-                var txtb = border.Child as TextBlock;
-                txtb.Foreground = (SolidColorBrush)(new BrushConverter().ConvertFrom("#766839"));
+                if (border.Child is TextBlock txtb)
+                {
+                    txtb.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#766839"));
+                }
             }
         }
         private void bdrExit_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
