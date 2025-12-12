@@ -15,11 +15,11 @@ using System.Windows.Shapes;
 namespace CoffeeShop.View.Staff
 {
     /// <summary>
-    /// Interaction logic for DetailDepotHistoryWindow.xaml
+    /// Interaction logic for ReportDepotWindow.xaml
     /// </summary>
-    public partial class DetailDepotHistoryWindow : Window
+    public partial class ReportDepotWindow : Window
     {
-        public DetailDepotHistoryWindow()
+        public ReportDepotWindow()
         {
             InitializeComponent();
         }

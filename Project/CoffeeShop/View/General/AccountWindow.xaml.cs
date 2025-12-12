@@ -1,4 +1,5 @@
-﻿using CoffeeShop.View.Login;
+﻿using CoffeeShop.Service;
+using CoffeeShop.View.Login;
 using System.Globalization;
 using System.Windows;
 
@@ -38,6 +39,7 @@ namespace CoffeeShop.View.General
 
         private void btnLogout_Click(object sender, RoutedEventArgs e)
         {
+            UserSession.Instance.ClearSession();
             LoginWindow loginWindow = new LoginWindow();
             loginWindow.Show();
             this.Owner.Close();

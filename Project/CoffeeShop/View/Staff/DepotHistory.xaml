@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:local="clr-namespace:CoffeeShop.View.Staff"
-        mc:Ignorable="d"
+        mc:Ignorable="d" Language="vi-VN" 
+        Icon="/CoffeeShop;component/Assets/icoCoffee.ico"
         Title="Lịch sử chỉnh sửa kho" Height="700" Width="1100">
     <Grid x:Name="MainGrid" Background="#E0CEB5">
         <Grid.ColumnDefinitions>
@@ -106,7 +107,7 @@
                 IsReadOnly="true" ItemsSource="{Binding depotHistoryItems}">
                 <DataGrid.Columns>
 
-                    <DataGridTextColumn Header="Tên material"  Binding="{Binding MaterialName}" Width="1.4*"/>
+                    <DataGridTextColumn Header="Tên nguyên/vật liệu"  Binding="{Binding MaterialName}" Width="1.4*"/>
                     <DataGridTextColumn Header="Hành động" Binding="{Binding ActionName}" Width="0.7*">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
@@ -114,7 +115,7 @@
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
-                    <DataGridTextColumn Header="Số lượng" Binding="{Binding Quantity, StringFormat={}{0:G2}}" Width="0.7*">
+                    <DataGridTextColumn Header="Số lượng" Binding="{Binding Quantity, StringFormat={}{0:#,##0.##}}" Width="0.7*">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
                                 <Setter Property="HorizontalAlignment" Value="Center"></Setter>
@@ -129,7 +130,7 @@
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn> -->
-                    <DataGridTextColumn Header="Tên NV" Binding="{Binding StaffName}" Width="1.2*"/>
+                    <DataGridTextColumn Header="Tên nhân viên" Binding="{Binding StaffName}" Width="1.2*"/>
                 </DataGrid.Columns>
             </DataGrid>
         </Border>

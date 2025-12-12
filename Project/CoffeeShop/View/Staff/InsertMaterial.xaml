@@ -7,6 +7,7 @@
         mc:Ignorable="d"
         x:Name="InsertMaterialWindow"
         Title="{Binding WindowTitle}"
+        Icon="/CoffeeShop;component/Assets/icoCoffee.ico"
         Height="300" Width="420"
         WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize">

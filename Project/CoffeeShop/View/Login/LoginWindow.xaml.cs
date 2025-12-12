@@ -6,6 +6,7 @@ using CoffeeShop.Models;
 using CoffeeShop.Helper;
 using CoffeeShop.View.Staff;
 using CoffeeShop.View.Admin;
+using CoffeeShop.Service;
 
 namespace CoffeeShop.View.Login
 {
@@ -102,6 +103,7 @@ namespace CoffeeShop.View.Login
                             MessageBox.Show("Unidentified user");
                             break;
                     }
+                    UserSession.Instance.SetUser(account);
                 }
                 else
                 {
