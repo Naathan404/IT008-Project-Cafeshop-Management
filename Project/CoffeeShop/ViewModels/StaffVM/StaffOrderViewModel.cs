@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Windows;
 
 namespace CoffeeShop.ViewModels.StaffVM
@@ -31,6 +30,10 @@ namespace CoffeeShop.ViewModels.StaffVM
             SelectedCustomer = Customers.FirstOrDefault(c => c.CustomerId == 0);
             // Mặc định chọn bàn có ID = 0 (mang về)
             SelectedTable = AvailableTables.FirstOrDefault(t => t.TableId == 0);
+            // Mặc định chọn thanh toán bằng tiền mặt
+            SelectedPaymentMethod = PaymentMethod.FirstOrDefault(p => p.Equals("Tiền mặt")) ?? "";
+            // Mặc định không in bill
+            IsCheckedPrintBill = false;
             LoadDiscountByCustomer();
             Orders.CollectionChanged += Orders_CollectionChanged;
         }
@@ -67,6 +70,8 @@ namespace CoffeeShop.ViewModels.StaffVM
             });
             ChooseTableCommand = new RelayCommand<OrderTable>(ChooseTable);
             CancelOrderCommand = new RelayCommand<object>(ConfirmCancelOrder);
+            PayOrderCommand = new RelayCommand<object>(PayOrderWindow);
+            ConfirmPayOrderCommand = new RelayCommand<object>(ConfirmPayOrder);
         }
         #endregion
 
@@ -78,6 +83,7 @@ namespace CoffeeShop.ViewModels.StaffVM
             LoadTableFromDB();
             LoadAvailableTable();
             FilterItemsByCategory();
+            LoadPaymentMethod();
         }
 
         //Load dữ liệu từ DB vào MenuPanel
@@ -88,7 +94,7 @@ namespace CoffeeShop.ViewModels.StaffVM
             {
                 using (var context = new CoffeeShopContext())
                 {
-                    var items = context.Items.ToList();
+                    var items = context.Items.Where(i => i.IsDeleted == false).ToList();
                     foreach (var item in items)
                     {
                         _items.Add(new OrderItem
@@ -99,7 +105,7 @@ namespace CoffeeShop.ViewModels.StaffVM
                             IsAvailable = item.IsAvailable,
                             ItemPrices = new ObservableCollection<ItemPrice>(context.ItemPrices
                                                 .Include(ip => ip.Size)
-                                                .Where(ip => ip.ItemId == item.ItemId)
+                                                .Where(ip => ip.ItemId == item.ItemId && ip.IsDeleted == false)
                                                 .ToList()),
                         });
                     }
@@ -130,7 +136,7 @@ namespace CoffeeShop.ViewModels.StaffVM
             {
                 using (var db = new CoffeeShopContext())
                 {
-                    var customers = db.Customers.ToList();
+                    var customers = db.Customers.Where(c => c.IsDeleted == false).ToList();
 
                     // Thêm khách vãng lai vào đầu danh sách KH
                     _customers.Insert(0, defaultCustomer);
@@ -163,7 +169,7 @@ namespace CoffeeShop.ViewModels.StaffVM
             {
                 using (var db = new CoffeeShopContext())
                 {
-                    var tables = db.CafeTables.ToList();
+                    var tables = db.CafeTables.Where(t => t.IsDeleted == false).ToList();
                     foreach (var table in tables)
                     {
                         _tables.Add(new OrderTable
@@ -186,7 +192,7 @@ namespace CoffeeShop.ViewModels.StaffVM
         private void LoadAvailableTable()
         {
             AvailableTables.Clear();
-            var availableTables = _tables.Where(t => t.TableStatus == 0).ToList();
+            var availableTables = Tables.Where(t => t.TableStatus == 0).ToList();
             foreach (var table in availableTables)
             {
                 AvailableTables.Add(table);
@@ -212,7 +218,7 @@ namespace CoffeeShop.ViewModels.StaffVM
                 CalculateFinalTotal();
                 return;
             }
-            _discounts.Clear();
+            Discounts.Clear();
 
             // Load các discount đang activated
             using (var context = new CoffeeShopContext())
@@ -223,7 +229,7 @@ namespace CoffeeShop.ViewModels.StaffVM
 
                 foreach (var d in allDiscounts)
                 {
-                    _discounts.Add(new OrderDiscount
+                    Discounts.Add(new OrderDiscount
                     {
                         DiscountId = d.DiscountId,
                         DiscountCode = d.DiscountCode,
@@ -261,6 +267,12 @@ namespace CoffeeShop.ViewModels.StaffVM
             SearchItems();
         }
 
+        private void LoadPaymentMethod()
+        {
+            PaymentMethod.Add("Tiền mặt");
+            PaymentMethod.Add("Chuyển khoản");
+        }
+
         #endregion
 
         #region Management Orders Methods 
@@ -286,7 +298,7 @@ namespace CoffeeShop.ViewModels.StaffVM
 
         private void OrderItem_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            // Khi total price thay đổi → cập nhật total amount
+            // Khi total price thay đổi --> cập nhật total amount
             if (e.PropertyName == nameof(OrderDetailItem.TotalPrice))
             {
                 CalculateTotalAmount();
@@ -413,16 +425,21 @@ namespace CoffeeShop.ViewModels.StaffVM
         }
         private void ConfirmCancelOrder(object param)
         {
-            var result = MessageBox.Show(
-                "Bạn có chắc muốn hủy đơn này không?",
-                "Xác nhận hủy đơn",
-                MessageBoxButton.YesNo,
-                MessageBoxImage.Warning);
-
-            if (result == MessageBoxResult.Yes)
+            if (CanCancelOrder)
             {
-                CancelOrder(param);
+                var result = MessageBox.Show(
+                    "Bạn có chắc muốn hủy đơn này không?",
+                    "Xác nhận hủy đơn",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Warning);
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    CancelOrder(param);
+                }
             }
+            else
+                MessageBox.Show("Chưa chọn mặt hàng nào để hủy đơn hàng!", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
         }
         private void CancelOrder(object param)
         {
@@ -435,6 +452,10 @@ namespace CoffeeShop.ViewModels.StaffVM
             SelectedTable = _availableTables.FirstOrDefault(t => t.TableId == 0);
             // Mặc định chọn khách hàng là vãng lai (ID = 0)
             SelectedCustomer = _customers.FirstOrDefault(c => c.CustomerId == 0);
+            // Mặc định chọn thanh toán bằng tiền mặt
+            SelectedPaymentMethod = PaymentMethod.FirstOrDefault(p => p.Equals("Tiền mặt"));
+            // Mặc định không in bill
+            IsCheckedPrintBill = false;
             // cập nhật discount sau khi reset
             LoadDiscountByCustomer();
         }
@@ -589,6 +610,34 @@ namespace CoffeeShop.ViewModels.StaffVM
                     return;
             }
             SelectedTable = table;
+        }
+        #endregion
+
+        #region PayOrder Methods
+        private void PayOrderWindow (object param)
+        {
+            if (CanPayOrder)
+            {
+                PaymentWindow payWindow = new PaymentWindow(this);
+                payWindow.Show();
+            }
+            else
+            {
+                MessageBox.Show("Chưa chọn mặt hàng nào để thanh toán!", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+        private void ConfirmPayOrder(object param)
+        {
+            var result = MessageBox.Show(
+                    "Bạn có chắc muốn thanh toán đơn hàng này không?",
+                    "Xác nhận thanh toán",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Warning);
+
+            if (result == MessageBoxResult.Yes)
+            {
+                
+            }
         }
         #endregion
     }

@@ -387,17 +387,6 @@ VALUES
 (N'Tối', '17:00:00', '23:00:00');    -- Ca 6 tiếng part time
 GO
 
-	StaffID INT IDENTITY(1,1) PRIMARY KEY,
-	StaffName NVARCHAR(100) NOT NULL,
-	Username NVARCHAR(100) UNIQUE NOT NULL,
-	PasswordHash NVARCHAR(150) NOT NULL,
-	StaffRole NVARCHAR(50) NOT NULL,			-- Admin, Employee
-	Phonenumber NVARCHAR(20) NOT NULL,
-	Email NVARCHAR(50) NOT NULL,
-	ShiftID INT NULL,
-	BaseSalary MONEY NULL, 
-    IsDeleted BIT NOT NULL DEFAULT 0
-
 INSERT INTO Staff (StaffName, Username, PasswordHash, StaffRole, Phonenumber, Email, ShiftID, BaseSalary)
 VALUES
 (N'ADMIN', 'admin', N'bf0dbd74174039131b667de9f31b5d8012baaf82011b934b2cc0e3bd53a02a1f', N'Admin', '0865320821', N'coffeeshop2g1g@gmail.com', NULL, NULL),
