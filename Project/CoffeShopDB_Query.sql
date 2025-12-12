@@ -4,6 +4,8 @@ GO
 USE CoffeeShopDB;
 GO
 
+select * from staff
+
 ----- CÁC BƯỚC THỰC HIỆN TRÊN FILE QUERY NÀY
 -- Bước 1: Chạy đoạn lệnh DROP các bảng trong phần THAO TÁC DỮ LIỆU
 -- Bước 2: Chạy hết đoạn lệnh trong phần TẠO BẢNG

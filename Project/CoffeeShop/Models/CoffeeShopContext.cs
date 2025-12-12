@@ -46,7 +46,7 @@ public partial class CoffeeShopContext : DbContext
     public virtual DbSet<Staff> Staff { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
         => optionsBuilder.UseSqlServer("Server=localhost;Database=CoffeeShopDB;Trusted_Connection=True;TrustServerCertificate=True;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -116,6 +116,8 @@ public partial class CoffeeShopContext : DbContext
             entity.Property(e => e.MinimumOrderValue)
                 .HasDefaultValue(0m)
                 .HasColumnType("money");
+
+            entity.HasQueryFilter(e => e.IsActive);
         });
 
         modelBuilder.Entity<Inventory>(entity =>
@@ -178,6 +180,8 @@ public partial class CoffeeShopContext : DbContext
                 .HasForeignKey(d => d.CategoryId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Item_Category");
+            
+            entity.HasQueryFilter(e => !e.IsDeleted);
         });
 
         modelBuilder.Entity<ItemPrice>(entity =>
@@ -199,6 +203,8 @@ public partial class CoffeeShopContext : DbContext
             entity.HasOne(d => d.Size).WithMany(p => p.ItemPrices)
                 .HasForeignKey(d => d.SizeId)
                 .HasConstraintName("FK_ItemPrice_Size");
+
+            entity.HasQueryFilter(e => !e.IsDeleted);
         });
 
         modelBuilder.Entity<Order>(entity =>
