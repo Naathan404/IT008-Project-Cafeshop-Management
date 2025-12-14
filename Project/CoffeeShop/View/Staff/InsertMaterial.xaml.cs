@@ -11,7 +11,7 @@ namespace CoffeeShop.View.Staff
     public partial class InsertMaterial : Window
     {
         // Constructor 1: Chế độ thêm mới
-        public InsertMaterial(ObservableCollection<StaffDepotViewModel.DepotItem> itemsCollection)
+        public InsertMaterial(ObservableCollection<DepotItem> itemsCollection)
         {
             InitializeComponent();
             // CHỈ CẦN TẠO VÀ GÁN VIEWMODEL
@@ -19,7 +19,7 @@ namespace CoffeeShop.View.Staff
         }
 
         // Constructor 2: CHẾ ĐỘ CẬP NHẬT
-        public InsertMaterial(StaffDepotViewModel.DepotItem selectedItem, ObservableCollection<StaffDepotViewModel.DepotItem> itemsCollection)
+        public InsertMaterial(DepotItem selectedItem, ObservableCollection<DepotItem> itemsCollection)
         {
             InitializeComponent();
             // CHỈ CẦN TẠO VÀ GÁN VIEWMODEL

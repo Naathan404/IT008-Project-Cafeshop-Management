@@ -1,14 +1,20 @@
 ﻿using CoffeeShop.Models;
+using CoffeeShop.Service;
 using CoffeeShop.Service.Interfaces;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Windows;
 using System.Windows.Input;
+// Thư viện EPPlus
+using OfficeOpenXml;
+using OfficeOpenXml.Style;
+using OfficeOpenXml.Table;
 
 namespace CoffeeShop.ViewModels.StaffVM
 {
     public class StaffDepotViewModel : BaseViewModel
     {
-        private readonly IDialogService _dialogService; // Dùng để mở cửa sổ InsertMaterial
+        private readonly IDialogService _dialogService; // Dùng để mở các cửa sổ phụ
         // Commands
         public ICommand ApplyFilterCommand { get; private set; } = null!;
         public ICommand ClearFilterCommand { get; private set; } = null!;
@@ -17,75 +23,8 @@ namespace CoffeeShop.ViewModels.StaffVM
         public ICommand DeleteItemCommand { get; private set; } = null!;
         public ICommand TogglePopupCommand { get; private set; } = null!;
         public ICommand ShowDepotHistory { get; private set; } = null!;
+        public ICommand ReportCommand { get; private set; } = null!;
 
-        // Class DepotItem
-        public class DepotItem : BaseViewModel
-        {
-            // Backing field (nơi lưu giá trị thật sự) 
-            private int _materialId;
-            private string? _materialName;
-            private decimal _quantity;
-            private string _unit;
-            private string? _note;
-
-            // --- CÁC PROPERTY - Khi có sự thay đổi mới gián giá trị mới cho backing field ---
-            public int MaterialId { get; set; } /// Ko có sự thay đổi ID nên ko cần định nghĩa
-            // 1. MaterialName
-            public string? MaterialName
-            {
-                get => _materialName;
-                set
-                {
-                    if (_materialName != value)
-                    {
-                        _materialName = value;
-                        OnPropertyChanged();
-                    }
-                }
-            }
-
-            // 2. Quantity
-            public decimal Quantity
-            {
-                get => _quantity;
-                set
-                {
-                    if (_quantity != value)
-                    {
-                        _quantity = value;
-                        OnPropertyChanged();
-                    }
-                }
-            }
-
-            // 3. Unit
-            public string Unit
-            {
-                get => _unit;
-                set
-                {
-                    if (_unit != value)
-                    {
-                        _unit = value;
-                        OnPropertyChanged();
-                    }
-                }
-            }
-
-            // 4. Note
-            public string? Note
-            {
-                get => _note;
-                set
-                {
-                    if (_note != value)
-                    {
-                        _note = value;
-                        OnPropertyChanged();
-                    }
-                }
-            }
-        }
 
         // Data Collection
         public ObservableCollection<DepotItem> depotItems { get; set; } = new ObservableCollection<DepotItem>();
@@ -245,6 +184,7 @@ namespace CoffeeShop.ViewModels.StaffVM
                     foreach (var item in items)
                     {
                         // Ánh xạ an toàn
+                        if (item.IsDeleted) continue; // Bỏ qua các mục đã bị xóa
                         depotItems.Add(new DepotItem
                         {
                             MaterialId = item.MaterialId,
@@ -302,49 +242,41 @@ namespace CoffeeShop.ViewModels.StaffVM
                 using (var db = new CoffeeShopContext())
                 {
                     // Lấy item trong db (phải xóa trong db)
-                    Inventory deletedItem = db.Inventories.Find(itemToDelete.MaterialId);
+                    Inventory itemToDeactivate = db.Inventories.Find(itemToDelete.MaterialId);
 
-                    if (deletedItem != null) // Tim thay item
+                    if (itemToDeactivate != null) // Tim thay item
                     {
-                        const int ACTION_TYPE_NHAP = 4; // 4 =  Hủy
-                        const int STAFF_ID = 1; // ID nhân viên đang đăng nhập
-                        using (var transaction = db.Database.BeginTransaction()) // Transaction - All or nothing
+                        int actionType = 4; // 4 =  Hủy
+                        int staffId = UserSession.Instance.StaffId; // ID nhân viên đang đăng nhập
+                        decimal quantityToLog = itemToDeactivate.Quantity; // Luu lai so luong truoc khi xoa
+                        try
                         {
-                            try
+                            // Ghi lại hành động vào lịch sử kho
+                            InventoryHistory newHistory = new InventoryHistory
                             {
-                                db.Inventories.Remove(deletedItem);
-                                // Lưu thay đổi -> chính thức bị xóa
-                                int recordsAffected = db.SaveChanges();
-                                
-                                // Ghi lại hành động cập nhật vào lịch sử kho
-                                InventoryHistory newHistory = new InventoryHistory
-                                {
-                                    MaterialId = deletedItem.MaterialId,
-                                    ActionTypeId = ACTION_TYPE_NHAP,
-                                    Quantity = deletedItem.Quantity,
-                                    //InputPrice = InputPrice,
-                                    Date = DateTime.Now,
-                                    StaffId = STAFF_ID
-                                };
+                                MaterialId = itemToDeactivate.MaterialId,
+                                ActionTypeId = actionType,
+                                Quantity = itemToDeactivate.Quantity,
+                                //InputPrice = InputPrice,
+                                Date = DateTime.Now,
+                                StaffId = staffId
+                            };
 
-                                db.InventoryHistories.Add(newHistory);
-                                db.SaveChanges(); // Lưu bản ghi lịch sử
+                            db.InventoryHistories.Add(newHistory);
+                            // Soft deleted
+                            itemToDeactivate.IsDeleted = true;
+                            itemToDeactivate.Quantity = 0;
 
-                                transaction.Commit(); // Hoàn tất cả hai
+                            int recordsAffected = db.SaveChanges();
 
-                                if (recordsAffected > 0) // Khi có thay đổi (bị xóa) -> xóa cả dữ liệu trong dg và thông báo
-                                {
-                                    depotItems.Remove(itemToDelete);
-                                    MessageBox.Show($"Đã xóa thành công {itemToDelete.MaterialName} khỏi DB!", "Thành công");
-                                }
-
+                            if (recordsAffected > 0) // Khi có thay đổi (bị xóa) -> xóa cả dữ liệu trong dg và thông báo
+                            {
                                 depotItems.Remove(itemToDelete);
                             }
-                            catch (Exception ex)
-                            {
-                                transaction.Rollback(); // Hủy bỏ cả hai
-                                MessageBox.Show($"Lỗi: {ex.Message}");
-                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show($"Lỗi: {ex.Message}");
                         }
                     }
                 }
@@ -363,12 +295,78 @@ namespace CoffeeShop.ViewModels.StaffVM
                 PopupVisibleState = "Collapsed";
             }
         }
-
+        // Hiển thị lịch sử kho
         private void ExecuteShowHistory(object? parameter)
         {
             _dialogService.OpenDepotHistoryWindow();
         }
         #endregion
+        private void ExecuteReport(object? parameter)
+        {
+            List<DepotItem> reportData;
+            string reportPath = string.Empty;
+
+            try
+            {
+                using (var db = new CoffeeShopContext())
+                {
+                    var data = db.Inventories
+                                .Where(i => i.IsDeleted == false)
+                                .Select(i => new DepotItem
+                                {
+                                    MaterialId = i.MaterialId,
+                                    MaterialName = i.MaterialName,
+                                    Quantity = i.Quantity,
+                                    Unit = i.Unit,
+                                    Note = i.Note
+                                })
+                                .ToList();
+                    reportData = data;
+                }
+
+                if (reportData.Count == 0)
+                {
+                    MessageBox.Show("Không có dữ liệu báo cáo.", "Thông báo");
+                    return;
+                }
+
+                reportPath = CreateExcelReport(reportData); // Tạo file và lấy đường dẫn
+
+                // reportData: Hiển thị dữ liệu preview
+                // reportPath: Hỗ trợ gửi file báo cáo
+                _dialogService.OpenReportDepotWindow(reportData, reportPath);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi tạo báo cáo: {ex.Message}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private string CreateExcelReport(List<DepotItem> data)
+        {
+            ExcelPackage.License.SetNonCommercialPersonal("2G1G Café");
+
+            string fileName = $"BaoCaoKho_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
+            string filePath = Path.Combine(Path.GetTempPath(), fileName);
+
+            using (var package = new ExcelPackage(new FileInfo(filePath)))
+            {
+                // Tao work sheet
+                var workSheet = package.Workbook.Worksheets.Add("Báo Cáo Kho");
+                // true = co header
+                workSheet.Cells["A1"].LoadFromCollection(data, true, TableStyles.Medium1);
+
+                
+                workSheet.Cells[workSheet.Dimension.Address].AutoFitColumns();
+                workSheet.Cells[1, 1, 1, 6].Style.Font.Bold = true;
+
+                // Ví dụ định dạng cột số lượng (giả sử cột số 4 là Quantity)
+                workSheet.Column(4).Style.Numberformat.Format = "#,##0.00";
+
+                package.Save();
+                return filePath;
+            }
+        }
 
         // Load dữ liệu cho dg
         private void LoadDepotItem()
@@ -379,6 +377,7 @@ namespace CoffeeShop.ViewModels.StaffVM
                 var items = db.Inventories.ToList();
                 foreach (var item in items)
                 {
+                    if (item.IsDeleted) continue; // Bỏ qua các mục đã bị xóa
                     depotItems.Add(new DepotItem
                     {
                         MaterialId = item.MaterialId,
@@ -404,8 +403,8 @@ namespace CoffeeShop.ViewModels.StaffVM
             UpdateItemCommand = new RelayCommand<DepotItem>(ExecuteUpdateItem, CanExecuteCrudOperation);
 
             TogglePopupCommand = new RelayCommand<object>(ExecuteTogglePopup);
-
             ShowDepotHistory = new RelayCommand<object>(ExecuteShowHistory);
+            ReportCommand = new RelayCommand<object>(ExecuteReport);
         }
     }
 }
