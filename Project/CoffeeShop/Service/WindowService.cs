@@ -33,7 +33,7 @@ namespace CoffeeShop.Service
 
         public void OpenReportDepotWindow(List<DepotItem> reportData, string reportPath)
         {
-            ReportDepotWindow reportDepot = new ReportDepotWindow();
+            ReportDepotWindow reportDepot = new ReportDepotWindow(reportData, reportPath);
             reportDepot.ShowDialog();
         }
     }

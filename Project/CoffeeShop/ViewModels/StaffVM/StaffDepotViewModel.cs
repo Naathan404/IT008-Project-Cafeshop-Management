@@ -304,51 +304,68 @@ namespace CoffeeShop.ViewModels.StaffVM
         private void ExecuteReport(object? parameter)
         {
             List<DepotItem> reportData;
-            string reportPath="";
+            string reportPath = string.Empty;
 
             try
             {
-                reportData = GetReportDataFromDatabase();
-
-                if (reportData.Count == 0)
-                {   
-                    MessageBox.Show("Không có dữ liệu để tạo báo cáo.", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
-                    return; 
+                using (var db = new CoffeeShopContext())
+                {
+                    var data = db.Inventories
+                                .Where(i => i.IsDeleted == false)
+                                .Select(i => new DepotItem
+                                {
+                                    MaterialId = i.MaterialId,
+                                    MaterialName = i.MaterialName,
+                                    Quantity = i.Quantity,
+                                    Unit = i.Unit,
+                                    Note = i.Note
+                                })
+                                .ToList();
+                    reportData = data;
                 }
 
-                // 1.2 TẠO FILE EXCEL TẠM VÀ LẤY ĐƯỜNG DẪN
-                //reportPath = CreateInventoryReport(reportData);
+                if (reportData.Count == 0)
+                {
+                    MessageBox.Show("Không có dữ liệu báo cáo.", "Thông báo");
+                    return;
+                }
 
-                // 2. MỞ CỬA SỔ VÀ TRUYỀN TẤT CẢ DỮ LIỆU VÀO
+                reportPath = CreateExcelReport(reportData); // Tạo file và lấy đường dẫn
+
+                // reportData: Hiển thị dữ liệu preview
+                // reportPath: Hỗ trợ gửi file báo cáo
                 _dialogService.OpenReportDepotWindow(reportData, reportPath);
             }
             catch (Exception ex)
             {
-                // Xử lý lỗi
-                MessageBox.Show($"Lỗi Báo cáo: {ex.Message}");
+                MessageBox.Show($"Lỗi tạo báo cáo: {ex.Message}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
-        private List<DepotItem> GetReportDataFromDatabase()
+        private string CreateExcelReport(List<DepotItem> data)
         {
-            var reportData = new List<DepotItem>();
-            using (var db = new CoffeeShopContext())
+            ExcelPackage.License.SetNonCommercialPersonal("2G1G Café");
+
+            string fileName = $"BaoCaoKho_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
+            string filePath = Path.Combine(Path.GetTempPath(), fileName);
+
+            using (var package = new ExcelPackage(new FileInfo(filePath)))
             {
-                var items = db.Inventories.ToList();
-                foreach (var item in items)
-                {
-                    if (item.IsDeleted) continue; // Bỏ qua các mục đã bị xóa
-                    reportData.Add(new DepotItem
-                    {
-                        MaterialId = item.MaterialId,
-                        MaterialName = item.MaterialName ?? string.Empty,
-                        Quantity = item.Quantity,
-                        Unit = item.Unit ?? string.Empty,
-                        Note = item.Note ?? string.Empty
-                    });
-                }
+                // Tao work sheet
+                var workSheet = package.Workbook.Worksheets.Add("Báo Cáo Kho");
+                // true = co header
+                workSheet.Cells["A1"].LoadFromCollection(data, true, TableStyles.Medium1);
+
+                
+                workSheet.Cells[workSheet.Dimension.Address].AutoFitColumns();
+                workSheet.Cells[1, 1, 1, 6].Style.Font.Bold = true;
+
+                // Ví dụ định dạng cột số lượng (giả sử cột số 4 là Quantity)
+                workSheet.Column(4).Style.Numberformat.Format = "#,##0.00";
+
+                package.Save();
+                return filePath;
             }
-            return reportData;
         }
 
         // Load dữ liệu cho dg

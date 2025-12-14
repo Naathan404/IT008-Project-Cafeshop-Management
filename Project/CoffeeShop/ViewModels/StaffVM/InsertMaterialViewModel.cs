@@ -160,13 +160,6 @@ namespace CoffeeShop.ViewModels.StaffVM
                         {
                             try
                             {
-                                // Cập nhật giá trị mới vào DB
-                                itemToUpdate.MaterialName = MaterialName;
-                                itemToUpdate.Quantity = Quantity;
-                                itemToUpdate.Unit = SelectedUnit;
-                                itemToUpdate.Note = Note;
-                                db.SaveChanges();
-
                                 // Ghi lại hành động vào lịch sử kho
                                 InventoryHistory newHistory = new InventoryHistory
                                 {
@@ -177,6 +170,12 @@ namespace CoffeeShop.ViewModels.StaffVM
                                     Date = DateTime.Now,
                                     StaffId = staffId
                                 };
+
+                                // Cập nhật giá trị mới vào DB
+                                itemToUpdate.MaterialName = MaterialName;
+                                itemToUpdate.Quantity = Quantity;
+                                itemToUpdate.Unit = SelectedUnit;
+                                itemToUpdate.Note = Note;
 
                                 db.InventoryHistories.Add(newHistory);
                                 db.SaveChanges(); // Lưu
