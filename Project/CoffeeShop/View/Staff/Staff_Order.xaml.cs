@@ -117,7 +117,10 @@ namespace CoffeeShop.View.Staff
                 var item = stackPanel.DataContext as OrderItem;
                 if (item == null || item.ItemPrices == null) return;
 
-                var sizeList = item.ItemPrices.Select(p => p.Size).ToList();
+                var sizeList = item.ItemPrices
+                    .Where(p => p.Size != null)
+                    .Select(p => p.Size)
+                    .ToList();
                 if (sizeList.Count() == 0)
                     return;
                 if (sizeList.Count == 1 && item.CategoryId == 7)

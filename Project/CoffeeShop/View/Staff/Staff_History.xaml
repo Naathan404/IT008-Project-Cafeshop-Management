@@ -16,20 +16,6 @@
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
 
-        <!--
-        <TextBlock 
-                Grid.Row="0"
-                Text="LỊCH SỬ BÁN HÀNG"
-                Foreground="#FF340D05"
-                FontFamily="Cascadia Code"
-                FontSize="50"
-                FontWeight="ExtraBlack"
-                VerticalAlignment="Center"
-                HorizontalAlignment="Center"
->
-        </TextBlock>
-        -->
-    
         <Border 
             Grid.Row="0"
             Margin="30 10 30 10"
@@ -147,7 +133,8 @@
                         </Grid.ColumnDefinitions>
 
                         <Button
-                            Grid.Column="2"
+                            Grid.Column="1"
+                            Command="{Binding ShowOrderDetailCommand}"
                             materialDesign:ButtonAssist.CornerRadius="10"
                             Padding="0"
                             Margin="0 0 15 0"
@@ -169,7 +156,7 @@
                         </Button>
 
                         <Button
-                            Grid.Column="1"
+                            Grid.Column="2"
                             materialDesign:ButtonAssist.CornerRadius="10"
                             Padding="0"
                             Margin="0 0 15 0"
@@ -455,7 +442,7 @@
                                     <DataGridTemplateColumn Header="Thành tiền" Width="0.8*">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
-                                                <TextBlock Text="{Binding TotalPrice, StringFormat={}{0:N0}}"
+                                                <TextBlock Text="{Binding TotalPrice}"
                                                HorizontalAlignment="Center" 
                                                VerticalAlignment="Center"
                                                FontWeight="Bold" 
