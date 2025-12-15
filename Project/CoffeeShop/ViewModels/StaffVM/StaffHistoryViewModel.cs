@@ -8,6 +8,7 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using static CoffeeShop.View.General.OrderDetailWindow;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
@@ -15,8 +16,9 @@ namespace CoffeeShop.ViewModels.StaffVM
 {
     public class StaffHistoryViewModel : BaseViewModel
     {
-        private List<OrderHistory> orderHistoryItems = new List<OrderHistory>();
         CultureInfo viVn = new CultureInfo("vn-VN");
+        public ICommand ShowOrderDetailCommand { get; set; }
+        public ICommand PrintBill { get; set; }
 
         private DateTime? _fromTime;
         public DateTime? FromTime
@@ -119,6 +121,17 @@ namespace CoffeeShop.ViewModels.StaffVM
             FromTime = null;
             ToTime = null;
             SelectedPaymentMethod = PaymentMethods.First();
+            ShowOrderDetailCommand = new RelayCommand<object>((p) =>
+            {
+                if (SelectedOrder == null) return;
+                OrderDetailWindow orderDetailWindow = new OrderDetailWindow(SelectedOrder!.OrderID);
+                orderDetailWindow.ShowDialog();
+            });
+
+            PrintBill = new RelayCommand<object>((p) =>
+            {
+                // In hóa đơn
+            });
 
             _ = LoadOrderHistory();
         }
@@ -208,8 +221,8 @@ namespace CoffeeShop.ViewModels.StaffVM
                             ItemName = detail.Price.Item.ItemName,
                             SizeName = detail.Price.Size != null ? detail.Price.Size.SizeName : "---",
                             Quantity = detail.Quantity,
-                            UnitPrice = detail.UnitPrice,
-                            TotalPrice = detail.Quantity * detail.UnitPrice,
+                            UnitPrice = detail.UnitPrice.ToString("N0", viVn),
+                            TotalPrice = (detail.Quantity * detail.UnitPrice).ToString("N0", viVn),
                             Note = detail.Note
                         });
                     }

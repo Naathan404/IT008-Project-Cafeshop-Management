@@ -14,8 +14,8 @@ namespace CoffeeShop.Service.DTOs
         public string ItemName { get; set; } = null!;
         public string? SizeName { get; set; }
         public int Quantity { get; set; }
-        public decimal UnitPrice { get; set; }
-        public decimal TotalPrice { get; set; }
+        public string UnitPrice { get; set; } = null!;
+        public string TotalPrice { get; set; } = null!;
         public string? Note { get; set; }
     }
 }
