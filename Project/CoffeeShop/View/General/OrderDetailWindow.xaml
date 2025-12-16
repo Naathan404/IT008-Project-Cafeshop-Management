@@ -185,21 +185,21 @@
                     <DataGridTextColumn Header="Đơn giá" Width="2*" Binding="{Binding UnitPrice}">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
-                                <Setter Property="HorizontalAlignment" Value="Right"></Setter>
+                                <Setter Property="HorizontalAlignment" Value="Center"></Setter>
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
                     <DataGridTextColumn Header="Thành tiền" Width="2*" Binding="{Binding TotalPrice}">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
-                                <Setter Property="HorizontalAlignment" Value="Right"></Setter>
+                                <Setter Property="HorizontalAlignment" Value="Center"></Setter>
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
                     <DataGridTextColumn Header="Ghi chú" Width="3*" Binding="{Binding Note}">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
-                                <Setter Property="HorizontalAlignment" Value="Right"></Setter>
+                                <Setter Property="HorizontalAlignment" Value="Left"></Setter>
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
