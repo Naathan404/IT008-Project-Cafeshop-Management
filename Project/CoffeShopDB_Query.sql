@@ -130,6 +130,9 @@ CREATE TABLE [Order]
 	CONSTRAINT FK_Order_Discount FOREIGN KEY (DiscountID) REFERENCES Discount(DiscountID)
 );
 
+select * from [order]
+where orderdate = '2025-12-17'
+
 -- Tạo bảng OrderDetail
 CREATE TABLE OrderDetail (
     OrderDetailID INT IDENTITY(1,1) PRIMARY KEY,
