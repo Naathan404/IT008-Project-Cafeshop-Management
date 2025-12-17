@@ -12,16 +12,7 @@
     Language="vi-VN">
 
     <Grid x:Name="MainGrid" Background="#E0CEB5">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="5*"/>
-            <RowDefinition Height="25*"/>
-        </Grid.RowDefinitions>
-
-        <TextBlock Grid.Row="0" Text="KHO CHỨA ĐỒ"
-            FontFamily="Cascadia Code" FontSize="50" FontWeight="ExtraBlack"
-            HorizontalAlignment="Center" VerticalAlignment="Center"
-            Foreground="#340D05"/>
-        <Grid Grid.Row="1">
+        <Grid Grid.Row="1" Margin="0,30,0,0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="10*"/>
                 <!-- Datagrid -->
@@ -82,9 +73,9 @@
             </Border>
 
 
-            <Grid Grid.Column="0">
+            <Grid Grid.Column="0" Margin="0,0,0,30">
                 <!-- Datagrid - The place that contains the items in depot -->
-                <Border Grid.Row="1" BorderBrush="#bc9466" BorderThickness="10" CornerRadius="10" Margin="40,0,40,20">
+                <Border Grid.Row="1" BorderBrush="#bc9466" BorderThickness="10" CornerRadius="10" Margin="40,0">
                     <DataGrid x:Name="dgDepot" SelectionMode="Single"
                         ColumnHeaderStyle="{StaticResource dgHeaderStyle}"
                         Grid.Row="1" Background="#F9F6F0"
@@ -102,7 +93,7 @@
                                 </DataGridTextColumn.ElementStyle>
                             </DataGridTextColumn>
                             <DataGridTextColumn Header="Tên" Binding="{Binding MaterialName}" Width="1.2*"/>
-                            <DataGridTextColumn Header="Số lượng" Binding="{Binding Quantity, StringFormat={}{0:#,##0.##}}" Width="*">
+                            <DataGridTextColumn Header="Số lượng" Binding="{Binding Quantity, StringFormat={}{0:#.##0.##}}" Width="*">
                                 <DataGridTextColumn.ElementStyle>
                                     <Style TargetType="TextBlock">
                                         <Setter Property="HorizontalAlignment" Value="Center"></Setter>

@@ -12,7 +12,7 @@ namespace CoffeeShop.Service
         private static readonly UserSession _instance = new UserSession();
         public static UserSession Instance => _instance;
 
-        // Cóntructor private -> ko thể tạo mới từ bên ngoài
+        // Constructor private -> ko thể tạo mới từ bên ngoài
         private UserSession() { }
 
         // Readonly
