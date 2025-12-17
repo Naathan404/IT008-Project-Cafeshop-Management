@@ -1,24 +1,21 @@
 ﻿using CoffeeShop.Models;
 using CoffeeShop.Service.DTOs;
 using CoffeeShop.View.General;
-using CoffeeShop.ViewModels.AdminVM;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
-using static CoffeeShop.View.General.OrderDetailWindow;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace CoffeeShop.ViewModels.StaffVM
 {
     public class StaffHistoryViewModel : BaseViewModel
     {
         CultureInfo viVn = new CultureInfo("vn-VN");
+        CancellationTokenSource _cts;
+        public ICommand RefreshPageCommand { get; set; }
         public ICommand ShowOrderDetailCommand { get; set; }
-        public ICommand PrintBill { get; set; }
+        public ICommand PrintCommand { get; set; }
 
         private DateTime? _fromTime;
         public DateTime? FromTime
@@ -26,9 +23,18 @@ namespace CoffeeShop.ViewModels.StaffVM
             get => _fromTime;
             set
             {
-                _fromTime = value;
-                OnPropertyChanged();
-                _ = LoadOrderHistory();
+                if (_fromTime != value)
+                {
+                    _fromTime = value;
+                    OnPropertyChanged();
+
+                    if (SelectedPeriod != "Tùy chọn")
+                    {
+                        _selectedPeriod = "Tùy chọn";
+                        OnPropertyChanged(nameof(SelectedPeriod));
+                    }
+                    _ = LoadOrderHistory();
+                }
             }
         }
 
@@ -38,9 +44,19 @@ namespace CoffeeShop.ViewModels.StaffVM
             get => _toTime;
             set
             {
-                _toTime = value;
-                OnPropertyChanged();
-                _ = LoadOrderHistory();
+                if (_toTime != value)
+                {
+                    _toTime = value;
+                    OnPropertyChanged();
+
+                    if (SelectedPeriod != "Tùy chọn")
+                    {
+                        _selectedPeriod = "Tùy chọn";
+                        OnPropertyChanged(nameof(SelectedPeriod));
+                    }
+
+                    _ = LoadOrderHistory();
+                }
             }
         }
 
@@ -51,6 +67,7 @@ namespace CoffeeShop.ViewModels.StaffVM
             "Chuyển khoản"
         };
 
+
         private string _selectedPaymentMethod = "";
         public string SelectedPaymentMethod
         {
@@ -58,6 +75,27 @@ namespace CoffeeShop.ViewModels.StaffVM
             set
             {
                 _selectedPaymentMethod = value;
+                OnPropertyChanged();
+                _ = LoadOrderHistory();
+            }
+        }
+        public ObservableCollection<string> Periods { get; } = new ObservableCollection<string>
+        {
+            "Hôm nay",
+            "6h - 10h",
+            "10h - 14h",
+            "14h - 18h",
+            "18h - 22h",
+            "Tùy chọn"
+        };
+
+        private string _selectedPeriod = "Hôm nay";
+        public string SelectedPeriod
+        {
+            get => _selectedPeriod;
+            set
+            {
+                _selectedPeriod = value;
                 OnPropertyChanged();
                 _ = LoadOrderHistory();
             }
@@ -99,6 +137,7 @@ namespace CoffeeShop.ViewModels.StaffVM
                 _selectedOrder = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(OrderDetailVisibility));
+
                 _ = LoadOrderDetail();
             }
         }
@@ -115,12 +154,87 @@ namespace CoffeeShop.ViewModels.StaffVM
             }
         }
 
+        private bool _isLoading;
+        public bool IsLoading
+        {
+            get => _isLoading;
+            set
+            {
+                _isLoading = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _totalRevenue = "0 đ";
+        public string TotalRevenue
+        {
+            get => _totalRevenue;
+            set
+            {
+                _totalRevenue = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _totalOrders = "0";
+        public string TotalOrders
+        {
+            get => _totalOrders;
+            set
+            {
+                _totalOrders = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _totalCash = "0 đ";
+        public string TotalCash
+        {
+            get => _totalCash;
+            set
+            {
+                _totalCash = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _totalBankTransfer = "0 đ";
+        public string TotalBankTransfer
+        {
+            get => _totalBankTransfer;
+            set
+            {
+                _totalBankTransfer = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _totalDiscount = "0 đ";
+        public string TotalDiscount
+        {
+            get => _totalDiscount;
+            set
+            {
+                _totalDiscount = value;
+                OnPropertyChanged();
+            }
+        }
+
 
         public StaffHistoryViewModel()
         {
             FromTime = null;
             ToTime = null;
             SelectedPaymentMethod = PaymentMethods.First();
+
+            RefreshPageCommand = new RelayCommand<object>(
+                async (p) =>
+                {
+                    await LoadOrderHistory();
+                },
+                (p) => true
+            );
+
             ShowOrderDetailCommand = new RelayCommand<object>((p) =>
             {
                 if (SelectedOrder == null) return;
@@ -128,77 +242,159 @@ namespace CoffeeShop.ViewModels.StaffVM
                 orderDetailWindow.ShowDialog();
             });
 
-            PrintBill = new RelayCommand<object>((p) =>
+            PrintCommand = new RelayCommand<object>((p) =>
             {
-                // In hóa đơn
+                MessageBox.Show("Chức năng in hóa đơn đang được phát triển.", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
             });
-
             _ = LoadOrderHistory();
         }
 
         private async Task LoadOrderHistory()
         {
+            if (_cts != null)
+            {
+                _cts.Cancel();
+                _cts.Dispose();
+            }
+            _cts = new CancellationTokenSource();
+            var token = _cts.Token;
+
             await Application.Current.Dispatcher.InvokeAsync(async () =>
             {
                 Orders.Clear();
             });
-
-            DateTime startOfDay = DateTime.Today;
-            DateTime endOfDay = DateTime.Today.AddDays(1);
-            DateTime filterFrom = FromTime.HasValue ? startOfDay.Add(FromTime.Value.TimeOfDay) : startOfDay;
-            DateTime filterTo = ToTime.HasValue ? startOfDay.Add(ToTime.Value.TimeOfDay) : endOfDay;
-
-            var resultOrders = await Task.Run(async () =>
+            if (SelectedPeriod == "6h - 10h")
             {
-                using (var db = new CoffeeShopContext())
+                _fromTime = DateTime.Today.AddHours(6);
+                _toTime = DateTime.Today.AddHours(10);
+                OnPropertyChanged(nameof(FromTime));
+                OnPropertyChanged(nameof(ToTime));
+            }
+            else if (SelectedPeriod == "10h - 14h")
+            {
+                _fromTime = DateTime.Today.AddHours(10);
+                _toTime = DateTime.Today.AddHours(14);
+                OnPropertyChanged(nameof(FromTime));
+                OnPropertyChanged(nameof(ToTime));
+            }
+            else if (SelectedPeriod == "14h - 18h")
+            {
+                _fromTime = DateTime.Today.AddHours(14);
+                _toTime = DateTime.Today.AddHours(18);
+                OnPropertyChanged(nameof(FromTime));
+                OnPropertyChanged(nameof(ToTime));
+            }
+            else if (SelectedPeriod == "18h - 22h")
+            {
+                _fromTime = DateTime.Today.AddHours(18);
+                _toTime = DateTime.Today.AddHours(22);
+                OnPropertyChanged(nameof(FromTime));
+                OnPropertyChanged(nameof(ToTime));
+            }
+            else if (SelectedPeriod == "Hôm nay")
+            {
+                _fromTime = DateTime.Today.AddHours(6);
+                _toTime = DateTime.Today.AddHours(22);
+                OnPropertyChanged(nameof(FromTime));
+                OnPropertyChanged(nameof(ToTime));
+            }
+            DateTime filterFrom = FromTime ?? DateTime.Today;
+            DateTime filterTo = ToTime ?? DateTime.Today.AddDays(1);
+            string keyword = CustomerNameFilter.Trim().ToLower();
+            bool hasKeyword = !string.IsNullOrEmpty(keyword);
+
+            try
+            {
+                IsLoading = true;
+                var resultOrders = await Task.Run(async () =>
                 {
-                    var orders = db.Orders
-                        .AsNoTracking()
-                        .IgnoreQueryFilters()
-                        .Include(o => o.Customer)
-                        .Include(o => o.Staff)
-                        .Include(o => o.Table)
-                        .Where(o => o.OrderDate >= filterFrom && o.OrderDate < filterTo)
-                        .AsQueryable();
-
-                    if (!string.IsNullOrEmpty(CustomerNameFilter))
+                    if (token.IsCancellationRequested) return new List<OrderHistory>();
+                    using (var db = new CoffeeShopContext())
                     {
-                        string keyword = CustomerNameFilter.Trim().ToLower();
-                        orders = orders.Where(o => (o.Customer != null &&
-                                                    o.Customer.CustomerName.ToLower().Contains(keyword))
-                                                    || (o.Customer == null && "Khách vãng lai".ToLower().Contains(keyword)));
-                    }
+                        var orders = db.Orders
+                            .AsNoTracking()
+                            .IgnoreQueryFilters()
+                            .Include(o => o.Customer)
+                            .Include(o => o.Staff)
+                            .Include(o => o.Table)
+                            .Where(o => o.OrderDate >= filterFrom && o.OrderDate < filterTo)
+                            .AsQueryable();
 
-                    if (!string.IsNullOrEmpty(SelectedPaymentMethod) && SelectedPaymentMethod != "Tất cả")
-                    {
-                        orders = orders.Where(o => o.PaymentMethod == SelectedPaymentMethod);
-                    }
-
-                    var orderList = await orders.OrderByDescending(o => o.OrderDate).ToListAsync();
-                    var dtoList = new List<OrderHistory>();
-
-                    foreach (var order in orderList)
-                    {
-                        dtoList.Add(new OrderHistory
+                        if (hasKeyword)
                         {
-                            OrderID = order.OrderId,
-                            DisplayID = order.DisplayID,
-                            CustomerName = order.Customer != null ? order.Customer.CustomerName : "Khách vãng lai",
-                            EmployeeName = order.Staff.StaffName,
-                            OrderDate = order.OrderDate.ToString("HH:mm:ss"),
-                            Total = order.TotalAmount.ToString("N0", viVn),
-                            PaymentMethod = order.PaymentMethod,
-                            TableName = order.Table != null ? order.Table.TableName : "Không"
-                        });
+                            orders = orders.Where(o => (o.Customer != null && o.Customer.CustomerName.ToLower().Contains(keyword))
+                                                        || (o.Customer == null && "Khách vãng lai".ToLower().Contains(keyword)));
+                        }
+
+                        if (!string.IsNullOrEmpty(SelectedPaymentMethod) && SelectedPaymentMethod != "Tất cả")
+                        {
+                            orders = orders.Where(o => o.PaymentMethod == SelectedPaymentMethod);
+                        }
+
+                        var rawData = await orders
+                                .OrderByDescending(o => o.OrderDate)
+                                .Select(o => new
+                                {
+                                    o.OrderId,
+                                    o.DisplayID,
+                                    CustomerName = o.Customer != null ? o.Customer.CustomerName : "Khách vãng lai",
+                                    StaffName = o.Staff != null ? o.Staff.StaffName : "N/A",
+                                    TableName = o.Table != null ? o.Table.TableName : "Mang về",
+                                    o.OrderDate,
+                                    o.TotalAmount,
+                                    o.PaymentMethod,
+                                    o.DiscountMoney,
+                                    o.SubTotal
+                                })
+                                .ToListAsync(token);
+
+                        TotalOrders = rawData.Count().ToString();
+                        TotalRevenue = rawData.Sum(r => r.TotalAmount).ToString("N0", viVn) + " đ";
+                        TotalCash = rawData.Where(r => r.PaymentMethod == "Tiền mặt").Sum(r => r.TotalAmount).ToString("N0", viVn) + " đ";
+                        TotalBankTransfer = rawData.Where(r => r.PaymentMethod == "Chuyển khoản").Sum(r => r.TotalAmount).ToString("N0", viVn) + " đ";
+                        TotalDiscount = rawData.Sum(r => r.DiscountMoney)?.ToString("N0", viVn) + " đ";
+
+                        return rawData.Select(r => new OrderHistory
+                        {
+                            OrderID = r.OrderId,
+                            DisplayID = r.DisplayID,
+                            CustomerName = r.CustomerName,
+                            EmployeeName = r.StaffName,
+                            OrderDate = r.OrderDate.ToString("dd/MM/yy HH:mm:ss"),
+                            SubTotal = r.SubTotal.ToString("N0", viVn),
+                            Discount = r.DiscountMoney?.ToString("N0", viVn) ?? "0",
+                            Total = r.TotalAmount.ToString("N0", viVn),
+                            PaymentMethod = r.PaymentMethod,
+                            TableName = r.TableName
+                        }).ToList();
                     }
+                }, token);
 
-                    return dtoList;
-                }
-            });
+                if (token.IsCancellationRequested) return;
 
-            Orders = new ObservableCollection<OrderHistory>(resultOrders);
+                await Application.Current.Dispatcher.InvokeAsync(() =>
+                {
+                    Orders.Clear();
+                    foreach (var item in resultOrders)
+                    {
+                        Orders.Add(item);
+                    }
+                });
+            }
+            catch (TaskCanceledException)
+            {
+
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("Lỗi tải lịch sử: " + ex.Message);
+            }
+            finally
+            {
+                if (!token.IsCancellationRequested)
+                    IsLoading = false;
+            }
         }
-
         private async Task LoadOrderDetail()
         {
             var resultList = await Task.Run(() =>
@@ -213,6 +409,7 @@ namespace CoffeeShop.ViewModels.StaffVM
                         .Include(od => od.Price)
                         .ThenInclude(p => p.Size)
                         .ToList();
+
                     var dtoList = new List<OrderDetailDTO>();
                     foreach (var detail in orderDetails)
                     {
@@ -240,6 +437,8 @@ namespace CoffeeShop.ViewModels.StaffVM
             public string EmployeeName { get; set; } = null!;
             public string OrderDate { get; set; } = null!;
             public string Total { get; set; } = null!;
+            public string SubTotal { get; set; } = null!;
+            public string Discount { get; set; } = null!;
             public string PaymentMethod { get; set; } = null!;
             public string TableName { get; set; } = null!;
         }
