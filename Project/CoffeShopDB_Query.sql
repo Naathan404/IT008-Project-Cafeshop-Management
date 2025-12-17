@@ -131,7 +131,7 @@ CREATE TABLE [Order]
 );
 
 select * from [order]
-where orderdate = '2025-12-17'
+where day(orderdate) = 17 and month(orderdate) = 12
 
 -- Tạo bảng OrderDetail
 CREATE TABLE OrderDetail (
