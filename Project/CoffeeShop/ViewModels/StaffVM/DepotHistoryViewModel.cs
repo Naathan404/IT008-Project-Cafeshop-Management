@@ -1,4 +1,5 @@
 ﻿using CoffeeShop.Models;
+using CoffeeShop.Service.DTOs;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.ObjectModel;
 using System.Windows;
@@ -28,7 +29,7 @@ namespace CoffeeShop.ViewModels.StaffVM
         }
 
         // Data Collection
-        public ObservableCollection<DepotHistoryItem> depotHistoryItems { get; set; } = new ObservableCollection<DepotHistoryItem>();
+        public ObservableCollection<DepotHistoryItemDTO> depotHistoryItems { get; set; } = new ObservableCollection<DepotHistoryItemDTO>();
         public ObservableCollection<string> actionTypes { get; set; } = new ObservableCollection<string>()
         {
             "Tất cả", "Nhập", "Dùng", "Cập nhật", "Hủy"
@@ -39,8 +40,8 @@ namespace CoffeeShop.ViewModels.StaffVM
         };
 
         #region Properties
-        private DepotItem? _selectedItem;
-        public DepotItem? SelectedItem
+        private DepotItemDTO? _selectedItem;
+        public DepotItemDTO? SelectedItem
         {
             get => _selectedItem;
             set
@@ -275,7 +276,7 @@ namespace CoffeeShop.ViewModels.StaffVM
                     foreach (var item in items)
                     {
                         // Ánh xạ an toàn
-                        depotHistoryItems.Add(new DepotHistoryItem
+                        depotHistoryItems.Add(new DepotHistoryItemDTO
                         {
                             MaterialName = item.Material.MaterialName ?? string.Empty,
                             Quantity = item.Quantity,
@@ -336,7 +337,7 @@ namespace CoffeeShop.ViewModels.StaffVM
                                     .ToList();
                 foreach (var historyItem in historyItems)
                 {
-                    depotHistoryItems.Add(new DepotHistoryItem()
+                    depotHistoryItems.Add(new DepotHistoryItemDTO()
                     {
                         StaffName = historyItem.Staff.StaffName,
                         MaterialName = historyItem.Material.MaterialName,

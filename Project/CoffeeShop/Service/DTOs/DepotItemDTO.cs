@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CoffeeShop.Models
+namespace CoffeeShop.Service.DTOs
 {
     // Class DepotItem
-    public class DepotItem : BaseViewModel
+    public class DepotItemDTO : BaseViewModel
     {
         // Backing field (nơi lưu giá trị thật sự) 
         private int _materialId;

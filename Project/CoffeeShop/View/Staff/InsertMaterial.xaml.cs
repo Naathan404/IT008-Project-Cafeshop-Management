@@ -1,7 +1,7 @@
-﻿using CoffeeShop.Models;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using CoffeeShop.ViewModels.StaffVM;
 using System.Windows;
+using CoffeeShop.Service.DTOs;
 
 namespace CoffeeShop.View.Staff
 {
@@ -11,7 +11,7 @@ namespace CoffeeShop.View.Staff
     public partial class InsertMaterial : Window
     {
         // Constructor 1: Chế độ thêm mới
-        public InsertMaterial(ObservableCollection<DepotItem> itemsCollection)
+        public InsertMaterial(ObservableCollection<DepotItemDTO> itemsCollection)
         {
             InitializeComponent();
             // CHỈ CẦN TẠO VÀ GÁN VIEWMODEL
@@ -19,7 +19,7 @@ namespace CoffeeShop.View.Staff
         }
 
         // Constructor 2: CHẾ ĐỘ CẬP NHẬT
-        public InsertMaterial(DepotItem selectedItem, ObservableCollection<DepotItem> itemsCollection)
+        public InsertMaterial(DepotItemDTO selectedItem, ObservableCollection<DepotItemDTO> itemsCollection)
         {
             InitializeComponent();
             // CHỈ CẦN TẠO VÀ GÁN VIEWMODEL

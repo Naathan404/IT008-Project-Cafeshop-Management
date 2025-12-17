@@ -1,5 +1,6 @@
 ﻿using CoffeeShop.Models;
 using CoffeeShop.Service;
+using CoffeeShop.Service.DTOs;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
@@ -78,11 +79,11 @@ namespace CoffeeShop.ViewModels.StaffVM
         public string WindowTitle { get; private set; } // Title của cửa sổ Insert (Thêm mới/Sửa)
         public string SaveButtonContent { get; private set; } // Nội dung nút Lưu/Cập nhật
 
-        private readonly ObservableCollection<DepotItem> _depotItems;
-        private DepotItem? _itemToEdit; // Chỉ dùng cho chế độ sửa
+        private readonly ObservableCollection<DepotItemDTO> _depotItems;
+        private DepotItemDTO? _itemToEdit; // Chỉ dùng cho chế độ sửa
 
         // Constructor Add
-        public InsertMaterialViewModel(ObservableCollection<DepotItem> itemsCollection)
+        public InsertMaterialViewModel(ObservableCollection<DepotItemDTO> itemsCollection)
         {
             _depotItems = itemsCollection;
             InitializeData();
@@ -94,7 +95,7 @@ namespace CoffeeShop.ViewModels.StaffVM
         }
 
         // Constructor Update
-        public InsertMaterialViewModel(DepotItem selectedItem, ObservableCollection<DepotItem> itemsCollection)
+        public InsertMaterialViewModel(DepotItemDTO selectedItem, ObservableCollection<DepotItemDTO> itemsCollection)
             : this(itemsCollection) // Gọi constructor Thêm mới để khởi tạo chung
         {
             // Setup cho chế độ Cập nhật
@@ -233,7 +234,7 @@ namespace CoffeeShop.ViewModels.StaffVM
                             transaction.Commit(); // Hoàn tất cả hai
 
                             // Ánh xạ ngược và thêm vào ObservableCollection
-                            DepotItem newDepotItem = new DepotItem
+                            DepotItemDTO newDepotItem = new DepotItemDTO
                             {
                                 MaterialId = newItem.MaterialId, // Lấy ID từ DB
                                 MaterialName = newItem.MaterialName,

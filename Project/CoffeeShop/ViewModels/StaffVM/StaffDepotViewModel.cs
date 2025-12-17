@@ -9,6 +9,7 @@ using System.Windows.Input;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using OfficeOpenXml.Table;
+using CoffeeShop.Service.DTOs;
 
 namespace CoffeeShop.ViewModels.StaffVM
 {
@@ -27,15 +28,15 @@ namespace CoffeeShop.ViewModels.StaffVM
 
 
         // Data Collection
-        public ObservableCollection<DepotItem> depotItems { get; set; } = new ObservableCollection<DepotItem>();
+        public ObservableCollection<DepotItemDTO> depotItems { get; set; } = new ObservableCollection<DepotItemDTO>();
         public ObservableCollection<string> units { get; set; } = new ObservableCollection<string>()
         {
             "Tất cả", "Kg", "Lon", "Chai", "Hộp", "Hộp 1L", "Hũ"
         };
 
         #region Properties
-        private DepotItem? _selectedItem;
-        public DepotItem? SelectedItem
+        private DepotItemDTO? _selectedItem;
+        public DepotItemDTO? SelectedItem
         {
             get => _selectedItem;
             set
@@ -132,7 +133,7 @@ namespace CoffeeShop.ViewModels.StaffVM
         }
 
         #region Command Logic
-        private bool CanExecuteCrudOperation(DepotItem? selectedItem)
+        private bool CanExecuteCrudOperation(DepotItemDTO? selectedItem)
         {
             // Chỉ được thực hiện khi có item được chọn
             return selectedItem != null;
@@ -185,7 +186,7 @@ namespace CoffeeShop.ViewModels.StaffVM
                     {
                         // Ánh xạ an toàn
                         if (item.IsDeleted) continue; // Bỏ qua các mục đã bị xóa
-                        depotItems.Add(new DepotItem
+                        depotItems.Add(new DepotItemDTO
                         {
                             MaterialId = item.MaterialId,
                             MaterialName = item.MaterialName ?? string.Empty,
@@ -225,14 +226,14 @@ namespace CoffeeShop.ViewModels.StaffVM
         }
 
         // Hàm cập nhật item
-        private void ExecuteUpdateItem(DepotItem? selectedItem)
+        private void ExecuteUpdateItem(DepotItemDTO? selectedItem)
         {
             // Gọi cửa sổ InsertMaterial ở chế độ Cập nhật
             _dialogService.OpenInsertMaterialWindow(depotItems, selectedItem);
         }
 
         // Hàm xóa item
-        private void ExecuteDeleteItem(DepotItem? itemToDelete)
+        private void ExecuteDeleteItem(DepotItemDTO? itemToDelete)
         {
             if (itemToDelete == null) return;
             // Xác nhận hành động xóa
@@ -303,7 +304,7 @@ namespace CoffeeShop.ViewModels.StaffVM
         #endregion
         private void ExecuteReport(object? parameter)
         {
-            List<DepotItem> reportData;
+            List<DepotItemDTO> reportData;
             string reportPath = string.Empty;
 
             try
@@ -312,7 +313,7 @@ namespace CoffeeShop.ViewModels.StaffVM
                 {
                     var data = db.Inventories
                                 .Where(i => i.IsDeleted == false)
-                                .Select(i => new DepotItem
+                                .Select(i => new DepotItemDTO
                                 {
                                     MaterialId = i.MaterialId,
                                     MaterialName = i.MaterialName,
@@ -342,7 +343,7 @@ namespace CoffeeShop.ViewModels.StaffVM
             }
         }
 
-        private string CreateExcelReport(List<DepotItem> data)
+        private string CreateExcelReport(List<DepotItemDTO> data)
         {
             ExcelPackage.License.SetNonCommercialPersonal("2G1G Café");
 
@@ -378,7 +379,7 @@ namespace CoffeeShop.ViewModels.StaffVM
                 foreach (var item in items)
                 {
                     if (item.IsDeleted) continue; // Bỏ qua các mục đã bị xóa
-                    depotItems.Add(new DepotItem
+                    depotItems.Add(new DepotItemDTO
                     {
                         MaterialId = item.MaterialId,
                         MaterialName = item.MaterialName ?? string.Empty,
@@ -399,8 +400,8 @@ namespace CoffeeShop.ViewModels.StaffVM
 
             // 2. COMMANDS CRUD
             AddItemCommand = new RelayCommand<object>(ExecuteAddItem);
-            DeleteItemCommand = new RelayCommand<DepotItem>(ExecuteDeleteItem, CanExecuteCrudOperation);
-            UpdateItemCommand = new RelayCommand<DepotItem>(ExecuteUpdateItem, CanExecuteCrudOperation);
+            DeleteItemCommand = new RelayCommand<DepotItemDTO>(ExecuteDeleteItem, CanExecuteCrudOperation);
+            UpdateItemCommand = new RelayCommand<DepotItemDTO>(ExecuteUpdateItem, CanExecuteCrudOperation);
 
             TogglePopupCommand = new RelayCommand<object>(ExecuteTogglePopup);
             ShowDepotHistory = new RelayCommand<object>(ExecuteShowHistory);

@@ -1,15 +1,15 @@
 ﻿using CoffeeShop.Service.Interfaces;
 using CoffeeShop.View.Staff;    // Dùng InputWindow (View)
 using System.Collections.ObjectModel;
-using CoffeeShop.Models;
+using CoffeeShop.Service.DTOs;
 
 namespace CoffeeShop.Service
 {
     public class WindowService : IDialogService
     {
         // Triển khai hàm theo đúng hợp đồng của Interface
-        public void OpenInsertMaterialWindow(ObservableCollection<Models.DepotItem> collection,
-                                 Models.DepotItem? itemToEdit)
+        public void OpenInsertMaterialWindow(ObservableCollection<DepotItemDTO> collection,
+                                 DepotItemDTO? itemToEdit)
         {
             if (itemToEdit != null)
             {
@@ -31,7 +31,7 @@ namespace CoffeeShop.Service
             depotHistory.ShowDialog();
         }
 
-        public void OpenReportDepotWindow(List<DepotItem> reportData, string reportPath)
+        public void OpenReportDepotWindow(List<DepotItemDTO> reportData, string reportPath)
         {
             ReportDepotWindow reportDepot = new ReportDepotWindow(reportData, reportPath);
             reportDepot.ShowDialog();

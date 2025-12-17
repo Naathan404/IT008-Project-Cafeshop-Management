@@ -1,11 +1,13 @@
 ﻿using CoffeeShop.Models;
 using CoffeeShop.Service;
+using CoffeeShop.Service.DTOs;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Net;
 using System.Net.Mail;
 using System.Windows;
 using System.Windows.Input;
+using CoffeeShop.Helper;
 
 namespace CoffeeShop.ViewModels.StaffVM
 {
@@ -16,8 +18,8 @@ namespace CoffeeShop.ViewModels.StaffVM
         public ICommand CloseCommand { set; get; } = null!;
 
 
-        private ObservableCollection<DepotItem> _reportData = new ObservableCollection<DepotItem>();
-        public ObservableCollection<DepotItem> ReportData
+        private ObservableCollection<DepotItemDTO> _reportData = new ObservableCollection<DepotItemDTO>();
+        public ObservableCollection<DepotItemDTO> ReportData
         {
             get { return _reportData; }
             // KHÔNG cần setter nếu m chỉ thao tác với .Add()/.Clear() trên _reportData
@@ -59,55 +61,52 @@ namespace CoffeeShop.ViewModels.StaffVM
 
                 // Quan trọng: Nếu gửi lỗi, ta không đóng cửa sổ để người dùng có thể xem lại lỗi hoặc thử lại
             }
-            finally
-            {
-                // 3. DỌN DẸP: Xóa file tạm sau khi hoàn tất (Dù gửi thành công hay thất bại)
-                // Việc này đảm bảo không làm đầy thư mục Temp của hệ thống.
-                if (File.Exists(reportPath))
-                {
-                    File.Delete(reportPath);
-                }
-            }
         }
 
-        private void SendReportEmail(string filePath, int staffId)
+        private async void SendReportEmail(string filePath, int staffId)
         {
-            string senderEmail = "nghia84902@gmail.com"; // Tài khoản gửi email
-            string senderPassword = "tijg cqki awgm gtam"; // Vào google Account tìm "Mật khẩu ứng dụng". Tạo mật khẩu 16 số và nhập vào đây
-            string adminEmail = "nghia84902@gmail.com"; // Email người nhận
             string staffName = UserSession.Instance.StaffName;
-
-            // 1. Cấu hình SMTP Client (Sử dụng cấu hình phổ biến cho Gmail)
-            using (SmtpClient client = new SmtpClient("smtp.gmail.com", 587))
+            try
             {
-                client.EnableSsl = true; // Bắt buộc phải bật SSL
-                client.UseDefaultCredentials = false;
 
-                // Đăng nhập bằng NetworkCredential
-                client.Credentials = new NetworkCredential(senderEmail, senderPassword);
-
-                // 2. Tạo Mail Message
-                using (MailMessage mail = new MailMessage())
+                using (var db = new CoffeeShopContext())
                 {
-                    mail.From = new MailAddress(senderEmail);
-                    mail.To.Add(adminEmail);
+                    var emailList = db.Staff
+                        .Where(o => o.StaffRole == "Admin" && !string.IsNullOrEmpty(o.Email))
+                        .Select(o => o.Email)
+                        .ToList();
 
-                    // Tiêu đề Email
-                    mail.Subject = $"BÁO CÁO KHO HÀNG TỪ NHÂN VIÊN {staffName} - {DateTime.Now:dd/MM/yyyy}";
+                    // Danh sach tasks
+                    var sendTasks = new List<Task>();
 
-                    // Nội dung Email
-                    mail.Body = $"Gửi Admin, \n\n" +
-                                $"Nhân viên {staffName} (ID: {staffId}) vừa gửi báo cáo kho hàng đính kèm.\n\n" +
-                                $"Báo cáo được tạo lúc: {DateTime.Now:HH:mm:ss}";
+                    foreach (string email in emailList)
+                    {
+                        // Tiêu đề Email
+                        string mailSubject = $"BÁO CÁO KHO HÀNG TỪ NHÂN VIÊN {staffName} - {DateTime.Now:dd/MM/yyyy}";
+                        // Nội dung Email
+                        string mailBody = $"Gửi Admin, \n\n" +
+                                    $"Nhân viên {staffName} (ID: {staffId}) vừa gửi báo cáo kho hàng đính kèm.\n\n" +
+                                    $"Báo cáo được tạo lúc: {DateTime.Now:HH:mm:ss}";
+                        sendTasks.Add(MailUtils.SendEmailAsync(email, mailSubject, mailBody, filePath));
+                    }
 
-                    // 3. Đính kèm File Excel
-                    // filePath là đường dẫn file tạm đã được tạo trước đó
-                    mail.Attachments.Add(new Attachment(filePath));
+                    await Task.WhenAll(sendTasks);
 
-                    // 4. Gửi Mail
-                    client.Send(mail); // <--- Lệnh này thực hiện việc gửi đi
+                    await Task.Delay(5000);
                 }
             }
+            catch(Exception ex)
+            {
+                MessageBox.Show($"Lỗi trong quá trình gửi email: {ex.Message}", "Lỗi");
+            }
+            finally
+            {
+                if (File.Exists(filePath))
+                {
+                    File.Delete(filePath);
+                }
+            }
+            
         }
 
         private void LoadReportData()
@@ -119,7 +118,7 @@ namespace CoffeeShop.ViewModels.StaffVM
                 foreach (var item in items)
                 {
                     if (item.IsDeleted) continue; // Bỏ qua các mục đã bị xóa
-                    _reportData.Add(new DepotItem
+                    _reportData.Add(new DepotItemDTO
                     {
                         MaterialId = item.MaterialId,
                         MaterialName = item.MaterialName ?? string.Empty,

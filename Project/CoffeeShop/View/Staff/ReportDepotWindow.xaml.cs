@@ -1,5 +1,4 @@
-﻿using CoffeeShop.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using CoffeeShop.ViewModels.StaffVM;
+using CoffeeShop.Service.DTOs;
 
 namespace CoffeeShop.View.Staff
 {
@@ -22,7 +22,7 @@ namespace CoffeeShop.View.Staff
     /// </summary>
     public partial class ReportDepotWindow : Window
     {
-        public ReportDepotWindow(List<DepotItem> reportData, string filePath)
+        public ReportDepotWindow(List<DepotItemDTO> reportData, string filePath)
         {
             InitializeComponent();
             this.DataContext = new ReportDepotViewModel( filePath);

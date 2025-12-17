@@ -1,16 +1,16 @@
 ﻿using CoffeeShop.View.Staff;
 using System.Collections.ObjectModel;
-using CoffeeShop.Models;
+using CoffeeShop.Service.DTOs;
 
 namespace CoffeeShop.Service.Interfaces
 {
     public interface IDialogService
     {
-        public void OpenInsertMaterialWindow(ObservableCollection<Models.DepotItem> depotItems,
-            Models.DepotItem? itemToEdit);
+        public void OpenInsertMaterialWindow(ObservableCollection<DepotItemDTO> depotItems,
+            DepotItemDTO? itemToEdit);
 
         public void OpenDepotHistoryWindow();
 
-        public void OpenReportDepotWindow(List<DepotItem> reportData, string reportPath);
+        public void OpenReportDepotWindow(List<DepotItemDTO> reportData, string reportPath);
     }
 }
