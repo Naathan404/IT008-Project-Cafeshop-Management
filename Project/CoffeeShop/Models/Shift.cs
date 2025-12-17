@@ -13,5 +13,7 @@ public partial class Shift
 
     public TimeOnly EndTime { get; set; }
 
+    public bool IsDeleted { get; set; }
+
     public virtual ICollection<Staff> Staff { get; set; } = new List<Staff>();
 }

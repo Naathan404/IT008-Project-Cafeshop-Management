@@ -1,4 +1,6 @@
-﻿using MaterialDesignColors;
+﻿using CoffeeShop.Models;
+using CoffeeShop.View;
+using MaterialDesignColors;
 using MaterialDesignThemes.Wpf;
 using System.Windows;
 using System.Windows.Media;
@@ -10,7 +12,42 @@ namespace CoffeeShop
     /// </summary>
     public partial class App : Application
     {
-        private void Application_Startup(object sender, StartupEventArgs e)
+        private async void Application_Startup(object sender, StartupEventArgs e)
+        {
+            var loadingWindow = new LoadingView();
+            loadingWindow.Show();
+
+            // Khởi động cơ sở dữ liệu
+            await Task.Run(async () =>
+            {
+                using (var db = new CoffeeShopContext())
+                {
+                    try
+                    {
+                        await db.Database.CanConnectAsync();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Lỗi kết nối cơ sở dữ liệu! Vui lòng kiểm tra lại kết nối.\n" + ex.Message, "Lỗi kết nối", MessageBoxButton.OK, MessageBoxImage.Error);
+                        Application.Current.Shutdown();
+
+                    }
+                }
+            });
+
+            InitDefaultColors();
+
+            // --- BƯỚC 2: KHỞI TẠO VÀ HIỂN THỊ CỬA SỔ ---
+            View.Login.LoginWindow loginWindow = new View.Login.LoginWindow();
+            loadingWindow.Close();
+            bool? dialog = loginWindow.ShowDialog();
+            if(dialog == false)
+            {
+                loginWindow.Close();
+            }
+        }
+
+        private void InitDefaultColors()
         {
             var paletteHelper = new PaletteHelper();
 
@@ -32,21 +69,16 @@ namespace CoffeeShop
 
             // Áp dụng theme
             paletteHelper.SetTheme(theme);
-
-
-            // --- BƯỚC 2: KHỞI TẠO VÀ HIỂN THỊ CỬA SỔ ---
-            View.Login.LoginWindow loginWindow = new View.Login.LoginWindow();
-            View.MainWindow mainWindow = new View.MainWindow();
-            bool? dialog = loginWindow.ShowDialog();
-            if(dialog == false)
-            {
-                mainWindow.Close();
-            }
         }
+
+        private void Application_Exit(object sender, ExitEventArgs e)
+        {
+            // Thực hiện các thao tác dọn dẹp
+        }
+
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
-
         }
 
     }

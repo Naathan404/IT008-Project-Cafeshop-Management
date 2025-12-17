@@ -1,0 +1,369 @@
+﻿<Window x:Class="CoffeeShop.ViewModels.StaffVM.PaymentWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CoffeeShop.ViewModels.StaffVM"
+        mc:Ignorable="d"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        Icon="/Assets/icoCoffee.ico"
+        Title="Thanh toán hóa đơn" 
+        Height="700" Width="650"
+        WindowStartupLocation="CenterScreen">
+    <Window.Background>
+        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#D4BA98" Offset="0"/>
+            <GradientStop Color="#C8B48C" Offset="0.5"/>
+            <GradientStop Color="#766839" Offset="1"/>
+        </LinearGradientBrush>
+    </Window.Background>
+    
+    <Window.Resources>
+        <local:IndexToNumberConverter x:Key="IndexToNumberConverter"/>
+        <local:StringToVisibilityConverter x:Key="StringToVisibilityConverter"/>
+    </Window.Resources>
+
+    <Border Background="#EDE2D3"
+            CornerRadius="20"
+            Margin="15">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="0.25*"/>
+                <RowDefinition Height="1.5*"/><!-- List danh sách món -->
+                <RowDefinition Height="*"/><!-- Giá, Chọn phương thức thanh toán, Buttons -->
+            </Grid.RowDefinitions>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1.5*"/>
+                    <ColumnDefinition Width="3.5*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0"
+                            Orientation="Horizontal"
+                            HorizontalAlignment="Left"
+                            Margin="15 0 0 0">
+                    <TextBlock Text="Bàn: "
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               FontSize="20"
+                               FontFamily="Cascadia Code"
+                               FontWeight="Bold"
+                               Foreground="#462812"/>
+                    <TextBlock Text="{Binding SelectedTable.TableName}"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               FontFamily="Cascadia Code"
+                               FontSize="20"
+                               FontWeight="Bold"
+                               FontStyle="Italic"
+                               Foreground="#340D05"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1"
+                            Orientation="Horizontal" 
+                            HorizontalAlignment="Left" 
+                            Margin="10 0 0 0">
+                    <TextBlock Text="Khách hàng: "
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               FontSize="20" 
+                               FontFamily="Cascadia Code"
+                               FontWeight="Bold"
+                               Foreground="#462812"/>
+                    <TextBlock Text="{Binding SelectedCustomer.CustomerName}"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               TextWrapping="Wrap"
+                               FontFamily="Cascadia Code"
+                               FontWeight="Bold"
+                               FontStyle="Italic"
+                               FontSize="23" 
+                               Foreground="#340D05"/>
+                </StackPanel>
+            </Grid>
+            <Border Grid.Row="1"
+                    Background="#F9F6F0"
+                    CornerRadius="15"
+                    Margin="7"
+                    BorderBrush="#766839"
+                    BorderThickness="3">
+                <DataGrid x:Name="dtgListOrder"
+                          ItemsSource="{Binding Orders}"
+                          AutoGenerateColumns="False"
+                          IsReadOnly="False"
+                          CanUserAddRows="False"
+                          HeadersVisibility="Column"
+                          GridLinesVisibility="None"
+                          Background="#F9F6F0"
+                          FontFamily="Cascadia Code"
+                          FontSize="16"
+                          Margin="10"
+                          AlternationCount="1000000"
+                          EnableRowVirtualization="False"
+                          CanUserReorderColumns="False"
+                          CanUserResizeColumns="False">
+                    <DataGrid.ColumnHeaderStyle>
+                        <Style TargetType="DataGridColumnHeader">
+                            <Setter Property="Background" Value="#F9F6F0"/>
+                            <Setter Property="Foreground" Value="#462812"/>
+                            <Setter Property="FontWeight" Value="Bold"/>
+                            <Setter Property="FontFamily" Value="Cascadia Code"/>
+                            <Setter Property="FontSize" Value="18"/>
+                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                            <Setter Property="Padding" Value="5"/>
+                            <Setter Property="BorderThickness" Value="0 0 1 1"/>
+                            <Setter Property="BorderBrush" Value="#766839"/>
+                        </Style>
+                    </DataGrid.ColumnHeaderStyle>
+
+                    <DataGrid.CellStyle>
+                        <Style TargetType="DataGridCell">
+                            <Setter Property="Foreground" Value="#766839"/>
+                            <Setter Property="FontSize" Value="15"/>
+                            <Setter Property="FontFamily" Value="Cascadia Code"/>
+                            <Setter Property="Background" Value="#F9F6F0"/>
+                            <Setter Property="BorderBrush" Value="#A0A0A0"/>
+                            <Setter Property="BorderThickness" Value="0,0,1,1"/>
+                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                            <Setter Property="VerticalContentAlignment" Value="Center"/>
+                        </Style>
+                    </DataGrid.CellStyle>
+
+                    <DataGrid.RowStyle>
+                        <Style TargetType="DataGridRow">
+                            <Setter Property="Height" Value="Auto"/>
+                            <Setter Property="MinHeight" Value="40"/>
+                            <Setter Property="VerticalAlignment" Value="Stretch"/>
+                        </Style>
+                    </DataGrid.RowStyle>
+
+                    <DataGrid.Columns>
+                        <DataGridTemplateColumn Header="STT" Width="0.4*" IsReadOnly="True">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel HorizontalAlignment="Center"
+                                                VerticalAlignment="Center">
+                                        <TextBlock HorizontalAlignment="Center"
+                                                   FontWeight="Bold" FontSize="15">
+                                            <TextBlock.Text>
+                                                <MultiBinding StringFormat="{}{0}">
+                                                    <Binding RelativeSource="{RelativeSource AncestorType=DataGridRow}" 
+                                                             Path="AlternationIndex" 
+                                                             Converter="{StaticResource IndexToNumberConverter}"/>
+                                                </MultiBinding>
+                                            </TextBlock.Text>
+                                        </TextBlock>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
+                        <DataGridTemplateColumn Header="Tên sản phẩm" Width="1.2*">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel HorizontalAlignment="Left" 
+                                                VerticalAlignment="Center"
+                                                Margin="5">
+                                        <TextBlock Text="{Binding ItemName}"
+                                                   HorizontalAlignment="Left"
+                                                   VerticalAlignment="Center"
+                                                   FontWeight="Bold" 
+                                                   FontSize="15" 
+                                                   Foreground="#766839"
+                                                   TextWrapping="Wrap"/>
+                                        <TextBlock Text="{Binding Note, UpdateSourceTrigger=PropertyChanged}"
+                                                   Visibility="{Binding Note, Converter={StaticResource StringToVisibilityConverter}}"
+                                                   HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center"
+                                                   Width="130" Height="25" 
+                                                   Margin="0 5 0 0"
+                                                   FontFamily="Cascadia Code"
+                                                   FontSize="15" 
+                                                   Foreground="#C7A57A"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
+                        <DataGridTemplateColumn Header="Size" Width="0.5*">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding SizeName}" 
+                                               HorizontalAlignment="Center" 
+                                               VerticalAlignment="Center"
+                                               FontWeight="Bold" 
+                                               FontSize="15" 
+                                               Foreground="#766839"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
+                        <DataGridTextColumn Header="Số lượng"
+                                            Binding="{Binding Quantity}"
+                                            Width="0.8*">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                    <Setter Property="FontFamily" Value="Cascadia Code"/>
+                                    <Setter Property="FontSize" Value="15"/>
+                                    <Setter Property="Foreground" Value="#766839"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+
+                        <DataGridTemplateColumn Header="Đơn giá" Width="0.8*">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Price, StringFormat={}{0:N0}}"
+                                               HorizontalAlignment="Center" 
+                                               VerticalAlignment="Center"
+                                               FontWeight="Bold"
+                                               FontSize="15" 
+                                               Foreground="#766839"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
+                        <DataGridTemplateColumn Header="Thành tiền" Width="1*">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding TotalPrice, StringFormat={}{0:N0}}"
+                                               HorizontalAlignment="Center" 
+                                               VerticalAlignment="Center"
+                                               FontWeight="Bold" 
+                                               FontSize="15" 
+                                               Foreground="#766839"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Border>
+            
+            <!-- Total & Payment Section -->
+            <StackPanel Grid.Row="2" Margin="0 5 0 0">
+                <StackPanel Orientation="Horizontal" 
+                            HorizontalAlignment="Right" 
+                            Margin="0 0 20 5">
+                    <TextBlock Text="Tổng cộng: "
+                               FontSize="18"
+                               FontFamily="Cascadia Code"
+                               Foreground="#462812"/>
+                    <TextBlock Text="{Binding TotalAmount, StringFormat={}{0:N0} VND}"
+                               FontFamily="Cascadia Code" 
+                               FontSize="18" 
+                               Foreground="#340D05"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" 
+                            HorizontalAlignment="Right" 
+                            Margin="0 0 20 5">
+                    <TextBlock Text="Giảm giá: "
+                               FontSize="18" 
+                               FontFamily="Cascadia Code"
+                               Foreground="#462812"/>
+                    <TextBlock Text="{Binding FinalDiscount, StringFormat={}{0:N0} VND}"
+                               FontFamily="Cascadia Code" 
+                               FontSize="18" 
+                               Foreground="#340D05"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" 
+                            HorizontalAlignment="Right" 
+                            Margin="0 0 20 0">
+                    <TextBlock Text="Thành tiền: "
+                               FontSize="23" 
+                               FontFamily="Cascadia Code" 
+                               FontWeight="Bold"
+                               Foreground="#462812"/>
+                    <TextBlock FontFamily="Cascadia Code" 
+                               FontSize="23" 
+                               FontWeight="Bold" 
+                               Foreground="#340D05"
+                               Text="{Binding FinalTotal, StringFormat={}{0:N0} VND}"/>
+                </StackPanel>
+
+                <CheckBox x:Name="cbPrintBill"
+                          IsChecked="{Binding IsCheckedPrintBill, Mode=TwoWay}"
+                          Width="150" Height="40"
+                          VerticalAlignment="Center"
+                          FontFamily="Cascadia Code" 
+                          FontSize="20" 
+                          Foreground="#340D05"
+                          HorizontalAlignment="Right"
+                          Margin="0 0 20 0">
+                    <TextBlock Text="In hóa đơn" FontWeight="Bold"/>
+                </CheckBox>
+
+                <StackPanel Orientation="Horizontal" 
+                            HorizontalAlignment="Right" 
+                            Margin="0 0 20 5">
+                    <TextBlock Text="Hình thức thanh toán: "
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               FontSize="20" 
+                               FontFamily="Cascadia Code"
+                               Foreground="#462812"
+                               FontWeight="Bold"/>
+                    <ComboBox x:Name="cmbPaymentMethod"
+                              Width="150" Height="30"
+                              VerticalAlignment="Center"
+                              FontFamily="Cascadia Code" 
+                              FontSize="18" 
+                              Foreground="#766839"
+                              ItemsSource="{Binding PaymentMethod}"
+                              SelectedItem="{Binding SelectedPaymentMethod}"
+                              materialDesign:TextFieldAssist.UnderlineBrush="#766839"/>
+                </StackPanel>
+
+
+
+                <StackPanel Orientation="Horizontal" 
+                            HorizontalAlignment="Right"
+                            Margin="0 10 20 0">
+                    <Border x:Name="bdrCancelPayOrder"
+                            BorderBrush="#766839"
+                            BorderThickness="2"
+                            Padding="10"
+                            CornerRadius="15"
+                            Cursor="Hand"
+                            Background="Transparent"
+                            MouseEnter="border_MouseEnter"
+                            MouseLeave="border_MouseLeave"
+                            MouseDown="bdrCancelPayOrder_MouseDown">
+                        <TextBlock Text="Hủy bỏ"
+                                   FontSize="23"
+                                   FontWeight="Bold"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   FontFamily="Cascadia Code"
+                                   Foreground="#766839"/>
+                    </Border>
+
+                    <Border x:Name="bdrPayOrder"
+                            BorderBrush="#766839"
+                            BorderThickness="2"
+                            Margin="30 0 0 0"
+                            Padding="10"
+                            CornerRadius="15"
+                            Cursor="Hand"
+                            Background="Transparent"
+                            MouseEnter="border_MouseEnter"
+                            MouseLeave="border_MouseLeave">
+                        <Border.InputBindings>
+                            <MouseBinding Command="{Binding ConfirmPayOrderCommand}" 
+                                          MouseAction="LeftClick"/>
+                        </Border.InputBindings>
+                        <TextBlock Text="Thanh toán"
+                                   FontSize="23"
+                                   FontWeight="Bold"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   FontFamily="Cascadia Code"
+                                   Foreground="#766839"/>
+                    </Border>
+                </StackPanel>
+            </StackPanel>
+        </Grid>
+    </Border>
+</Window>

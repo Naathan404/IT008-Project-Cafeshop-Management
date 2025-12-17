@@ -9,5 +9,7 @@ public partial class Size
 
     public string SizeName { get; set; } = null!;
 
+    public bool IsDeleted { get; set; }
+
     public virtual ICollection<ItemPrice> ItemPrices { get; set; } = new List<ItemPrice>();
 }
