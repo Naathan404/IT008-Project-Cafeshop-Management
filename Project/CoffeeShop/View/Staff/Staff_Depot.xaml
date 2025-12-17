@@ -8,7 +8,8 @@
     x:Class="CoffeeShop.View.Staff.Staff_Depot"
     mc:Ignorable="d" 
     d:DesignHeight="610" d:DesignWidth="1110"
-    Title="Staff_Depot">
+    Title="Staff_Depot"
+    Language="vi-VN">
 
     <Grid x:Name="MainGrid" Background="#E0CEB5">
         <Grid.RowDefinitions>
@@ -101,7 +102,7 @@
                                 </DataGridTextColumn.ElementStyle>
                             </DataGridTextColumn>
                             <DataGridTextColumn Header="Tên" Binding="{Binding MaterialName}" Width="1.2*"/>
-                            <DataGridTextColumn Header="Số lượng" Binding="{Binding Quantity, StringFormat={}{0:G2}}" Width="*">
+                            <DataGridTextColumn Header="Số lượng" Binding="{Binding Quantity, StringFormat={}{0:#,##0.##}}" Width="*">
                                 <DataGridTextColumn.ElementStyle>
                                     <Style TargetType="TextBlock">
                                         <Setter Property="HorizontalAlignment" Value="Center"></Setter>
@@ -197,7 +198,7 @@
 
                         <Button x:Name="btnReport" 
                             Content="BÁO CÁO"
-                            Grid.Row="4" 
+                            Grid.Row="4" Command="{Binding ReportCommand}"
                             Style="{StaticResource depotButtonStyle}"/>
 
                         <Button x:Name="btnHistory"

@@ -6,6 +6,7 @@ using CoffeeShop.Models;
 using CoffeeShop.Helper;
 using CoffeeShop.View.Staff;
 using CoffeeShop.View.Admin;
+using CoffeeShop.Service;
 
 namespace CoffeeShop.View.Login
 {
@@ -44,7 +45,6 @@ namespace CoffeeShop.View.Login
         {
             InitializeComponent();
             txbFloatingUsernameBox.Focus();
-            WarmUpDatabase();
             GenerateRandomLoginUI();
         }
 
@@ -57,24 +57,6 @@ namespace CoffeeShop.View.Login
             imgBanner.Source = new BitmapImage(new Uri(_imgBannerSources[new Random().Next(0, _imgBannerSources.Count)], UriKind.Relative));
 
             txblNotify.Visibility = Visibility.Hidden;
-        }
-
-        // Kiểm tra kết nối cơ sở dữ liệu khi khởi động ứng dụng
-        private void WarmUpDatabase()
-        {
-            using (var db = new CoffeeShopContext())
-            {
-                try
-                {
-                    db.Staff.Take(1).Any();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Lỗi kết nối cơ sở dữ liệu! Vui lòng kiểm tra lại kết nối.\n" + ex.Message, "Lỗi kết nối", MessageBoxButton.OK, MessageBoxImage.Error);
-                    Application.Current.Shutdown();
-
-                }
-            }
         }
 
         // Xử lý đăng nhập
@@ -102,6 +84,7 @@ namespace CoffeeShop.View.Login
                             MessageBox.Show("Unidentified user");
                             break;
                     }
+                    UserSession.Instance.SetUser(account);
                 }
                 else
                 {

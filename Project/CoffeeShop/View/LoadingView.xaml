@@ -1,0 +1,39 @@
+﻿<Window x:Class="CoffeeShop.View.LoadingView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="LoadingView" Height="520" Width="850"
+        WindowStyle="None" 
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen"
+        AllowsTransparency="True"
+        Background="Transparent">
+
+    <Border CornerRadius="20" Background="White" BorderBrush="#4E342E" BorderThickness="1">
+        <Grid>
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                <TextBlock Text="2G1G CAFE" 
+                           FontSize="50" FontWeight="Bold" 
+                           Foreground="#4E342E" 
+                           HorizontalAlignment="Center" Margin="0,0,0,20"/>
+
+                <Border
+                    BorderBrush="#766839"
+                    BorderThickness="3"
+                    CornerRadius="5">
+                    <ProgressBar IsIndeterminate="True" 
+                                 Width="400" Height="15" 
+                                 Foreground="#b18252"
+                                 BorderThickness="1"
+                                 />
+                </Border>
+
+                <TextBlock Text="Đang khởi tạo dữ liệu..." 
+                           Margin="0,10,0,0" 
+                           FontFamily="Cascadia Code"
+                           FontSize="20"
+                           HorizontalAlignment="Center" 
+                           Foreground="#340d05"/>
+            </StackPanel>
+        </Grid>
+    </Border>
+</Window>

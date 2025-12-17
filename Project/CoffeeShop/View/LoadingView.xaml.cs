@@ -12,14 +12,14 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace CoffeeShop.View.Staff
+namespace CoffeeShop.View
 {
     /// <summary>
-    /// Interaction logic for DetailDepotHistoryWindow.xaml
+    /// Interaction logic for LoadingView.xaml
     /// </summary>
-    public partial class DetailDepotHistoryWindow : Window
+    public partial class LoadingView : Window
     {
-        public DetailDepotHistoryWindow()
+        public LoadingView()
         {
             InitializeComponent();
         }

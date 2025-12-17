@@ -118,10 +118,14 @@ namespace CoffeeShop.View.Staff
                 stackPanel.DataContext is OrderItem item &&
                 item.ItemPrices != null)
             {
-                var sizeList = item.ItemPrices.Select(p => p.Size).Where(s => s != null).ToList();
-
-                if (sizeList.Count == 0) return;
-                if (sizeList.Count == 1 && item.CategoryId == 7) return;
+                var sizeList = item.ItemPrices
+                    .Where(p => p.Size != null)
+                    .Select(p => p.Size)
+                    .ToList();
+                if (sizeList.Count() == 0)
+                    return;
+                if (sizeList.Count == 1 && item.CategoryId == 7)
+                    return;
 
                 var stkSizeName = stackPanel.FindName("stpnItemSize") as StackPanel;
                 if (stkSizeName == null) return;
