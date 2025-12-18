@@ -286,42 +286,43 @@
                         ColumnHeaderStyle="{StaticResource dgHeaderStyle}"
                         IsEnabled="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
                         Opacity="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
-                        AutoGenerateColumns="False" CanUserAddRows="False"
+                        AutoGenerateColumns="False" 
+                        CanUserAddRows="False" CanUserDeleteRows="False"
                         CanUserResizeColumns="False" CanUserReorderColumns="False"
                         HorizontalAlignment="Stretch"
                         GridLinesVisibility="None"
                         IsReadOnly="true"
                         ScrollViewer.VerticalScrollBarVisibility="Visible">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="Mã hóa đơn" Width="4*" Binding="{Binding DisplayID}">
+                        <DataGridTextColumn Header=" Mã hóa đơn " Width="*" Binding="{Binding DisplayID}">
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="HorizontalAlignment" Value="Center"></Setter>
                                 </Style>
                             </DataGridTextColumn.ElementStyle>
                         </DataGridTextColumn>
-                        <DataGridTextColumn Header="Tên khách hàng" Width="5.5*" Binding="{Binding CustomerName}">
+                        <DataGridTextColumn Header="Tên khách hàng" Width="2*" Binding="{Binding CustomerName}">
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="HorizontalAlignment" Value="Left"></Setter>
                                 </Style>
                             </DataGridTextColumn.ElementStyle>
                         </DataGridTextColumn>
-                        <DataGridTextColumn Header="Thời gian" Width="4.5*" Binding="{Binding OrderDate}">
+                        <DataGridTextColumn Header=" Thời gian " Width="*" Binding="{Binding OrderDate}">
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="HorizontalAlignment" Value="Center"></Setter>
                                 </Style>
                             </DataGridTextColumn.ElementStyle>
                         </DataGridTextColumn>
-                        <DataGridTextColumn Header="Hình thức" Width="4*" Binding="{Binding PaymentMethod}">
+                        <DataGridTextColumn Header=" Hình thức " Width="*" Binding="{Binding PaymentMethod}">
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="HorizontalAlignment" Value="Center"></Setter>
                                 </Style>
                             </DataGridTextColumn.ElementStyle>
                         </DataGridTextColumn>
-                        <DataGridTextColumn Header="Tổng tiền" Width="4*" Binding="{Binding Total}">
+                        <DataGridTextColumn Header=" Tổng tiền " Width="*" Binding="{Binding Total}">
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="HorizontalAlignment" Value="Center"></Setter>
