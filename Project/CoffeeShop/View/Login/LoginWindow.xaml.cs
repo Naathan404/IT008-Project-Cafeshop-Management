@@ -1,12 +1,15 @@
-﻿using System.Windows;
+﻿using CoffeeShop.Helper;
+using CoffeeShop.Models;
+using CoffeeShop.Service;
+using CoffeeShop.View.Admin;
+using CoffeeShop.View.Staff;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
-using CoffeeShop.Models;
-using CoffeeShop.Helper;
-using CoffeeShop.View.Staff;
-using CoffeeShop.View.Admin;
-using CoffeeShop.Service;
+using System.Windows.Threading;
 
 namespace CoffeeShop.View.Login
 {
@@ -40,12 +43,96 @@ namespace CoffeeShop.View.Login
         };
         #endregion
 
+        private DispatcherTimer _imageTimer;
+
         // Constructor
         public LoginWindow()
         {
             InitializeComponent();
             txbFloatingUsernameBox.Focus();
             GenerateRandomLoginUI();
+
+            StartImageRotationTimer();
+        }
+
+        private void StartImageRotationTimer()
+        {
+            _imageTimer = new DispatcherTimer();
+            _imageTimer.Interval = TimeSpan.FromSeconds(5); // Chạy mỗi 5 giây
+            _imageTimer.Tick += ImageTimer_Tick;
+            _imageTimer.Start();
+        }
+
+        private void ImageTimer_Tick(object sender, EventArgs e)
+        {
+            ChangeImageWithAnimation();
+        }
+
+        private void ChangeImageWithAnimation()
+        {
+            // setup Scale và Translate
+            TransformGroup group = new TransformGroup();
+            ScaleTransform scale = new ScaleTransform(1.0, 1.0);
+            TranslateTransform trans = new TranslateTransform(0, 0);
+            group.Children.Add(scale);
+            group.Children.Add(trans);
+
+            imgBanner.RenderTransformOrigin = new Point(0.5, 0.5);
+            imgBanner.RenderTransform = group;
+
+            // hiệu ứng blurrrrrrrrrrrrrrrr
+            System.Windows.Media.Effects.BlurEffect blur = new System.Windows.Media.Effects.BlurEffect();
+            blur.Radius = 0;
+            imgBanner.Effect = blur;
+
+            // thời gian hoạt ảnh
+            TimeSpan duration = TimeSpan.FromSeconds(0.25);
+
+            /// Anim ảnh cũ biến mất
+            // anim trượt lên
+            DoubleAnimation moveUpOut = new DoubleAnimation(0, -50, duration);
+            // anim blur đi
+            DoubleAnimation blurOut = new DoubleAnimation(0, 20, duration);
+            // anim mờ đi
+            DoubleAnimation fadeOut = new DoubleAnimation(1, 0, duration);
+            // anim thu nhỏ lại
+            DoubleAnimation shrinkOut = new DoubleAnimation(1.0, 0.85, duration);
+
+            // Khi ảnh cũ biến mất xong
+            fadeOut.Completed += (s, e) =>
+            {
+                // --- GIAI ĐOẠN 2: ĐỔI DATA ---
+                string newSource = _imgBannerSources[new Random().Next(0, _imgBannerSources.Count)];
+                imgBanner.Source = new BitmapImage(new Uri(newSource, UriKind.Relative));
+
+                // Tạm đặt vị trí ảnh mới bên dưới
+                trans.Y = 50;
+                /// Anim ảnh mới xuất hiện
+                // anim trượt lên
+                DoubleAnimation moveUpIn = new DoubleAnimation(50, 0, duration);
+                moveUpIn.EasingFunction = new CircleEase { EasingMode = EasingMode.EaseOut };
+                // anim blur vào
+                DoubleAnimation blurIn = new DoubleAnimation(20, 0, duration);
+                // anim hết mờ dần
+                DoubleAnimation fadeIn = new DoubleAnimation(0, 1, duration);
+                // anim phóng to ra
+                DoubleAnimation shrinkIn = new DoubleAnimation(1.1, 1.0, duration);
+                shrinkIn.EasingFunction = new CircleEase { EasingMode = EasingMode.EaseOut };
+
+                // Kích hoạt Animation vào
+                trans.BeginAnimation(TranslateTransform.YProperty, moveUpIn);
+                imgBanner.Effect.BeginAnimation(System.Windows.Media.Effects.BlurEffect.RadiusProperty, blurIn);
+                imgBanner.BeginAnimation(Image.OpacityProperty, fadeIn);
+                scale.BeginAnimation(ScaleTransform.ScaleXProperty, shrinkIn);
+                scale.BeginAnimation(ScaleTransform.ScaleYProperty, shrinkIn);
+            };
+
+            // Kích hoạt Animation ra
+            trans.BeginAnimation(TranslateTransform.YProperty, moveUpOut);
+            imgBanner.Effect.BeginAnimation(System.Windows.Media.Effects.BlurEffect.RadiusProperty, blurOut);
+            imgBanner.BeginAnimation(Image.OpacityProperty, fadeOut);
+            scale.BeginAnimation(ScaleTransform.ScaleXProperty, shrinkOut);
+            scale.BeginAnimation(ScaleTransform.ScaleYProperty, shrinkOut);
         }
 
         // Tạo giao diện đăng nhập ngẫu nhiên
