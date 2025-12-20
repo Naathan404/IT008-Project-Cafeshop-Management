@@ -1,17 +1,14 @@
-﻿using System;
+﻿using CoffeeShop.Service;
+using CoffeeShop.Service.Interfaces;
+using CoffeeShop.ViewModels.StaffVM;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using CoffeeShop.ViewModels.AdminVM;
 
 namespace CoffeeShop.View.Admin
 {
@@ -23,6 +20,8 @@ namespace CoffeeShop.View.Admin
         public DepotManagementPage()
         {
             InitializeComponent();
+            IDialogService dialogService = new WindowService();
+            this.DataContext = new AdminDepotViewModel(dialogService);
         }
     }
 }

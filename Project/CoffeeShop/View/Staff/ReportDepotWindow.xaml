@@ -7,7 +7,7 @@
         mc:Ignorable="d" 
         x:Name="ReportWindow"
         Icon="/CoffeeShop;component/Assets/icoCoffee.ico"
-        Title="Báo cáo kho" Height="800" Width="1000"
+        Title="{Binding WindowTitle}" Height="800" Width="1000"
         WindowStartupLocation="CenterScreen">
     <Grid Background="#F9F6F0">
         <Grid.RowDefinitions>
@@ -35,7 +35,7 @@
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
                     <DataGridTextColumn Header="Tên" Binding="{Binding MaterialName}" Width="1.4*"/>
-                    <DataGridTextColumn Header="Số lượng" Binding="{Binding Quantity, StringFormat={}{0:#.##0.##}}" Width="0.7*">
+                    <DataGridTextColumn Header="Số lượng" Binding="{Binding Quantity, StringFormat='{}{0:#,##0.##}'}" Width="0.7*">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
                                 <Setter Property="HorizontalAlignment" Value="Center"></Setter>
@@ -65,7 +65,7 @@
                 Margin="120, 0">
             </Button>
 
-            <Button x:Name="btnSubmit" Content="Báo cáo" FontSize="30"
+            <Button x:Name="btnSubmit" Content="{Binding SubmitButtonText}" FontSize="30"
                 Style="{StaticResource depotButtonStyle}"
                 Width="250" Height="70"
                 HorizontalAlignment="Right" VerticalAlignment="Center"

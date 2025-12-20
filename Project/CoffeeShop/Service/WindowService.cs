@@ -31,9 +31,9 @@ namespace CoffeeShop.Service
             depotHistory.ShowDialog();
         }
 
-        public void OpenReportDepotWindow(List<DepotItemDTO> reportData, string reportPath)
+        public void OpenReportDepotWindow()
         {
-            ReportDepotWindow reportDepot = new ReportDepotWindow(reportData, reportPath);
+            ReportDepotWindow reportDepot = new ReportDepotWindow();
             reportDepot.ShowDialog();
         }
     }

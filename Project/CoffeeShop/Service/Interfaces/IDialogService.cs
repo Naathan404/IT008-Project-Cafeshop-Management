@@ -11,6 +11,6 @@ namespace CoffeeShop.Service.Interfaces
 
         public void OpenDepotHistoryWindow();
 
-        public void OpenReportDepotWindow(List<DepotItemDTO> reportData, string reportPath);
+        public void OpenReportDepotWindow();
     }
 }

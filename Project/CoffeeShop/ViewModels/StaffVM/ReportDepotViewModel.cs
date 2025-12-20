@@ -1,13 +1,13 @@
-﻿using CoffeeShop.Models;
+﻿using CoffeeShop.Helper;
+using CoffeeShop.Models;
 using CoffeeShop.Service;
 using CoffeeShop.Service.DTOs;
+using OfficeOpenXml;
+using OfficeOpenXml.Table;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Net;
-using System.Net.Mail;
 using System.Windows;
 using System.Windows.Input;
-using CoffeeShop.Helper;
 
 namespace CoffeeShop.ViewModels.StaffVM
 {
@@ -22,22 +22,60 @@ namespace CoffeeShop.ViewModels.StaffVM
         public ObservableCollection<DepotItemDTO> ReportData
         {
             get { return _reportData; }
-            // KHÔNG cần setter nếu m chỉ thao tác với .Add()/.Clear() trên _reportData
+        }
+
+        private string _windowTitle = "Báo Cáo Kho Hàng";
+        public string WindowTitle
+        {
+            get => _windowTitle;
+            set { _windowTitle = value; OnPropertyChanged(); }
+        }
+
+        // Property cho nội dung của Button
+        private string _submitButtonText = "Gửi";
+        public string SubmitButtonText
+        {
+            get => _submitButtonText;
+            set { _submitButtonText = value; OnPropertyChanged(); }
         }
 
         // Constructor
-        public ReportDepotViewModel(string filePath)
+        public ReportDepotViewModel()
         {
-            _filePath = filePath; 
+            // Load giao dien cho admin
+            if (UserSession.Instance.StaffRole == "Admin")
+            {
+                WindowTitle = "Nội Dung File";
+                SubmitButtonText = "Xuất";
+            }
+
             LoadReportData();
-            SendCommand = new RelayCommand<Window>(ExecuteSendReport);
+            if (UserSession.Instance.StaffRole == "Admin")
+            {
+                SendCommand = new RelayCommand<Window>(ExecuteExport);
+            }
+            else SendCommand = new RelayCommand<Window>(ExecuteSendReport);
+
             CloseCommand = new RelayCommand<Window>(w => w?.Close());
         }
 
         private void ExecuteSendReport(Window window)
         {
+            // ---- Tao file bao cao ----
+            _filePath = string.Empty;
+
+            try
+            {
+                _filePath = CreateExcelReport(ReportData); // Tạo file và lấy đường dẫn
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi tạo báo cáo: {ex.Message}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
+
+            // ---- Chuan bi thong tin nhan vien de gui bao cao ----
             int currentStaffId = UserSession.Instance.StaffId;
-            string reportPath = this._filePath;
 
             // Kiểm tra an toàn trước khi gửi
             if (currentStaffId == 0)
@@ -50,7 +88,7 @@ namespace CoffeeShop.ViewModels.StaffVM
             try
             {
                 // GỌI HÀM GỬI EMAIL CHÍNH (SendReportEmail đã có logic gửi mail)
-                SendReportEmail(reportPath, currentStaffId);
+                SendReportEmail(currentStaffId);
 
                 MessageBox.Show("Đã gửi báo cáo thành công cho Admin!", "Thành công");
                 window?.Close(); // Đóng cửa sổ sau khi gửi thành công
@@ -63,7 +101,39 @@ namespace CoffeeShop.ViewModels.StaffVM
             }
         }
 
-        private async void SendReportEmail(string filePath, int staffId)
+        private string CreateExcelReport(ObservableCollection<DepotItemDTO> data)
+        {
+            ExcelPackage.License.SetNonCommercialPersonal("2G1G Café");
+
+            string fileName = $"BaoCaoKho_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
+            _filePath = Path.Combine(Path.GetTempPath(), fileName);
+            // Neu la admin thi luu file tren desktop
+            if (UserSession.Instance.StaffRole == "Admin")
+            {
+                string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop); // Lay duong dan toi Desktop
+                _filePath = Path.Combine(desktopPath, fileName);
+            }
+
+            using (var package = new ExcelPackage(new FileInfo(_filePath)))
+            {
+                // Tao work sheet
+                var workSheet = package.Workbook.Worksheets.Add("Báo Cáo Kho");
+                // true = co header
+                workSheet.Cells["A1"].LoadFromCollection(data, true, TableStyles.Medium1);
+
+
+                workSheet.Cells[workSheet.Dimension.Address].AutoFitColumns();
+                workSheet.Cells[1, 1, 1, 6].Style.Font.Bold = true;
+
+                // Ví dụ định dạng cột số lượng (giả sử cột số 4 là Quantity)
+                workSheet.Column(4).Style.Numberformat.Format = "#,##0.00";
+
+                package.Save();
+                return _filePath;
+            }
+        }
+
+        private async void SendReportEmail(int staffId)
         {
             string staffName = UserSession.Instance.StaffName;
             try
@@ -87,7 +157,7 @@ namespace CoffeeShop.ViewModels.StaffVM
                         string mailBody = $"Gửi Admin, \n\n" +
                                     $"Nhân viên {staffName} (ID: {staffId}) vừa gửi báo cáo kho hàng đính kèm.\n\n" +
                                     $"Báo cáo được tạo lúc: {DateTime.Now:HH:mm:ss}";
-                        sendTasks.Add(MailUtils.SendEmailAsync(email, mailSubject, mailBody, filePath));
+                        sendTasks.Add(MailUtils.SendEmailAsync(email, mailSubject, mailBody, _filePath));
                     }
 
                     await Task.WhenAll(sendTasks);
@@ -101,12 +171,26 @@ namespace CoffeeShop.ViewModels.StaffVM
             }
             finally
             {
-                if (File.Exists(filePath))
+                if (File.Exists(_filePath))
                 {
-                    File.Delete(filePath);
+                    File.Delete(_filePath);
                 }
             }
             
+        }
+
+        private void ExecuteExport(Window window)
+        {
+            CreateExcelReport(ReportData); // Chi tao file khong gui mail
+            if (!string.IsNullOrEmpty(_filePath))
+            {
+                window?.Close();
+                MessageBox.Show($"Báo cáo đã được xuất thành công tại: {_filePath}", "Thành công");
+            }
+            else
+            {
+                MessageBox.Show("Xuất báo cáo thất bại.", "Lỗi");
+            }
         }
 
         private void LoadReportData()

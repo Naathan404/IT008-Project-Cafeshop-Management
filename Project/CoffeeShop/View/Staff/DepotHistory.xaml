@@ -115,7 +115,7 @@
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
-                    <DataGridTextColumn Header="Số lượng" Binding="{Binding Quantity, StringFormat={}{0:#,##0.##}}" Width="0.7*">
+                    <DataGridTextColumn Header="Số lượng" Binding="{Binding Quantity, StringFormat='{}{0:#,##0.##}'}" Width="0.7*">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
                                 <Setter Property="HorizontalAlignment" Value="Center"></Setter>
