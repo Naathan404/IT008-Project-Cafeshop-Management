@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Windows;
+using System.Windows.Data;
 
 namespace CoffeeShop.ViewModels.StaffVM
 {
@@ -58,14 +59,15 @@ namespace CoffeeShop.ViewModels.StaffVM
             });
             ChooseCustomerCommand = new RelayCommand<Customer>(c =>
             {
+                if (c == null) return;
                 SelectedCustomer = new OrderCustomer
                 {
                     CustomerId = c.CustomerId,
                     CustomerName = c.CustomerName,
-                    PhoneNumber = c.PhoneNumber,
+                    PhoneNumber = c.PhoneNumber ?? "",
                     Email = c.Email,
                     Point = c.Point,
-                    Tier = c.Tier
+                    Tier = c.Tier ?? ""
                 };
             });
             ChooseTableCommand = new RelayCommand<OrderTable>(ChooseTable);
@@ -129,8 +131,8 @@ namespace CoffeeShop.ViewModels.StaffVM
             {
                 CustomerId = 0, // ID = 0 không được tồn tại trong DB
                 CustomerName = "Khách vãng lai",
-                PhoneNumber = null,
-                Email = null,
+                PhoneNumber = "",
+                Email = "",
             };
             try
             {
@@ -147,10 +149,10 @@ namespace CoffeeShop.ViewModels.StaffVM
                         {
                             CustomerId = customer.CustomerId,
                             CustomerName = customer.CustomerName,
-                            PhoneNumber = customer.PhoneNumber,
+                            PhoneNumber = customer.PhoneNumber ?? "",
                             Email = customer.Email,
                             Point = customer.Point,
-                            Tier = customer.Tier,
+                            Tier = customer.Tier ?? ""
                         });
                     }
                 }
@@ -276,7 +278,7 @@ namespace CoffeeShop.ViewModels.StaffVM
         #endregion
 
         #region Management Orders Methods 
-        private void Orders_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private void Orders_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
         {
             if (e.NewItems != null)
             {
@@ -296,7 +298,7 @@ namespace CoffeeShop.ViewModels.StaffVM
             CalculateTotalAmount();
         }
 
-        private void OrderItem_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void OrderItem_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             // Khi total price thay đổi --> cập nhật total amount
             if (e.PropertyName == nameof(OrderDetailItem.TotalPrice))
@@ -324,7 +326,7 @@ namespace CoffeeShop.ViewModels.StaffVM
             }
         }
         // Thêm món vào đơn hàng  
-        public void AddItemToOrder(OrderItem item, string selectedSize, string note, decimal price)
+        public void AddItemToOrder(OrderItem item, string? selectedSize, string? note, decimal price)
         {
             if (item == null) return;
             selectedSize = selectedSize ?? string.Empty;
@@ -377,7 +379,7 @@ namespace CoffeeShop.ViewModels.StaffVM
             if (item != null && item.Quantity > 1)
                 item.Quantity--;
             else
-                Orders.Remove(item);
+                Orders.Remove(item!);
             CalculateTotalAmount();
         }
         // Tính tổng tiền đơn hàng
@@ -453,7 +455,7 @@ namespace CoffeeShop.ViewModels.StaffVM
             // Mặc định chọn khách hàng là vãng lai (ID = 0)
             SelectedCustomer = _customers.FirstOrDefault(c => c.CustomerId == 0);
             // Mặc định chọn thanh toán bằng tiền mặt
-            SelectedPaymentMethod = PaymentMethod.FirstOrDefault(p => p.Equals("Tiền mặt"));
+            SelectedPaymentMethod = PaymentMethod.FirstOrDefault(p => p.Equals("Tiền mặt")) ?? PaymentMethod.First();
             // Mặc định không in bill
             IsCheckedPrintBill = false;
             // cập nhật discount sau khi reset
@@ -491,7 +493,7 @@ namespace CoffeeShop.ViewModels.StaffVM
 
 
         // Tìm kiếm khách hàng
-        private void SearchCustomer(object parameter)
+        private void SearchCustomer(object? parameter)
         {
             if (FilteredCustomers == null)
                 FilteredCustomers = new ObservableCollection<OrderCustomer>();
@@ -541,13 +543,8 @@ namespace CoffeeShop.ViewModels.StaffVM
 
         #region Management Customers Methods
         // Thêm khách hàng mới
-        public OrderCustomer AddCustomer(string customerName, string customerPhoneNumber, string customerEmail)
+        public OrderCustomer AddCustomer(string customerName, string customerPhoneNumber, string? customerEmail)
         {
-            if (string.IsNullOrWhiteSpace(customerName) || string.IsNullOrWhiteSpace(customerPhoneNumber))
-            {
-                MessageBox.Show("Vui lòng nhập tên và số điện thoại khách hàng.", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
-                return null;
-            }
             using (var db = new CoffeeShopContext())
             {
                 // Kiểm tra khách hàng đã tồn tại chưa theo số điện thoại
@@ -559,10 +556,10 @@ namespace CoffeeShop.ViewModels.StaffVM
                     var exist = new OrderCustomer
                     {
                         CustomerName = existingCustomer.CustomerName,
-                        PhoneNumber = existingCustomer.PhoneNumber,
+                        PhoneNumber = existingCustomer.PhoneNumber ?? "",
                         Email = existingCustomer.Email,
                         Point = existingCustomer.Point,
-                        Tier = existingCustomer.Tier
+                        Tier = existingCustomer.Tier ?? ""
                     };
                     SelectedCustomer = exist;
                     return exist;
@@ -616,6 +613,16 @@ namespace CoffeeShop.ViewModels.StaffVM
         #region PayOrder Methods
         private void PayOrderWindow (object param)
         {
+            // Force commit edit trước khi refresh view hoặc mở window mới
+            var view = CollectionViewSource.GetDefaultView(Orders);
+            if (view is IEditableCollectionView editableView)
+            {
+                if (editableView.IsAddingNew)
+                    editableView.CommitNew();
+
+                if (editableView.IsEditingItem)
+                    editableView.CommitEdit();
+            }
             if (CanPayOrder)
             {
                 PaymentWindow payWindow = new PaymentWindow(this);

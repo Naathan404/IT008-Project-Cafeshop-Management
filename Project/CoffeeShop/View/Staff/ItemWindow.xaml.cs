@@ -24,14 +24,17 @@ namespace CoffeeShop.View.Staff
             if (item.ItemPrices != null && item.ItemPrices.Count > 0)
             {
                 var firstSize = item.ItemPrices.First();
+
                 if (_currentItem.CategoryId == 7)
                     _selectedSize = null; // food không có size
                 else
-                {
-                    _selectedSize = firstSize.Size.SizeName;
-                    _selectedPrice = firstSize.Price;
-                }
+                    if (firstSize.Size != null)
+                    {
+                        _selectedSize = firstSize.Size.SizeName;
+                        _selectedPrice = firstSize.Price;
+                    }
             }
+
         }
 
         #region Item Events
@@ -61,23 +64,21 @@ namespace CoffeeShop.View.Staff
                 int numOfSize = sizeList.Count;
                 if (numOfSize > 0)
                 {
-                    var stkSizeName = stackPanel.FindName("stpnItemSize") as StackPanel;
-                    stkSizeName.Visibility = Visibility.Visible;
+                    if (stackPanel.FindName("stpnItemSize") is StackPanel stkSizeName)
+                        stkSizeName.Visibility = Visibility.Visible;
                     for (int i = 0; i < numOfSize; i++)
                     {
-                        string bdrName = "bdrItemSize" + i.ToString();
-                        var bdr = stackPanel.FindName(bdrName) as Border;
-                        if (bdr != null)
+                        string bdrName = "bdrItemSize" + i;
+
+                        if (stackPanel.FindName($"bdrItemSize{i}") is Border bdr && bdr.Child is TextBlock txt &&
+                                sizeList != null && i < sizeList.Count && sizeList[i] is { } sizeItem)
                         {
-                            var textBlock = bdr.Child as TextBlock;
-                            if (textBlock != null)
-                            {
-                                textBlock.Text = sizeList[i].SizeName;
-                                bdr.Visibility = Visibility.Visible;
-                            }
+                            txt.Text = sizeItem.SizeName;
+                            bdr.Visibility = Visibility.Visible;
                         }
                     }
                 }
+
             }
         }
 
@@ -102,9 +103,11 @@ namespace CoffeeShop.View.Staff
                 // Nếu border đang selected thì KHÔNG đổi màu khi hover
                 if (border.Tag is bool isSelected && isSelected == true)
                     return;
-                border.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#D4BA98"));
-                var txtb = border.Child as TextBlock;
-                txtb.Foreground = (SolidColorBrush)(new BrushConverter().ConvertFrom("#340D05"));
+                border.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#D4BA98"));
+                if (border.Child is TextBlock txtb)
+                {
+                    txtb.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#340D05"));
+                }
             }
         }
 
@@ -116,8 +119,10 @@ namespace CoffeeShop.View.Staff
                 if (border.Tag is bool isSelected && isSelected == true)
                     return;
                 border.Background = Brushes.Transparent; // trả về nền mặc định
-                var txtb = border.Child as TextBlock;
-                txtb.Foreground = (SolidColorBrush)(new BrushConverter().ConvertFrom("#766839"));
+                if (border.Child is TextBlock txtb)
+                {
+                    txtb.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#766839"));
+                }
             }
         }
         private void bdrItemSize_MouseDown(object sender, MouseButtonEventArgs e)
@@ -133,15 +138,15 @@ namespace CoffeeShop.View.Staff
                     bdr.Tag = false;
                     bdr.Background = Brushes.Transparent;
                     if (bdr.Child is TextBlock t)
-                        t.Foreground = (SolidColorBrush)new BrushConverter().ConvertFrom("#766839");
+                        t.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#766839"));
                 }
 
                 // Tô màu border đang click
                 bdrSize.Tag = true;
-                bdrSize.Background = (SolidColorBrush)new BrushConverter().ConvertFrom("#766839");
+                bdrSize.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#766839"));
                 if (bdrSize.Child is TextBlock txt)
                 {
-                    txt.Foreground = (SolidColorBrush)new BrushConverter().ConvertFrom("#EDE2D3");
+                    txt.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#EDE2D3"));
                     _selectedSize = txt.Text.Trim();
                 }
                 // Lấy giá
@@ -163,9 +168,11 @@ namespace CoffeeShop.View.Staff
         {
             if (sender is Border border)
             {
-                border.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#D4BA98"));
-                var txtb = border.Child as TextBlock;
-                txtb.Foreground = (SolidColorBrush)(new BrushConverter().ConvertFrom("#340D05"));
+                border.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#D4BA98"));
+                if (border.Child is TextBlock txtb)
+                {
+                    txtb.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#340D05"));
+                }
             }
         }
 
@@ -174,8 +181,10 @@ namespace CoffeeShop.View.Staff
             if (sender is Border border)
             {
                 border.Background = Brushes.Transparent; // trả về nền mặc định
-                var txtb = border.Child as TextBlock;
-                txtb.Foreground = (SolidColorBrush)(new BrushConverter().ConvertFrom("#766839"));
+                if (border.Child is TextBlock txtb)
+                {
+                    txtb.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#766839"));
+                }
             }
         }
 
@@ -183,9 +192,11 @@ namespace CoffeeShop.View.Staff
         {
             if (sender is Border border)
             {
-                border.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#D4BA98"));
-                var txtb = border.Child as TextBlock;
-                txtb.Foreground = (SolidColorBrush)(new BrushConverter().ConvertFrom("#340D05"));
+                border.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#D4BA98"));
+                if (border.Child is TextBlock txtb)
+                {
+                    txtb.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#340D05"));
+                }
             }
         }
 
@@ -194,8 +205,10 @@ namespace CoffeeShop.View.Staff
             if (sender is Border border)
             {
                 border.Background = Brushes.Transparent; // trả về nền mặc định
-                var txtb = border.Child as TextBlock;
-                txtb.Foreground = (SolidColorBrush)(new BrushConverter().ConvertFrom("#766839"));
+                if (border.Child is TextBlock txtb)
+                {
+                    txtb.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#766839"));
+                }
             }
         }
         private void bdrAddToOrder_MouseDown(object sender, MouseButtonEventArgs e)
@@ -223,7 +236,7 @@ namespace CoffeeShop.View.Staff
 
         #region Helper Methods
         // Hàm tìm kiếm phần tử cha trong Visual Tree
-        public static T FindParent<T>(DependencyObject child) where T : DependencyObject
+        public static T? FindParent<T>(DependencyObject child) where T : DependencyObject
         {
             DependencyObject parentObject = VisualTreeHelper.GetParent(child);
             if (parentObject == null) return null;
@@ -233,21 +246,22 @@ namespace CoffeeShop.View.Staff
         }
         private decimal GetPriceFromBorder(Border bdrItemSize)
         {
-            if (bdrItemSize == null) return 0;
+            if (bdrItemSize?.Child is not TextBlock txtSize)
+                return 0;
 
-            if (!(bdrItemSize.Child is TextBlock txtSize)) return 0;
             string sizeName = txtSize.Text;
 
             var stackPanel = FindParent<StackPanel>(bdrItemSize);
-            if (stackPanel == null) return 0;
+            if (stackPanel?.DataContext is not OrderItem item)
+                return 0;
 
-            var item = stackPanel.DataContext as OrderItem;
-            if (item == null || item.ItemPrices == null) return 0;
+            if (item.ItemPrices == null)
+                return 0;
+            var selected = item.ItemPrices.FirstOrDefault(p => p is { Size: { SizeName: not null } s } && s.SizeName == sizeName);
 
-            var selectedPrice = item.ItemPrices.FirstOrDefault(p => p.Size.SizeName == sizeName)?.Price ?? 0;
-
-            return selectedPrice;
+            return selected?.Price ?? 0;
         }
+
         #endregion
     }
 }

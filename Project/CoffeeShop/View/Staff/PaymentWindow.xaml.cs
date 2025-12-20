@@ -22,14 +22,14 @@ namespace CoffeeShop.ViewModels.StaffVM
         {
             if (sender is Border bdr)
             {
-                bdr.Background = (SolidColorBrush)new BrushConverter().ConvertFrom("#766839");
+                bdr.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#766839"));
                 var tb = bdr.Child as TextBlock;
                 if (tb != null)
-                    tb.Foreground = (SolidColorBrush)new BrushConverter().ConvertFrom("#EDE2D3");
+                    tb.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#EDE2D3"));
 
                 bdr.Effect = new DropShadowEffect
                 {
-                    Color = ((SolidColorBrush)new BrushConverter().ConvertFrom("#766839")).Color, // Màu bóng tối
+                    Color = (Color)ColorConverter.ConvertFromString("#766839"), // Màu bóng tối
                     Direction = 315, // Góc đổ bóng
                     ShadowDepth = 4, // Độ sâu/khoảng cách của bóng
                     BlurRadius = 10, // Độ mờ của bóng
@@ -42,10 +42,10 @@ namespace CoffeeShop.ViewModels.StaffVM
         {
             if (sender is Border bdr)
             {
-                bdr.Background = (SolidColorBrush)new BrushConverter().ConvertFrom("#EDE2D3");
+                bdr.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#EDE2D3"));
                 var tb = bdr.Child as TextBlock;
                 if (tb != null)
-                    tb.Foreground = (SolidColorBrush)new BrushConverter().ConvertFrom("#766839");
+                    tb.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#766839"));
 
                 bdr.Effect = null;
             }

@@ -9,8 +9,8 @@ namespace CoffeeShop.ViewModels.StaffVM
     public partial class StaffOrderViewModel : INotifyPropertyChanged
     {
         #region INotifyPropertyChanged
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void OnPropertyChanged(string propertyName = null)
+        public event PropertyChangedEventHandler? PropertyChanged;
+        protected virtual void OnPropertyChanged(string? propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
@@ -30,8 +30,8 @@ namespace CoffeeShop.ViewModels.StaffVM
             }
         }
         // Tab được chọn
-        private TabItem _selectedTabItem;
-        public TabItem SelectedTabItem
+        private TabItem? _selectedTabItem;
+        public TabItem? SelectedTabItem
         {
             get => _selectedTabItem;
             set
@@ -40,13 +40,13 @@ namespace CoffeeShop.ViewModels.StaffVM
                 OnPropertyChanged();
 
                 // Lấy CategoryId từ Tag của TabItem
-                if (value != null && value.Tag != null)
+                if (value?.Tag is string tag && int.TryParse(tag, out int id))
                 {
-                    CurrentCategoryId = int.Parse(value.Tag.ToString());
+                    CurrentCategoryId = id;
                 }
             }
         }
-        private ObservableCollection<OrderItem> _filteredItems;
+        private ObservableCollection<OrderItem> _filteredItems = new ObservableCollection<OrderItem>();
         public ObservableCollection<OrderItem> FilteredItems
         {
             get => _filteredItems;
@@ -93,7 +93,7 @@ namespace CoffeeShop.ViewModels.StaffVM
             }
         }
         // List khách hàng tìm kiếm theo keyword
-        private ObservableCollection<OrderCustomer> _filteredCustomers;
+        private ObservableCollection<OrderCustomer> _filteredCustomers = new ObservableCollection<OrderCustomer>();
         public ObservableCollection<OrderCustomer> FilteredCustomers
         {
             get => _filteredCustomers;
@@ -107,8 +107,8 @@ namespace CoffeeShop.ViewModels.StaffVM
         // Kiểm tra có kết quả tìm kiếm khách hàng hay không
         public bool HasSearchResults => FilteredCustomers != null && FilteredCustomers.Count > 0;
         // Khách hàng được chọn
-        private OrderCustomer _selectedCustomer;
-        public OrderCustomer SelectedCustomer
+        private OrderCustomer? _selectedCustomer;
+        public OrderCustomer? SelectedCustomer
         {
             get => _selectedCustomer;
             set
@@ -144,8 +144,8 @@ namespace CoffeeShop.ViewModels.StaffVM
         }
 
         // Bàn được chọn để đặt món
-        private OrderTable _selectedTable = null; // Mặc định là không chọn bàn
-        public OrderTable SelectedTable
+        private OrderTable? _selectedTable = null; // Mặc định là không chọn bàn
+        public OrderTable? SelectedTable
         {
             get { return _selectedTable; }
             set
@@ -160,8 +160,8 @@ namespace CoffeeShop.ViewModels.StaffVM
         public string SelectedTableDisplay => SelectedTable?.TableName ?? "Không";
 
         // Tìm kiếm món trong MenuPanel
-        private string _searchItemKeyword;
-        public string SearchItemKeyword
+        private string? _searchItemKeyword;
+        public string? SearchItemKeyword
         {
             get { return _searchItemKeyword; }
             set
@@ -173,7 +173,7 @@ namespace CoffeeShop.ViewModels.StaffVM
         }
 
         // Tìm kiếm khách hàng
-        private string _seachCustomerKeyword;
+        private string _seachCustomerKeyword = "";
         public string SearchCustomerKeyword
         {
             get { return _seachCustomerKeyword; }
@@ -211,8 +211,8 @@ namespace CoffeeShop.ViewModels.StaffVM
             }
         }
         // Giảm giá được áp dụng cho order
-        private OrderDiscount _selectedDiscount;
-        public OrderDiscount SelectedDiscount
+        private OrderDiscount? _selectedDiscount;
+        public OrderDiscount? SelectedDiscount
         {
             get => _selectedDiscount;
             set
@@ -257,7 +257,7 @@ namespace CoffeeShop.ViewModels.StaffVM
                 OnPropertyChanged(nameof(PaymentMethod));
             }
         }
-        private string _selectedPaymentMethod;
+        private string _selectedPaymentMethod = "";
         public string SelectedPaymentMethod
         {
             get => _selectedPaymentMethod;
@@ -282,18 +282,18 @@ namespace CoffeeShop.ViewModels.StaffVM
         #endregion
 
         #region Commands
-        public ICommand AddItemCommand { get; set; }
-        public ICommand RemoveItemCommand { get; set; }
-        public ICommand IncreaseQuantityCommand { get; set; }
-        public ICommand DecreaseQuantityCommand { get; set; }
-        public ICommand SearchCustomerCommand { get; set; }
-        public ICommand AddCustomerCommand { get; set; }
-        public ICommand ChooseTableCommand { get; set; }
-        public ICommand ChooseCustomerCommand { get; set; }
-        public ICommand CancelOrderCommand { get; set; }
-        public ICommand PayOrderCommand { get; set; }
-        public ICommand ChoosePaymentMethodCommand { get; set; }
-        public ICommand ConfirmPayOrderCommand { get; set; }
+        public ICommand AddItemCommand { get; set; } = null!;
+        public ICommand RemoveItemCommand { get; set; } = null!;
+        public ICommand IncreaseQuantityCommand { get; set; } = null!;
+        public ICommand DecreaseQuantityCommand { get; set; } = null!;
+        public ICommand SearchCustomerCommand { get; set; } = null!;
+        public ICommand AddCustomerCommand { get; set; } = null!;
+        public ICommand ChooseCustomerCommand { get; set; } = null!;
+        public ICommand ChooseTableCommand { get; set; } = null!;
+        public ICommand CancelOrderCommand { get; set; } = null!;
+        public ICommand PayOrderCommand { get; set; } = null!;
+        public ICommand ChoosePaymentMethodCommand { get; set; } = null!;
+        public ICommand ConfirmPayOrderCommand { get; set; } = null!;
         #endregion
 
         #region Helper Classes
@@ -351,6 +351,7 @@ namespace CoffeeShop.ViewModels.StaffVM
 
             public OrderItem()
             {
+                _itemName = string.Empty;
                 _itemPrices = new ObservableCollection<ItemPrice>();
                 _imagePath = "/Assets/Images/imgItemExample.jpg"; // Ví dụ hình ảnh
             }
@@ -360,10 +361,10 @@ namespace CoffeeShop.ViewModels.StaffVM
         {
             private int _customerId;
             private string _customerName = string.Empty;
-            private string _phoneNumber;
-            private string _email;
+            private string _phoneNumber = string.Empty;
+            private string? _email;
             private int _point;
-            private string _tier;
+            private string _tier = string.Empty;
 
             public int CustomerId
             {
@@ -383,7 +384,7 @@ namespace CoffeeShop.ViewModels.StaffVM
                 set { _phoneNumber = value; OnPropertyChanged(); }
             }
 
-            public string Email
+            public string? Email
             {
                 get => _email;
                 set { _email = value; OnPropertyChanged(); }
@@ -407,7 +408,7 @@ namespace CoffeeShop.ViewModels.StaffVM
             private int _tableId;
             private string _tableName = string.Empty;
             private int _tableStatus;
-            private string _note;
+            private string? _note;
 
             public int TableId
             {
@@ -427,7 +428,7 @@ namespace CoffeeShop.ViewModels.StaffVM
                 set { _tableStatus = value; OnPropertyChanged(); }
             }
 
-            public string Note
+            public string? Note
             {
                 get => _note;
                 set { _note = value; OnPropertyChanged(); }
@@ -491,7 +492,7 @@ namespace CoffeeShop.ViewModels.StaffVM
                 }
             }
 
-            public string Note
+            public string? Note
             {
                 get => _note;
                 set 
@@ -504,9 +505,9 @@ namespace CoffeeShop.ViewModels.StaffVM
 
         public class NotificationBase : INotifyPropertyChanged
         {
-            public event PropertyChangedEventHandler PropertyChanged;
+            public event PropertyChangedEventHandler? PropertyChanged;
 
-            protected virtual void OnPropertyChanged([System.Runtime.CompilerServices.CallerMemberName] string propertyName = null)
+            protected virtual void OnPropertyChanged([System.Runtime.CompilerServices.CallerMemberName] string? propertyName = null)
             {
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
             }
