@@ -17,6 +17,8 @@ public partial class Customer
 
     public string? Tier { get; set; }
 
+    public DateTime JoinDate { get; set; }
+
     public bool IsDeleted { get; set; }
 
     public virtual ICollection<Order> Orders { get; set; } = new List<Order>();

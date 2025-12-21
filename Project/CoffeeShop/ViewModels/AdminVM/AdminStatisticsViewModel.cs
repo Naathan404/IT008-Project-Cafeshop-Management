@@ -24,7 +24,7 @@ namespace CoffeeShop.ViewModels.AdminVM
             StartDate = DateTime.Today.AddDays(-7);
             EndDate = DateTime.Today;
             IsShowRevenue = true;
-            ShowRevenueIcon = PackIconKind.CashOff;
+            ShowRevenueIcon = PackIconKind.Cash;
             CurrencyFormatter = value => value.ToString("N0");
             PercentFormatter = value => value.ToString("P0");
 
@@ -37,8 +37,7 @@ namespace CoffeeShop.ViewModels.AdminVM
             ChangeChartValueCommand = new RelayCommand<object>((p) =>
             {
                 IsShowRevenue = !IsShowRevenue;
-                if (IsShowRevenue) ShowRevenueIcon = PackIconKind.Cash;
-                else ShowRevenueIcon = PackIconKind.CashOff;
+                ShowRevenueIcon = IsShowRevenue ? PackIconKind.Cash : PackIconKind.CashOff;
             });
 
             LoadColorPalette();
@@ -301,6 +300,8 @@ namespace CoffeeShop.ViewModels.AdminVM
             using (var db = new CoffeeShopContext())
             {
                 var data = await db.OrderDetails
+                    .AsNoTracking()
+                    .IgnoreQueryFilters()
                     .Where(o => o.Order.OrderDate >= from && o.Order.OrderDate < to)
                     .GroupBy(o => o.Price.Item.ItemName)
                     .Select(g => new { Key = g.Key, Quantity = g.Sum(o => o.Quantity), Revenue = g.Sum(x => x.TotalPrice) })
@@ -339,6 +340,8 @@ namespace CoffeeShop.ViewModels.AdminVM
             using (var db = new CoffeeShopContext())
             {
                 var data = await db.OrderDetails
+                    .AsNoTracking()
+                    .IgnoreQueryFilters()
                     .Where(od => od.Order.OrderDate >= from && od.Order.OrderDate < to) // Lọc ngày trước
                     .Include(od => od.Price).ThenInclude(p => p.Item).ThenInclude(i => i.Category) // Nối bảng
                     .GroupBy(od => od.Price.Item.Category.CategoryName) // Gom nhóm theo tên Danh mục
@@ -380,6 +383,7 @@ namespace CoffeeShop.ViewModels.AdminVM
             using (var db = new CoffeeShopContext())
             {
                 var data = await db.Orders
+                    .AsNoTracking()
                     .Include(o => o.Discount)
                     .Where(o => o.OrderDate >= from && o.OrderDate < to && o.DiscountId != null)
                     .GroupBy(o => o.Discount!.DiscountCode)

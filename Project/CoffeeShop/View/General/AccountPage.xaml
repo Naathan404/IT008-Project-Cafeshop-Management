@@ -139,6 +139,7 @@
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
@@ -150,14 +151,19 @@
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
                                 <materialDesign:PackIcon Kind="AccountKey" Width="20" Height="20" Foreground="{StaticResource PrimaryColor}"/>
                                 <TextBlock Grid.Column="1" Text="Tên đăng nhập" Style="{StaticResource LabelText}"/>
                                 <TextBlock Grid.Column="1" Text="{Binding Username}" Style="{StaticResource ValueText}" VerticalAlignment="Bottom"/>
+                                <Rectangle Grid.Column="2" Width="1"  Fill="{StaticResource PrimaryColor}" Margin="4 0 0 0" HorizontalAlignment="Center" VerticalAlignment="Stretch">
+                                </Rectangle>
+                                <materialDesign:PackIcon Kind="{Binding Gender}" Grid.Column="3" Width="20" Height="20" Foreground="{StaticResource PrimaryColor}" />
                             </Grid>
                         </Border>
 
-                        <Border Grid.Row="2" Grid.Column="0" Style="{StaticResource InfoCardItem}">
+                        <Border Grid.Row="3" Grid.Column="1" Style="{StaticResource InfoCardItem}">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto"/>
@@ -193,7 +199,43 @@
                             </Grid>
                         </Border>
 
-                        <Border Grid.Row="3" Grid.ColumnSpan="2" Style="{StaticResource InfoCardItem}" Margin="4,15,4,4" Background="#F1F8E9">
+                        <Border Grid.Row="2" Grid.Column="1" Style="{StaticResource InfoCardItem}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <materialDesign:PackIcon Kind="PhoneOutline" Width="20" Height="20" Foreground="{StaticResource PrimaryColor}"/>
+                                <TextBlock Grid.Column="1" Text="Điện thoại" Style="{StaticResource LabelText}"/>
+                                <TextBlock Grid.Column="1" Text="{Binding Phonenumber}" Style="{StaticResource ValueText}" VerticalAlignment="Bottom"/>
+                            </Grid>
+                        </Border>
+
+                        <Border Grid.Row="2" Grid.Column="0" Style="{StaticResource InfoCardItem}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <materialDesign:PackIcon Kind="BirthdayCakeOutline" Width="20" Height="20" Foreground="{StaticResource PrimaryColor}"/>
+                                <TextBlock Grid.Column="1" Text="Ngày sinh" Style="{StaticResource LabelText}"/>
+                                <TextBlock Grid.Column="1" Text="{Binding Birthday}" Style="{StaticResource ValueText}" VerticalAlignment="Bottom"/>
+                            </Grid>
+                        </Border>
+
+                        <Border Grid.Row="3" Grid.Column="0" Style="{StaticResource InfoCardItem}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <materialDesign:PackIcon Kind="CalendarStartOutline" Width="20" Height="20" Foreground="{StaticResource PrimaryColor}"/>
+                                <TextBlock Grid.Column="1" Text="Ngày vào làm" Style="{StaticResource LabelText}"/>
+                                <TextBlock Grid.Column="1" Text="{Binding StartDate}" Style="{StaticResource ValueText}" VerticalAlignment="Bottom"/>
+                            </Grid>
+                        </Border>
+
+                        <Border Grid.Row="4" Grid.ColumnSpan="2" Style="{StaticResource InfoCardItem}" Margin="4,15,4,4" Background="#F1F8E9">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto"/>
