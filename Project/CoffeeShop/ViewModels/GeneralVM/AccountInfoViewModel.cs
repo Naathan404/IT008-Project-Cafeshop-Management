@@ -9,8 +9,9 @@ namespace CoffeeShop.ViewModels.GeneralVM
 {
     public class AccountInfoViewModel : BaseViewModel
     {
-        private CoffeeShop.Models.Staff _staff;
+        private Staff _staff;
         private Window _parentWindow;
+        CultureInfo viVn = new CultureInfo("vn-VN");
 
         private string _name = null!;
         public string Name
@@ -133,20 +134,20 @@ namespace CoffeeShop.ViewModels.GeneralVM
                 }
                 else
                 {
-                    Shift = "Trống";
+                    Shift = "---";
                 }
             }
             switch (_staff.StaffRole)
             {
                 case "Admin":
                     Role = "QUẢN LÝ";
+                    BaseSalary = "---";
                     break;
                 default:
                     Role = "NHÂN VIÊN";
+                    BaseSalary = (_staff.BaseSalary)?.ToString("N0", viVn) + "đ/giờ";
                     break;
             }
-            CultureInfo viVn = new CultureInfo("vn-VN");
-            BaseSalary = (_staff.BaseSalary)?.ToString("N0", viVn) + "đ/giờ";
         }
 
 
