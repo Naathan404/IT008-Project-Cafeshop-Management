@@ -1,18 +1,17 @@
 ﻿using CoffeeShop.Models;
 using CoffeeShop.Service;
+using CoffeeShop.Service.DTOs;
 using CoffeeShop.Service.Interfaces;
+using OfficeOpenXml;
+using OfficeOpenXml.Table;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Windows;
 using System.Windows.Input;
-// Thư viện EPPlus
-using OfficeOpenXml;
-using OfficeOpenXml.Table;
-using CoffeeShop.Service.DTOs;
 
-namespace CoffeeShop.ViewModels.StaffVM
+namespace CoffeeShop.ViewModels.AdminVM
 {
-    public class StaffDepotViewModel : BaseViewModel
+    public class AdminDepotViewModel : BaseViewModel
     {
         private readonly IDialogService _dialogService; // Dùng để mở các cửa sổ phụ
         // Commands
@@ -23,7 +22,7 @@ namespace CoffeeShop.ViewModels.StaffVM
         public ICommand DeleteItemCommand { get; private set; } = null!;
         public ICommand TogglePopupCommand { get; private set; } = null!;
         public ICommand ShowDepotHistory { get; private set; } = null!;
-        public ICommand ReportCommand { get; private set; } = null!;
+        public ICommand ExportFileCommand { get; private set; } = null!;
 
 
         // Data Collection
@@ -123,7 +122,7 @@ namespace CoffeeShop.ViewModels.StaffVM
         #endregion
 
         //Constructor
-        public StaffDepotViewModel(IDialogService dialogService)
+        public AdminDepotViewModel(IDialogService dialogService)
         {
             _dialogService = dialogService;
             LoadCommands();
@@ -211,7 +210,7 @@ namespace CoffeeShop.ViewModels.StaffVM
             MinQuantity = null;
             MaxQuantity = null;
 
-            SelectedUnit = "tất cả"; 
+            SelectedUnit = "tất cả";
 
             // Chạy lại bộ lọc để hiển thị toàn bộ dữ liệu
             ExecuteApplyFilter(null);
@@ -300,11 +299,74 @@ namespace CoffeeShop.ViewModels.StaffVM
         {
             _dialogService.OpenDepotHistoryWindow();
         }
+        #endregion
         private void ExecuteReport(object? parameter)
         {
-            _dialogService.OpenReportDepotWindow();
+            List<DepotItemDTO> reportData;
+            string reportPath = string.Empty;
+
+            try
+            {
+                using (var db = new CoffeeShopContext())
+                {
+                    var data = db.Inventories
+                                .Where(i => i.IsDeleted == false)
+                                .Select(i => new DepotItemDTO
+                                {
+                                    MaterialId = i.MaterialId,
+                                    MaterialName = i.MaterialName,
+                                    Quantity = i.Quantity,
+                                    Unit = i.Unit,
+                                    Note = i.Note
+                                })
+                                .ToList();
+                    reportData = data;
+                }
+
+                if (reportData.Count == 0)
+                {
+                    MessageBox.Show("Không có dữ liệu báo cáo.", "Thông báo");
+                    return;
+                }
+
+                reportPath = CreateExcelReport(reportData); // Tạo file và lấy đường dẫn
+
+                // reportData: Hiển thị dữ liệu preview
+                // reportPath: Hỗ trợ gửi file báo cáo
+                _dialogService.OpenReportDepotWindow();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi tạo báo cáo: {ex.Message}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
-        #endregion
+
+        private string CreateExcelReport(List<DepotItemDTO> data)
+        {
+            ExcelPackage.License.SetNonCommercialPersonal("2G1G Café");
+
+            string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop); // Lay duong dan toi Desktop
+            string fileName = $"BaoCaoKho_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
+            string filePath = Path.Combine(desktopPath, fileName);
+
+            using (var package = new ExcelPackage(new FileInfo(filePath)))
+            {
+                // Tao work sheet
+                var workSheet = package.Workbook.Worksheets.Add("Báo Cáo Kho");
+                // true = co header
+                workSheet.Cells["A1"].LoadFromCollection(data, true, TableStyles.Medium1);
+
+
+                workSheet.Cells[workSheet.Dimension.Address].AutoFitColumns();
+                workSheet.Cells[1, 1, 1, 6].Style.Font.Bold = true;
+
+                // Ví dụ định dạng cột số lượng (giả sử cột số 4 là Quantity)
+                workSheet.Column(4).Style.Numberformat.Format = "#,##0.00";
+
+                package.Save();
+                return filePath;
+            }
+        }
 
         // Load dữ liệu cho dg
         private void LoadDepotItem()
@@ -342,7 +404,7 @@ namespace CoffeeShop.ViewModels.StaffVM
 
             TogglePopupCommand = new RelayCommand<object>(ExecuteTogglePopup);
             ShowDepotHistory = new RelayCommand<object>(ExecuteShowHistory);
-            ReportCommand = new RelayCommand<object>(ExecuteReport);
+            ExportFileCommand = new RelayCommand<object>(ExecuteReport);
         }
     }
 }

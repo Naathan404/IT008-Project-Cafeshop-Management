@@ -132,6 +132,9 @@ CREATE TABLE [Order]
 	CONSTRAINT FK_Order_Discount FOREIGN KEY (DiscountID) REFERENCES Discount(DiscountID)
 );
 
+select * from [order]
+where day(orderdate) = 17 and month(orderdate) = 12
+
 -- Tạo bảng OrderDetail
 CREATE TABLE OrderDetail (
     OrderDetailID INT IDENTITY(1,1) PRIMARY KEY,
@@ -388,17 +391,6 @@ VALUES
 (N'Chiều', '14:30:00', '22:30:00'),  -- Ca 8 tiếng
 (N'Tối', '17:00:00', '23:00:00');    -- Ca 6 tiếng part time
 GO
-
-	StaffID INT IDENTITY(1,1) PRIMARY KEY,
-	StaffName NVARCHAR(100) NOT NULL,
-	Username NVARCHAR(100) UNIQUE NOT NULL,
-	PasswordHash NVARCHAR(150) NOT NULL,
-	StaffRole NVARCHAR(50) NOT NULL,			-- Admin, Employee
-	Phonenumber NVARCHAR(20) NOT NULL,
-	Email NVARCHAR(50) NOT NULL,
-	ShiftID INT NULL,
-	BaseSalary MONEY NULL, 
-    IsDeleted BIT NOT NULL DEFAULT 0
 
 INSERT INTO Staff (StaffName, Username, PasswordHash, StaffRole, Phonenumber, Email, ShiftID, BaseSalary)
 VALUES

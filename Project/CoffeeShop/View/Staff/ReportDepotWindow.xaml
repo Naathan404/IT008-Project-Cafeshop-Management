@@ -1,0 +1,77 @@
+﻿<Window x:Class="CoffeeShop.View.Staff.ReportDepotWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CoffeeShop.View.Staff"
+        mc:Ignorable="d" 
+        x:Name="ReportWindow"
+        Icon="/CoffeeShop;component/Assets/icoCoffee.ico"
+        Title="{Binding WindowTitle}" Height="800" Width="1000"
+        WindowStartupLocation="CenterScreen">
+    <Grid Background="#F9F6F0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="10*"></RowDefinition>
+            <RowDefinition Height="2*"></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <!-- Preview datagrid -->
+        <Border Grid.Column="0" BorderBrush="#bc9466" BorderThickness="10" CornerRadius="10" Margin="15">
+            <DataGrid x:Name="dgDepot" SelectionMode="Single"
+                ColumnHeaderStyle="{StaticResource dgHeaderStyle}"
+                Background="#F9F6F0"
+                AutoGenerateColumns="False" CanUserAddRows="False"
+                CanUserResizeColumns="False" CanUserReorderColumns="False"
+                HorizontalAlignment="Stretch"
+                GridLinesVisibility="None"
+                IsReadOnly="true" ItemsSource="{Binding ReportData}">
+                <DataGrid.Columns>
+
+                    <DataGridTextColumn Header="ID"  Binding="{Binding MaterialId}" Width="0.7*">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="HorizontalAlignment" Value="Center"></Setter>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="Tên" Binding="{Binding MaterialName}" Width="1.4*"/>
+                    <DataGridTextColumn Header="Số lượng" Binding="{Binding Quantity, StringFormat='{}{0:#,##0.##}'}" Width="0.7*">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="HorizontalAlignment" Value="Center"></Setter>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="Đơn vị" Binding="{Binding Unit}" Width="0.8*">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="HorizontalAlignment" Value="Center"></Setter>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="Ghi chú" Binding="{Binding Note}" Width="1.4*"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Border>
+
+        <!-- Quit and Submit button -->
+        <Grid Grid.Row="1">
+            <Button x:Name="btnQuit" Content="Thoát" FontSize="30"
+                Style="{StaticResource depotButtonStyle}"
+                Width="250" Height="70"
+                HorizontalAlignment="Left" VerticalAlignment="Center"
+                Command="{Binding CloseCommand}"
+                CommandParameter="{Binding ElementName=ReportWindow}"
+                Margin="120, 0">
+            </Button>
+
+            <Button x:Name="btnSubmit" Content="{Binding SubmitButtonText}" FontSize="30"
+                Style="{StaticResource depotButtonStyle}"
+                Width="250" Height="70"
+                HorizontalAlignment="Right" VerticalAlignment="Center"
+                Command="{Binding SendCommand}"
+                Margin="120, 0">
+            </Button>
+        </Grid>
+    </Grid>
+</Window>

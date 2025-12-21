@@ -29,25 +29,42 @@
                 <ColumnDefinition></ColumnDefinition>
                 <ColumnDefinition></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            <TextBlock Grid.Column="0"
-                x:Name="txblOrderID"
-                Text="Mã hóa đơn: HDXXXXX-XXXX"
-                Foreground="#FF340D05"
-                FontFamily="Cascadia Code"
-                FontWeight="Bold"
-                FontSize="20"
-                Margin="20 5 5 5"
-                VerticalAlignment="Bottom"></TextBlock>
-            <TextBlock Grid.Column="1"
-                x:Name="txblTable"
-                Text="Bàn: XX"
-                Foreground="#FF340D05"
-                FontFamily="Cascadia Code"
-                FontWeight="Bold"
-                FontSize="20"
-                HorizontalAlignment="Right"
-                Margin="5 5 20 5"
-                VerticalAlignment="Bottom"></TextBlock>            
+            <StackPanel 
+                Grid.Column="0"
+                Orientation="Horizontal">
+                <TextBlock
+                    Text="Mã hóa đơn: "
+                    Foreground="#FF340D05"
+                    FontFamily="Cascadia Code"
+                    FontWeight="Bold"
+                    FontSize="20"
+                    Margin="20 5 0 5"
+                    VerticalAlignment="Bottom">
+                </TextBlock>
+                <TextBlock
+                    Text="{Binding DisplayID}"
+                    Foreground="#FF340D05"
+                    FontFamily="Cascadia Code"
+                    FontWeight="Bold"
+                    FontSize="20"
+                    Margin="0 5 5 5"
+                    VerticalAlignment="Bottom">
+                </TextBlock>                
+            </StackPanel>
+            <StackPanel 
+                Grid.Column="1"
+                Orientation="Horizontal"
+                HorizontalAlignment="Right">
+                <TextBlock
+                    Text="{Binding TableName}"
+                    Foreground="#FF340D05"
+                    FontFamily="Cascadia Code"
+                    FontWeight="Bold"
+                    FontSize="20"
+                    Margin="0 5 20 5"
+                    VerticalAlignment="Bottom">
+                </TextBlock>
+            </StackPanel>
         </Grid>
 
         <Grid Grid.Row="1">
@@ -55,45 +72,85 @@
                 <ColumnDefinition Width="7*"></ColumnDefinition>
                 <ColumnDefinition Width="3*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            <TextBlock Grid.Column="0"
-                x:Name="txblOrderDate"
-                Text="Thời gian: dd//mm/yyyy HH:mm:ss"
-                Foreground="#FF340D05"
-                FontFamily="Cascadia Code"
-                FontWeight="Bold"
-                FontSize="18"
-                HorizontalAlignment="Left"
-                Margin="20 5 5 5"></TextBlock>
+            <StackPanel 
+                Grid.Column="0"
+                Orientation="Horizontal">
+                <TextBlock
+                    Text="Ngày tạo: "
+                    Foreground="#FF340D05"
+                    FontFamily="Cascadia Code"
+                    FontWeight="Bold"
+                    FontSize="20"
+                    Margin="20 5 0 5"
+                    VerticalAlignment="Bottom">
+                </TextBlock>
+                <TextBlock
+                    Text="{Binding OrderDate}"
+                    Foreground="#FF340D05"
+                    FontFamily="Cascadia Code"
+                    FontWeight="Bold"
+                    FontSize="20"
+                    Margin="0 5 5 5"
+                    VerticalAlignment="Bottom">
+                </TextBlock>
+            </StackPanel>
             <TextBlock Grid.Column="1"
                 x:Name="txblPaymentMethod"
-                Text="Chuyển khoản"
+                Text="{Binding PaymentMethod}"
                 Foreground="#FF340D05"
                 FontFamily="Cascadia Code"
                 FontWeight="Bold"
                 FontSize="18"
                 HorizontalAlignment="Right"
-                Margin="5 5 20 5"></TextBlock>            
+                Margin="5 5 20 5">
+            </TextBlock>            
         </Grid>
 
-        <TextBlock Grid.Row="2"
-            x:Name="txblCustomer"
-            Text="Khách hàng: Nguyễn Chí Nguyên"
-            Foreground="#FF340D05"
-            FontFamily="Cascadia Code"
-            FontWeight="Bold"
-            FontSize="18"
-            HorizontalAlignment="Left"
-            Margin="20 5 5 5"></TextBlock>
+        <StackPanel 
+                Grid.Row="2"
+                Orientation="Horizontal">
+            <TextBlock
+                    Text="Khách hàng: "
+                    Foreground="#FF340D05"
+                    FontFamily="Cascadia Code"
+                    FontWeight="Bold"
+                    FontSize="20"
+                    Margin="20 5 0 5"
+                    VerticalAlignment="Bottom">
+            </TextBlock>
+            <TextBlock
+                    Text="{Binding CustomerName}"
+                    Foreground="#FF340D05"
+                    FontFamily="Cascadia Code"
+                    FontWeight="Bold"
+                    FontSize="20"
+                    Margin="0 5 5 5"
+                    VerticalAlignment="Bottom">
+            </TextBlock>
+        </StackPanel>
 
-        <TextBlock Grid.Row="3"
-            x:Name="txblemployee"
-            Text="Nhân viên: Lê Thành Nghĩa"
-            Foreground="#FF340D05"
-            FontFamily="Cascadia Code"
-            FontWeight="Bold"
-            FontSize="18"
-            HorizontalAlignment="Left"
-            Margin="20 5 5 5"></TextBlock>
+        <StackPanel 
+                Grid.Row="3"
+                Orientation="Horizontal">
+            <TextBlock
+                    Text="Nhân viên: "
+                    Foreground="#FF340D05"
+                    FontFamily="Cascadia Code"
+                    FontWeight="Bold"
+                    FontSize="20"
+                    Margin="20 5 0 5"
+                    VerticalAlignment="Bottom">
+            </TextBlock>
+            <TextBlock
+                    Text="{Binding StaffName}"
+                    Foreground="#FF340D05"
+                    FontFamily="Cascadia Code"
+                    FontWeight="Bold"
+                    FontSize="20"
+                    Margin="0 5 5 5"
+                    VerticalAlignment="Bottom">
+            </TextBlock>
+        </StackPanel>
 
         <Border Grid.Row="4"
                 Margin="20 10 20 5"
@@ -101,7 +158,7 @@
                 BorderThickness="10"
                 CornerRadius="5">
             <DataGrid 
-                x:Name="dgOrderDetail"
+                ItemsSource="{Binding OrderDetails}"
                 AutoGenerateColumns="False" CanUserAddRows="False"
                 CanUserResizeColumns="False" CanUserReorderColumns="False"
                 HorizontalAlignment="Stretch"
@@ -110,12 +167,42 @@
                 ColumnHeaderStyle="{StaticResource dgHeaderStyle}"
                 >
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Tên món" Width="4*" Binding="{Binding oName}"></DataGridTextColumn>
-                    <DataGridTextColumn Header="Size" Width="1*" Binding="{Binding oSize}"></DataGridTextColumn>
-                    <DataGridTextColumn Header="Số lượng" Width="2*" Binding="{Binding oQuantity}"></DataGridTextColumn>
-                    <DataGridTextColumn Header="Đơn giá" Width="3*" Binding="{Binding oPrice}"></DataGridTextColumn>
-                    <DataGridTextColumn Header="Thành tiền" Width="3*" Binding="{Binding oTotal}"></DataGridTextColumn>
-                    <DataGridTextColumn Header="Ghi chú" Width="4*" Binding="{Binding oNote}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="Tên món" Width="4*" Binding="{Binding ItemName}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="Size" Width="1*" Binding="{Binding SizeName}">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="HorizontalAlignment" Value="Center"></Setter>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="Số lượng" Width="2*" Binding="{Binding Quantity}">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="HorizontalAlignment" Value="Center"></Setter>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="Đơn giá" Width="2*" Binding="{Binding UnitPrice}">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="HorizontalAlignment" Value="Center"></Setter>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="Thành tiền" Width="2*" Binding="{Binding TotalPrice}">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="HorizontalAlignment" Value="Center"></Setter>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="Ghi chú" Width="3*" Binding="{Binding Note}">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="HorizontalAlignment" Value="Left"></Setter>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
                 </DataGrid.Columns>
             </DataGrid>
         </Border>
@@ -137,7 +224,7 @@
                 Margin="5"></TextBlock>
             <TextBlock Grid.Column="2"
                 x:Name="txblSubTotal"
-                Text="10.000.000"
+                Text="{Binding SubTotal}"
                 Foreground="#FF340D05"
                 FontFamily="Cascadia Code"
                 FontWeight="Bold"
@@ -163,7 +250,7 @@
                 Margin="5"></TextBlock>
                     <TextBlock Grid.Column="2"
                 x:Name="txblDiscountMoney"
-                Text="10.000.000"
+                Text="{Binding DiscountMoney}"
                 Foreground="#FF340D05"
                 FontFamily="Cascadia Code"
                 FontWeight="Bold"
@@ -189,7 +276,7 @@
                 Margin="5"></TextBlock>
             <TextBlock Grid.Column="2"
                 x:Name="txblTotalAmount"
-                Text="10.000.000"
+                Text="{Binding TotalAmount}"
                 Foreground="#FF340D05"
                 FontFamily="Cascadia Code"
                 FontWeight="Bold"

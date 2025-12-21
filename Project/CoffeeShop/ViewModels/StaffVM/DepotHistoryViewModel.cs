@@ -1,9 +1,9 @@
 ﻿using CoffeeShop.Models;
+using CoffeeShop.Service.DTOs;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
-using static CoffeeShop.ViewModels.StaffVM.StaffDepotViewModel;
 
 namespace CoffeeShop.ViewModels.StaffVM
 {
@@ -13,93 +13,6 @@ namespace CoffeeShop.ViewModels.StaffVM
         public ICommand ClearFilterCommand { get; private set; } = null!;
         public ICommand TogglePopupCommand { get; private set; } = null!;
         public ICommand ShowDetailDepotHistoryCommand { get; private set; } = null!;
-
-        public class DepotHistoryItem : BaseViewModel
-        {
-            private string? _staffName;
-            public string? StaffName
-            {
-                get => _staffName;
-                set
-                {
-                    if (_staffName != value)
-                    {
-                        _staffName = value;
-                        OnPropertyChanged();
-                    }
-                }
-            }
-
-            private string? _materialName;
-            public string? MaterialName
-            {
-                get => _materialName;
-                set
-                {
-                    if (_materialName != value)
-                    {
-                        _materialName = value;
-                        OnPropertyChanged();
-                    }
-                }
-            }
-
-            private decimal? _quantity;
-            public decimal? Quantity
-            {
-                get => _quantity;
-                set
-                {
-                    if (_quantity != value)
-                    {
-                        _quantity = value;
-                        OnPropertyChanged();
-                    }
-                }
-            }
-
-            //private decimal? _price;
-            //public decimal? Price
-            //{
-            //    get => _price;
-            //    set
-            //    {
-            //        if (_price != value)
-            //        {
-            //            _price = value;
-            //            OnPropertyChanged();
-            //        }
-            //    }
-            //}
-
-            private DateTime? _date;
-            public DateTime? Date
-            {
-                get => _date;
-                set
-                {
-                    if (_date != value)
-                    {
-                        _date = value;
-                        OnPropertyChanged();
-                    }
-                }
-            }
-
-            private string? _actionName;
-            public string? ActionName
-            {
-                get => _actionName;
-                set
-                {
-                    if (_actionName != value)
-                    {
-                        _actionName = value;
-                        OnPropertyChanged();
-                    }
-                }
-            }
-        }
 
         private string _popupVisibleState = "Collapsed";
         public string PopupVisibleState
@@ -116,7 +29,7 @@ namespace CoffeeShop.ViewModels.StaffVM
         }
 
         // Data Collection
-        public ObservableCollection<DepotHistoryItem> depotHistoryItems { get; set; } = new ObservableCollection<DepotHistoryItem>();
+        public ObservableCollection<DepotHistoryItemDTO> depotHistoryItems { get; set; } = new ObservableCollection<DepotHistoryItemDTO>();
         public ObservableCollection<string> actionTypes { get; set; } = new ObservableCollection<string>()
         {
             "Tất cả", "Nhập", "Dùng", "Cập nhật", "Hủy"
@@ -126,8 +39,9 @@ namespace CoffeeShop.ViewModels.StaffVM
             "Tất cả", "Nguyễn Chí Nguyên", "Nguyễn Ngọc Lan Anh", "Lê Thành Nghĩa", "ADMIN"
         };
 
-        private DepotItem? _selectedItem;
-        public DepotItem? SelectedItem
+        #region Properties
+        private DepotItemDTO? _selectedItem;
+        public DepotItemDTO? SelectedItem
         {
             get => _selectedItem;
             set
@@ -270,6 +184,7 @@ namespace CoffeeShop.ViewModels.StaffVM
                 }
             }
         }
+        #endregion
 
         public DepotHistoryViewModel()
         {
@@ -361,7 +276,7 @@ namespace CoffeeShop.ViewModels.StaffVM
                     foreach (var item in items)
                     {
                         // Ánh xạ an toàn
-                        depotHistoryItems.Add(new DepotHistoryItem
+                        depotHistoryItems.Add(new DepotHistoryItemDTO
                         {
                             MaterialName = item.Material.MaterialName ?? string.Empty,
                             Quantity = item.Quantity,
@@ -422,7 +337,7 @@ namespace CoffeeShop.ViewModels.StaffVM
                                     .ToList();
                 foreach (var historyItem in historyItems)
                 {
-                    depotHistoryItems.Add(new DepotHistoryItem()
+                    depotHistoryItems.Add(new DepotHistoryItemDTO()
                     {
                         StaffName = historyItem.Staff.StaffName,
                         MaterialName = historyItem.Material.MaterialName,

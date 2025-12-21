@@ -29,7 +29,7 @@
             </Grid.ColumnDefinitions>
             <StackPanel x:Name="stpnItemInfo"
                         Grid.Column="0" 
-                        Margin="10 40 0 30">
+                        Margin="10 30 0 30">
                 <TextBlock x:Name="txblItemName"
                            Text="{Binding ItemName}"
                            d:Text="Cà phê sữa"

@@ -411,7 +411,7 @@
                                                          Foreground="#766839"/>
                                 <TextBox x:Name="txblSearchItem"
                                          Grid.Column="1"
-                                         Text="{Binding SearchItemKeyword, UpdateSourceTrigger=PropertyChanged}"
+                                         Text="{Binding SearchItemKeyword, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
                                          Height="40" MinWidth="80"
                                          materialDesign:HintAssist.Hint="Tìm kiếm"
                                          materialDesign:HintAssist.IsFloating="False"
@@ -866,6 +866,9 @@
                                             Background="Transparent"
                                             MouseEnter="border_MouseEnter"
                                             MouseLeave="border_MouseLeave">
+                                        <Border.InputBindings>
+                                            <MouseBinding Command="{Binding PayOrderCommand}" MouseAction="LeftClick"/>
+                                        </Border.InputBindings>
                                         <TextBlock Text="Thanh toán"
                                                    FontSize="25"
                                                    FontWeight="Bold"
