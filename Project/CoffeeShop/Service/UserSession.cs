@@ -18,12 +18,14 @@ namespace CoffeeShop.Service
         // Readonly
         public int StaffId { get; private set; }
         public string StaffName { get; private set; } = string.Empty;
+        public string StaffRole { get; private set; } = string.Empty;
 
         // Ghi dữ liệu vào ghi login
         public void SetUser(Staff staff)
         {
             this.StaffId = staff.StaffId;
             this.StaffName = staff.StaffName;
+            this.StaffRole = staff.StaffRole;
         }
 
         // Xóa dữ liệu khi logout

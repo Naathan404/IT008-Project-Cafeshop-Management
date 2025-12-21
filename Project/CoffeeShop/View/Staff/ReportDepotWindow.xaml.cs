@@ -1,19 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Controls.Ribbon;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+﻿using System.Windows;
 using CoffeeShop.ViewModels.StaffVM;
-using CoffeeShop.Service.DTOs;
 
 namespace CoffeeShop.View.Staff
 {
@@ -22,10 +8,10 @@ namespace CoffeeShop.View.Staff
     /// </summary>
     public partial class ReportDepotWindow : Window
     {
-        public ReportDepotWindow(List<DepotItemDTO> reportData, string filePath)
+        public ReportDepotWindow()
         {
             InitializeComponent();
-            this.DataContext = new ReportDepotViewModel( filePath);
+            this.DataContext = new ReportDepotViewModel();
         }
     }
 }
