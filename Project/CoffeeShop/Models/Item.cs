@@ -9,6 +9,10 @@ public partial class Item
 
     public string ItemName { get; set; } = null!;
 
+    public string? ImagePath { get; set; }
+
+    public string? Info { get; set; }
+
     public int CategoryId { get; set; }
 
     public bool IsAvailable { get; set; }

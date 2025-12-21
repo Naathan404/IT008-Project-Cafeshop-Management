@@ -35,6 +35,8 @@ CREATE TABLE Item
 (
 	ItemID INT IDENTITY(1,1) PRIMARY KEY,
 	ItemName NVARCHAR(50) NOT NULL,
+    ImagePath NVARCHAR(400) NULL DEFAULT '/Assets/Images/imgItemExample.jpg',
+    Info NVARCHAR(400) NULL,
 	CategoryID INT NOT NULL,				-- FK -> Category(CategoryID)
 	IsAvailable BIT NOT NULL,
     IsDeleted BIT NOT NULL DEFAULT 0
@@ -71,6 +73,7 @@ CREATE TABLE Customer
 	Email NVARCHAR(200) NULL,
 	Point INT NOT NULL DEFAULT 0,
 	Tier NVARCHAR(10) DEFAULT 'VIP1',		-- VIP1, VIP10, VIP100
+    JoinDate DATETIME NOT NULL,
     IsDeleted BIT NOT NULL DEFAULT 0
 );
 
@@ -93,6 +96,9 @@ CREATE TABLE Staff
 	StaffRole NVARCHAR(50) NOT NULL,			-- Admin, Employee
 	Phonenumber NVARCHAR(20) NOT NULL,
 	Email NVARCHAR(50) NOT NULL,
+    Birthday DATETIME NOT NULL,
+    StartDate DATETIME NOT NULL,
+    Gender NVARCHAR(5) NOT NULL,
 	ShiftID INT NULL,
 	BaseSalary MONEY NULL, 
     IsDeleted BIT NOT NULL DEFAULT 0
@@ -131,9 +137,6 @@ CREATE TABLE [Order]
 	CONSTRAINT FK_Order_Staff FOREIGN KEY (StaffID) REFERENCES Staff(StaffID),
 	CONSTRAINT FK_Order_Discount FOREIGN KEY (DiscountID) REFERENCES Discount(DiscountID)
 );
-
-select * from [order]
-where day(orderdate) = 17 and month(orderdate) = 12
 
 -- Tạo bảng OrderDetail
 CREATE TABLE OrderDetail (
@@ -245,6 +248,7 @@ DELETE FROM OTPRequest;
 -- SELECT 
 SELECT * FROM Staff
 SELECT * FROM [Order]
+SELECT * FROM Item
 
 ------------------------------------------------------------------SEED DATA----------------------------------------------------------------------------------------------
 INSERT INTO Category (CategoryName) 
@@ -258,38 +262,38 @@ VALUES
 (N'Food');
 GO
 
-INSERT INTO Item (ItemName, CategoryID, IsAvailable) 
+INSERT INTO Item (ItemName, CategoryID, IsAvailable, Info) 
 VALUES 
-(N'Cà phê sữa đá', 1, 1),
-(N'Đen đá không đường', 1, 1),
-(N'Trà sữa truyền thống', 2, 1),
-(N'Cà phê muối', 1, 1),
-(N'Cà phê đen', 1, 1),
-(N'Trà sữa kem cheese', 2, 1),
-(N'Bạc xỉu', 1, 1),
-(N'Trà sữa tiramisu', 2, 1),
-(N'Trà sữa olong', 2, 1),
-(N'Trà sữa gạo rang', 2, 1),
-(N'Trà trái cây nhiệt đới', 4, 1),
-(N'Trà đào', 4, 1),
-(N'Trà vải', 4, 1),
-(N'Nước ép cam', 5, 1),
-(N'Nước ép thơm', 5, 1),
-(N'Sinh tố bơ', 6, 1),
-(N'Sinh tố dâu', 6, 1),
-(N'Sinh tố sầu riêng', 6, 1),
-(N'Sinh tố mãng cầu', 6, 1),
-(N'Trà chanh giã tay', 4, 1),
-(N'Bánh crossant', 7, 1),
-(N'Bánh bông lan trứng muối', 7, 1),
-(N'Bánh tráng trộn', 7, 1),
-(N'Bánh tráng cuộn', 7, 1),
-(N'Panna cotta', 7, 1),
-(N'Cà phê đá xay', 3, 1),       -- Coffee Ice Blended
-(N'Matcha đá xay', 3, 1),       -- Matcha Ice Blended
-(N'Chocolate đá xay', 3, 1),    -- Chocolate Ice Blended
-(N'Cookies đá xay', 3, 1),      -- Cookies & Cream
-(N'Mocha đá xay', 3, 1);        -- Mocha Ice Blended;
+(N'Cà phê sữa đá', 1, 1, N'Vị truyền thống, đậm đà, độ ngọt vừa phải. Món quốc dân dễ uống nhất.'),
+(N'Đen đá không đường', 1, 1, N'Cafe nguyên chất 100%, vị đắng mạnh, thơm nồng. Dành cho khách gu mạnh, cần tỉnh táo gấp.'),
+(N'Trà sữa truyền thống', 2, 1, N'Vị trà và sữa cân bằng, có sẵn trân châu đen. Lựa chọn an toàn nếu khách không biết uống gì.'),
+(N'Cà phê muối', 1, 1, N'Hot trend. Vị mặn nhẹ của lớp kem muối bên trên làm dịu vị đắng cafe, uống rất cuốn.'),
+(N'Cà phê đen', 1, 1, N'Có đường nhẹ, vẫn giữ vị đắng đặc trưng nhưng dễ uống hơn loại không đường.'),
+(N'Trà sữa kem cheese', 2, 1, N'Điểm nhấn là lớp kem phô mai mặn béo bên trên. Khuyên khách nên uống nghiêng ly để cảm nhận cả 2 lớp.'),
+(N'Bạc xỉu', 1, 1, N'Nhiều sữa đặc, rất ít cafe. Dành cho khách thích vị ngọt béo hoặc sợ say cafe.'),
+(N'Trà sữa tiramisu', 2, 1, N'Vị bánh Tiramisu thơm mùi ca cao và rượu nhẹ (siro), hơi béo ngậy, lạ miệng.'),
+(N'Trà sữa olong', 2, 1, N'Vị trà nướng đậm đà hơn trà thường, hậu vị ngọt thanh, ít béo hơn truyền thống.'),
+(N'Trà sữa gạo rang', 2, 1, N'Mùi gạo rang rất thơm và dễ chịu (giống bỏng ngô), vị thanh nhẹ, ít ngọt gắt.'),
+(N'Trà trái cây nhiệt đới', 4, 1, N'Kết hợp Dưa hấu, Táo, Cam... Vị chua ngọt tự nhiên, rất mát, giải khát tốt nhất.'),
+(N'Trà đào', 4, 1, N'Trà đen kết hợp miếng đào ngâm giòn. Món kinh điển, dễ uống, vị ngọt đậm.'),
+(N'Trà vải', 4, 1, N'Hương vải thơm nồng nàn, có trái vải tươi. Vị ngọt thanh hơn trà đào.'),
+(N'Nước ép cam', 5, 1, N'Cam tươi vắt 100%, có thể chỉnh độ đường. Bổ sung Vitamin C.'),
+(N'Nước ép thơm', 5, 1, N'Ép từ trái thơm chín, vị chua ngọt, hỗ trợ tiêu hóa tốt sau khi ăn.'),
+(N'Sinh tố bơ', 6, 1, N'Dùng bơ sáp, xay đặc và dẻo, vị béo ngậy tự nhiên. Có thể thêm ít sữa đặc.'),
+(N'Sinh tố dâu', 6, 1, N'Vị chua nhiều hơn ngọt, màu hồng đẹp. Thích hợp cho khách nữ hoặc trẻ em.'),
+(N'Sinh tố sầu riêng', 6, 1, N'Mùi rất nồng và đặc trưng, cực kỳ béo. Chỉ tư vấn cho khách ăn được sầu riêng.'),
+(N'Sinh tố mãng cầu', 6, 1, N'Vị chua chua ngọt ngọt rất lạ miệng, không hề bị ngán như các loại sinh tố khác.'),
+(N'Trà chanh giã tay', 4, 1, N'Dùng chanh Quảng Đông (vỏ dày) giã tay để lấy tinh dầu thơm, chua dịu không gắt.'),
+(N'Bánh crossant', 7, 1, N'Bánh sừng trâu, vỏ giòn ruột xốp. Ăn kèm cafe nóng hoặc Cappuccino là chuẩn bài.'),
+(N'Bánh bông lan trứng muối', 7, 1, N'Cốt bánh mềm, có sốt dầu trứng béo và trứng muối mặn. Dùng ăn sáng hoặc ăn xế.'),
+(N'Bánh tráng trộn', 7, 1, N'Vị chua cay mặn ngọt đủ cả, có khô bò, xoài. Món ăn vặt quốc dân.'),
+(N'Bánh tráng cuộn', 7, 1, N'Cuộn chặt tay với sốt bơ và tôm khô, dễ ăn, không bị dính tay như bánh trộn.'),
+(N'Panna cotta', 7, 1, N'Thạch kem sữa mềm mịn kiểu Ý, ăn kèm sốt dâu/chanh dây chua nhẹ để cân bằng.'),
+(N'Cà phê đá xay', 3, 1, N'Cafe xay nhuyễn với đá, trên có kem tươi (whipping cream). Tỉnh táo nhưng mát lạnh.'),
+(N'Matcha đá xay', 3, 1, N'Dùng bột Matcha Nhật, vị chát nhẹ đặc trưng, xay cùng sữa béo. Màu xanh đẹp mắt.'),
+(N'Chocolate đá xay', 3, 1, N'Đậm vị sô-cô-la, hơi đắng nhẹ nhưng hậu ngọt. Trẻ em rất thích món này.'),
+(N'Cookies đá xay', 3, 1, N'Xay chung với bánh Oreo, có vụn bánh giòn giòn vui miệng, vị ngọt béo.'),
+(N'Mocha đá xay', 3, 1, N'Kết hợp Cafe và Chocolate. Dành cho khách muốn uống cafe nhưng sợ đắng.')
 GO
 
 INSERT INTO Size (SizeName)
@@ -333,28 +337,28 @@ VALUES
 (30, 1, 29000), (30, 2, 35000), (30, 3, 39000);
 GO
 
-INSERT INTO Customer (CustomerName, PhoneNumber, Email, Point, Tier) 
+INSERT INTO Customer (CustomerName, PhoneNumber, Email, Point, Tier, JoinDate) 
 VALUES 
-(N'Nguyễn Văn An', '0901234567', 'annguyen@gmail.com', 3350, 'VIP100'),
-(N'Trần Thị Bích', '0918889999', 'bichtran@gmail.com', 1200, 'VIP10'),
-(N'Lê Hoàng Nam', '0987654321', 'namle@gmail.com', 600, 'VIP1'),
-(N'Phạm Minh Tuấn', '0933445566', 'tuanpham@gmail.com', 150, 'VIP1'), 
-(N'Võ Thị Mai', '0912341234', 'maivo@gmail.com', 50, 'VIP1'),
-(N'Đặng Thu Thảo', '0909112233', 'thuthao.dang@gmail.com', 3200, 'VIP100'),
-(N'Hoàng Văn Minh', '0913556677', 'minh.hoang123@gmail.com', 850, 'VIP1'),
-(N'Lý Gia Hân', '0988776655', 'hanly.cute@gmail.com', 100, 'VIP1'),
-(N'Phan Thanh Tâm', '0933998877', 'tamphan.dev@gmail.com', 1800, 'VIP10'),
-(N'Bùi Quốc Đạt', '0977445566', 'datbui.quoc@gmail.com', 4500, 'VIP100'),
-(N'Trương Mỹ Lan', '0905123456', 'lantruong.my@gmail.com', 50, 'VIP1'),
-(N'Vũ Đức Đam', '0912345678', 'damvu.duc@gmail.com', 1100, 'VIP10'),
-(N'Đỗ Thị Hồng', '0966889900', 'hongdo.thi88@gmail.com', 200, 'VIP1'),
-(N'Ngô Bảo Châu', '0944556677', 'chau.ngo.math@gmail.com', 5600, 'VIP100'),
-(N'Lâm Chấn Huy', '0932112233', 'huychanlam.singer@gmail.com', 950, 'VIP1'),
-(N'Phạm Thu Hà', '0909998877', 'phamthuha.joy@gmail.com', 2100, 'VIP100'),
-(N'Đinh Văn Hùng', '0912223344', 'hungdinh.sport@gmail.com', 1300, 'VIP10'),
-(N'Nguyễn Thị Lan', '0988665544', 'lanthi.nguyen99@gmail.com', 500, 'VIP1'),
-(N'Hoàng Quốc Việt', '0977112233', 'viethoang.tech@gmail.com', 80, 'VIP1'),
-(N'Lê Bảo Ngọc', '0933557799', 'ngocle.bao@gmail.com', 530, 'VIP1')
+(N'Nguyễn Văn An', '0901234567', 'annguyen@gmail.com', 3350, 'VIP100', '2024-12-20'),
+(N'Trần Thị Bích', '0918889999', 'bichtran@gmail.com', 1200, 'VIP10', '2025-2-28'),
+(N'Lê Hoàng Nam', '0987654321', 'namle@gmail.com', 600, 'VIP1', '2025-8-13'),
+(N'Phạm Minh Tuấn', '0933445566', 'tuanpham@gmail.com', 150, 'VIP1', '2025-11-28'), 
+(N'Võ Thị Mai', '0912341234', 'maivo@gmail.com', 50, 'VIP1', '2026-1-4'),
+(N'Đặng Thu Thảo', '0909112233', 'thuthao.dang@gmail.com', 3200, 'VIP100', '2025-4-5'),
+(N'Hoàng Văn Minh', '0913556677', 'minh.hoang123@gmail.com', 850, 'VIP1', '2025-7-12'),
+(N'Lý Gia Hân', '0988776655', 'hanly.cute@gmail.com', 100, 'VIP1', '2025-11-16'),
+(N'Phan Thanh Tâm', '0933998877', 'tamphan.dev@gmail.com', 1800, 'VIP10', '2025-6-21'),
+(N'Bùi Quốc Đạt', '0977445566', 'datbui.quoc@gmail.com', 4500, 'VIP100', '2024-8-30'),
+(N'Trương Mỹ Lan', '0905123456', 'lantruong.my@gmail.com', 50, 'VIP1', '2026-1-10'),
+(N'Vũ Đức Đam', '0912345678', 'damvu.duc@gmail.com', 1100, 'VIP10', '2025-5-14'),
+(N'Đỗ Thị Hồng', '0966889900', 'hongdo.thi88@gmail.com', 200, 'VIP1', '2025-11-11'),
+(N'Ngô Bảo Châu', '0944556677', 'chau.ngo.math@gmail.com', 5600, 'VIP100', '2025-3-10'),
+(N'Lâm Chấn Huy', '0932112233', 'huychanlam.singer@gmail.com', 950, 'VIP1', '2025-9-7'),
+(N'Phạm Thu Hà', '0909998877', 'phamthuha.joy@gmail.com', 2100, 'VIP100', '2024-12-15'),
+(N'Đinh Văn Hùng', '0912223344', 'hungdinh.sport@gmail.com', 1300, 'VIP10', '2025-5-17'),
+(N'Nguyễn Thị Lan', '0988665544', 'lanthi.nguyen99@gmail.com', 500, 'VIP1', '2025-10-12'),
+(N'Hoàng Quốc Việt', '0977112233', 'viethoang.tech@gmail.com', 80, 'VIP1', '2026-1-1'),
+(N'Lê Bảo Ngọc', '0933557799', 'ngocle.bao@gmail.com', 530, 'VIP1', '2025-12-13')
 GO
 
 INSERT INTO CafeTable (TableName, TableStatus, Note) 
@@ -392,13 +396,13 @@ VALUES
 (N'Tối', '17:00:00', '23:00:00');    -- Ca 6 tiếng part time
 GO
 
-INSERT INTO Staff (StaffName, Username, PasswordHash, StaffRole, Phonenumber, Email, ShiftID, BaseSalary)
+INSERT INTO Staff (StaffName, Username, PasswordHash, StaffRole, Phonenumber, Email, ShiftID, BaseSalary, Birthday, StartDate, Gender)
 VALUES
-(N'ADMIN', 'admin', N'bf0dbd74174039131b667de9f31b5d8012baaf82011b934b2cc0e3bd53a02a1f', N'Admin', '0865320821', N'coffeeshop2g1g@gmail.com', NULL, NULL),
-(N'Nguyễn Chí Nguyên', N'ngnguyen', N'bf0dbd74174039131b667de9f31b5d8012baaf82011b934b2cc0e3bd53a02a1f', N'Admin', '0865320821', N'nathannguyen6002@gmail.com', NULL, NULL),
-(N'Nguyễn Ngọc Lan Anh', N'ngnlananh', N'bf0dbd74174039131b667de9f31b5d8012baaf82011b934b2cc0e3bd53a02a1f', N'Employee', '0988888888', N'ngnlananh@gmail.com', 2, 25000),
-(N'Lê Thành Nghĩa', N'ltnghia', N'bf0dbd74174039131b667de9f31b5d8012baaf82011b934b2cc0e3bd53a02a1f', N'Employee', '0977778888', N'24521143@gm.uit.edu.vn', 1, 20000),
-(N'EMPLOYEE', '1', N'bf0dbd74174039131b667de9f31b5d8012baaf82011b934b2cc0e3bd53a02a1f', N'Employee', '0865320821', N'nathannguyen6002@gmail.com', 1, 20000)
+(N'Tài Khoản Quản Lý', 'admin', N'bf0dbd74174039131b667de9f31b5d8012baaf82011b934b2cc0e3bd53a02a1f', N'Admin', '0865320821', N'coffeeshop2g1g@gmail.com', NULL, NULL, '2000-1-1', '2000-1-1', N'Nam'),
+(N'Nguyễn Chí Nguyên', N'ngnguyen', N'bf0dbd74174039131b667de9f31b5d8012baaf82011b934b2cc0e3bd53a02a1f', N'Admin', '0865320821', N'nathannguyen6002@gmail.com', NULL, NULL, '2006-3-10', '2024-9-5', N'Nam'),
+(N'Nguyễn Ngọc Lan Anh', N'ngnlananh', N'bf0dbd74174039131b667de9f31b5d8012baaf82011b934b2cc0e3bd53a02a1f', N'Employee', '0988888888', N'ngnlananh@gmail.com', 2, 25000, '2006-11-11', '2025-3-2', N'Nữ'),
+(N'Lê Thành Nghĩa', N'ltnghia', N'bf0dbd74174039131b667de9f31b5d8012baaf82011b934b2cc0e3bd53a02a1f', N'Employee', '0977778888', N'24521143@gm.uit.edu.vn', 1, 20000, '2006-11-15', '2025-10-1', N'Nam'),
+(N'Tài khoản nhân viên', '1', N'bf0dbd74174039131b667de9f31b5d8012baaf82011b934b2cc0e3bd53a02a1f', N'Employee', '0865320821', N'nathannguyen6002@gmail.com', 1, 20000, '2000-1-1', '2000-1-1', N'Nam')
 GO
 
 INSERT INTO Discount (DiscountCode, DiscountName, DiscountType, DiscountValue, MinimumOrderValue, MaximumDiscountAmount) 
@@ -484,8 +488,8 @@ DECLARE @StartDate DATE = '2025-10-01'; -- Ngày bắt đầu
 DECLARE @DaysRange INT = 100;            -- Chạy dữ liệu cho 61 ngày (2 tháng)
 
 -- Cấu hình khoảng số lượng đơn mỗi ngày (Min - Max)
-DECLARE @MinOrdersPerDay INT = 15;      -- Ít nhất 15 đơn/ngày
-DECLARE @MaxOrdersPerDay INT = 40;      -- Nhiều nhất 40 đơn/ngày
+DECLARE @MinOrdersPerDay INT = 5;      -- Ít nhất 15 đơn/ngày
+DECLARE @MaxOrdersPerDay INT = 30;      -- Nhiều nhất 40 đơn/ngày
 
 -- Bảng tạm để lưu dữ liệu "nháp"
 DECLARE @StagingOrders TABLE (

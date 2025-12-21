@@ -1,6 +1,7 @@
 ﻿using CoffeeShop.Models;
 using CoffeeShop.Service;
 using CoffeeShop.View.Login;
+using MaterialDesignThemes.Wpf;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Input;
@@ -90,6 +91,39 @@ namespace CoffeeShop.ViewModels.GeneralVM
             }
         }   
 
+        private string _birthday = null!;
+        public string Birthday
+        {
+            get => _birthday;
+            set
+            {
+                _birthday = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _startDate = null!;
+        public string StartDate
+        {
+            get => _startDate;
+            set
+            {
+                _startDate = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private PackIconKind _gender;
+        public PackIconKind Gender
+        {
+            get => _gender;
+            set
+            {
+                _gender = value;
+                OnPropertyChanged();
+            }
+        }
+
         private string _baseSalary = null!;
         public string BaseSalary
         {
@@ -121,7 +155,6 @@ namespace CoffeeShop.ViewModels.GeneralVM
             });
 
             Name = _staff.StaffName;
-            ID = "Mã nhân viên: NV" + _staff.Phonenumber.Substring(_staff.Phonenumber.Length - 3) + _staff.StaffId;
             Phonenumber = _staff.Phonenumber;
             Username = _staff.Username;
             Email = _staff.Email;
@@ -142,12 +175,17 @@ namespace CoffeeShop.ViewModels.GeneralVM
                 case "Admin":
                     Role = "QUẢN LÝ";
                     BaseSalary = "---";
+                    ID = "Mã nhân viên: ---";
                     break;
                 default:
                     Role = "NHÂN VIÊN";
                     BaseSalary = (_staff.BaseSalary)?.ToString("N0", viVn) + "đ/giờ";
+                    ID = "Mã nhân viên: NV" + _staff.Phonenumber.Substring(_staff.Phonenumber.Length - 3) + _staff.StaffId;
                     break;
             }
+            Birthday = _staff.Birthday.ToString("dd/MM/yyyy");
+            StartDate = _staff.StartDate.ToString("dd/MM/yyyy");
+            Gender = _staff.Gender == "Nam" ? PackIconKind.GenderMale : PackIconKind.GenderFemale;
         }
 
 
