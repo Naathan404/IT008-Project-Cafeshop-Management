@@ -41,11 +41,8 @@ namespace CoffeeShop.View.Staff
         #region Button Events
         private void bdrAccount_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            e.Handled = true;
             StaffFrame.Visibility = Visibility.Visible;
-            AccountWindow accountWindow = new AccountWindow(_account);
-            accountWindow.Owner = this;
-            accountWindow.ShowDialog();
+            StaffFrame.Navigate(new AccountPage(_account, this));
         }
         private void bdrOrder_MouseDown(object sender, MouseButtonEventArgs e)
         {
