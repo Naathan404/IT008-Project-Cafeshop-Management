@@ -20,7 +20,7 @@
 
                     <DoubleAnimation Storyboard.TargetName="MainBorder" 
                                  Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
-                                 From="100" To="0" 
+                                 To="0" 
                                  Duration="0:0:0.8"
                                  BeginTime="0:0:0.2">
                         <DoubleAnimation.EasingFunction>
@@ -30,7 +30,7 @@
 
                     <DoubleAnimation Storyboard.TargetName="MainBorder" 
                                  Storyboard.TargetProperty="Opacity"
-                                 From="0" To="1" 
+                                 To="1" 
                                  Duration="0:0:1.0"
                                  BeginTime="0:0:0.2"/>
                 </Storyboard>
@@ -49,7 +49,11 @@
             x:Name="MainBorder"
             Background="White"
             CornerRadius="30"
-            Height="450" Width="800">
+            Height="450" Width="800"
+            Opacity="0">
+            <Border.RenderTransform>
+                <TranslateTransform Y="100"/>
+            </Border.RenderTransform>
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition></ColumnDefinition>
@@ -228,9 +232,6 @@
             <Border.Effect>
                 <DropShadowEffect BlurRadius="20" ShadowDepth="5" Opacity="0.4" Color="Black"/>
             </Border.Effect>
-            <Border.RenderTransform>
-                <TranslateTransform/>
-            </Border.RenderTransform>
         </Border>
     </Grid>
 </Window>
