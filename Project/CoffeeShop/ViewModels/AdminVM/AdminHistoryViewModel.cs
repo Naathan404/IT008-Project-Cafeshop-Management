@@ -3,9 +3,7 @@ using CoffeeShop.Service.DTOs;
 using CoffeeShop.View.General;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.ObjectModel;
-using System.Globalization;
 using System.Windows;
-using System.Windows.Input;
 
 namespace CoffeeShop.ViewModels.AdminVM
 {

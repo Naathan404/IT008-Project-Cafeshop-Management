@@ -24,7 +24,7 @@ namespace CoffeeShop.View.Admin
         /// Tạo các trang
         private CustomerManagementPage _customerManagementPage = new CustomerManagementPage();
         private DepotManagementPage _depotManagementPage = new DepotManagementPage();
-        private EmployeeManagementPage _employeeManagementPage = new EmployeeManagementPage();
+        private StaffManagementPage _staffManagementPage = new StaffManagementPage();
         private HistoryManagementPage _historyManagementPage = new HistoryManagementPage();
         private MenuManagementPage _menuManagementPage = new MenuManagementPage();
         private StatisticPage _statisticPage = new StatisticPage();
@@ -33,7 +33,7 @@ namespace CoffeeShop.View.Admin
         public AdminWindow(CoffeeShop.Models.Staff account)
         {
             InitializeComponent();
-            StaffFrame.Navigate(_employeeManagementPage);
+            StaffFrame.Navigate(_statisticPage);
             bdrStaffWindowFunction.Width = _minimumNavigationBarWidth;
             _account = account;
         }
@@ -59,7 +59,7 @@ namespace CoffeeShop.View.Admin
         private void bdrEmployee_MouseDown(object sender, MouseButtonEventArgs e)
         {
             StaffFrame.Visibility = Visibility.Visible;
-            StaffFrame.Navigate(_employeeManagementPage);
+            StaffFrame.Navigate(_staffManagementPage);
         }
 
         private void bdrStatistics_MouseDown(object sender, MouseButtonEventArgs e)
