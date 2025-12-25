@@ -313,7 +313,6 @@
                 <DataGrid
                         ItemsSource="{Binding Orders}"
                         SelectedItem="{Binding SelectedOrder}"
-                        ColumnHeaderStyle="{StaticResource dgHeaderStyle}"
                         IsEnabled="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
                         Opacity="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
                         AutoGenerateColumns="False" CanUserAddRows="False"
@@ -322,25 +321,62 @@
                         GridLinesVisibility="None"
                         IsReadOnly="true"
                         ScrollViewer.VerticalScrollBarVisibility="Visible">
+                    <DataGrid.ColumnHeaderStyle>
+                        <Style TargetType="DataGridColumnHeader">
+                            <Setter Property="Background" Value="#E0CEB5"/>
+                            <Setter Property="Foreground" Value="#340D05"/>
+                            <Setter Property="FontWeight" Value="Bold"/>
+                            <Setter Property="FontFamily" Value="Cascadia Code"/>
+                            <Setter Property="FontSize" Value="15"/>
+                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                            <Setter Property="Padding" Value="5"/>
+                            <Setter Property="BorderThickness" Value="1"/>
+                            <Setter Property="BorderBrush" Value="#766839"/>
+                        </Style>
+                    </DataGrid.ColumnHeaderStyle>
+
+                    <DataGrid.CellStyle>
+                        <Style TargetType="DataGridCell">
+                            <Setter Property="Foreground" Value="#766839"/>
+                            <Setter Property="FontFamily" Value="Cascadia Code"/>
+                            <Setter Property="FontSize" Value="14"/>
+                            <Setter Property="Background" Value="#F9F6F0"/>
+                            <Setter Property="BorderBrush" Value="#A0A0A0"/>
+                            <Setter Property="BorderThickness" Value="1"/>
+                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                            <Setter Property="VerticalContentAlignment" Value="Center"/>
+                            <Style.Triggers>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter Property="Background" Value="#EDE2D3"/>
+                                    <Setter Property="Foreground" Value="#340D05"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGrid.CellStyle>
                     <DataGrid.Columns>
                         <DataGridTextColumn Header=" Mã hóa đơn " Width="*" Binding="{Binding DisplayID}">
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="HorizontalAlignment" Value="Center"></Setter>
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
                                 </Style>
                             </DataGridTextColumn.ElementStyle>
                         </DataGridTextColumn>
                         <DataGridTextColumn Header="Tên khách hàng" Width="2*" Binding="{Binding CustomerName}">
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
-                                    <Setter Property="HorizontalAlignment" Value="Left"></Setter>
+                                    <Setter Property="HorizontalAlignment" Value="Left"/>
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                    <Setter Property="Padding" Value="5 0 0 0"/>
                                 </Style>
                             </DataGridTextColumn.ElementStyle>
                         </DataGridTextColumn>
-                        <DataGridTextColumn Header=" Thời gian " Width="*" Binding="{Binding OrderDate}">
+                        <DataGridTextColumn Header=" Thời gian " Width="1.2*" Binding="{Binding OrderDate}">
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="HorizontalAlignment" Value="Center"></Setter>
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
                                 </Style>
                             </DataGridTextColumn.ElementStyle>
                         </DataGridTextColumn>
@@ -348,6 +384,7 @@
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="HorizontalAlignment" Value="Center"></Setter>
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
                                 </Style>
                             </DataGridTextColumn.ElementStyle>
                         </DataGridTextColumn>
@@ -355,6 +392,7 @@
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="HorizontalAlignment" Value="Center"></Setter>
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
                                 </Style>
                             </DataGridTextColumn.ElementStyle>
                         </DataGridTextColumn>

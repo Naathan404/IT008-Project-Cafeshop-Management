@@ -11,7 +11,7 @@
       FontFamily="{DynamicResource MaterialDesignFont}">
 
     <Page.Resources>
-        <SolidColorBrush x:Key="CardBgColor" Color="#392805"/>
+        <SolidColorBrush x:Key="CardBgColor" Color="#6B3D24"/>
         <SolidColorBrush x:Key="PrimaryColor" Color="#340D05"/>
         <SolidColorBrush x:Key="SecondaryColor" Color="#D7CCC8"/>
         <SolidColorBrush x:Key="LightBgColor" Color="#f9f6f0"/>

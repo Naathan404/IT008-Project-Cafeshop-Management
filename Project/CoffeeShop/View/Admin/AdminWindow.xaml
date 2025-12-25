@@ -93,14 +93,14 @@
                         CornerRadius="30"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Bottom"
-                        Margin="12,0,0,360">
+                        Margin="12,0,0,290">
                         <Border.Effect>
                             <DropShadowEffect Color="#462812"
                                           Opacity="0.3"
                                           BlurRadius="-10"
                                           ShadowDepth="5"/>
                         </Border.Effect>
-                        <materialDesign:PackIcon Kind="AccountCash"
+                        <materialDesign:PackIcon Kind="AccountGroup"
                                                 Height="35" Width="35"
                                                 Margin="10"
                                                 Foreground="#340D05"/>
@@ -111,7 +111,7 @@
                         CornerRadius="28"
                         HorizontalAlignment="Stretch"
                         VerticalAlignment="Bottom"
-                        Margin="12,0,12,360"
+                        Margin="12,0,12,290"
                         Mouse.MouseDown="bdrEmployee_MouseDown"
                         Visibility="Collapsed">
                         <Border.Effect>
@@ -121,7 +121,7 @@
                                           ShadowDepth="5"/>
                         </Border.Effect>
                         <Grid>
-                            <materialDesign:PackIcon Kind="AccountCashOutline"
+                            <materialDesign:PackIcon Kind="AccountGroupOutline"
                                             Height="35" Width="35"
                                             Margin="10"
                                             Foreground="#340D05"/>
@@ -141,7 +141,7 @@
                         CornerRadius="30"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Bottom"
-                        Margin="12,0,0,290">
+                        Margin="12,0,0,220">
                         <Border.Effect>
                             <DropShadowEffect Color="#462812"
                                           Opacity="0.3"
@@ -159,7 +159,7 @@
                         CornerRadius="28"
                         HorizontalAlignment="Stretch"
                         VerticalAlignment="Bottom"
-                        Margin="12,0,12,290"
+                        Margin="12,0,12,220"
                         Mouse.MouseDown="bdrMenu_MouseDown"
                         Visibility="Collapsed">
                         <Border.Effect>
@@ -189,7 +189,7 @@
                         CornerRadius="30"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Bottom"
-                        Margin="12,0,0,220">
+                        Margin="12,0,0,150">
                         <Border.Effect>
                             <DropShadowEffect Color="#462812"
                                           Opacity="0.3"
@@ -207,7 +207,7 @@
                         CornerRadius="28"
                         HorizontalAlignment="Stretch"
                         VerticalAlignment="Bottom"
-                        Margin="12,0,12,220"
+                        Margin="12,0,12,150"
                         Mouse.MouseDown="bdrHistory_MouseDown"
                         Visibility="Collapsed">
                         <Border.Effect>
@@ -237,7 +237,7 @@
                         CornerRadius="30"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Bottom"
-                        Margin="12,0,0,150">
+                        Margin="12,0,0,80">
                         <Border.Effect>
                             <DropShadowEffect Color="#462812"
                                           Opacity="0.3"
@@ -255,7 +255,7 @@
                         CornerRadius="28"
                         HorizontalAlignment="Stretch"
                         VerticalAlignment="Bottom"
-                        Margin="12,0,12,150"
+                        Margin="12,0,12,80"
                         Mouse.MouseDown="bdrCustomer_MouseDown"
                         Visibility="Collapsed">
                         <Border.Effect>
@@ -285,7 +285,7 @@
                         CornerRadius="30"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Bottom"
-                        Margin="12,0,0,80">
+                        Margin="12,0,0,10">
                         <Border.Effect>
                             <DropShadowEffect Color="#462812"
                                           Opacity="0.3"
@@ -303,7 +303,7 @@
                         CornerRadius="28"
                         HorizontalAlignment="Stretch"
                         VerticalAlignment="Bottom"
-                        Margin="12,0,12,80"
+                        Margin="12,0,12,10"
                         Mouse.MouseDown="bdrDepot_MouseDown"
                         Visibility="Collapsed">
                         <Border.Effect>
@@ -334,7 +334,7 @@
                         CornerRadius="30"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Bottom"
-                        Margin="12,0,0,10">
+                        Margin="12,0,0,360">
                         <Border.Effect>
                             <DropShadowEffect Color="#462812"
                                           Opacity="0.3"
@@ -352,7 +352,7 @@
                         CornerRadius="28"
                         HorizontalAlignment="Stretch"
                         VerticalAlignment="Bottom"
-                        Margin="12,0,12,10"
+                        Margin="12,0,12,360"
                         Mouse.MouseDown="bdrStatistics_MouseDown"
                         Visibility="Collapsed">
                         <Border.Effect>
