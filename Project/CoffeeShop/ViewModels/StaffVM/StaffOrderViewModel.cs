@@ -109,6 +109,8 @@ namespace CoffeeShop.ViewModels.StaffVM
                                                 .Include(ip => ip.Size)
                                                 .Where(ip => ip.ItemId == item.ItemId && ip.IsDeleted == false)
                                                 .ToList()),
+                            Info = item.Info == null ? string.Empty : item.Info.ToString(),
+                            ImagePath = item.ImagePath == null ? string.Empty : item.ImagePath.ToString()
                         });
                     }
                 }

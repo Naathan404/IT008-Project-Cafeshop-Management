@@ -99,17 +99,8 @@ namespace CoffeeShop.View.Staff
             bool isFoodWithoutDetailWindow = thisItem.CategoryId == 7 &&
                                              (thisItem.ItemPrices?.Count == 1 || thisItem.ItemPrices?.Count == 0);
 
-            if (isFoodWithoutDetailWindow)
-            {
-                // Thêm trực tiếp Food vào Order
-                decimal price = thisItem.ItemPrices?.FirstOrDefault()?.Price ?? 0;
-                _viewModel.AddItemToOrder(thisItem, string.Empty, null, price);
-            }
-            else
-            {
-                var detailWindow = new ItemWindow(_viewModel, thisItem);
-                detailWindow.ShowDialog();
-            }
+            var detailWindow = new ItemWindow(_viewModel, thisItem);
+            detailWindow.ShowDialog();
         }
         private void ItemSize_Loaded(object sender, RoutedEventArgs e)
         {

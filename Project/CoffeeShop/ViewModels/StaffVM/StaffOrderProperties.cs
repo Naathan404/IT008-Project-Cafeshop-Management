@@ -306,6 +306,7 @@ namespace CoffeeShop.ViewModels.StaffVM
             private bool _isAvailable;
             private ObservableCollection<ItemPrice> _itemPrices;
             private string _imagePath;
+            private string _info;
 
             public int ItemId
             {
@@ -348,12 +349,16 @@ namespace CoffeeShop.ViewModels.StaffVM
                 get => _imagePath;
                 set { _imagePath = value; OnPropertyChanged(); }
             }
+            public string Info
+            {
+                get => _info;
+                set { _info = value; OnPropertyChanged(nameof(Info)); }
+            }
 
             public OrderItem()
             {
                 _itemName = string.Empty;
                 _itemPrices = new ObservableCollection<ItemPrice>();
-                _imagePath = "/Assets/Images/imgItemExample.jpg"; // Ví dụ hình ảnh
             }
         }
 
