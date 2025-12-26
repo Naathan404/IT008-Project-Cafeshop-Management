@@ -92,6 +92,7 @@ namespace CoffeeShop.ViewModels.StaffVM
             set
             {
                 _selectedItem = value;
+                LoadAvailableSizes();
                 OnPropertyChanged(nameof(SelectedItem));
                 OnPropertyChanged(nameof(TextButtonSetAvailable));
             }
@@ -106,12 +107,56 @@ namespace CoffeeShop.ViewModels.StaffVM
                 return SelectedItem.IsAvailable ? "Tắt món" : "Hủy tắt món";
             }
         }
+        private string? _selectedSize;
+        public string? SelectedSize
+        {
+            get => _selectedSize;
+            set
+            {
+                if (_selectedSize != value)
+                {
+                    _selectedSize = value;
+                    OnPropertyChanged(nameof(SelectedSize));
+                    UpdateSelectedPrice();
+                }
+            }
+        }
 
+        private decimal _selectedPrice;
+        public decimal SelectedPrice
+        {
+            get => _selectedPrice;
+            set
+            {
+                if (_selectedPrice != value)
+                {
+                    _selectedPrice = value;
+                    OnPropertyChanged(nameof(SelectedPrice));
+                    OnPropertyChanged(nameof(SelectedPriceFormatted));
+                }
+            }
+        }
+
+        public string SelectedPriceFormatted => $"{SelectedPrice:N0} VND";
+
+        // Danh sách size có sẵn cho item hiện tại
+        private ObservableCollection<SizeViewModel> _availableSizes = new();
+        public ObservableCollection<SizeViewModel> AvailableSizes
+        {
+            get => _availableSizes;
+            set
+            {
+                _availableSizes = value;
+                OnPropertyChanged(nameof(AvailableSizes));
+            }
+        }
 
         #endregion
 
         #region Commands
         public ICommand SetIsAvailableForItem { get; set; } = null!;
+        // Command để chọn size
+        public ICommand SelectSizeCommand { get; set; } = null!;
         #endregion
 
         #region Constructor
@@ -131,6 +176,20 @@ namespace CoffeeShop.ViewModels.StaffVM
         private void InitializeCommands()
         {
             SetIsAvailableForItem = new RelayCommand<MenuCoffeeItem>(SetIsavailable);
+            SelectSizeCommand = new RelayCommand<SizeViewModel>(size =>
+            {
+                if (size == null) return;
+
+                // Reset tất cả sizes
+                foreach (var s in AvailableSizes)
+                {
+                    s.IsSelected = false;
+                }
+
+                // Set size được chọn
+                size.IsSelected = true;
+                SelectedSize = size.SizeName;
+            });
         }
         #endregion
 
@@ -162,6 +221,8 @@ namespace CoffeeShop.ViewModels.StaffVM
                                                 .Include(ip => ip.Size)
                                                 .Where(ip => ip.ItemId == item.ItemId && ip.IsDeleted == false)
                                                 .ToList()),
+                            Info = item.Info == null ? string.Empty : item.Info.ToString(),
+                            ImagePath = item.ImagePath == null ? string.Empty : item.ImagePath.ToString()
                         });
                     }
                 }
@@ -235,6 +296,66 @@ namespace CoffeeShop.ViewModels.StaffVM
         }
         #endregion
 
+        #region Selected size & price
+        private void LoadAvailableSizes()
+        {
+            AvailableSizes.Clear();
+            SelectedSize = null;
+            SelectedPrice = 0;
+
+            if (SelectedItem?.ItemPrices == null || SelectedItem.ItemPrices.Count == 0)
+                return;
+
+            var sizeList = SelectedItem.ItemPrices
+                .Where(p => p.Size != null && !string.IsNullOrEmpty(p.Size.SizeName))
+                .Select(p => new SizeViewModel
+                {
+                    SizeName = p.Size!.SizeName!,
+                    Price = p.Price,
+                    IsSelected = false
+                })
+                .ToList();
+
+            // Nếu chỉ có 1 size và là category Food (7) thì không hiển thị size
+            if (sizeList.Count == 1 && SelectedItem.CategoryId == 7)
+            {
+                // Tự động chọn size duy nhất
+                SelectedSize = sizeList[0].SizeName;
+                SelectedPrice = sizeList[0].Price;
+                return;
+            }
+
+            // Load sizes vào collection
+            foreach (var size in sizeList)
+            {
+                AvailableSizes.Add(size);
+            }
+
+            // Tự động chọn size đầu tiên
+            if (AvailableSizes.Count > 0)
+            {
+                AvailableSizes[0].IsSelected = true;
+                SelectedSize = AvailableSizes[0].SizeName;
+                SelectedPrice = AvailableSizes[0].Price;
+            }
+        }
+
+        private void UpdateSelectedPrice()
+        {
+            if (SelectedItem?.ItemPrices == null || string.IsNullOrEmpty(SelectedSize))
+            {
+                SelectedPrice = 0;
+                return;
+            }
+
+            var priceInfo = SelectedItem.ItemPrices.FirstOrDefault(p =>
+                p?.Size?.SizeName != null &&
+                p.Size.SizeName.Equals(SelectedSize, StringComparison.OrdinalIgnoreCase));
+
+            SelectedPrice = priceInfo?.Price ?? 0;
+        }
+        #endregion
+
         #region Helper Classes
         public class MenuCoffeeItem : NotificationBase
         {
@@ -245,7 +366,7 @@ namespace CoffeeShop.ViewModels.StaffVM
             private bool _isAvailable;
             private ObservableCollection<ItemPrice> _itemPrices;
             private string _imagePath;
-
+            private string _info;
             public int ItemId
             {
                 get => _itemId;
@@ -287,12 +408,59 @@ namespace CoffeeShop.ViewModels.StaffVM
                 get => _imagePath;
                 set { _imagePath = value; OnPropertyChanged(); }
             }
+            public string Info
+            {
+                get => _info;
+                set { _info = value; OnPropertyChanged(nameof(Info)); }
+            }
+
 
             public MenuCoffeeItem()
             {
                 _itemName = string.Empty;
                 _itemPrices = new ObservableCollection<ItemPrice>();
-                _imagePath = "/Assets/Images/imgItemExample.jpg"; // Ví dụ hình ảnh
+            }
+        }
+        // Model cho Size
+        public class SizeViewModel : INotifyPropertyChanged
+        {
+            private string _sizeName = string.Empty;
+            public string SizeName
+            {
+                get => _sizeName;
+                set
+                {
+                    _sizeName = value;
+                    OnPropertyChanged(nameof(SizeName));
+                }
+            }
+
+            private decimal _price;
+            public decimal Price
+            {
+                get => _price;
+                set
+                {
+                    _price = value;
+                    OnPropertyChanged(nameof(Price));
+                }
+            }
+
+            private bool _isSelected;
+            public bool IsSelected
+            {
+                get => _isSelected;
+                set
+                {
+                    _isSelected = value;
+                    OnPropertyChanged(nameof(IsSelected));
+                }
+            }
+
+            public event PropertyChangedEventHandler? PropertyChanged;
+            protected virtual void OnPropertyChanged(string propertyName)
+            {
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
             }
         }
         #endregion

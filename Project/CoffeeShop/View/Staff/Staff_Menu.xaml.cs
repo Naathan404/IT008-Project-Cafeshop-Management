@@ -14,6 +14,7 @@ namespace CoffeeShop.View.Staff
     public partial class Staff_Menu : Page
     {
         StaffMenuViewModel _viewModel = new StaffMenuViewModel();
+
         public Staff_Menu()
         {
             InitializeComponent();
@@ -24,7 +25,6 @@ namespace CoffeeShop.View.Staff
         {
             if (sender is not ScrollViewer sv) return;
 
-            // Tìm UniformGrid bên trong ScrollViewer
             UniformGrid? ug = FindChild<UniformGrid>(sv);
             if (ug == null) return;
 
@@ -34,6 +34,7 @@ namespace CoffeeShop.View.Staff
             int columns = Math.Max(1, (int)(w / minItemWidth));
             ug.Columns = columns;
         }
+
         private void Item_MouseDown(object sender, RoutedEventArgs e)
         {
             e.Handled = true;
@@ -44,53 +45,6 @@ namespace CoffeeShop.View.Staff
             var thisItem = data as MenuCoffeeItem;
             if (thisItem == null) return;
             _viewModel.SelectedItem = thisItem;
-            //DisplayDetailItem(thisItem);
-            //DetailItem_Loaded(sender, e);
-        }
-
-        private void ItemSize_Loaded(object sender, RoutedEventArgs e)
-        {
-            if (sender is StackPanel stackPanel && stackPanel.DataContext is MenuCoffeeItem item && item.ItemPrices != null)
-            {
-                var sizeList = item.ItemPrices
-                    .Where(p => p.Size != null)
-                    .Select(p => p.Size)
-                    .ToList();
-                if (sizeList.Count() == 0)
-                    return;
-                if (sizeList.Count == 1 && item.CategoryId == 7)
-                    return;
-
-                var stkSizeName = stackPanel.FindName("stpnItemSize") as StackPanel;
-                if (stkSizeName == null) return;
-
-                stkSizeName.Visibility = Visibility.Visible;
-
-                for (int i = 0; i < sizeList.Count; i++)
-                {
-                    if (sizeList[i] is { SizeName: not null } sizeItem)
-                    {
-                        if (stackPanel.FindName($"bdrItemSize{i}") is Border bdr && bdr.Child is TextBlock txt)
-                        {
-                            txt.Text = sizeItem.SizeName;
-                            bdr.Visibility = Visibility.Visible;
-                        }
-                    }
-                }
-            }
-        }
-
-        private void ItemPrice_Loaded(object sender, RoutedEventArgs e)
-        {
-            if (sender is TextBlock txtblItemPrice)
-            {
-                var item = txtblItemPrice.DataContext as MenuCoffeeItem;
-                if (item == null || item.ItemPrices == null || item.ItemPrices.Count == 0)
-                    return;
-
-                var defaultPrice = item.ItemPrices.First();
-                txtblItemPrice.Text = string.Format("{0:N0} VND", defaultPrice.Price);
-            }
         }
         #endregion
 
@@ -187,5 +141,40 @@ namespace CoffeeShop.View.Staff
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
             => throw new NotImplementedException();
+    }
+    // Converter để chuyển Count thành Visibility
+    public class CountToVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is int count)
+            {
+                return count > 0 ? Visibility.Visible : Visibility.Collapsed;
+            }
+            return Visibility.Collapsed;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    // Converter để kiểm tra Count > 1
+    public class GreaterThanOneConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is int count)
+            {
+                return count > 1;
+            }
+            return false;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
