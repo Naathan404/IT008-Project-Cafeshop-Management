@@ -160,12 +160,13 @@
 
                                 <Setter TargetName="BorderContainer" Property="Effect">
                                     <Setter.Value>
-                                        <DropShadowEffect Color="#340D05"
-                                                          Direction="315" 
-                                                          ShadowDepth="6"
-                                                          Opacity="0.35" />
+                                        <DropShadowEffect Color="Black"
+                                                          Direction="315"
+                                                          ShadowDepth="7"
+                                                          Opacity="0.45" />
                                     </Setter.Value>
                                 </Setter>
+                                <Setter TargetName="BorderContainer" Property="Background" Value="#D5BCA1"/>
                             </DataTrigger>
 
                         </ControlTemplate.Triggers>
@@ -592,14 +593,16 @@
                                        HorizontalAlignment="Center"
                                        VerticalAlignment="Center"/>
                             <TextBlock x:Name="txblItemPrice"
-                                       Text="{Binding ItemPrice, StringFormat={}{0:N0} VND}"
+                                       Text="{Binding DataContext.SelectedPriceFormatted,
+                                              RelativeSource={RelativeSource AncestorType=Page}}"
                                        d:Text="45000 VND"
                                        Foreground="#766839"
                                        FontSize="30" FontFamily="Cascadia Code"
                                        Margin="15 0 0 0"/>
                         </StackPanel>
+                        
                         <Grid x:Name="stpnInfo"
-                              Margin="20 15 10 0">
+                              Margin="20 25 10 0">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="80"/>
