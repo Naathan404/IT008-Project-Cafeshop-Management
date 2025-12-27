@@ -244,7 +244,7 @@
                                           BlurRadius="-10"
                                           ShadowDepth="5"/>
                         </Border.Effect>
-                        <materialDesign:PackIcon Kind="AccountGroup"
+                        <materialDesign:PackIcon Kind="AccountTie"
                                              Height="35" Width="35"
                                              Margin="10"
                                              Foreground="#340D05"/>
@@ -265,7 +265,7 @@
                                           ShadowDepth="5"/>
                         </Border.Effect>
                         <Grid>
-                            <materialDesign:PackIcon Kind="AccountGroupOutline"
+                            <materialDesign:PackIcon Kind="AccountTieOutline"
                                                  Height="35" Width="35"
                                                  Margin="10"
                                                  Foreground="#340D05"/>
@@ -334,7 +334,7 @@
                         CornerRadius="30"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Bottom"
-                        Margin="12,0,0,360">
+                        Margin="12,0,0,430">
                         <Border.Effect>
                             <DropShadowEffect Color="#462812"
                                           Opacity="0.3"
@@ -352,7 +352,7 @@
                         CornerRadius="28"
                         HorizontalAlignment="Stretch"
                         VerticalAlignment="Bottom"
-                        Margin="12,0,12,360"
+                        Margin="12,0,12,430"
                         Mouse.MouseDown="bdrStatistics_MouseDown"
                         Visibility="Collapsed">
                         <Border.Effect>
@@ -374,6 +374,54 @@
                                    Foreground="#462812" 
                                    FontWeight="Bold"
                                    TextAlignment="Left"/>
+                        </Grid>
+                    </Border>
+
+                    <!-- Tab Giảm giá -->
+                    <Border x:Name="bdrDiscount_Before"
+                        Background="#E0CEB5"
+                        CornerRadius="30"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Bottom"
+                        Margin="12,0,0,360">
+                        <Border.Effect>
+                            <DropShadowEffect Color="#462812"
+                                Opacity="0.3"
+                                BlurRadius="-10"
+                                ShadowDepth="5"/>
+                        </Border.Effect>
+                        <materialDesign:PackIcon Kind="TagArrowDown"
+                            Height="35" Width="35"
+                            Margin="10"
+                            Foreground="#340D05"/>
+                    </Border>
+                    <Border x:Name="bdrDiscount_After"
+                        Background="#E0CEB5"
+                        Height="55"
+                        CornerRadius="28"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Bottom"
+                        Margin="12,0,12,360"
+                        Mouse.MouseDown="bdrDiscount_MouseDown"
+                        Visibility="Collapsed">
+                        <Border.Effect>
+                            <DropShadowEffect Color="#462812"
+                              Opacity="0.3"
+                              BlurRadius="-10"
+                              ShadowDepth="5"/>
+                        </Border.Effect>
+                        <Grid>
+                            <materialDesign:PackIcon Kind="TagArrowDownOutline"
+                                Height="35" Width="35"
+                                Margin="10"
+                                Foreground="#340D05"/>
+                            <TextBlock Text="Giảm giá"
+                           Margin="60 17 10 0"
+                           FontFamily="Cascadia Code"
+                           FontSize="20"
+                           Foreground="#462812" 
+                           FontWeight="Bold"
+                           TextAlignment="Left"/>
                         </Grid>
                     </Border>
                 </Grid>

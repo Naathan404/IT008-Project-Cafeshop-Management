@@ -28,6 +28,7 @@ namespace CoffeeShop.View.Admin
         private HistoryManagementPage _historyManagementPage = new HistoryManagementPage();
         private MenuManagementPage _menuManagementPage = new MenuManagementPage();
         private StatisticPage _statisticPage = new StatisticPage();
+        private DiscountManagementPage _discountManagementPage = new DiscountManagementPage();
 
         // Constructor
         public AdminWindow(CoffeeShop.Models.Staff account)
@@ -66,6 +67,11 @@ namespace CoffeeShop.View.Admin
         {
             StaffFrame.Visibility = Visibility.Visible;
             StaffFrame.Navigate(_statisticPage);
+        }
+        private void bdrDiscount_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            StaffFrame.Visibility = Visibility.Visible;
+            StaffFrame.Navigate(_discountManagementPage);
         }
 
         private void bdrHistory_MouseDown(object sender, MouseButtonEventArgs e)
@@ -126,6 +132,7 @@ namespace CoffeeShop.View.Admin
             bdrMenu_Before.Visibility = Visibility.Collapsed;
             bdrDepot_Before.Visibility = Visibility.Collapsed;
             bdrStatistics_Before.Visibility = Visibility.Collapsed;
+            bdrDiscount_Before.Visibility = Visibility.Collapsed;
             bdrHistory_Before.Visibility = Visibility.Collapsed;
             bdrCustomer_Before.Visibility = Visibility.Collapsed;
 
@@ -135,6 +142,7 @@ namespace CoffeeShop.View.Admin
             bdrMenu_After.Visibility = Visibility.Visible;
             bdrDepot_After.Visibility = Visibility.Visible;
             bdrStatistics_After.Visibility = Visibility.Visible;
+            bdrDiscount_After.Visibility = Visibility.Visible;
             bdrHistory_After.Visibility = Visibility.Visible;
             bdrCustomer_After.Visibility = Visibility.Visible;
 
@@ -168,6 +176,7 @@ namespace CoffeeShop.View.Admin
                 bdrMenu_After.Visibility = Visibility.Collapsed;
                 bdrDepot_After.Visibility = Visibility.Collapsed;
                 bdrStatistics_After.Visibility = Visibility.Collapsed;
+                bdrDiscount_After.Visibility = Visibility.Collapsed;
                 bdrHistory_After.Visibility = Visibility.Collapsed;
                 bdrCustomer_After.Visibility = Visibility.Collapsed;
 
@@ -177,6 +186,7 @@ namespace CoffeeShop.View.Admin
                 bdrMenu_Before.Visibility = Visibility.Visible;
                 bdrDepot_Before.Visibility = Visibility.Visible;
                 bdrStatistics_Before.Visibility = Visibility.Visible;
+                bdrDiscount_Before.Visibility = Visibility.Visible;
                 bdrHistory_Before.Visibility = Visibility.Visible;
                 bdrCustomer_Before.Visibility = Visibility.Visible;
 
