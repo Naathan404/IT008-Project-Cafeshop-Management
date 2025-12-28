@@ -13,13 +13,13 @@ namespace CoffeeShop.ViewModels.StaffVM
         #region Constructor
         public StaffOrderViewModel()
         {
-            Items = new ObservableCollection<OrderItem>();
-            Tables = new ObservableCollection<OrderTable>();
-            Customers = new ObservableCollection<OrderCustomer>();
-            Orders = new ObservableCollection<OrderDetailItem>();
-            AvailableTables = new ObservableCollection<OrderTable>();
-            FilteredItems = new ObservableCollection<OrderItem>();
-            FilteredCustomers = new ObservableCollection<OrderCustomer>();
+            Items.Clear();
+            Tables.Clear();
+            Customers.Clear();
+            Orders.Clear();
+            AvailableTables.Clear();
+            FilteredItems.Clear();
+            FilteredCustomers.Clear();
             CurrentCategoryId = 1; // mặc định mở tab đầu tiên
 
             InitializeCommands();
@@ -96,7 +96,7 @@ namespace CoffeeShop.ViewModels.StaffVM
             {
                 using (var context = new CoffeeShopContext())
                 {
-                    var items = context.Items.Where(i => i.IsDeleted == false).ToList();
+                    var items = context.Items.Where(i => i.IsDeleted == false && i.IsAvailable == true).ToList();
                     foreach (var item in items)
                     {
                         _items.Add(new OrderItem
@@ -276,7 +276,6 @@ namespace CoffeeShop.ViewModels.StaffVM
             PaymentMethod.Add("Tiền mặt");
             PaymentMethod.Add("Chuyển khoản");
         }
-
         #endregion
 
         #region Management Orders Methods 

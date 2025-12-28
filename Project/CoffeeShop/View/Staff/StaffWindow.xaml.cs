@@ -5,6 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Animation;
 using CoffeeShop.View.General;
+using CoffeeShop.ViewModels.StaffVM;
 
 namespace CoffeeShop.View.Staff
 {
