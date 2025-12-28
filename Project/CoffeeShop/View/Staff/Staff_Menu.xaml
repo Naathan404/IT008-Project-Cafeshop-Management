@@ -11,6 +11,9 @@
       Title="Staff_Menu">
     <Page.Resources>
         <local:ObjectEqualsConverter x:Key="ObjectEqualsConverter"/>
+        <local:CountToVisibilityConverter x:Key="CountToVisibilityConverter"/>
+        <local:GreaterThanOneConverter x:Key="GreaterThanOneConverter"/>
+
         <!-- Style for Item card -->
         <Style x:Key="RoundedCard" TargetType="ContentControl">
             <Setter Property="Margin" Value="5"/>
@@ -25,11 +28,16 @@
                                 Cursor="Hand">
                             <Grid>
                                 <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto"/><!-- Ảnh -->
-                                    <RowDefinition Height="Auto"/><!-- Tên -->
-                                    <RowDefinition Height="*"/><!-- EMPTY SPACE -->
-                                    <RowDefinition Height="Auto"/><!-- Size -->
-                                    <RowDefinition Height="Auto"/><!-- Giá -->
+                                    <RowDefinition Height="Auto"/>
+                                    <!-- Ảnh -->
+                                    <RowDefinition Height="Auto"/>
+                                    <!-- Tên -->
+                                    <RowDefinition Height="*"/>
+                                    <!-- EMPTY SPACE -->
+                                    <RowDefinition Height="Auto"/>
+                                    <!-- Size -->
+                                    <RowDefinition Height="Auto"/>
+                                    <!-- Giá -->
                                 </Grid.RowDefinitions>
                                 <!--Item Image-->
                                 <Image x:Name="imgItem"
@@ -51,70 +59,73 @@
                                            VerticalAlignment="Center"
                                            TextWrapping="Wrap"/>
                                 <Grid Grid.Row="2"></Grid>
-                                <!--Item Size-->
-                                <StackPanel x:Name="stpnItemSize"
-                                            Orientation="Horizontal" 
-                                            Margin="0 5 10 0"
-                                            Grid.Row="3"
-                                            HorizontalAlignment="Right"
-                                            VerticalAlignment="Top"
-                                            Loaded="ItemSize_Loaded">
-                                    <Border x:Name="bdrItemSize0"
-                                            BorderBrush="#766839"
-                                            BorderThickness="2"
-                                            CornerRadius="15"
-                                            Width="20" Height="20"
-                                            Visibility="Collapsed">
-                                        <TextBlock x:Name="txtSize0"
-                                                   FontSize="10"
-                                                   FontWeight="Bold"
-                                                   HorizontalAlignment="Center"
-                                                   VerticalAlignment="Center"
-                                                   FontFamily="Bahnschrift"
-                                                   Foreground="#766839"/>
-                                    </Border>
-                                    <Border x:Name="bdrItemSize1"
-                                            BorderBrush="#766839"
-                                            BorderThickness="2"
-                                            CornerRadius="15"
-                                            Width="20" Height="20"
-                                            Margin="2.5 0"
-                                            Visibility="Collapsed">
-                                        <TextBlock x:Name="txtSize1"
-                                                   FontSize="10"
-                                                   FontWeight="Bold"
-                                                   HorizontalAlignment="Center"
-                                                   VerticalAlignment="Center"
-                                                   FontFamily="Bahnschrift"
-                                                   Foreground="#766839"/>
-                                    </Border>
-                                    <Border x:Name="bdrItemSize2"
-                                            BorderBrush="#766839"
-                                            BorderThickness="2"
-                                            CornerRadius="15"
-                                            Width="20" Height="20"
-                                            Visibility="Collapsed">
-                                        <TextBlock x:Name="txtSize2"
-                                                   FontSize="10"
-                                                   FontWeight="Bold"
-                                                   HorizontalAlignment="Center"
-                                                   VerticalAlignment="Center"
-                                                   FontFamily="Bahnschrift"
-                                                   Foreground="#766839"/>
-                                    </Border>
-                                </StackPanel>
-                                <!--Item Price-->
-                                <TextBlock x:Name="txtblItemPrice"
-                                           Grid.Row="4"
+                                <!--Item Size - Hiển thị sizes bằng ItemsControl-->
+                                <ItemsControl Grid.Row="3"
+                                                  ItemsSource="{Binding ItemPrices}"
+                                                  Margin="0 5 10 0"
+                                                  HorizontalAlignment="Right"
+                                                  VerticalAlignment="Top">
+                                    <ItemsControl.Style>
+                                        <Style TargetType="ItemsControl">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                            <Style.Triggers>
+                                                <!-- Hiển thị nếu có nhiều hơn 1 size -->
+                                                <DataTrigger Binding="{Binding ItemPrices.Count, Converter={StaticResource GreaterThanOneConverter}}" Value="True">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                </DataTrigger>
+                                                <!-- Ẩn nếu chỉ có 1 size và là Food (CategoryId = 7) -->
+                                                <MultiDataTrigger>
+                                                    <MultiDataTrigger.Conditions>
+                                                        <Condition Binding="{Binding ItemPrices.Count}" Value="1"/>
+                                                        <Condition Binding="{Binding CategoryId}" Value="7"/>
+                                                    </MultiDataTrigger.Conditions>
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                </MultiDataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </ItemsControl.Style>
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel Orientation="Horizontal"/>
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border BorderBrush="#766839"
+                                                    BorderThickness="2"
+                                                    CornerRadius="15"
+                                                    Width="20" Height="20"
+                                                    Margin="0 0 2.5 0">
+                                                <TextBlock Text="{Binding Size.SizeName}"
+                                                           FontSize="10"
+                                                           FontWeight="Bold"
+                                                           HorizontalAlignment="Center"
+                                                           VerticalAlignment="Center"
+                                                           FontFamily="Bahnschrift"
+                                                           Foreground="#766839"/>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+
+                                <!--Item Price - Hiển thị giá đầu tiên-->
+                                <TextBlock Grid.Row="4"
                                            FontFamily="Bahnschrift"
                                            FontSize="15"
                                            FontWeight="Bold"
                                            Foreground="#766839"
                                            Margin="0 2 12 5"
-                                           HorizontalAlignment="Right"
-                                           Loaded="ItemPrice_Loaded"/>
+                                           HorizontalAlignment="Right">
+                                    <TextBlock.Text>
+                                        <MultiBinding StringFormat="{}{0:N0} VND">
+                                            <Binding Path="ItemPrices[0].Price"/>
+                                        </MultiBinding>
+                                    </TextBlock.Text>
+                                </TextBlock>
                             </Grid>
                         </Border>
+                        
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter TargetName="BorderContainer" Property="Effect">
@@ -149,12 +160,13 @@
 
                                 <Setter TargetName="BorderContainer" Property="Effect">
                                     <Setter.Value>
-                                        <DropShadowEffect Color="#340D05"
-                                                          Direction="315" 
-                                                          ShadowDepth="6"
-                                                          Opacity="0.35" />
+                                        <DropShadowEffect Color="Black"
+                                                          Direction="315"
+                                                          ShadowDepth="7"
+                                                          Opacity="0.45" />
                                     </Setter.Value>
                                 </Setter>
+                                <Setter TargetName="BorderContainer" Property="Background" Value="#D5BCA1"/>
                             </DataTrigger>
 
                         </ControlTemplate.Triggers>
@@ -474,7 +486,7 @@
                         <TextBlock Text="{Binding ItemName}"
                                    d:Text="Cà phê sữa"
                                    Margin="20 0 0 0"
-                                   FontSize="45"
+                                   FontSize="35"
                                    FontFamily="Cascadia Code"
                                    FontWeight="Bold"
                                    Foreground="#766839"
@@ -482,94 +494,144 @@
                                    VerticalAlignment="Center"
                                    TextWrapping="Wrap"/>
 
-                        <!--Item Size-->
-                        <StackPanel x:Name="stpnItemSize" 
-                                    Orientation="Horizontal"
-                                    Margin="20 20 20 0"
+                        <!--Item Size - Bind với ViewModel-->
+                        <StackPanel Orientation="Horizontal"
+                                    Margin="20 10 20 0"
                                     VerticalAlignment="Top"
-                                    d:Visibility="Visible"
-                                    Visibility="Collapsed"
-                                    Loaded="ItemSize_Loaded">
+                                    Visibility="{Binding DataContext.AvailableSizes.Count, 
+                                                RelativeSource={RelativeSource AncestorType=Page},
+                                                Converter={StaticResource CountToVisibilityConverter}}">
                             <TextBlock Text="Size:"
                                        Foreground="#766839"
-                                       FontSize="30" 
+                                       FontSize="25" 
                                        FontFamily="Cascadia Code" 
                                        FontWeight="Bold"
                                        VerticalAlignment="Center"/>
-                            <Border x:Name="bdrItemSize0"
-                                    BorderBrush="#766839"
-                                    BorderThickness="2.5"
-                                    CornerRadius="20"
-                                    Width="40"
-                                    Height="40"
-                                    Margin="10 0 0 0"
-                                    d:Visibility="Visible"
-                                    Visibility="Collapsed">
-                                <TextBlock x:Name="txtSize0"
-                                           Text="S"
-                                           FontSize="30"
-                                           FontWeight="Bold"
-                                           HorizontalAlignment="Center"
-                                           VerticalAlignment="Center"
-                                           FontFamily="Bahnschrift"
-                                           Foreground="#766839"/>
-                            </Border>
-                            <Border x:Name="bdrItemSize1"
-                                    BorderBrush="#766839"
-                                    BorderThickness="2"
-                                    CornerRadius="20"
-                                    Width="40"
-                                    Height="40"
-                                    Margin="5 0 5 0"
-                                    d:Visibility="Visible"
-                                    Visibility="Collapsed">
-                                <TextBlock x:Name="txtSize1"
-                                           Text="M"
-                                           FontSize="30"
-                                           FontWeight="Bold"
-                                           HorizontalAlignment="Center"
-                                           VerticalAlignment="Center"
-                                           FontFamily="Bahnschrift"
-                                           Foreground="#766839"/>
-                            </Border>
-                            <Border x:Name="bdrItemSize2"
-                                    BorderBrush="#766839"
-                                    BorderThickness="2"
-                                    CornerRadius="20"
-                                    Width="40"
-                                    Height="40"
-                                    d:Visibility="Visible"
-                                    Visibility="Collapsed">
-                                <TextBlock x:Name="txtSize2"
-                                           Text="L"
-                                           FontSize="30"
-                                           FontWeight="Bold"
-                                           HorizontalAlignment="Center"
-                                           VerticalAlignment="Center"
-                                           FontFamily="Bahnschrift"
-                                           Foreground="#766839"/>
-                            </Border>
+
+                            <!-- ItemsControl để hiển thị các size -->
+                            <ItemsControl ItemsSource="{Binding DataContext.AvailableSizes, 
+                                                        RelativeSource={RelativeSource AncestorType=Page}}"
+                                          Margin="10 0 0 0">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Horizontal"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border BorderBrush="#766839"
+                                                BorderThickness="2.5"
+                                                CornerRadius="20"
+                                                Width="35"
+                                                Height="35"
+                                                Margin="0 0 5 0"
+                                                Cursor="Hand">
+                                            <Border.Style>
+                                                <Style TargetType="Border">
+                                                    <Setter Property="Background" Value="Transparent"/>
+                                                    <Style.Triggers>
+                                                        <!-- Hover effect -->
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter Property="Background">
+                                                                <Setter.Value>
+                                                                    <SolidColorBrush Color="#D4BA98"/>
+                                                                </Setter.Value>
+                                                            </Setter>
+                                                        </Trigger>
+                                                        <!-- Selected state -->
+                                                        <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                                                            <Setter Property="Background">
+                                                                <Setter.Value>
+                                                                    <SolidColorBrush Color="#766839"/>
+                                                                </Setter.Value>
+                                                            </Setter>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Border.Style>
+
+                                            <Border.InputBindings>
+                                                <MouseBinding Command="{Binding DataContext.SelectSizeCommand,
+                                                                        RelativeSource={RelativeSource AncestorType=Page}}"
+                                                                CommandParameter="{Binding}"
+                                                                MouseAction="LeftClick"/>
+                                            </Border.InputBindings>
+
+                                            <TextBlock Text="{Binding SizeName}"
+                                                        FontSize="25"
+                                                        FontWeight="Bold"
+                                                        HorizontalAlignment="Center"
+                                                        VerticalAlignment="Center"
+                                                        FontFamily="Bahnschrift">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Setter Property="Foreground" Value="#766839"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                                                                <Setter Property="Foreground" Value="#EDE2D3"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
                         </StackPanel>
 
                         <!--Item Price-->
                         <StackPanel x:Name="stpnItemPrice" 
                                     Orientation="Horizontal" 
-                                    Margin="20 20 0 0">
+                                    Margin="20 10 0 0">
                             <TextBlock Text="Giá:"
                                        Foreground="#766839"
-                                       FontSize="30" 
+                                       FontSize="25" 
                                        FontFamily="Cascadia Code"
                                        FontWeight="Bold"
                                        HorizontalAlignment="Center"
                                        VerticalAlignment="Center"/>
                             <TextBlock x:Name="txblItemPrice"
-                                       Text="{Binding ItemPrice, StringFormat={}{0:N0} VND}"
+                                       Text="{Binding DataContext.SelectedPriceFormatted,
+                                              RelativeSource={RelativeSource AncestorType=Page}}"
                                        d:Text="45000 VND"
                                        Foreground="#766839"
-                                       FontSize="35" FontFamily="Cascadia Code"
-                                       Margin="15 0 0 0"
-                                       Loaded="ItemPrice_Loaded"/>
+                                       FontSize="30" FontFamily="Cascadia Code"
+                                       Margin="15 0 0 0"/>
                         </StackPanel>
+                        
+                        <Grid x:Name="stpnInfo"
+                              Margin="20 25 10 0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="80"/>
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Text="Mô tả:"
+                                       Grid.Row="0"
+                                       Foreground="#766839"
+                                       FontSize="18" FontFamily="Cascadia Code"
+                                       FontWeight="Bold"
+                                       VerticalAlignment="Center"/>
+                            <ScrollViewer VerticalScrollBarVisibility="Auto"
+                                          MaxHeight="140"
+                                          MaxWidth="430"
+                                          Grid.Row="1"
+                                          Margin="0 10 0 0"
+                                          VerticalAlignment="Top"
+                                          HorizontalAlignment="Left">
+                                <TextBlock x:Name="txblItemInfo"
+                                           Text="{Binding Info}"
+                                           FontFamily="Cascadia Code"
+                                           Foreground="#766839" 
+                                           FontSize="15"
+                                           TextWrapping="Wrap"
+                                           TextAlignment="Justify"
+                                           HorizontalAlignment="Left"
+                                           VerticalAlignment="Stretch"/>
+                            </ScrollViewer>
+                        </Grid>
                     </StackPanel>
 
                     <!--Buttons-->
