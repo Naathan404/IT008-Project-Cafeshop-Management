@@ -133,6 +133,8 @@
 
                 <DataGrid ItemsSource="{Binding EmployeeList}"
                           SelectedItem="{Binding SelectedEmployee}"
+                          IsEnabled="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
+                          Opacity="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
                           AutoGenerateColumns="False" CanUserAddRows="False"
                           CanUserResizeColumns="False" CanUserReorderColumns="False"
                           HorizontalAlignment="Stretch" GridLinesVisibility="None"
@@ -217,6 +219,22 @@
                     </DataGrid.Columns>
                 </DataGrid>
             </Border>
+
+            <Grid Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <ProgressBar
+                    Style="{StaticResource MaterialDesignCircularProgressBar}"
+                    IsIndeterminate="True" 
+                    Width="30"
+                    Height="30"
+                    Value="0"
+                    Foreground="#340D05"
+                    VerticalAlignment="Center" 
+                    HorizontalAlignment="Center"/>
+
+                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,50,0,0">
+                    <TextBlock Text="Đang tải dữ liệu..." FontWeight="Bold" Foreground="Gray"/>
+                </StackPanel>
+            </Grid>
 
             <Border Grid.Column="1" Margin="0 0 30 20" CornerRadius="20" BorderBrush="#766839" BorderThickness="2">
                 <materialDesign:Card Background="#F9F6F0" UniformCornerRadius="20" materialDesign:ShadowAssist.Darken="True">

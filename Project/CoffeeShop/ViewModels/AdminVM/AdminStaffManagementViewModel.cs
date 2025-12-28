@@ -17,6 +17,18 @@ namespace CoffeeShop.ViewModels.AdminVM
         StaffManagementPage _page;
 
         #region Properties
+        CancellationTokenSource _cts;
+        private bool _isLoading;
+        public bool IsLoading
+        {
+            get => _isLoading;
+            set
+            {
+                _isLoading = value;
+                OnPropertyChanged();
+            }
+        }
+
         public string[] RoleListFilter { get; } = new string[]
         {
             "Tất cả",
@@ -218,16 +230,32 @@ namespace CoffeeShop.ViewModels.AdminVM
             _ = LoadEmployees();
         }
 
+        // Fix for CS8030 and CS8031 in LoadEmployees method
         private async Task LoadEmployees()
         {
+            if (_cts != null)
+            {
+                _cts.Cancel();
+                _cts.Dispose();
+            }
+            _cts = new CancellationTokenSource();
+            var token = _cts.Token;
+
+            await Application.Current.Dispatcher.InvokeAsync(() =>
+            {
+                EmployeeList.Clear();
+            });
+
             string keyword = SearchName?.Trim().ToLower() ?? "";
             string currentRole = SelectedRoleFilter;
             string currentShift = SelectedShiftFilter;
 
             try
             {
+                IsLoading = true;
                 var result = await Task.Run(async () =>
                 {
+                    if (token.IsCancellationRequested) return null; // <-- Fix: return null instead of a List<Staff>
                     using (var db = new CoffeeShopContext())
                     {
                         var query = db.Staff.
@@ -278,17 +306,36 @@ namespace CoffeeShop.ViewModels.AdminVM
                             CountStaff = data.Count(x => x.StaffRole == "Nhân viên" || x.StaffRole == "Employee")
                         };
                     }
-                });
+                }, token);
 
+                if (token.IsCancellationRequested || result == null) return; // <-- Fix: check for null
+
+                await Application.Current.Dispatcher.InvokeAsync(() =>
+                {
+                    EmployeeList.Clear();
+                    foreach (var item in result.List)
+                    {
+                        EmployeeList.Add(item);
+                    }
+                });
                 TotalEmployees = result.CountTotal.ToString();
                 TotalManagers = result.CountAdmin.ToString();
                 TotalStaffs = result.CountStaff.ToString();
 
                 EmployeeList = new ObservableCollection<StaffDTO>(result.List);
             }
+            catch (TaskCanceledException)
+            {
+
+            }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            finally
+            {
+                if (!token.IsCancellationRequested)
+                    IsLoading = false;
             }
         }
 
