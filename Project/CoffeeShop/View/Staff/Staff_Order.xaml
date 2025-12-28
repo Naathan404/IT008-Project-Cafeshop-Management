@@ -442,8 +442,8 @@
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="2.5*"/>
-                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="2*"/>
+                                <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
 
                             <!-- Customer & Table Selection -->
@@ -801,6 +801,38 @@
                                                FontFamily="Cascadia Code" 
                                                FontSize="20" 
                                                Foreground="#340D05"/>
+                                </StackPanel>
+
+                                <StackPanel Orientation="Horizontal"
+                                            HorizontalAlignment="Right"
+                                            Margin=" 0 0 20 5">
+                                    <TextBlock Text="Chọn mã giảm giá: "
+                                               FontSize="20" 
+                                               FontFamily="Cascadia Code"
+                                               Foreground="#462812"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"/>
+                                    <ComboBox x:Name="cbDiscount"
+                                              Width="200" Height="30"
+                                              VerticalAlignment="Center"
+                                              FontFamily="Cascadia Code"
+                                              FontSize="15" 
+                                              Foreground="#766839"
+                                              ItemsSource="{Binding AvailableDiscounts}"
+                                              SelectedItem="{Binding SelectedDiscount}"
+                                              materialDesign:TextFieldAssist.UnderlineBrush="#766839">
+                                        <ComboBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="{Binding DiscountCode}" 
+                                                               FontWeight="Bold"
+                                                               Margin="0 0 5 0"/>
+                                                    <TextBlock Text=" - "/>
+                                                    <TextBlock Text="{Binding DiscountName}"/>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ComboBox.ItemTemplate>
+                                    </ComboBox>
                                 </StackPanel>
 
                                 <StackPanel Orientation="Horizontal" 

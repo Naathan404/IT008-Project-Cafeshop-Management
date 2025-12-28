@@ -36,6 +36,8 @@ namespace CoffeeShop.ViewModels.StaffVM
             // Mặc định không in bill
             IsCheckedPrintBill = false;
             LoadDiscountByCustomer();
+            // Mặc định chọn không áp dụng mã giảm giá
+            SelectedDiscount = AvailableDiscounts.FirstOrDefault(d => d.DiscountId == 0);
             Orders.CollectionChanged += Orders_CollectionChanged;
         }
         #endregion
@@ -86,6 +88,7 @@ namespace CoffeeShop.ViewModels.StaffVM
             LoadAvailableTable();
             FilterItemsByCategory();
             LoadPaymentMethod();
+            LoadDiscountFromDB();
         }
 
         //Load dữ liệu từ DB vào MenuPanel
@@ -213,55 +216,124 @@ namespace CoffeeShop.ViewModels.StaffVM
             // Thêm bàn mặc định vào đầu danh sách
             AvailableTables.Insert(0, placeholderTable);
         }
+        private void LoadDiscountFromDB()
+        {
+            Discounts.Clear();
 
+            // Thêm option "Không áp dụng" vào đầu danh sách
+            var noDiscount = new OrderDiscount
+            {
+                DiscountId = 0,
+                DiscountCode = "NONE",
+                DiscountName = "Không áp dụng",
+                DiscountType = 0,
+                DiscountValue = 0,
+                IsActive = true,
+                IsEligible = true,
+                MinimumOrderValue = null,
+                MaximumDiscountAmount = null,
+                UsedCount = 0
+            };
+            Discounts.Add(noDiscount);
+            try
+            {
+                using (var db = new CoffeeShopContext())
+                {
+                    var discounts = db.Discounts.Where(t => t.IsActive == true).ToList();
+                    foreach (var discount in discounts)
+                    {
+                        Discounts.Add(new OrderDiscount
+                        {
+                            DiscountId = discount.DiscountId,
+                            DiscountCode = discount.DiscountCode,
+                            DiscountName = discount.DiscountName,
+                            DiscountType = discount.DiscountType,
+                            DiscountValue = discount.DiscountValue,
+                            IsActive = discount.IsActive,
+                            MinimumOrderValue = discount.MinimumOrderValue,
+                            MaximumDiscountAmount = discount.MaximumDiscountAmount,
+                            UsedCount = discount.UsedCount,
+                            IsEligible = true
+                        });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error loading items: {ex.Message}");
+            }
+        }
         private void LoadDiscountByCustomer()
         {
+            AvailableDiscounts.Clear();
+            SelectedDiscount = null;
+
             if (SelectedCustomer == null)
             {
-                SelectedDiscount = null;
                 CalculateFinalTotal();
                 return;
             }
-            Discounts.Clear();
 
-            // Load các discount đang activated
-            using (var context = new CoffeeShopContext())
+            // thêm "Không áp dụng" vào đầu
+            var noDiscount = Discounts.FirstOrDefault(d => d.DiscountId == 0);
+            if (noDiscount != null)
+                AvailableDiscounts.Add(noDiscount);
+
+            // Nếu là khách vãng lai
+            if (SelectedCustomer.CustomerId == 0)
             {
-                var allDiscounts = context.Discounts
-                    .Where(d => d.IsActive == true)
+                // Chỉ hiển thị các discount không phải VIP và đủ điều kiện
+                var publicDiscounts = Discounts
+                    .Where(d => d.DiscountId != 0 &&
+                                !d.DiscountCode.StartsWith("VIP", StringComparison.OrdinalIgnoreCase) &&
+                                (d.MinimumOrderValue == null || TotalAmount >= d.MinimumOrderValue))
                     .ToList();
 
-                foreach (var d in allDiscounts)
+                foreach (var d in publicDiscounts)
                 {
-                    Discounts.Add(new OrderDiscount
-                    {
-                        DiscountId = d.DiscountId,
-                        DiscountCode = d.DiscountCode,
-                        DiscountName = d.DiscountName,
-                        DiscountType = d.DiscountType,
-                        DiscountValue = d.DiscountValue,
-                        MinimumOrderValue = d.MinimumOrderValue,
-                        MaximumDiscountAmount = d.MaximumDiscountAmount,
-                        IsActive = d.IsActive,
-                        UsedCount = d.UsedCount
-                    });
+                    AvailableDiscounts.Add(d);
                 }
-            }
 
-            // Tự động gán SelectedDiscount theo tier của khách hàng
-            if (SelectedCustomer.CustomerId == 0 || SelectedCustomer == null) // Khách vãng lai hoặc null
-            {
-                SelectedDiscount = null;
+                // Mặc định chọn "Không áp dụng"
+                SelectedDiscount = noDiscount;
             }
-            else
+            else // Khách hàng thành viên
             {
                 string customerTier = SelectedCustomer.Tier;
 
-                // Tìm discount theo tier (VIP1, VIP10, VIP100)
-                var tierDiscount = Discounts.FirstOrDefault(d => d.DiscountCode.Equals(customerTier, StringComparison.OrdinalIgnoreCase));
+                // Lọc và chỉ thêm các discount hợp lệ
+                var eligibleDiscounts = Discounts
+                    .Where(d => d.DiscountId != 0)
+                    .Where(d =>
+                    {
+                        // Check nếu là discount của khách hàng thành viên
+                        if (d.DiscountCode.StartsWith("VIP", StringComparison.OrdinalIgnoreCase))
+                        {
+                            // Check tier
+                            if (d.DiscountCode.Equals(customerTier, StringComparison.OrdinalIgnoreCase))
+                                return true;
+                            else if (customerTier == "VIP100")
+                                return true; // VIP100 dùng được tất cả
+                            else if (customerTier == "VIP10" && d.DiscountCode.Equals("VIP1", StringComparison.OrdinalIgnoreCase))
+                                return true; // VIP10 dùng được VIP1
+                            else
+                                return false;
+                        }
+                        // check nếu là discount công khai
+                        return true;
+                    })
+                    .Where(d => d.MinimumOrderValue == null || TotalAmount >= d.MinimumOrderValue)
+                    .ToList();
 
-                SelectedDiscount = tierDiscount;
+                foreach (var d in eligibleDiscounts)
+                {
+                    AvailableDiscounts.Add(d);
+                }
+
+                // Mặc định chọn "Không áp dụng"
+                SelectedDiscount = noDiscount;
             }
+
             // Tính lại FinalTotal
             CalculateFinalTotal();
         }
@@ -388,7 +460,7 @@ namespace CoffeeShop.ViewModels.StaffVM
         private void CalculateTotalAmount()
         {
             TotalAmount = Orders.Sum(o => o.TotalPrice);
-            CalculateFinalTotal();
+            LoadDiscountByCustomer();
         }
 
         private void CalculateFinalTotal()
@@ -396,10 +468,10 @@ namespace CoffeeShop.ViewModels.StaffVM
             decimal totalAfterDiscount = TotalAmount;
             decimal discountValueApplied = 0;
 
-            if (SelectedDiscount != null)
+            if (SelectedDiscount != null && SelectedDiscount.DiscountId != 0)
             {
                 if (TotalAmount >= (SelectedDiscount.MinimumOrderValue ?? 0)
-                    && SelectedDiscount.IsActive == true)
+                    && SelectedDiscount.IsActive == true && SelectedDiscount.IsEligible == true)
                 {
                     if (SelectedDiscount.DiscountType == 1) // Fixed amount
                     {
@@ -462,6 +534,8 @@ namespace CoffeeShop.ViewModels.StaffVM
             IsCheckedPrintBill = false;
             // cập nhật discount sau khi reset
             LoadDiscountByCustomer();
+            // Mặc định chọn không áp dụng mã giảm giá
+            SelectedDiscount = AvailableDiscounts.FirstOrDefault(d => d.DiscountId == 0);
         }
         #endregion
 
