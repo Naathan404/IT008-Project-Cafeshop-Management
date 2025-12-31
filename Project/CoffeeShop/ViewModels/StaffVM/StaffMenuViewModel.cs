@@ -5,6 +5,9 @@ using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using static CoffeeShop.ViewModels.StaffVM.StaffOrderViewModel;
 
 namespace CoffeeShop.ViewModels.StaffVM
@@ -292,7 +295,10 @@ namespace CoffeeShop.ViewModels.StaffVM
                     {
                         item.IsAvailable = thisItem.IsAvailable;
                         db.SaveChanges(); // Lưu vô DB
-                        LoadData();
+                        LoadData(); // reload lại dữ liệu ở page Menu
+
+                        // Gửi tin nhắn thông báo cho page order để reload lại dữ liệu
+                        WeakReferenceMessenger.Default.Send(new ReloadMenuMessage());
                     }
                 }
             }

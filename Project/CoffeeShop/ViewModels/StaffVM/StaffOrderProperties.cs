@@ -30,6 +30,21 @@ namespace CoffeeShop.ViewModels.StaffVM
                 OnPropertyChanged(nameof(Items));
             }
         }
+        // List món trong đơn hàng bị lỗi (không còn trong Menu hoặc không còn phục vụ)
+        public List<OrderDetailItem> GetInvalidOrderItems()
+        {
+            using (var context = new CoffeeShopContext())
+            {
+                var orderItemIds = Orders.Select(o => o.ItemId).Distinct().ToList();
+                var disabledIds = context.Items
+                    .Where(i => orderItemIds.Contains(i.ItemId) && (i.IsAvailable == false || i.IsDeleted == true))
+                    .Select(i => i.ItemId)
+                    .ToList();
+
+                // Trả về những món trong Orders có ItemId nằm trong danh sách bị tắt
+                return Orders.Where(o => disabledIds.Contains(o.ItemId)).ToList();
+            }
+        }
         // Tab được chọn
         private TabItem? _selectedTabItem;
         public TabItem? SelectedTabItem

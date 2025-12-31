@@ -443,7 +443,7 @@
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="2*"/>
-                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
 
                             <!-- Customer & Table Selection -->
@@ -789,7 +789,9 @@
                             </Border>
 
                             <!-- Total & Payment Section -->
-                            <StackPanel Grid.Row="2" Margin="0 10 0 10">
+                            <StackPanel Grid.Row="2" Margin="0 10 0 10"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Bottom">
                                 <StackPanel Orientation="Horizontal" 
                                             HorizontalAlignment="Right" 
                                             Margin="0 0 20 5">
