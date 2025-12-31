@@ -1,6 +1,7 @@
 ﻿using CoffeeShop.Models;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
@@ -116,6 +117,7 @@ namespace CoffeeShop.ViewModels.StaffVM
                 _selectedCustomer = value;
                 OnPropertyChanged(nameof(SelectedCustomer));
                 LoadDiscountByCustomer();
+                OnPropertyChanged(nameof(AvailableDiscounts));
             }
         }
 
@@ -200,7 +202,7 @@ namespace CoffeeShop.ViewModels.StaffVM
         }
 
         // Giảm giá
-        public ObservableCollection<OrderDiscount> _discounts = new ObservableCollection<OrderDiscount>();
+        private ObservableCollection<OrderDiscount> _discounts = new ObservableCollection<OrderDiscount>();
         public ObservableCollection<OrderDiscount> Discounts
         {
             get { return _discounts; }
@@ -208,6 +210,18 @@ namespace CoffeeShop.ViewModels.StaffVM
             {
                 _discounts = value;
                 OnPropertyChanged(nameof(Discounts));
+            }
+        }
+
+        // List mã giảm giá hợp lệ cho selected customer
+        private ObservableCollection<OrderDiscount> _availableDiscounts = new ObservableCollection<OrderDiscount>();
+        public ObservableCollection<OrderDiscount> AvailableDiscounts
+        {
+            get => _availableDiscounts;
+            set
+            {
+                _availableDiscounts = value;
+                OnPropertyChanged(nameof(AvailableDiscounts));
             }
         }
         // Giảm giá được áp dụng cho order
@@ -294,6 +308,7 @@ namespace CoffeeShop.ViewModels.StaffVM
         public ICommand PayOrderCommand { get; set; } = null!;
         public ICommand ChoosePaymentMethodCommand { get; set; } = null!;
         public ICommand ConfirmPayOrderCommand { get; set; } = null!;
+        public ICommand ChooseDiscountCommand { get; set; } = null!; 
         #endregion
 
         #region Helper Classes
@@ -537,6 +552,8 @@ namespace CoffeeShop.ViewModels.StaffVM
             public bool IsActive { get; set; }
 
             public int? UsedCount { get; set; }
+            // Property mới để check điều kiện
+            public bool IsEligible { get; set; } = true;
         }
         #endregion
     }
