@@ -303,6 +303,10 @@ VALUES
 ('L')
 GO
 
+select i.itemname, ip.sizeid, ip.price
+from item i
+join itemprice ip on ip.itemid = i.itemid
+
 INSERT INTO ItemPrice (ItemID, SizeID, Price) 
 VALUES 
 (1, 1, 19000), (1, 2, 29000), (1, 3, 39000),   -- Cà phê sữa đá

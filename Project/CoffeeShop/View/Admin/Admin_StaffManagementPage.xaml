@@ -4,7 +4,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-      xmlns:local="clr-namespace:CoffeeShop.View.Admin" xmlns:adminvm="clr-namespace:CoffeeShop.ViewModels.AdminVM" d:DataContext="{d:DesignInstance Type=adminvm:AdminStaffManagementViewModel}"
+      xmlns:local="clr-namespace:CoffeeShop.View.Admin"
       mc:Ignorable="d" 
       d:DesignHeight="910" d:DesignWidth="1110"
       Background="#E0CEB5"
@@ -12,13 +12,19 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="100"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="75"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
             <RowDefinition Height="50"></RowDefinition>
         </Grid.RowDefinitions>
 
-        <Border Grid.Row="0"
-                Margin="30 10 30 10"
+        <TextBlock Text="QUẢN LÝ TÀI KHOẢN NHÂN VIÊN" 
+                   Grid.Row="0" Margin="30,10,0,10"
+                   FontSize="24" FontWeight="ExtraBlack" Foreground="#4E342E"
+                   FontFamily="Cascadia Code"/>
+        
+        <Border Grid.Row="1"
+                Margin="30 0 30 10"
                 Background="#f9f6f0"
                 BorderBrush="#766839"
                 BorderThickness="2"
@@ -68,7 +74,7 @@
                                  BorderThickness="1">
                         </TextBox>
 
-                        <Rectangle Grid.Column="3" Width="1" Fill="#462812" Margin="-5" HorizontalAlignment="Center" VerticalAlignment="Stretch"/>
+                        <Rectangle Grid.Column="3" Width="1" Fill="#462812" Margin="0" HorizontalAlignment="Center" VerticalAlignment="Stretch"/>
                     </Grid>
 
                     <Grid Grid.Column="1">
@@ -121,7 +127,7 @@
             </materialDesign:Card>
         </Border>
 
-        <Grid Grid.Row="1">
+        <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="5*"></ColumnDefinition>
                 <ColumnDefinition Width="3*"></ColumnDefinition>
@@ -133,6 +139,8 @@
 
                 <DataGrid ItemsSource="{Binding EmployeeList}"
                           SelectedItem="{Binding SelectedEmployee}"
+                          IsEnabled="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
+                          Opacity="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
                           AutoGenerateColumns="False" CanUserAddRows="False"
                           CanUserResizeColumns="False" CanUserReorderColumns="False"
                           HorizontalAlignment="Stretch" GridLinesVisibility="None"
@@ -217,6 +225,22 @@
                     </DataGrid.Columns>
                 </DataGrid>
             </Border>
+
+            <Grid Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <ProgressBar
+                    Style="{StaticResource MaterialDesignCircularProgressBar}"
+                    IsIndeterminate="True" 
+                    Width="30"
+                    Height="30"
+                    Value="0"
+                    Foreground="#340D05"
+                    VerticalAlignment="Center" 
+                    HorizontalAlignment="Center"/>
+
+                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,50,0,0">
+                    <TextBlock Text="Đang tải dữ liệu..." FontWeight="Bold" Foreground="Gray"/>
+                </StackPanel>
+            </Grid>
 
             <Border Grid.Column="1" Margin="0 0 30 20" CornerRadius="20" BorderBrush="#766839" BorderThickness="2">
                 <materialDesign:Card Background="#F9F6F0" UniformCornerRadius="20" materialDesign:ShadowAssist.Darken="True">
@@ -331,7 +355,7 @@
             </Border>
         </Grid>
 
-        <Border Grid.Row="2"
+        <Border Grid.Row="3"
                 Margin="30 -10 30 10"
                 Background="#f9f6f0"
                 BorderBrush="#766839"

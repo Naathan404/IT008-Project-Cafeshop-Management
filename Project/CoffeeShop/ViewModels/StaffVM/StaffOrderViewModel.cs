@@ -677,6 +677,9 @@ namespace CoffeeShop.ViewModels.StaffVM
                     CustomerName = customerName,
                     PhoneNumber = customerPhoneNumber,
                     Email = customerEmail,
+                    JoinDate = DateTime.Now,
+                    Point = 0,
+                    Tier = "VIP1"
                 };
                 db.Customers.Add(newcustomer);
                 db.SaveChanges();
