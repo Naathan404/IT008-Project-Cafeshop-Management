@@ -22,7 +22,7 @@ namespace CoffeeShop.View.Admin
         private CoffeeShop.Models.Staff _account;
 
         /// Tạo các trang
-        private CustomerManagementPage _customerManagementPage = new CustomerManagementPage();
+        private AdminCustomerManagementPage _customerManagementPage = new AdminCustomerManagementPage();
         private DepotManagementPage _depotManagementPage = new DepotManagementPage();
         private StaffManagementPage _staffManagementPage = new StaffManagementPage();
         private HistoryManagementPage _historyManagementPage = new HistoryManagementPage();

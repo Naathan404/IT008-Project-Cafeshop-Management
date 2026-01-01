@@ -238,7 +238,7 @@ namespace CoffeeShop.ViewModels.StaffVM
             ShowOrderDetailCommand = new RelayCommand<object>((p) =>
             {
                 if (SelectedOrder == null) return;
-                OrderDetailWindow orderDetailWindow = new OrderDetailWindow(SelectedOrder!.OrderID);
+                OrderDetailWindow orderDetailWindow = new OrderDetailWindow(SelectedOrder.OrderID);
                 orderDetailWindow.ShowDialog();
             });
 

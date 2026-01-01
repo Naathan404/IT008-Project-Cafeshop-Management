@@ -27,4 +27,9 @@ public class RelayCommand<T> : ICommand
         add { CommandManager.RequerySuggested += value; }
         remove { CommandManager.RequerySuggested -= value; }
     }
+
+    //public void RaiseCanExecuteChanged()
+    //{
+    //    CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+    //}
 }

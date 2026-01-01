@@ -2,17 +2,20 @@
 using CoffeeShop.Service.DTOs;
 using CoffeeShop.View.General;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Win32; // Cần cái này cho SaveFileDialog
 using System;
 using System.Collections.ObjectModel;
 using System.Globalization;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
-namespace CoffeeShop.ViewModels.StaffVM
+namespace CoffeeShop.ViewModels.AdminVM
 {
-    public class CustomerViewModel : BaseViewModel
+    public class AdminCustomerViewModel : BaseViewModel
     {
         CultureInfo viVn = new CultureInfo("vi-VN");
 
@@ -24,7 +27,7 @@ namespace CoffeeShop.ViewModels.StaffVM
             set { _customerList = value; OnPropertyChanged(); }
         }
 
-        private CustomerDTO _selectedCustomer;
+        private CustomerDTO _selectedCustomer = null!;
         public CustomerDTO SelectedCustomer
         {
             get => _selectedCustomer;
@@ -52,11 +55,10 @@ namespace CoffeeShop.ViewModels.StaffVM
                 _selectedOrder = value;
                 OnPropertyChanged();
                 // Cập nhật trạng thái nút bấm ngay khi chọn
-                CommandManager.InvalidateRequerySuggested();
+                System.Windows.Input.CommandManager.InvalidateRequerySuggested();
             }
         }
 
-        // Danh sách lịch sử giao dịch
         private ObservableCollection<Order> _transactionHistory;
         public ObservableCollection<Order> TransactionHistory
         {
@@ -74,18 +76,22 @@ namespace CoffeeShop.ViewModels.StaffVM
         // Commands
         public ICommand RefreshCommand { get; set; }
         public ICommand SaveCommand { get; set; }
-        //public ICommand DeleteCommand { get; set; }
+        public ICommand DeleteCommand { get; set; }
         public ICommand AddCommand { get; set; }
-        public ICommand ShowOrderDetailCommand {  get; set; }
+        public ICommand ShowOrderDetailCommand { get; set; }
 
-        public CustomerViewModel()
+        // [ADMIN ONLY] Command xuất Excel
+        public ICommand ExportExcelCommand { get; set; }
+
+        public AdminCustomerViewModel()
         {
             CustomerList = new ObservableCollection<CustomerDTO>();
-            SelectedCustomer = new CustomerDTO(); // Tránh null reference
+            SelectedCustomer = new CustomerDTO();
 
             RefreshCommand = new RelayCommand<object>(p => Refresh());
             AddCommand = new RelayCommand<object>(p => PrepareAdd());
             SaveCommand = new RelayCommand<object>(async p => await SaveCustomer());
+            DeleteCommand = new RelayCommand<object>(async p => await DeleteCustomer());
             ShowOrderDetailCommand = new RelayCommand<object>((p) =>
             {
                 ShowOrderDetail();
@@ -94,7 +100,7 @@ namespace CoffeeShop.ViewModels.StaffVM
                 return SelectedOrder != null;
             });
 
-            //DeleteCommand = new RelayCommand<object>(async p => await DeleteCustomer());
+            ExportExcelCommand = new RelayCommand<object>(p => ExportToExcel());
 
             _ = LoadCustomers();
         }
@@ -123,7 +129,7 @@ namespace CoffeeShop.ViewModels.StaffVM
                         PhoneNumber = c.PhoneNumber ?? "---",
                         Email = c.Email ?? "",
                         Point = c.Point,
-                        Tier = c.Tier ?? "VIP1",
+                        Tier = c.Tier ?? "MEMBER", // Mặc định nếu null
                         JoinDate = c.JoinDate
                     }).ToList();
 
@@ -153,13 +159,13 @@ namespace CoffeeShop.ViewModels.StaffVM
                         .Take(50)
                         .ToListAsync();
 
-                    //var displayList = orders.Select(o => new
-                    //{
-                    //    DisplayID = $"HD{o.OrderID:D4}",
-                    //    Date = o.OrderDate,
-                    //    Total = o.TotalAmount.ToString("N0", viVn),
-                    //    Discount = string.IsNullOrEmpty(o.DiscountCode) ? "-" : o.DiscountCode
-                    //}).ToList();
+/*                    var displayList = orders.Select(o => new
+                    {
+                        DisplayID = $"HD{o.OrderID:D4}",
+                        Date = o.OrderDate,
+                        Total = o.TotalAmount.ToString("N0", viVn),
+                        Discount = string.IsNullOrEmpty(o.DiscountCode) ? "-" : o.DiscountCode
+                    }).ToList();*/
 
                     TransactionHistory = new ObservableCollection<Order>(orders);
                 }
@@ -173,11 +179,14 @@ namespace CoffeeShop.ViewModels.StaffVM
             {
                 CustomerID = 0,
                 JoinDate = DateTime.Now,
-                Tier = "VIP1",
+                Tier = "MEMBER",
                 Point = 0,
                 CustomerName = "",
-                PhoneNumber = ""
+                PhoneNumber = "",
+                Email = ""
             };
+            
+            TransactionHistory = new ObservableCollection<Order>();
         }
 
         private async Task SaveCustomer()
@@ -190,6 +199,8 @@ namespace CoffeeShop.ViewModels.StaffVM
 
             using (var db = new CoffeeShopContext())
             {
+                string newTier = CalculateTier(SelectedCustomer.Point);
+
                 if (SelectedCustomer.CustomerID == 0) // Thêm mới
                 {
                     if (await db.Customers.AnyAsync(c => c.PhoneNumber == SelectedCustomer.PhoneNumber && !c.IsDeleted))
@@ -202,8 +213,8 @@ namespace CoffeeShop.ViewModels.StaffVM
                         CustomerName = SelectedCustomer.CustomerName,
                         PhoneNumber = SelectedCustomer.PhoneNumber,
                         Email = SelectedCustomer.Email,
-                        Point = 0,
-                        Tier = "VIP1",
+                        Point = SelectedCustomer.Point, 
+                        Tier = newTier,                
                         JoinDate = DateTime.Now,
                         IsDeleted = false
                     };
@@ -211,7 +222,7 @@ namespace CoffeeShop.ViewModels.StaffVM
                     await db.SaveChangesAsync();
                     MessageBox.Show("Thêm khách hàng thành công!");
                 }
-                else // Cập nhật
+                else        // Cập nhật 
                 {
                     var cus = await db.Customers.FindAsync(SelectedCustomer.CustomerID);
                     if (cus != null)
@@ -219,43 +230,109 @@ namespace CoffeeShop.ViewModels.StaffVM
                         cus.CustomerName = SelectedCustomer.CustomerName;
                         cus.PhoneNumber = SelectedCustomer.PhoneNumber;
                         cus.Email = SelectedCustomer.Email;
+                        cus.Point = SelectedCustomer.Point;
+                        cus.Tier = newTier;
+
                         await db.SaveChangesAsync();
-                        MessageBox.Show("Cập nhật thành công!");
+                        MessageBox.Show("Cập nhật thông tin thành công!");
                     }
                 }
             }
             Refresh();
         }
 
+        private async Task DeleteCustomer()
+        {
+            if (SelectedCustomer == null || SelectedCustomer.CustomerID == 0) return;
+
+            if (MessageBox.Show($"Bạn chắc chắn muốn xóa khách hàng '{SelectedCustomer.CustomerName}'?\nHành động này không thể hoàn tác.",
+                "Cảnh báo", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
+            {
+                using (var db = new CoffeeShopContext())
+                {
+                    var cus = await db.Customers.FindAsync(SelectedCustomer.CustomerID);
+                    if (cus != null) 
+                    { 
+                        cus.IsDeleted = true; await db.SaveChangesAsync(); 
+                    }
+                }
+                Refresh();
+            }
+        }
+
         private void ShowOrderDetail()
         {
             if (SelectedOrder == null) return;
-
             int orderId = SelectedOrder.OrderId;
 
             OrderDetailWindow orderDetailWindow = new OrderDetailWindow(orderId);
             orderDetailWindow.ShowDialog();
         }
 
-        //private async Task DeleteCustomer()
-        //{
-        //    if (SelectedCustomer == null || SelectedCustomer.CustomerID == 0) return;
-        //    if (MessageBox.Show("Bạn có chắc muốn xóa khách hàng này?", "Xác nhận", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
-        //    {
-        //        using (var db = new CoffeeShopContext())
-        //        {
-        //            var cus = await db.Customers.FindAsync(SelectedCustomer.CustomerID);
-        //            if (cus != null) { cus.IsDeleted = true; await db.SaveChangesAsync(); }
-        //        }
-        //        Refresh();
-        //    }
-        //}
-
         private void Refresh()
         {
             SearchKeyword = "";
             PrepareAdd();
             _ = LoadCustomers();
+        }
+
+
+        // tính hạng thành viên
+        private string CalculateTier(int? point)
+        {
+            if (point == null) return "MEMBER";
+            if (point >= 3000) return "VIP100";
+            if (point >= 1500) return "VIP10";    
+            if (point >= 500) return "VIP1";   
+            return "MEMBER";
+        }
+
+        // xuất Excel
+        private void ExportToExcel()
+        {
+            try
+            {
+                if (CustomerList == null || CustomerList.Count == 0)
+                {
+                    MessageBox.Show("Không có dữ liệu để xuất!");
+                    return;
+                }
+
+                SaveFileDialog saveFileDialog = new SaveFileDialog
+                {
+                    Filter = "Excel CSV (*.csv)|*.csv",
+                    FileName = $"DanhSachKhachHang_{DateTime.Now:ddMMyyyy_HHmm}.csv"
+                };
+
+                if (saveFileDialog.ShowDialog() == true)
+                {
+                    StringBuilder csvContent = new StringBuilder();
+
+                    // Header
+                    csvContent.AppendLine("Mã KH,Họ Tên,Số Điện Thoại,Email,Điểm Tích Lũy,Hạng Thành Viên,Ngày Tham Gia");
+
+                    // Rows
+                    foreach (var item in CustomerList)
+                    {
+                        string line = $"{item.CustomerID}," +
+                                      $"\"{item.CustomerName}\"," + 
+                                      $"'{item.PhoneNumber}," +      
+                                      $"{item.Email}," +
+                                      $"{item.Point}," +
+                                      $"{item.Tier}," +
+                                      $"{item.JoinDate:dd/MM/yyyy}";
+                        csvContent.AppendLine(line);
+                    }
+
+                    File.WriteAllText(saveFileDialog.FileName, csvContent.ToString(), Encoding.UTF8);
+
+                    MessageBox.Show("Xuất file thành công!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Có lỗi khi xuất file: " + ex.Message);
+            }
         }
     }
 }
