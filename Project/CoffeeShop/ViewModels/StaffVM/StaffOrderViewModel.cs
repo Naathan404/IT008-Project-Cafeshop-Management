@@ -1,4 +1,5 @@
 ﻿using CoffeeShop.Models;
+using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -13,13 +14,13 @@ namespace CoffeeShop.ViewModels.StaffVM
         #region Constructor
         public StaffOrderViewModel()
         {
-            Items = new ObservableCollection<OrderItem>();
-            Tables = new ObservableCollection<OrderTable>();
-            Customers = new ObservableCollection<OrderCustomer>();
-            Orders = new ObservableCollection<OrderDetailItem>();
-            AvailableTables = new ObservableCollection<OrderTable>();
-            FilteredItems = new ObservableCollection<OrderItem>();
-            FilteredCustomers = new ObservableCollection<OrderCustomer>();
+            Items.Clear();
+            Tables.Clear();
+            Customers.Clear();
+            Orders.Clear();
+            AvailableTables.Clear();
+            FilteredItems.Clear();
+            FilteredCustomers.Clear();
             CurrentCategoryId = 1; // mặc định mở tab đầu tiên
 
             InitializeCommands();
@@ -39,6 +40,31 @@ namespace CoffeeShop.ViewModels.StaffVM
             // Mặc định chọn không áp dụng mã giảm giá
             SelectedDiscount = AvailableDiscounts.FirstOrDefault(d => d.DiscountId == 0);
             Orders.CollectionChanged += Orders_CollectionChanged;
+
+            // Khi có bất kỳ sự thay đổi availabe của items thì sẽ nhận được ReloadMenuMessage ==> load lại dữ liệu và kiểm tra giỏ hàng
+            WeakReferenceMessenger.Default.Register<ReloadMenuMessage>(this, (r, m) =>
+            {
+                // Kiểm tra giỏ hàng
+                var invalidItems = GetInvalidOrderItems();
+                ReloadListItems();
+                if (invalidItems.Any())
+                {
+                    string names = string.Join(", ", invalidItems.Select(x => x.ItemName));
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        if (MessageBox.Show($"Cảnh báo: Món [{names}] vừa bị tắt hoặc không còn tồn tại.\n" +
+                            "Hệ thống sẽ xóa món này khỏi giỏ hàng!",
+                            "Món ăn không khả dụng", MessageBoxButton.OK, MessageBoxImage.Warning) == MessageBoxResult.OK)
+                        {
+                            // Xóa món lỗi
+                            foreach (var item in invalidItems.ToList())
+                            {
+                                Orders.Remove(item);
+                            }
+                        }
+                    });
+                }
+            });
         }
         #endregion
 
@@ -91,6 +117,11 @@ namespace CoffeeShop.ViewModels.StaffVM
             LoadDiscountFromDB();
         }
 
+        private void ReloadListItems()
+        {
+            LoadOrderItemsFromDB();
+        }
+
         //Load dữ liệu từ DB vào MenuPanel
         private void LoadOrderItemsFromDB()
         {
@@ -99,7 +130,7 @@ namespace CoffeeShop.ViewModels.StaffVM
             {
                 using (var context = new CoffeeShopContext())
                 {
-                    var items = context.Items.Where(i => i.IsDeleted == false).ToList();
+                    var items = context.Items.Where(i => i.IsDeleted == false && i.IsAvailable == true).ToList();
                     foreach (var item in items)
                     {
                         _items.Add(new OrderItem
@@ -348,7 +379,6 @@ namespace CoffeeShop.ViewModels.StaffVM
             PaymentMethod.Add("Tiền mặt");
             PaymentMethod.Add("Chuyển khoản");
         }
-
         #endregion
 
         #region Management Orders Methods 
@@ -711,16 +741,22 @@ namespace CoffeeShop.ViewModels.StaffVM
         }
         private void ConfirmPayOrder(object param)
         {
+            if (GetInvalidOrderItems != null)
+            {
+                var invalidItems = GetInvalidOrderItems();
+                if (invalidItems.Any())
+                {
+                    string names = string.Join(", ", invalidItems.Select(x => x.ItemName));
+                    MessageBox.Show($"Cảnh báo: Món [{names}] vừa bị tắt.\n" + "Vui lòng xóa khỏi giỏ hàng trước khi thanh toán!",
+                        "Món ăn không khả dụng", MessageBoxButton.OK);
+                    return; // Dừng quá trình thanh toán
+                }
+            }
             var result = MessageBox.Show(
                     "Bạn có chắc muốn thanh toán đơn hàng này không?",
                     "Xác nhận thanh toán",
                     MessageBoxButton.YesNo,
                     MessageBoxImage.Warning);
-
-            if (result == MessageBoxResult.Yes)
-            {
-                
-            }
         }
         #endregion
     }
