@@ -361,9 +361,9 @@ namespace CoffeeShop.ViewModels.StaffVM
                             CustomerName = r.CustomerName,
                             EmployeeName = r.StaffName,
                             OrderDate = r.OrderDate.ToString("dd/MM/yy HH:mm:ss"),
-                            SubTotal = r.SubTotal.ToString("N0", viVn),
+                            SubTotal = r.SubTotal,
                             Discount = r.DiscountMoney?.ToString("N0", viVn) ?? "0",
-                            Total = r.TotalAmount.ToString("N0", viVn),
+                            Total = r.TotalAmount,
                             PaymentMethod = r.PaymentMethod,
                             TableName = r.TableName
                         }).ToList();
@@ -418,8 +418,8 @@ namespace CoffeeShop.ViewModels.StaffVM
                             ItemName = detail.Price.Item.ItemName,
                             SizeName = detail.Price.Size != null ? detail.Price.Size.SizeName : "---",
                             Quantity = detail.Quantity,
-                            UnitPrice = detail.UnitPrice.ToString("N0", viVn),
-                            TotalPrice = (detail.Quantity * detail.UnitPrice).ToString("N0", viVn),
+                            UnitPrice = detail.UnitPrice,
+                            TotalPrice = (detail.Quantity * detail.UnitPrice),
                             Note = detail.Note
                         });
                     }
@@ -436,8 +436,8 @@ namespace CoffeeShop.ViewModels.StaffVM
             public string CustomerName { get; set; } = null!;
             public string EmployeeName { get; set; } = null!;
             public string OrderDate { get; set; } = null!;
-            public string Total { get; set; } = null!;
-            public string SubTotal { get; set; } = null!;
+            public decimal Total { get; set; }
+            public decimal SubTotal { get; set; }
             public string Discount { get; set; } = null!;
             public string PaymentMethod { get; set; } = null!;
             public string TableName { get; set; } = null!;

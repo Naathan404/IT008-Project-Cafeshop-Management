@@ -5,6 +5,9 @@ using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using static CoffeeShop.ViewModels.StaffVM.StaffOrderViewModel;
 
 namespace CoffeeShop.ViewModels.StaffVM
@@ -92,9 +95,9 @@ namespace CoffeeShop.ViewModels.StaffVM
             set
             {
                 _selectedItem = value;
-                LoadAvailableSizes();
                 OnPropertyChanged(nameof(SelectedItem));
                 OnPropertyChanged(nameof(TextButtonSetAvailable));
+                LoadAvailableSizes();
             }
         }
         public string TextButtonSetAvailable
@@ -168,7 +171,10 @@ namespace CoffeeShop.ViewModels.StaffVM
             LoadData();
 
             // Mặc định chọn item đầu tiên
-            SelectedItem = Items.First();
+            if (Items.Count > 0)
+            {
+                SelectedItem = Items.First();
+            }
         }
         #endregion
 
@@ -289,7 +295,10 @@ namespace CoffeeShop.ViewModels.StaffVM
                     {
                         item.IsAvailable = thisItem.IsAvailable;
                         db.SaveChanges(); // Lưu vô DB
-                        LoadData();
+                        LoadData(); // reload lại dữ liệu ở page Menu
+
+                        // Gửi tin nhắn thông báo cho page order để reload lại dữ liệu
+                        WeakReferenceMessenger.Default.Send(new ReloadMenuMessage());
                     }
                 }
             }
@@ -306,6 +315,18 @@ namespace CoffeeShop.ViewModels.StaffVM
             if (SelectedItem?.ItemPrices == null || SelectedItem.ItemPrices.Count == 0)
                 return;
 
+            // Nếu chỉ có 1 size và là category Food (7) thì không hiển thị size
+            if (SelectedItem.CategoryId == 7)
+            {
+                var firstPrice = SelectedItem.ItemPrices.FirstOrDefault();
+                if (firstPrice != null)
+                {
+                    SelectedSize = firstPrice.Size?.SizeName;
+                    SelectedPrice = firstPrice.Price;
+                    return;
+                }
+            }
+
             var sizeList = SelectedItem.ItemPrices
                 .Where(p => p.Size != null && !string.IsNullOrEmpty(p.Size.SizeName))
                 .Select(p => new SizeViewModel
@@ -315,15 +336,6 @@ namespace CoffeeShop.ViewModels.StaffVM
                     IsSelected = false
                 })
                 .ToList();
-
-            // Nếu chỉ có 1 size và là category Food (7) thì không hiển thị size
-            if (sizeList.Count == 1 && SelectedItem.CategoryId == 7)
-            {
-                // Tự động chọn size duy nhất
-                SelectedSize = sizeList[0].SizeName;
-                SelectedPrice = sizeList[0].Price;
-                return;
-            }
 
             // Load sizes vào collection
             foreach (var size in sizeList)

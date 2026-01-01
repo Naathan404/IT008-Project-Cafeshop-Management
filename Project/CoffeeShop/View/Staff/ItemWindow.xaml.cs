@@ -26,13 +26,15 @@ namespace CoffeeShop.View.Staff
                 var firstSize = item.ItemPrices.First();
 
                 if (_currentItem.CategoryId == 7)
+                {
                     _selectedSize = null; // food không có size
-                else
-                    if (firstSize.Size != null)
-                    {
-                        _selectedSize = firstSize.Size.SizeName;
-                        _selectedPrice = firstSize.Price;
-                    }
+                    _selectedPrice = firstSize.Price;
+                }
+                else if (firstSize.Size != null)
+                {
+                    _selectedSize = firstSize.Size.SizeName;
+                    _selectedPrice = firstSize.Price;
+                }
             }
 
         }

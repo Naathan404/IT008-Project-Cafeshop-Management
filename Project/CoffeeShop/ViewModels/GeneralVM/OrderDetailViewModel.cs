@@ -170,8 +170,8 @@ namespace CoffeeShop.ViewModels.GeneralVM
                         ItemName = item.Price.Item.ItemName,
                         SizeName = item.Price.Size == null ? "---" : item.Price.Size.SizeName,
                         Quantity = item.Quantity,
-                        UnitPrice = item.UnitPrice.ToString("N0", viVn),
-                        TotalPrice = (item.Quantity * item.UnitPrice).ToString("N0", viVn),
+                        UnitPrice = item.UnitPrice,
+                        TotalPrice = (item.Quantity * item.UnitPrice),
                         Note = item.Note == null ? "" : item.Note
                     });
                 }

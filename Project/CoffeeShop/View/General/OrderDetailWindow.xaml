@@ -182,14 +182,14 @@
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
-                    <DataGridTextColumn Header="Đơn giá" Width="2*" Binding="{Binding UnitPrice}">
+                    <DataGridTextColumn Header="Đơn giá" Width="2*" Binding="{Binding UnitPrice, StringFormat=N0}">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
                                 <Setter Property="HorizontalAlignment" Value="Center"></Setter>
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
-                    <DataGridTextColumn Header="Thành tiền" Width="2*" Binding="{Binding TotalPrice}">
+                    <DataGridTextColumn Header="Thành tiền" Width="2*" Binding="{Binding TotalPrice, StringFormat=N0}">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
                                 <Setter Property="HorizontalAlignment" Value="Center"></Setter>
@@ -224,7 +224,7 @@
                 Margin="5"></TextBlock>
             <TextBlock Grid.Column="2"
                 x:Name="txblSubTotal"
-                Text="{Binding SubTotal}"
+                Text="{Binding SubTotal, StringFormat=N0}"
                 Foreground="#FF340D05"
                 FontFamily="Cascadia Code"
                 FontWeight="Bold"
@@ -250,7 +250,7 @@
                 Margin="5"></TextBlock>
                     <TextBlock Grid.Column="2"
                 x:Name="txblDiscountMoney"
-                Text="{Binding DiscountMoney}"
+                Text="{Binding DiscountMoney, StringFormat=N0}"
                 Foreground="#FF340D05"
                 FontFamily="Cascadia Code"
                 FontWeight="Bold"
@@ -276,7 +276,7 @@
                 Margin="5"></TextBlock>
             <TextBlock Grid.Column="2"
                 x:Name="txblTotalAmount"
-                Text="{Binding TotalAmount}"
+                Text="{Binding TotalAmount,StringFormat=N0}"
                 Foreground="#FF340D05"
                 FontFamily="Cascadia Code"
                 FontWeight="Bold"
