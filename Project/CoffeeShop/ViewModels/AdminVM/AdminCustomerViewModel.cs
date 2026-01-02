@@ -175,6 +175,7 @@ namespace CoffeeShop.ViewModels.AdminVM
 
         private void PrepareAdd()
         {
+            SelectedCustomer = null!;
             SelectedCustomer = new CustomerDTO
             {
                 CustomerID = 0,

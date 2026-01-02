@@ -1,11 +1,12 @@
-﻿using System;
+﻿using CoffeeShop.View.General;
+using CoffeeShop.ViewModels.StaffVM;
+using System;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Media.Animation;
-using CoffeeShop.View.General;
-using CoffeeShop.ViewModels.StaffVM;
 
 namespace CoffeeShop.View.Staff
 {
@@ -28,7 +29,14 @@ namespace CoffeeShop.View.Staff
         /// Account informations
         /// Name, Role, Phonenumber, Email, BaseSalary
         private CoffeeShop.Models.Staff _account;
-        
+
+        // Replace the following line:
+        // private readonly Brush _colorActive = (Brush)new BrushConverter().ConvertFrom("#D7CCC8"); 
+
+        // With this null-checked version to fix CS8600 and CS8601:
+        private readonly Brush _colorActive = (Brush)(new BrushConverter().ConvertFrom("#c7a57a") ?? Brushes.Transparent);
+        private readonly Brush _colorNormal = Brushes.Transparent;
+
         // Constructor
         public StaffWindow(CoffeeShop.Models.Staff account)
         {
@@ -37,48 +45,81 @@ namespace CoffeeShop.View.Staff
             StaffFrame.Navigate(new Staff_Order());
             bdrStaffWindowFunction.Width = _minimumNavigationBarWidth;
             _account = account;
+            SetActiveTabUI("Order");
         }
 
         #region Button Events
+
+        private void SetActiveTabUI(string tabName)
+        {
+            // Danh sách các Border Before
+            Border[] beforeBorders = { bdrAccount_Before, bdrOrder_Before, bdrTable_Before, bdrMenu_Before, bdrCustomer_Before, bdrHistory_Before, bdrDepot_Before };
+            // Danh sách các Border After
+            Border[] afterBorders = { bdrAccount_After, bdrOrder_After, bdrTable_After, bdrMenu_After, bdrCustomer_After, bdrHistory_After, bdrDepot_After };
+
+            // Reset tất cả về màu trong suốt
+            foreach (var b in beforeBorders) if (b != null) b.Background = _colorNormal;
+            foreach (var b in afterBorders) if (b != null) b.Background = _colorNormal;
+
+            // Highlight tab được chọn
+            switch (tabName)
+            {
+                case "Account": bdrAccount_Before.Background = bdrAccount_After.Background = _colorActive; break;
+                case "Order": bdrOrder_Before.Background = bdrOrder_After.Background = _colorActive; break;
+                case "Table": bdrTable_Before.Background = bdrTable_After.Background = _colorActive; break;
+                case "Menu": bdrMenu_Before.Background = bdrMenu_After.Background = _colorActive; break;
+                case "Customer": bdrCustomer_Before.Background = bdrCustomer_After.Background = _colorActive; break;
+                case "History": bdrHistory_Before.Background = bdrHistory_After.Background = _colorActive; break;
+                case "Depot": bdrDepot_Before.Background = bdrDepot_After.Background = _colorActive; break;
+            }
+        }
+
         private void bdrAccount_MouseDown(object sender, MouseButtonEventArgs e)
         {
             StaffFrame.Visibility = Visibility.Visible;
             StaffFrame.Navigate(new AccountPage(_account, this));
+            SetActiveTabUI("Account");
         }
         private void bdrOrder_MouseDown(object sender, MouseButtonEventArgs e)
         {
             StaffFrame.Visibility = Visibility.Visible;
             StaffFrame.Navigate(_orderPage);
+            SetActiveTabUI("Order");
         }
 
         private void bdrMenu_MouseDown(object sender, MouseButtonEventArgs e)
         {
             StaffFrame.Visibility = Visibility.Visible;
             StaffFrame.Navigate(_menuPage);
+            SetActiveTabUI("Menu");
         }
 
         private void bdrDepot_MouseDown(object sender, MouseButtonEventArgs e)
         {
             StaffFrame.Visibility = Visibility.Visible;
             StaffFrame.Navigate(_depotPage);
+            SetActiveTabUI("Depot");
         }
 
         private void bdrTable_MouseDown(object sender, MouseButtonEventArgs e)
         {
             StaffFrame.Visibility = Visibility.Visible;
             StaffFrame.Navigate(_tablePage);
+            SetActiveTabUI("Table");
         }
 
         private void bdrHistory_MouseDown(object sender, MouseButtonEventArgs e)
         {
             StaffFrame.Visibility = Visibility.Visible;
             StaffFrame.Navigate(_historyPage);
+            SetActiveTabUI("History");
         }
 
         private void bdrCustomer_MouseDown(object sender, MouseButtonEventArgs e)
         {
             StaffFrame.Visibility = Visibility.Visible;
             StaffFrame.Navigate(_customerPage);
+            SetActiveTabUI("Customer");
         }
 
         private void bdrStaffWindowFunction_MouseDown(object sender, MouseButtonEventArgs e)
