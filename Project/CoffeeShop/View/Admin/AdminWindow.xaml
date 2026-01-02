@@ -23,7 +23,7 @@
            NavigationUIVisibility="Hidden"/>
         <Grid>
             <Border x:Name="bdrStaffWindowFunction"
-                Background="#C7A57A"
+                Background="#E0CEB5"
                 Width="180"
                 HorizontalAlignment="Left"
                 Mouse.MouseDown="bdrStaffWindowFunction_MouseDown">
@@ -44,12 +44,14 @@
                         VerticalAlignment="Top"
                         Visibility="Collapsed"
                         Mouse.MouseDown="bdrAccount_MouseDown">
+                        <!--
                         <Border.Effect>
                             <DropShadowEffect Color="#462812"
                                           Opacity="0.3"
                                           BlurRadius="-10"
                                           ShadowDepth="5"/>
                         </Border.Effect>
+                        -->
                         <Grid>
                             <materialDesign:PackIcon Kind="AccountCircleOutline"
                                                  Margin="10 10 0 0"
@@ -73,12 +75,6 @@
                         HorizontalAlignment="Left"
                         VerticalAlignment="Top"
                         Margin="12,12,0,330">
-                        <Border.Effect>
-                            <DropShadowEffect Color="#462812"
-                                          Opacity="0.3"
-                                          BlurRadius="-10"
-                                          ShadowDepth="5"/>
-                        </Border.Effect>
                         <materialDesign:PackIcon Kind="AccountCircle"
                                              Margin="10"
                                              HorizontalAlignment="Left"
@@ -94,12 +90,6 @@
                         HorizontalAlignment="Left"
                         VerticalAlignment="Bottom"
                         Margin="12,0,0,290">
-                        <Border.Effect>
-                            <DropShadowEffect Color="#462812"
-                                          Opacity="0.3"
-                                          BlurRadius="-10"
-                                          ShadowDepth="5"/>
-                        </Border.Effect>
                         <materialDesign:PackIcon Kind="AccountGroup"
                                                 Height="35" Width="35"
                                                 Margin="10"
@@ -114,12 +104,6 @@
                         Margin="12,0,12,290"
                         Mouse.MouseDown="bdrEmployee_MouseDown"
                         Visibility="Collapsed">
-                        <Border.Effect>
-                            <DropShadowEffect Color="#462812"
-                                          Opacity="0.3"
-                                          BlurRadius="-10"
-                                          ShadowDepth="5"/>
-                        </Border.Effect>
                         <Grid>
                             <materialDesign:PackIcon Kind="AccountGroupOutline"
                                             Height="35" Width="35"
@@ -142,12 +126,6 @@
                         HorizontalAlignment="Left"
                         VerticalAlignment="Bottom"
                         Margin="12,0,0,220">
-                        <Border.Effect>
-                            <DropShadowEffect Color="#462812"
-                                          Opacity="0.3"
-                                          BlurRadius="-10"
-                                          ShadowDepth="5"/>
-                        </Border.Effect>
                         <materialDesign:PackIcon Kind="StoreCog"
                                                 Height="35" Width="35"
                                                 Margin="10"
@@ -162,12 +140,6 @@
                         Margin="12,0,12,220"
                         Mouse.MouseDown="bdrMenu_MouseDown"
                         Visibility="Collapsed">
-                        <Border.Effect>
-                            <DropShadowEffect Color="#462812"
-                                          Opacity="0.3"
-                                          BlurRadius="-10"
-                                          ShadowDepth="5"/>
-                        </Border.Effect>
                         <Grid>
                             <materialDesign:PackIcon Kind="StoreCogOutline"
                                                  Height="35" Width="35"
@@ -190,12 +162,6 @@
                         HorizontalAlignment="Left"
                         VerticalAlignment="Bottom"
                         Margin="12,0,0,150">
-                        <Border.Effect>
-                            <DropShadowEffect Color="#462812"
-                                          Opacity="0.3"
-                                          BlurRadius="-10"
-                                          ShadowDepth="5"/>
-                        </Border.Effect>
                         <materialDesign:PackIcon Kind="History"
                                              Height="35" Width="35"
                                              Margin="10"
@@ -210,12 +176,6 @@
                         Margin="12,0,12,150"
                         Mouse.MouseDown="bdrHistory_MouseDown"
                         Visibility="Collapsed">
-                        <Border.Effect>
-                            <DropShadowEffect Color="#462812"
-                                          Opacity="0.3"
-                                          BlurRadius="-10"
-                                          ShadowDepth="5"/>
-                        </Border.Effect>
                         <Grid>
                             <materialDesign:PackIcon Kind="History"
                                                  Height="35" Width="35"
@@ -238,12 +198,6 @@
                         HorizontalAlignment="Left"
                         VerticalAlignment="Bottom"
                         Margin="12,0,0,80">
-                        <Border.Effect>
-                            <DropShadowEffect Color="#462812"
-                                          Opacity="0.3"
-                                          BlurRadius="-10"
-                                          ShadowDepth="5"/>
-                        </Border.Effect>
                         <materialDesign:PackIcon Kind="AccountTie"
                                              Height="35" Width="35"
                                              Margin="10"
@@ -258,12 +212,6 @@
                         Margin="12,0,12,80"
                         Mouse.MouseDown="bdrCustomer_MouseDown"
                         Visibility="Collapsed">
-                        <Border.Effect>
-                            <DropShadowEffect Color="#462812"
-                                          Opacity="0.3"
-                                          BlurRadius="-10"
-                                          ShadowDepth="5"/>
-                        </Border.Effect>
                         <Grid>
                             <materialDesign:PackIcon Kind="AccountTieOutline"
                                                  Height="35" Width="35"
@@ -286,12 +234,6 @@
                         HorizontalAlignment="Left"
                         VerticalAlignment="Bottom"
                         Margin="12,0,0,10">
-                        <Border.Effect>
-                            <DropShadowEffect Color="#462812"
-                                          Opacity="0.3"
-                                          BlurRadius="-10"
-                                          ShadowDepth="5"/>
-                        </Border.Effect>
                         <materialDesign:PackIcon Kind="ArchiveCog"
                                              Height="35" Width="35"
                                              Margin="10"
@@ -306,12 +248,6 @@
                         Margin="12,0,12,10"
                         Mouse.MouseDown="bdrDepot_MouseDown"
                         Visibility="Collapsed">
-                        <Border.Effect>
-                            <DropShadowEffect Color="#462812"
-                                          Opacity="0.3"
-                                          BlurRadius="-10"
-                                          ShadowDepth="5"/>
-                        </Border.Effect>
                         <Grid>
 
                             <materialDesign:PackIcon Kind="ArchiveCogOutline"
@@ -335,12 +271,6 @@
                         HorizontalAlignment="Left"
                         VerticalAlignment="Bottom"
                         Margin="12,0,0,430">
-                        <Border.Effect>
-                            <DropShadowEffect Color="#462812"
-                                          Opacity="0.3"
-                                          BlurRadius="-10"
-                                          ShadowDepth="5"/>
-                        </Border.Effect>
                         <materialDesign:PackIcon Kind="ChartBox"
                                              Height="35" Width="35"
                                              Margin="10"
@@ -355,12 +285,6 @@
                         Margin="12,0,12,430"
                         Mouse.MouseDown="bdrStatistics_MouseDown"
                         Visibility="Collapsed">
-                        <Border.Effect>
-                            <DropShadowEffect Color="#462812"
-                                          Opacity="0.3"
-                                          BlurRadius="-10"
-                                          ShadowDepth="5"/>
-                        </Border.Effect>
                         <Grid>
 
                             <materialDesign:PackIcon Kind="ChartBoxOutline"
@@ -384,12 +308,6 @@
                         HorizontalAlignment="Left"
                         VerticalAlignment="Bottom"
                         Margin="12,0,0,360">
-                        <Border.Effect>
-                            <DropShadowEffect Color="#462812"
-                                Opacity="0.3"
-                                BlurRadius="-10"
-                                ShadowDepth="5"/>
-                        </Border.Effect>
                         <materialDesign:PackIcon Kind="TagArrowDown"
                             Height="35" Width="35"
                             Margin="10"
@@ -404,12 +322,6 @@
                         Margin="12,0,12,360"
                         Mouse.MouseDown="bdrDiscount_MouseDown"
                         Visibility="Collapsed">
-                        <Border.Effect>
-                            <DropShadowEffect Color="#462812"
-                              Opacity="0.3"
-                              BlurRadius="-10"
-                              ShadowDepth="5"/>
-                        </Border.Effect>
                         <Grid>
                             <materialDesign:PackIcon Kind="TagArrowDownOutline"
                                 Height="35" Width="35"
