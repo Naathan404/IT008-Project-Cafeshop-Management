@@ -53,4 +53,84 @@
             </Setter.Value>
         </Setter>
     </Style>
+
+    <!-- Datagrid template -->
+    <Style x:Key="CoffeeDataGridHeaderStyle" TargetType="DataGridColumnHeader">
+        <Setter Property="Background" Value="#E0CEB5"/>
+        <Setter Property="Foreground" Value="#FF340D05"/>
+        <Setter Property="Padding" Value="10,8"/>
+        <Setter Property="FontFamily" Value="Cascadia Code"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="BorderThickness" Value="0,0,1,1"/>
+        <Setter Property="BorderBrush" Value="#5D522C"/>
+    </Style>
+
+    <Style x:Key="CoffeeDataGridCellStyle" TargetType="DataGridCell">
+        <Setter Property="Foreground" Value="#766839"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontFamily" Value="Cascadia Code"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderBrush" Value="Black"/>
+        <Setter Property="BorderThickness" Value="0.5"/>
+        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type DataGridCell}">
+                    <Border Padding="5"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}">
+                        <ContentPresenter VerticalAlignment="Center"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsSelected" Value="True">
+                <Setter Property="Background" Value="#EDE2D3"/>
+                <Setter Property="Foreground" Value="#340D05"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="CoffeeDataGridStyle" TargetType="DataGrid" BasedOn="{x:Null}">
+        <Setter Property="CellStyle" Value="{StaticResource CoffeeDataGridCellStyle}"/>
+        <Setter Property="ColumnHeaderStyle" Value="{StaticResource CoffeeDataGridHeaderStyle}"/>
+        <Setter Property="Background" Value="#F9F6F0"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="GridLinesVisibility" Value="None"/>
+        <Setter Property="AutoGenerateColumns" Value="False"/>
+        <Setter Property="CanUserAddRows" Value="False"/>
+        <Setter Property="CanUserDeleteRows" Value="False"/>
+        <Setter Property="CanUserReorderColumns" Value="False"/>
+        <Setter Property="CanUserResizeColumns" Value="False"/>
+        <Setter Property="IsReadOnly" Value="True"/>
+        <Setter Property="RowBackground" Value="#F9F6F0"/>
+        <Setter Property="AlternatingRowBackground" Value="#F2EDE4"/>
+        <Setter Property="SelectionMode" Value="Single"/>
+        <Setter Property="HeadersVisibility" Value="Column"/>
+    </Style>
+
+    <!-- Rounded ProgressBar -->
+    <Style x:Key="RoundedProgressBar" TargetType="{x:Type ProgressBar}" BasedOn="{x:Null}">
+        <Setter Property="Height" Value="14"/>
+        <Setter Property="Background" Value="#EEE"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ProgressBar}">
+                    <Grid x:Name="PART_Track">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="7"/>
+
+                        <Border x:Name="PART_Indicator" 
+                            HorizontalAlignment="Left" 
+                            CornerRadius="7" 
+                            Background="{Binding PerformanceColor}"/>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 </ResourceDictionary>

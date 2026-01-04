@@ -1,0 +1,60 @@
+﻿<Window x:Class="CoffeeShop.View.Admin.InsertCouponWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        Title="Thông tin mã giảm giá" Height="670" Width="500"
+        Icon="/Assets/icoCoffee.ico"
+        WindowStartupLocation="CenterScreen" Background="#F9F6F0">
+    <Grid Margin="30 0">
+        <StackPanel>
+            <TextBlock Text="{Binding Title}" FontSize="24" FontWeight="Bold" 
+                       Foreground="#340D05" HorizontalAlignment="Center" Margin="0,0,0,10"/>
+
+            <TextBox materialDesign:HintAssist.Hint="Mã coupon (VD: KM2026)" 
+                     Text="{Binding Coupon.DiscountCode, UpdateSourceTrigger=PropertyChanged}" 
+                     IsEnabled="{Binding IsCodeEnabled}"
+                     Style="{StaticResource MaterialDesignOutlinedTextBox}" Margin="0,8"/>
+
+            <TextBox materialDesign:HintAssist.Hint="Tên chương trình" 
+                     Text="{Binding Coupon.DiscountName, UpdateSourceTrigger=PropertyChanged}" 
+                     Style="{StaticResource MaterialDesignOutlinedTextBox}" Margin="0,8"/>
+
+            <ComboBox materialDesign:HintAssist.Hint="Loại giảm giá"
+                     ItemsSource="{Binding CouponTypes}"
+                     SelectedItem="{Binding Coupon.DiscountType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                     IsEnabled="{Binding IsCodeEnabled}" 
+                     Style="{StaticResource MaterialDesignOutlinedComboBox}" Margin="0,10"/>
+
+            <TextBox materialDesign:HintAssist.Hint="Mức giảm (Tiền hoặc %)" 
+                     Text="{Binding Coupon.DiscountValue, StringFormat={}{0:N0}, UpdateSourceTrigger=PropertyChanged}"
+                     Style="{StaticResource MaterialDesignOutlinedTextBox}" Margin="0,8"/>
+
+            <TextBox materialDesign:HintAssist.Hint="Giá trị đơn tối thiểu (VNĐ)" 
+                     Text="{Binding Coupon.MinimumOrderValue, StringFormat={}{0:N0}}"
+                     Style="{StaticResource MaterialDesignOutlinedTextBox}" Margin="0,8"/>
+
+            <TextBox materialDesign:HintAssist.Hint="Số tiền giảm tối đa (VNĐ)" 
+                     Text="{Binding Coupon.MaximumDiscountAmount, StringFormat={}{0:N0}}"
+                     Visibility="{Binding PercentInputVisibility}"
+                     Style="{StaticResource MaterialDesignOutlinedTextBox}" Margin="0,8"/>
+            <TextBox materialDesign:HintAssist.Hint="Tổng số lượt sử dụng tối đa" 
+                     Text="{Binding Coupon.UseLimit, UpdateSourceTrigger=PropertyChanged}"
+                     Style="{StaticResource MaterialDesignOutlinedTextBox}" Margin="0,8"/>
+
+            <StackPanel Orientation="Horizontal" Margin="5,10">
+                <TextBlock Text="Trạng thái hoạt động:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                <ToggleButton IsChecked="{Binding Coupon.IsActive}" 
+                              Style="{StaticResource MaterialDesignSwitchToggleButton}"/>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
+                <Button Content="HỦY" Command="{Binding CancelCommand}" 
+                        CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
+                        Style="{StaticResource MaterialDesignFlatButton}" Foreground="#340D05" Margin="0,0,10,0"/>
+                <Button Content="XÁC NHẬN" Command="{Binding ApplyCommand}" 
+                        CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
+                        Style="{StaticResource MaterialDesignRaisedButton}" Background="#B18252" BorderBrush="#340D05"/>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</Window>

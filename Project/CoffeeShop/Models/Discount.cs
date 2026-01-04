@@ -23,5 +23,7 @@ public partial class Discount
 
     public int UsedCount { get; set; }
 
+    public int UseLimit { get; set; }
+
     public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
 }

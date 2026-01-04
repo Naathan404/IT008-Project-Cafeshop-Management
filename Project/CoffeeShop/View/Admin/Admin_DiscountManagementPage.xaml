@@ -7,406 +7,211 @@
       xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
       xmlns:local="clr-namespace:CoffeeShop.View.Admin"
       xmlns:control="clr-namespace:CoffeeShop.View.Controls"
+      xmlns:dtos="clr-namespace:CoffeeShop.Service.DTOs"
       mc:Ignorable="d" 
       d:DesignHeight="610" d:DesignWidth="1110"
       Background="#E0CEB5"
+      x:Name="root"
       Title="Thống kê cửa hàng">
-    <Grid Margin="30,10">
+    <Grid Margin="20">
         <Grid.RowDefinitions>
-            <RowDefinition Height="100"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="50"/>
+            <RowDefinition Height="70"/>
         </Grid.RowDefinitions>
 
-        <!-- Cac nut chuc nang -->
-        <materialDesign:Card UniformCornerRadius="20"
-                             BorderBrush="#766839" BorderThickness="2" Background="White">
-            <Grid VerticalAlignment="Center">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="7*"></ColumnDefinition>
-                    <ColumnDefinition Width="3*"></ColumnDefinition>
-                </Grid.ColumnDefinitions>
-
-                <Grid Grid.Column="0" Margin="10 0 0 0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="2*"></ColumnDefinition>
-                        <ColumnDefinition Width="1.5*"></ColumnDefinition>
-                        <ColumnDefinition Width="1.5*"></ColumnDefinition>
-                        <ColumnDefinition Width="2*"></ColumnDefinition>
-                        <ColumnDefinition Width="2.5*"></ColumnDefinition>
-                        <ColumnDefinition Width="Auto"></ColumnDefinition>
-                    </Grid.ColumnDefinitions>
-
-                    <ComboBox
-                        Grid.Column="0"
-                        FontFamily="Cascadia Code"
-                        Height="48"
-                        Margin="5 0"
-                        materialDesign:HintAssist.Hint="Số tiền giảm"
-                        HorizontalAlignment="Stretch"
-                        Style="{StaticResource MaterialDesignOutlinedComboBox}"
-                        ItemsSource="{Binding Periods, UpdateSourceTrigger=PropertyChanged}"
-                        SelectedItem="{Binding SelectedPeriod, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                        <ComboBox.ToolTip>
-                            <ToolTip Style="{StaticResource CustomTooltip}">
-                                <TextBlock Text="Chọn khoảng cho số tiền giảm của mã" FontFamily="Cascadia Code" FontWeight="Bold" Foreground="#FF340D05"/>
-                            </ToolTip>
-                        </ComboBox.ToolTip>
-                    </ComboBox>
-
-                    <ComboBox
-                        Grid.Column="1"
-                        FontFamily="Cascadia Code"
-                        Height="48"
-                        Margin="5 0"
-                        materialDesign:HintAssist.Hint="Hiệu suất"
-                        HorizontalAlignment="Stretch"
-                        Style="{StaticResource MaterialDesignOutlinedComboBox}"
-                        ItemsSource="{Binding Periods, UpdateSourceTrigger=PropertyChanged}"
-                        SelectedItem="{Binding SelectedPeriod, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                        <ComboBox.ToolTip>
-                            <ToolTip Style="{StaticResource CustomTooltip}">
-                                <TextBlock Text="Chọn hiệu suất hoạt động của mã" FontFamily="Cascadia Code" FontWeight="Bold" Foreground="#FF340D05"/>
-                            </ToolTip>
-                        </ComboBox.ToolTip>
-                    </ComboBox>
-
-                    <ComboBox
-                        Grid.Column="2"
-                        FontFamily="Cascadia Code"
-                        Height="48"
-                        Margin="5 0"
-                        materialDesign:HintAssist.Hint="Loại mã"
-                        HorizontalAlignment="Stretch"
-                        Style="{StaticResource MaterialDesignOutlinedComboBox}"
-                        ItemsSource="{Binding Periods, UpdateSourceTrigger=PropertyChanged}"
-                        SelectedItem="{Binding SelectedPeriod, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                        <ComboBox.ToolTip>
-                            <ToolTip Style="{StaticResource CustomTooltip}">
-                                <TextBlock Text="Chọn loại mã giảm giá" FontFamily="Cascadia Code" FontWeight="Bold" Foreground="#FF340D05"/>
-                            </ToolTip>
-                        </ComboBox.ToolTip>
-                    </ComboBox>
-
-                    <ComboBox
-                        Grid.Column="3"
-                        FontFamily="Cascadia Code"
-                        Height="48"
-                        Margin="5 0"
-                        materialDesign:HintAssist.Hint="Trạng thái"
-                        HorizontalAlignment="Stretch"
-                        Style="{StaticResource MaterialDesignOutlinedComboBox}"
-                        ItemsSource="{Binding PaymentMethods, UpdateSourceTrigger=PropertyChanged}"
-                        SelectedItem="{Binding SelectedPaymentMethod, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                        <ComboBox.ToolTip>
-                            <ToolTip Style="{StaticResource CustomTooltip}">
-                                <TextBlock Text="Chọn trạng thái hoạt động của mã" FontFamily="Cascadia Code" FontWeight="Bold" Foreground="#FF340D05"/>
-                            </ToolTip>
-                        </ComboBox.ToolTip>
-                    </ComboBox>
-
-                    <TextBox
-                        Text="{Binding CustomerNameFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                        Grid.Column="4"
-                        Margin="5 0 15 0"
-                        Height="48"
-                        FontFamily="Cascadia Code"
-                        FontWeight="Bold"
-                        VerticalAlignment="Center"
-                        HorizontalAlignment="Stretch"
-                        materialDesign:HintAssist.Hint="Tên mã giảm giá"
-                        materialDesign:HintAssist.Foreground="#462812"
-                        materialDesign:HintAssist.Background="Transparent"
-                        materialDesign:TextFieldAssist.UnderlineBrush="#462812"
-                        AcceptsReturn="True"
-                        Style="{StaticResource MaterialDesignOutlinedTextBox}"
-                        materialDesign:TextFieldAssist.OutlinedBorderActiveThickness="2"
-                        BorderThickness="1"
-                        TextWrapping="Wrap"
-                        VerticalScrollBarVisibility="Auto">
+        <!-- Nút chức năng -->
+        <materialDesign:Card Padding="5" UniformCornerRadius="10" BorderThickness="2" BorderBrush="#340D05">
+            <Grid>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                    <ComboBox ItemsSource="{Binding CouponTypes}" SelectedItem="{Binding SelectedType}" 
+                              materialDesign:HintAssist.Hint="Loại" Width="120" Margin="5" Style="{StaticResource MaterialDesignOutlinedComboBox}"/>
+                    <ComboBox ItemsSource="{Binding Performances}" SelectedItem="{Binding SelectedPerformance}" 
+                              materialDesign:HintAssist.Hint="Hiệu suất" Width="130" Margin="5" Style="{StaticResource MaterialDesignOutlinedComboBox}"/>
+                    <ComboBox ItemsSource="{Binding Statuses}" SelectedItem="{Binding SelectedStatus}" 
+                              materialDesign:HintAssist.Hint="Trạng thái" Width="130" Margin="5" Style="{StaticResource MaterialDesignOutlinedComboBox}"/>
+                    <TextBox Text="{Binding SearchTerm, UpdateSourceTrigger=PropertyChanged}" 
+                             materialDesign:HintAssist.Hint="Tìm mã..." Width="150" Margin="5" Style="{StaticResource MaterialDesignOutlinedTextBox}">
                         <TextBox.ToolTip>
-                            <ToolTip Style="{StaticResource CustomTooltip}">
-                                <TextBlock Text="Tìm kiếm theo tên của mã giảm giá" FontFamily="Cascadia Code" FontWeight="Bold" Foreground="#FF340D05"/>
-                            </ToolTip>
+                            <ToolTip Style="{StaticResource CustomTooltip}" Content="Tìm theo tên mã"/>
                         </TextBox.ToolTip>
                     </TextBox>
+                </StackPanel>
 
-                    <Rectangle 
-                        Grid.Column="5"
-                        Width="1" 
-                        Fill="#462812"
-                        Margin="-5"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Stretch">
-                    </Rectangle>
-                </Grid>
-
-                <Grid
-                    Grid.Column="1">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"></ColumnDefinition>
-                        <ColumnDefinition Width="Auto"></ColumnDefinition>
-                        <ColumnDefinition Width="Auto"></ColumnDefinition>
-                        <ColumnDefinition Width="Auto"></ColumnDefinition>
-                        <ColumnDefinition Width="Auto"></ColumnDefinition>
-                    </Grid.ColumnDefinitions>
-
-                    <Button
-                        Grid.Column="0"
-                        Command="{Binding RefreshPageCommand}"
-                        materialDesign:ButtonAssist.CornerRadius="10"
-                        Padding="0"
-                        Margin="0 0 15 0"
-                        IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
-                        Background="#E0ceb5"
-                        HorizontalAlignment="Right"
-                        Height="50"
-                        Width="50"
-                        BorderBrush="#67582c"
-                        BorderThickness="2" >
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button Width="57" Height="40" 
+                            Command="{Binding RefreshPageCommand}" Content="{materialDesign:PackIcon Kind=Refresh}" 
+                            Background="#E0CEB5" BorderThickness="0" Foreground="#340D05" Margin="5,0">
                         <Button.ToolTip>
-                            <ToolTip Style="{StaticResource CustomTooltip}">
-                                <TextBlock Text="Làm mới trang" FontFamily="Cascadia Code" FontWeight="Bold" Foreground="#FF340D05"/>
-                            </ToolTip>
+                            <ToolTip Style="{StaticResource CustomTooltip}" Content="Tải lại"/>
                         </Button.ToolTip>
-                        <materialDesign:PackIcon
-                            Foreground="#340D05"
-                            Kind="Refresh"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Height="40"
-                            Width="40">
-                        </materialDesign:PackIcon>
                     </Button>
-
-                    <Button
-                        Grid.Column="1"
-                        Command="{Binding ShowOrderDetailCommand}"
-                        materialDesign:ButtonAssist.CornerRadius="10"
-                        Padding="0"
-                        Margin="0 0 15 0"
-                        IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
-                        Background="#E0ceb5"
-                        HorizontalAlignment="Right"
-                        Height="50"
-                        Width="50"
-                        BorderBrush="#67582c"
-                        BorderThickness="2" >
+                    <Button Width="57" Height="40"
+                            Command="{Binding InsertCouponCommand}" Content="{materialDesign:PackIcon Kind=Plus}" 
+                            Background="#E0CEB5" BorderThickness="0" Foreground="#340D05" Margin="5,0">
                         <Button.ToolTip>
-                            <ToolTip Style="{StaticResource CustomTooltip}">
-                                <TextBlock Text="Thêm mã giảm giá" FontFamily="Cascadia Code" FontWeight="Bold" Foreground="#FF340D05"/>
-                            </ToolTip>
+                            <ToolTip Style="{StaticResource CustomTooltip}" Content="Thêm"/>
                         </Button.ToolTip>
-                        <materialDesign:PackIcon
-                            Foreground="#340D05"
-                            Kind="Plus"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Height="40"
-                            Width="40">
-                        </materialDesign:PackIcon>
                     </Button>
-
-                    <Button
-                        Grid.Column="2"
-                        Command="{Binding PrintCommand}"
-                        materialDesign:ButtonAssist.CornerRadius="10"
-                        Padding="0"
-                        Margin="0 0 15 0"
-                        IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
-                        Background="#E0ceb5"
-                        HorizontalAlignment="Right"
-                        Height="50"
-                        Width="50"
-                        BorderBrush="#67582c"
-                        BorderThickness="2" >
+                    <Button Width="57" Height="40"
+                            Command="{Binding UpdateCouponCommand}" Content="{materialDesign:PackIcon Kind=Pencil}" 
+                            Background="#E0CEB5" BorderThickness="0" Foreground="#340D05" Margin="5,0">
                         <Button.ToolTip>
-                            <ToolTip Style="{StaticResource CustomTooltip}">
-                                <TextBlock Text="Cập nhật mã giảm giá" FontFamily="Cascadia Code" FontWeight="Bold" Foreground="#FF340D05"/>
-                            </ToolTip>
+                            <ToolTip Style="{StaticResource CustomTooltip}" Content="Sửa"/>
                         </Button.ToolTip>
-                        <materialDesign:PackIcon
-                            Foreground="#340D05"
-                            Kind="Update"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Height="40"
-                            Width="40">
-                        </materialDesign:PackIcon>
                     </Button>
-
-                    <Button
-                        Grid.Column="3"
-                        Command="{Binding ExportExcelCommand}"
-                        materialDesign:ButtonAssist.CornerRadius="10"
-                        Padding="0"
-                        Margin="0 0 15 0"
-                        IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
-                        Background="#E0ceb5"
-                        HorizontalAlignment="Right"
-                        Height="50"
-                        Width="50"
-                        BorderBrush="#67582c"
-                        BorderThickness="2" >
+                    <Button Width="57" Height="40"
+                            Command="{Binding DeleteCouponCommand}" Content="{materialDesign:PackIcon Kind=Delete}" 
+                            Background="#E0CEB5" BorderThickness="0" Foreground="#340D05" Margin="5,0">
                         <Button.ToolTip>
-                            <ToolTip Style="{StaticResource CustomTooltip}">
-                                <TextBlock Text="Xóa mã giảm giá" FontFamily="Cascadia Code" FontWeight="Bold" Foreground="#FF340D05"/>
-                            </ToolTip>
+                            <ToolTip Style="{StaticResource CustomTooltip}" Content="Xóa"/>
                         </Button.ToolTip>
-                        <materialDesign:PackIcon
-                            Foreground="#340D05"
-                            Kind="Delete"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Height="40"
-                            Width="40">
-                        </materialDesign:PackIcon>
                     </Button>
-                </Grid>
+                    <Button Width="57" Height="40"
+                            Command="{Binding ToggleStatusCommand}" Content="{materialDesign:PackIcon Kind=Power}" 
+                            Background="#E0CEB5" BorderThickness="0" Foreground="#340D05" Margin="5,0">
+                        <Button.ToolTip>
+                            <ToolTip Style="{StaticResource CustomTooltip}" Content="Bật/Tắt"/>
+                        </Button.ToolTip>
+                    </Button>
+                </StackPanel>
             </Grid>
         </materialDesign:Card>
 
-        <!-- Datagrid hien thi du lieu cua cac ma giam gia -->
-        <Border Grid.Row="1" Margin="0,10" BorderBrush="#BC9466"
-                BorderThickness="10" CornerRadius="5">
-            <DataGrid
-                ItemsSource="{Binding Orders}"
-                SelectedItem="{Binding SelectedOrder}"
-                IsEnabled="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
-                Opacity="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
-                AutoGenerateColumns="False" CanUserAddRows="False"
-                CanUserResizeColumns="False" CanUserReorderColumns="False"
-                HorizontalAlignment="Stretch"
-                GridLinesVisibility="None"
-                IsReadOnly="true"
-                ScrollViewer.VerticalScrollBarVisibility="Visible">
-            <DataGrid.ColumnHeaderStyle>
-                <Style TargetType="DataGridColumnHeader">
-                    <Setter Property="Background" Value="#E0CEB5"/>
-                    <Setter Property="Foreground" Value="#340D05"/>
-                    <Setter Property="FontWeight" Value="Bold"/>
-                    <Setter Property="FontFamily" Value="Cascadia Code"/>
-                    <Setter Property="FontSize" Value="15"/>
-                    <Setter Property="HorizontalContentAlignment" Value="Center"/>
-                    <Setter Property="VerticalAlignment" Value="Center"/>
-                    <Setter Property="Padding" Value="5"/>
-                    <Setter Property="BorderThickness" Value="1"/>
-                    <Setter Property="BorderBrush" Value="#766839"/>
-                </Style>
-            </DataGrid.ColumnHeaderStyle>
+        <!-- Datagrid -->
+        <materialDesign:Card Grid.Row="1" Margin="0 15" UniformCornerRadius="10"
+                             BorderThickness="2" BorderBrush="#340D05">
+            <DataGrid ItemsSource="{Binding Coupons}" 
+                  SelectedItem="{Binding SelectedCoupon}"
+                  Style="{StaticResource CoffeeDataGridStyle}"
+                  CellStyle="{StaticResource CoffeeDataGridCellStyle}" 
+                  ColumnHeaderStyle="{StaticResource CoffeeDataGridHeaderStyle}"
+                  ScrollViewer.VerticalScrollBarVisibility="Visible">
 
-            <DataGrid.CellStyle>
-                <Style TargetType="DataGridCell">
-                    <Setter Property="Foreground" Value="#766839"/>
-                    <Setter Property="FontFamily" Value="Cascadia Code"/>
-                    <Setter Property="FontSize" Value="14"/>
-                    <Setter Property="Background" Value="#F9F6F0"/>
-                    <Setter Property="BorderBrush" Value="#A0A0A0"/>
-                    <Setter Property="BorderThickness" Value="1"/>
-                    <Setter Property="HorizontalContentAlignment" Value="Center"/>
-                    <Setter Property="VerticalContentAlignment" Value="Center"/>
-                    <Style.Triggers>
-                        <Trigger Property="IsSelected" Value="True">
-                            <Setter Property="Background" Value="#EDE2D3"/>
-                            <Setter Property="Foreground" Value="#340D05"/>
-                        </Trigger>
-                    </Style.Triggers>
-                </Style>
-            </DataGrid.CellStyle>
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="Tên mã" Width="0.8*" Binding="{Binding DisplayID}">
-                    <DataGridTextColumn.ElementStyle>
-                        <Style TargetType="TextBlock">
-                            <Setter Property="HorizontalAlignment" Value="Center"></Setter>
-                            <Setter Property="VerticalAlignment" Value="Center"/>
-                        </Style>
-                    </DataGridTextColumn.ElementStyle>
-                </DataGridTextColumn>
-                <DataGridTextColumn Header="Nội dung" Width="2*" Binding="{Binding CustomerName}">
-                    <DataGridTextColumn.ElementStyle>
-                        <Style TargetType="TextBlock">
-                            <Setter Property="HorizontalAlignment" Value="Left"/>
-                            <Setter Property="VerticalAlignment" Value="Center"/>
-                            <Setter Property="Padding" Value="5 0 0 0"/>
-                        </Style>
-                    </DataGridTextColumn.ElementStyle>
-                </DataGridTextColumn>
-                <DataGridTextColumn Header="Loại mã" Width="*" Binding="{Binding OrderDate}">
-                    <DataGridTextColumn.ElementStyle>
-                        <Style TargetType="TextBlock">
-                            <Setter Property="HorizontalAlignment" Value="Center"></Setter>
-                            <Setter Property="VerticalAlignment" Value="Center"/>
-                        </Style>
-                    </DataGridTextColumn.ElementStyle>
-                </DataGridTextColumn>
-                <DataGridTextColumn Header="Hiệu suất" Width="*" Binding="{Binding OrderDate}">
-                    <DataGridTextColumn.ElementStyle>
-                        <Style TargetType="TextBlock">
-                            <Setter Property="HorizontalAlignment" Value="Center"></Setter>
-                            <Setter Property="VerticalAlignment" Value="Center"/>
-                        </Style>
-                    </DataGridTextColumn.ElementStyle>
-                </DataGridTextColumn>
-                <DataGridTextColumn Header="Số tiền giảm" Width="1.2*" Binding="{Binding PaymentMethod}">
-                    <DataGridTextColumn.ElementStyle>
-                        <Style TargetType="TextBlock">
-                            <Setter Property="HorizontalAlignment" Value="Center"></Setter>
-                            <Setter Property="VerticalAlignment" Value="Center"/>
-                        </Style>
-                    </DataGridTextColumn.ElementStyle>
-                </DataGridTextColumn>
-                <DataGridTextColumn Header="Trạng thái" Width="*" Binding="{Binding Total}">
-                    <DataGridTextColumn.ElementStyle>
-                        <Style TargetType="TextBlock">
-                            <Setter Property="HorizontalAlignment" Value="Center"></Setter>
-                            <Setter Property="VerticalAlignment" Value="Center"/>
-                        </Style>
-                    </DataGridTextColumn.ElementStyle>
-                </DataGridTextColumn>
-            </DataGrid.Columns>
-        </DataGrid>
-        </Border>
+                <DataGrid.RowStyle>
+                    <Style TargetType="DataGridRow" BasedOn="{StaticResource {x:Type DataGridRow}}">
+                        <Setter Property="Opacity" Value="{Binding RowOpacity}"/>
+                        <Setter Property="Foreground" Value="{Binding RowForeground}"/>
+                        <Style.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Background" Value="#EDE2D3"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </DataGrid.RowStyle>
 
-        <Grid Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
-              Grid.Row="1">
-            <ProgressBar
-                Style="{StaticResource MaterialDesignCircularProgressBar}"
-                IsIndeterminate="True" 
-                Width="30"
-                Height="30"
-                Value="0"
-                Foreground="#340D05"
-                VerticalAlignment="Center" 
-                HorizontalAlignment="Center"/>
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Tên mã" Binding="{Binding DiscountCode}" Width="0.5*"/>
 
-            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,50,0,0">
-                <TextBlock Text="Đang tải dữ liệu..." FontWeight="Bold" Foreground="Gray"/>
-            </StackPanel>
+                    <DataGridTextColumn Header="Nội dung" Binding="{Binding DiscountName}" Width="1.5*">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="ToolTip">
+                                    <Setter.Value>
+                                        <ToolTip Style="{StaticResource CustomTooltip}">
+                                            <TextBlock Text="{Binding DiscountName}"/>
+                                        </ToolTip>
+                                    </Setter.Value>
+                                </Setter>
+
+                                <Setter Property="HorizontalAlignment" Value="Left"/>
+                                <Setter Property="VerticalAlignment" Value="Center"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+
+                    <DataGridTextColumn Header="Loại" Binding="{Binding DiscountType}" Width="0.5*">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="HorizontalAlignment" Value="Center"></Setter>
+                                <Setter Property="VerticalAlignment" Value="Center"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+
+                    <DataGridTemplateColumn Header="Hiệu suất" Width="0.6*" 
+                                            CanUserSort="True" SortMemberPath="UsagePercentage">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Grid VerticalAlignment="Center" Margin="10,0">
+                                    <ProgressBar Value="{Binding UsagePercentage, Mode=OneWay}" 
+                                     Style="{StaticResource RoundedProgressBar}"
+                                     Foreground="{Binding PerformanceColor}" 
+                                     Minimum="0" Maximum="100"
+                                     Width="100" Height="14"/>
+                                    <TextBlock Text="{Binding UsagePercentage, Mode=OneWay, StringFormat={}{0:N0}%}" 
+                                        FontSize="9" FontWeight="Bold"
+                                        HorizontalAlignment="Center" VerticalAlignment="Center"
+                                        Foreground="#340D05"/>
+
+                                    <Grid.ToolTip>
+                                        <ToolTip Style="{StaticResource CustomTooltip}"
+                                             Content="{Binding UsageDetail}"/>
+                                    </Grid.ToolTip>
+                                </Grid>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTextColumn Header="Giảm" Binding="{Binding DiscountValue, StringFormat={}{0:N0}}" Width="0.5*"/>
+
+                    <DataGridTextColumn Header="Đơn tối thiểu" Binding="{Binding MinimumOrderValue, StringFormat={}{0:N0}}" Width="0.7*"/>
+
+                    <DataGridTextColumn Header="Giảm tối đa" Binding="{Binding MaximumDiscountAmount, StringFormat={}{0:N0}}" Width="0.7*"/>
+
+                    <DataGridTemplateColumn Header="Trạng thái" Width="0.7*">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding DiscountStatus}" 
+                               VerticalAlignment="Center" 
+                               HorizontalAlignment="Center"
+                               FontWeight="SemiBold"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                </DataGrid.Columns>
+            </DataGrid>
+        </materialDesign:Card>
+
+        <!-- Thống kê -->
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <materialDesign:Card Grid.Column="0" Margin="0,0,10,0" Padding="15" Background="#E3F2FD">
+                <StackPanel Orientation="Horizontal">
+                    <materialDesign:PackIcon Kind="CheckCircle" Foreground="#1976D2" VerticalAlignment="Center" Width="25" Height="25"/>
+                    <StackPanel Margin="15,0,0,0">
+                        <TextBlock Text="Đang hoạt động" FontSize="12" Foreground="#555"/>
+                        <TextBlock Text="{Binding ActiveCouponsCount}" FontSize="18" FontWeight="Bold" Foreground="#1976D2"/>
+                    </StackPanel>
+                </StackPanel>
+            </materialDesign:Card>
+
+            <materialDesign:Card Grid.Column="1" Margin="5,0" Padding="15" Background="#F1F8E9">
+                <StackPanel Orientation="Horizontal">
+                    <materialDesign:PackIcon Kind="TrendingUp" Foreground="#388E3C" VerticalAlignment="Center" Width="25" Height="25"/>
+                    <StackPanel Margin="15,0,0,0">
+                        <TextBlock Text="Hiệu suất tốt nhất" FontSize="12" Foreground="#555"/>
+                        <TextBlock Text="{Binding BestPerformanceCoupon}" FontSize="18" FontWeight="Bold" Foreground="#388E3C"/>
+                    </StackPanel>
+                </StackPanel>
+            </materialDesign:Card>
+
+            <materialDesign:Card Grid.Column="2" Margin="10,0,0,0" Padding="15" Background="#FFF3E0">
+                <StackPanel Orientation="Horizontal">
+                    <materialDesign:PackIcon Kind="CurrencyUsd" Foreground="#F57C00" VerticalAlignment="Center" Width="25" Height="25"/>
+                    <StackPanel Margin="15,0,0,0">
+                        <TextBlock Text="Tổng tiền đã giảm" FontSize="12" Foreground="#555"/>
+                        <TextBlock Text="{Binding TotalDiscountAmount, FallbackValue=999k, StringFormat={}{0:N0}đ}" 
+                                    FontSize="18" FontWeight="Bold" Foreground="#F57C00"/>
+                    </StackPanel>
+                </StackPanel>
+            </materialDesign:Card>
         </Grid>
-        
-        <!-- Thong ke nhanh mot so thong tin cua datagrid -->
-        <materialDesign:Card Grid.Row="2" BorderBrush="#766839" BorderThickness="2"
-                             UniformCornerRadius="10">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="0.8*"/>
-                    <ColumnDefinition Width="0.7*"/>
-                    <ColumnDefinition Width="0.9*"/>
-                </Grid.ColumnDefinitions>
-
-                <TextBlock Grid.Column="0" Text="Số mã đang sử dụng:" FontSize="22" FontWeight="SemiBold"
-                           VerticalAlignment="Center" HorizontalAlignment="Left"
-                           Padding="20,0,0,0" FontFamily="Cascadia Code"/>
-                
-                <TextBlock Grid.Column="1" Text="Mã hot:" FontSize="22" FontWeight="SemiBold"
-                           VerticalAlignment="Center" HorizontalAlignment="Left"
-                           Padding="20,0,0,0" FontFamily="Cascadia Code"/>
-                
-                <TextBlock Grid.Column="2" Text="Số tiền đã giảm:" FontSize="22" FontWeight="SemiBold"
-                           VerticalAlignment="Center" HorizontalAlignment="Left"
-                           Padding="20,0,0,0" FontFamily="Cascadia Code"/>
-                
-            </Grid>
-        </materialDesign:Card>
     </Grid>
 </Page>

@@ -6,72 +6,36 @@ using System.Threading.Tasks;
 
 namespace CoffeeShop.Service.DTOs
 {
-    // Class DepotItem
-    public class DepotItemDTO : BaseViewModel
+    public class DepotItemDTO : BaseDTO
     {
-        // Backing field (nơi lưu giá trị thật sự) 
         private int _materialId;
         private string? _materialName;
         private decimal _quantity;
         private string? _unit;
         private string? _note;
-
-        // --- CÁC PROPERTY - Khi có sự thay đổi mới gián giá trị mới cho backing field ---
-        public int MaterialId { get; set; } /// Ko có sự thay đổi ID nên ko cần định nghĩa
-        // 1. MaterialName
+        public int MaterialId { get; set; }
         public string? MaterialName
         {
             get => _materialName;
-            set
-            {
-                if (_materialName != value)
-                {
-                    _materialName = value;
-                    OnPropertyChanged();
-                }
-            }
+            set =>SetProperty(ref _materialName, value);
         }
 
-        // 2. Quantity
         public decimal Quantity
         {
             get => _quantity;
-            set
-            {
-                if (_quantity != value)
-                {
-                    _quantity = value;
-                    OnPropertyChanged();
-                }
-            }
+            set => SetProperty(ref _quantity, value);
         }
 
-        // 3. Unit
         public string? Unit
         {
             get => _unit;
-            set
-            {
-                if (_unit != value)
-                {
-                    _unit = value;
-                    OnPropertyChanged();
-                }
-            }
+            set => SetProperty(ref _unit, value);
         }
 
-        // 4. Note
         public string? Note
         {
             get => _note;
-            set
-            {
-                if (_note != value)
-                {
-                    _note = value;
-                    OnPropertyChanged();
-                }
-            }
+            set => SetProperty(ref _note, value);
         }
     }
 }

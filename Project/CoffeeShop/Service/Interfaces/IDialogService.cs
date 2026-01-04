@@ -12,5 +12,7 @@ namespace CoffeeShop.Service.Interfaces
         public void OpenDepotHistoryWindow();
 
         public void OpenReportDepotWindow();
+
+        public bool? OpenInsertCouponWindow(CouponDTO? itemToEdit = null);
     }
 }

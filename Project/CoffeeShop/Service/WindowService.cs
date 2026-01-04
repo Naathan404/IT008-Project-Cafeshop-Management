@@ -1,7 +1,8 @@
 ﻿using CoffeeShop.Service.Interfaces;
-using CoffeeShop.View.Staff;    // Dùng InputWindow (View)
+using CoffeeShop.View.Staff; 
 using System.Collections.ObjectModel;
 using CoffeeShop.Service.DTOs;
+using CoffeeShop.View.Admin;
 
 namespace CoffeeShop.Service
 {
@@ -35,6 +36,13 @@ namespace CoffeeShop.Service
         {
             ReportDepotWindow reportDepot = new ReportDepotWindow();
             reportDepot.ShowDialog();
+        }
+
+        public bool? OpenInsertCouponWindow(CouponDTO? itemToEdit = null)
+        {
+            // Truyền itemToEdit vào constructor của Window
+            InsertCouponWindow insertCoupon = new InsertCouponWindow(itemToEdit);
+            return insertCoupon.ShowDialog();
         }
     }
 }

@@ -1,5 +1,7 @@
 ﻿using CoffeeShop.Models;
 using CoffeeShop.Service.DTOs;
+using CoffeeShop.Service.Interfaces;
+using CoffeeShop.View.Admin;
 using CoffeeShop.View.General;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.ObjectModel;
@@ -10,55 +12,178 @@ namespace CoffeeShop.ViewModels.AdminVM
 {
     public partial class AdminDiscountViewModel : BaseViewModel
     {
-        public ICommand RefreshPageCommand { get; set; } = null!;
-        public ICommand InsertCouponCommand { get; set; } = null!;
-        public ICommand UpdateCouponCommand { get; set; } = null!;
-        public ICommand DeleteCouponCommand { get; set; } = null!;
+        public ICommand RefreshPageCommand { get; set; }
+        public ICommand InsertCouponCommand { get; set; }
+        public ICommand UpdateCouponCommand { get; set; }
+        public ICommand DeleteCouponCommand { get; set; }
+        public ICommand ToggleStatusCommand { get; set; }
 
-        public AdminDiscountViewModel()
+        public AdminDiscountViewModel(IDialogService dialogService)
         {
-            RefreshPageCommand = new RelayCommand<object>(
-                async (p) =>
+            _dialogService = dialogService;
+
+            RefreshPageCommand = new RelayCommand<object>(p => _ = LoadData());
+            InsertCouponCommand = new RelayCommand<object>(p => ExecuteInsert());
+            UpdateCouponCommand = new RelayCommand<object>(p => ExecuteUpdate());
+            DeleteCouponCommand = new RelayCommand<object>(p => ExecuteDelete());
+            ToggleStatusCommand = new RelayCommand<object>(p => ExecuteToggleStatus());
+
+            _ = LoadData();
+        }
+
+        public async Task LoadData()
+        {
+            // Load lại các giá trị lọc/tìm kiếm
+            SelectedType = CouponTypes.First();
+            SelectedPerformance = Performances.First();
+            SelectedStatus = Statuses.First();
+            SearchTerm = string.Empty;
+
+            try
+            {
+                using (var db = new CoffeeShopContext())
                 {
-                    await LoadCouponList();
-                },
-                (p) => true
-            );
+                    var dataFromDb = await db.Discounts.ToListAsync();
 
+                    var result = dataFromDb.Select(d =>
+                    {
+                        var dto = new CouponDTO
+                        {
+                            DiscountId = d.DiscountId,
+                            DiscountCode = d.DiscountCode,
+                            DiscountName = d.DiscountName,
+                            DiscountType = d.DiscountType == 0 ? "Tiền mặt" : "Phần trăm",
+                            DiscountValue = d.DiscountValue,
+                            MinimumOrderValue = d.MinimumOrderValue,
+                            MaximumDiscountAmount = d.MaximumDiscountAmount ?? d.DiscountValue,
+                            UsedCount = d.UsedCount,
+                            IsActive = d.IsActive,
+                            UseLimit = d.UseLimit,
+                        };
 
+                        if (dto.UseLimit > 0)
+                        {
+                            dto.UsagePercentage = ((double)dto.UsedCount / dto.UseLimit) * 100;
+                        }
+                        else
+                        {
+                            dto.UsagePercentage = 0;
+                        }
 
-            _ = LoadCouponList();
+                        return dto;
+                    }).ToList();
+
+                    // Cập nhật danh sách trên UI Thread
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        AllCoupons = new ObservableCollection<CouponDTO>(result);
+                        ApplyFilter();
+                        RefreshStatistics();
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi: " + ex.Message);
+            }
         }
 
-        private async Task LoadCouponList()
+        public void ApplyFilter()
         {
+            var filtered = AllCoupons.AsEnumerable();
+
+            if (SelectedType != "Tất cả") filtered = filtered.Where(x => x.DiscountType == SelectedType);
+            if (SelectedStatus != "Tất cả") filtered = filtered.Where(x => x.DiscountStatus == SelectedStatus);
+            if (!string.IsNullOrEmpty(SearchTerm))
+                filtered = filtered.Where(x => x.DiscountCode.ToLower().Contains(SearchTerm.ToLower()));
+
+            if (SelectedPerformance == "Tốt") filtered = filtered.Where(x => x.UsagePercentage >= 80);
+            else if (SelectedPerformance == "Bình thường") filtered = filtered.Where(x => x.UsagePercentage >= 40 && x.UsagePercentage < 80);
+            else if (SelectedPerformance == "Tệ") filtered = filtered.Where(x => x.UsagePercentage < 40);
+
+            Coupons = new ObservableCollection<CouponDTO>(filtered);
+            RefreshStatistics();
         }
 
-        private void LoadCommands()
+        private void ExecuteInsert()
         {
-
+            // Truyền null vì là thêm mới
+            if (_dialogService.OpenInsertCouponWindow() == true)
+            {
+                _ = LoadData(); // Load lại bảng nếu người dùng ấn Apply (trả về true)
+            }
         }
 
-        public class Discount
+        private void ExecuteUpdate()
         {
-            public int DiscountId { get; set; }
+            if (SelectedCoupon == null) return;
 
-            public string DiscountCode { get; set; } = null!;
+            // Truyền SelectedCoupon vào để sửa
+            if (_dialogService.OpenInsertCouponWindow(SelectedCoupon) == true)
+            {
+                _ = LoadData();
+            }
+        }
 
-            public string DiscountName { get; set; } = null!;
+        private async void ExecuteDelete()
+        {
+            if (SelectedCoupon == null)
+            {
+                MessageBox.Show("Hãy chọn mã cần xóa!");
+                return;
+            }
 
-            public int DiscountType { get; set; }
+            var result = MessageBox.Show($"Bạn có chắc muốn xóa mã {SelectedCoupon.DiscountCode} không?",
+                                        "Xác nhận xóa", MessageBoxButton.YesNo, MessageBoxImage.Warning);
 
-            public decimal DiscountValue { get; set; }
+            if (result == MessageBoxResult.Yes)
+            {
+                using (var db = new CoffeeShopContext())
+                {
+                    var couponInDb = await db.Discounts.FindAsync(SelectedCoupon.DiscountId);
+                    if (couponInDb != null)
+                    {
+                        db.Discounts.Remove(couponInDb);
+                        await db.SaveChangesAsync();
+                        await LoadData(); // Cập nhật lại danh sách và thống kê
+                    }
+                }
+            }
+        }
 
-            public decimal? MinimumOrderValue { get; set; }
+        private async void ExecuteToggleStatus()
+        {
+            if (SelectedCoupon == null) return;
 
-            public decimal? MaximumDiscountAmount { get; set; }
+            using (var db = new CoffeeShopContext())
+            {
+                var couponInDb = await db.Discounts.FindAsync(SelectedCoupon.DiscountId);
+                if (couponInDb != null)
+                {
+                    // Đảo ngược trạng thái
+                    couponInDb.IsActive = !couponInDb.IsActive;
+                    await db.SaveChangesAsync();
 
-            public bool IsActive { get; set; }
+                    await LoadData(); // Load lại để tính toán lại các con số thống kê
+                }
+            }
+        }
 
-            public int UsedCount { get; set; }
-            public int UseLimit { get; set; }
+        public void RefreshStatistics()
+        {
+            if (AllCoupons != null)
+            {
+                decimal total = AllCoupons.Sum(x => {
+                    decimal count = (decimal)x.UsedCount;
+                    decimal amount = x.MaximumDiscountAmount ?? x.DiscountValue;
+                    return count * amount;
+                });
+
+                TotalDiscountAmount = total;
+            }
+
+            OnPropertyChanged(nameof(ActiveCouponsCount));
+            OnPropertyChanged(nameof(BestPerformanceCoupon));
         }
     }
 }
