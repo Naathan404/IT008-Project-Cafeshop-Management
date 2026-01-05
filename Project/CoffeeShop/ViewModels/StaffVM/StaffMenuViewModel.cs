@@ -5,8 +5,7 @@ using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
+using System.IO;
 using CommunityToolkit.Mvvm.Messaging;
 using static CoffeeShop.ViewModels.StaffVM.StaffOrderViewModel;
 
@@ -214,25 +213,51 @@ namespace CoffeeShop.ViewModels.StaffVM
             {
                 using (var context = new CoffeeShopContext())
                 {
-                    var items = context.Items.Where(i => i.IsDeleted == false).OrderByDescending(i => i.IsAvailable).ToList();
+                    var items = context.Items
+                        .Where(i => i.IsDeleted == false)
+                        .OrderByDescending(i => i.IsAvailable)
+                        .ToList();
+
                     foreach (var item in items)
                     {
+                        string displayImagePath;
+
+                        // Xử lý ảnh mặc định
+                        if (string.IsNullOrEmpty(item.ImagePath) ||
+                            item.ImagePath.Contains("imgItemExample.jpg") ||
+                            item.ImagePath == "Assets/Images/imgItemExample.jpg" ||
+                            item.ImagePath == "Assets\\Images\\imgItemExample.jpg")
+                        {
+                            // Dùng Pack URI cho ảnh mặc định
+                            displayImagePath = "/Assets/Images/imgItemExample.jpg";
+                        }
+                        else
+                        {
+                            // Convert đường dẫn tương đối sang tuyệt đối cho ảnh user upload
+                            displayImagePath = Path.Combine(
+                                AppDomain.CurrentDomain.BaseDirectory,
+                                item.ImagePath
+                            );
+                        }
+
                         _items.Add(new MenuCoffeeItem
                         {
                             ItemId = item.ItemId,
                             ItemName = item.ItemName,
                             CategoryId = item.CategoryId,
                             IsAvailable = item.IsAvailable,
-                            ItemPrices = new ObservableCollection<ItemPrice>(context.ItemPrices
-                                                .Include(ip => ip.Size)
-                                                .Where(ip => ip.ItemId == item.ItemId && ip.IsDeleted == false)
-                                                .ToList()),
-                            Info = item.Info == null ? string.Empty : item.Info.ToString(),
-                            ImagePath = item.ImagePath == null ? string.Empty : item.ImagePath.ToString()
+                            ItemPrices = new ObservableCollection<ItemPrice>(
+                                context.ItemPrices
+                                    .Include(ip => ip.Size)
+                                    .Where(ip => ip.ItemId == item.ItemId && ip.IsDeleted == false)
+                                    .ToList()
+                            ),
+                            Info = item.Info ?? string.Empty,
+                            ImagePath = displayImagePath
                         });
                     }
                 }
-                // Sau khi load, filtered = toàn bộ danh sách
+
                 FilteredItems = new ObservableCollection<MenuCoffeeItem>(_items);
                 OnPropertyChanged(nameof(FilteredItems));
             }
@@ -241,6 +266,7 @@ namespace CoffeeShop.ViewModels.StaffVM
                 Console.WriteLine($"Error loading items: {ex.Message}");
             }
         }
+
         private void FilterItemsByCategory()
         {
             SearchItems();
