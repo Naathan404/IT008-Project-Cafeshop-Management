@@ -92,4 +92,44 @@
             </Setter.Value>
         </Setter>
     </Style>
+    
+    <!-- Color progress bar -->
+    <DataTemplate x:Key="ColorProgressBar">
+        <Grid Margin="10">
+            <Border CornerRadius="5" ClipToBounds="True">
+                <ProgressBar 
+                    Value="{Binding UsagePercentage, Mode=OneWay}" 
+                    Height="10" 
+                    Minimum="0" Maximum="100"
+                    Background="#E0E0E0">
+                    <ProgressBar.Style>
+                        <Style TargetType="ProgressBar" BasedOn="{StaticResource MaterialDesignLinearProgressBar}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding PerformanceLevel}" Value="Tệ">
+                                    <Setter Property="Foreground" Value="#e74c3c"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding PerformanceLevel}" Value="Bình thường">
+                                    <Setter Property="Foreground" Value="#f1c40f"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding PerformanceLevel}" Value="Tốt">
+                                    <Setter Property="Foreground" Value="#2ecc71"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ProgressBar.Style>
+                </ProgressBar>
+            </Border>
+
+            <TextBlock 
+                HorizontalAlignment="Center" VerticalAlignment="Center"
+                FontFamily="Cascadia Code" FontSize="10" FontWeight="Bold" Foreground="#2c3e50">
+                <TextBlock.Text>
+                    <MultiBinding StringFormat="{}{0}/{1}">
+                        <Binding Path="UsedCount" />
+                        <Binding Path="UseLimit" />
+                    </MultiBinding>
+                </TextBlock.Text>
+            </TextBlock>
+        </Grid>
+    </DataTemplate>
 </ResourceDictionary>

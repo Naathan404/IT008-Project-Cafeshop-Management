@@ -6,90 +6,41 @@ using System.Threading.Tasks;
 
 namespace CoffeeShop.Service.DTOs
 {
-    public class DepotHistoryItemDTO : BaseViewModel
+    public class DepotHistoryItemDTO : BaseDTO
     {
         private string? _staffName;
         public string? StaffName
         {
             get => _staffName;
-            set
-            {
-                if (_staffName != value)
-                {
-                    _staffName = value;
-                    OnPropertyChanged();
-                }
-            }
+            set => SetProperty(ref _staffName, value);
         }
 
         private string? _materialName;
         public string? MaterialName
         {
             get => _materialName;
-            set
-            {
-                if (_materialName != value)
-                {
-                    _materialName = value;
-                    OnPropertyChanged();
-                }
-            }
+            set => SetProperty(ref _materialName, value);
         }
 
         private decimal? _quantity;
         public decimal? Quantity
         {
             get => _quantity;
-            set
-            {
-                if (_quantity != value)
-                {
-                    _quantity = value;
-                    OnPropertyChanged();
-                }
-            }
+            set => SetProperty(ref _quantity, value);
         }
-
-        //private decimal? _price;
-        //public decimal? Price
-        //{
-        //    get => _price;
-        //    set
-        //    {
-        //        if (_price != value)
-        //        {
-        //            _price = value;
-        //            OnPropertyChanged();
-        //        }
-        //    }
-        //}
 
         private DateTime? _date;
         public DateTime? Date
         {
             get => _date;
-            set
-            {
-                if (_date != value)
-                {
-                    _date = value;
-                    OnPropertyChanged();
-                }
-            }
+            set => SetProperty(ref _date, value);
         }
 
         private string? _actionName;
         public string? ActionName
         {
             get => _actionName;
-            set
-            {
-                if (_actionName != value)
-                {
-                    _actionName = value;
-                    OnPropertyChanged();
-                }
-            }
+            set => SetProperty(ref _actionName, value);
         }
     }
 }
