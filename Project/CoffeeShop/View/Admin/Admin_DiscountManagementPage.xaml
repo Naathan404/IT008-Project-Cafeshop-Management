@@ -13,15 +13,22 @@
       Background="#E0CEB5"
       x:Name="root"
       Title="Thống kê cửa hàng">
-    <Grid Margin="20">
+    <Grid Margin="30">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="70"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="70"/>
         </Grid.RowDefinitions>
 
+        <!-- Tiêu đề -->
+        <TextBlock Text="QUẢN LÝ MÃ GIẢM GIÁ" 
+           Grid.Row="0" Margin="0,-20,0,10"
+           FontSize="24" FontWeight="ExtraBlack" Foreground="#4E342E"
+           FontFamily="Cascadia Code"/>
+        
         <!-- Nút chức năng -->
-        <materialDesign:Card Padding="5" UniformCornerRadius="10" BorderThickness="2" BorderBrush="#340D05">
+        <materialDesign:Card Padding="5" UniformCornerRadius="10" BorderThickness="2" BorderBrush="#340D05" Grid.Row="1">
             <Grid>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
                     <ComboBox ItemsSource="{Binding CouponTypes}" SelectedItem="{Binding SelectedType}" 
@@ -79,103 +86,107 @@
         </materialDesign:Card>
 
         <!-- Datagrid -->
-        <materialDesign:Card Grid.Row="1" Margin="0 15" UniformCornerRadius="10"
-                             BorderThickness="2" BorderBrush="#340D05">
-            <DataGrid ItemsSource="{Binding Coupons}" 
+        <DataGrid Grid.Row="2" Margin="0,10"
+                  ItemsSource="{Binding Coupons}" 
                   SelectedItem="{Binding SelectedCoupon}"
                   Style="{StaticResource CoffeeDataGridStyle}"
                   CellStyle="{StaticResource CoffeeDataGridCellStyle}" 
                   ColumnHeaderStyle="{StaticResource CoffeeDataGridHeaderStyle}"
                   ScrollViewer.VerticalScrollBarVisibility="Visible">
 
-                <DataGrid.RowStyle>
-                    <Style TargetType="DataGridRow" BasedOn="{StaticResource {x:Type DataGridRow}}">
-                        <Setter Property="Opacity" Value="{Binding RowOpacity}"/>
-                        <Setter Property="Foreground" Value="{Binding RowForeground}"/>
-                        <Style.Triggers>
-                            <Trigger Property="IsSelected" Value="True">
-                                <Setter Property="Background" Value="#EDE2D3"/>
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
-                </DataGrid.RowStyle>
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow" BasedOn="{StaticResource {x:Type DataGridRow}}">
+                    <Setter Property="Opacity" Value="{Binding RowOpacity}"/>
+                    <Setter Property="Foreground" Value="{Binding RowForeground}"/>
+                    <Style.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Background" Value="#EDE2D3"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.RowStyle>
 
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="Tên mã" Binding="{Binding DiscountCode}" Width="0.5*"/>
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Tên mã" Binding="{Binding DiscountCode}" Width="0.5*">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Margin" Value="5,0,0,0"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
 
-                    <DataGridTextColumn Header="Nội dung" Binding="{Binding DiscountName}" Width="1.5*">
-                        <DataGridTextColumn.ElementStyle>
-                            <Style TargetType="TextBlock">
-                                <Setter Property="ToolTip">
-                                    <Setter.Value>
-                                        <ToolTip Style="{StaticResource CustomTooltip}">
-                                            <TextBlock Text="{Binding DiscountName}"/>
-                                        </ToolTip>
-                                    </Setter.Value>
-                                </Setter>
+                <DataGridTextColumn Header="Nội dung" Binding="{Binding DiscountName}" Width="1.5*">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="ToolTip">
+                                <Setter.Value>
+                                    <ToolTip Style="{StaticResource CustomTooltip}">
+                                        <TextBlock Text="{Binding DiscountName}"/>
+                                    </ToolTip>
+                                </Setter.Value>
+                            </Setter>
 
-                                <Setter Property="HorizontalAlignment" Value="Left"/>
-                                <Setter Property="VerticalAlignment" Value="Center"/>
-                            </Style>
-                        </DataGridTextColumn.ElementStyle>
-                    </DataGridTextColumn>
+                            <Setter Property="HorizontalAlignment" Value="Left"/>
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
 
-                    <DataGridTextColumn Header="Loại" Binding="{Binding DiscountType}" Width="0.5*">
-                        <DataGridTextColumn.ElementStyle>
-                            <Style TargetType="TextBlock">
-                                <Setter Property="HorizontalAlignment" Value="Center"></Setter>
-                                <Setter Property="VerticalAlignment" Value="Center"/>
-                            </Style>
-                        </DataGridTextColumn.ElementStyle>
-                    </DataGridTextColumn>
+                <DataGridTextColumn Header="Loại" Binding="{Binding DiscountType}" Width="0.5*">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="HorizontalAlignment" Value="Center"></Setter>
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
 
-                    <DataGridTemplateColumn Header="Hiệu suất" Width="0.6*" 
+                <DataGridTemplateColumn Header="Hiệu suất" Width="0.6*" 
                                             CanUserSort="True" SortMemberPath="UsagePercentage">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <Grid VerticalAlignment="Center" Margin="10,0">
-                                    <ProgressBar Value="{Binding UsagePercentage, Mode=OneWay}" 
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Grid VerticalAlignment="Center" Margin="10,0">
+                                <ProgressBar Value="{Binding UsagePercentage, Mode=OneWay}" 
                                      Style="{StaticResource RoundedProgressBar}"
                                      Foreground="{Binding PerformanceColor}" 
                                      Minimum="0" Maximum="100"
                                      Width="100" Height="14"/>
-                                    <TextBlock Text="{Binding UsagePercentage, Mode=OneWay, StringFormat={}{0:N0}%}" 
+                                <TextBlock Text="{Binding UsagePercentage, Mode=OneWay, StringFormat={}{0:N0}%}" 
                                         FontSize="9" FontWeight="Bold"
                                         HorizontalAlignment="Center" VerticalAlignment="Center"
                                         Foreground="#340D05"/>
 
-                                    <Grid.ToolTip>
-                                        <ToolTip Style="{StaticResource CustomTooltip}"
+                                <Grid.ToolTip>
+                                    <ToolTip Style="{StaticResource CustomTooltip}"
                                              Content="{Binding UsageDetail}"/>
-                                    </Grid.ToolTip>
-                                </Grid>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
+                                </Grid.ToolTip>
+                            </Grid>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
 
-                    <DataGridTextColumn Header="Giảm" Binding="{Binding DiscountValue, StringFormat={}{0:N0}}" Width="0.5*"/>
+                <DataGridTextColumn Header="Giảm" Binding="{Binding DiscountValue, StringFormat={}{0:N0}}" Width="0.5*"/>
 
-                    <DataGridTextColumn Header="Đơn tối thiểu" Binding="{Binding MinimumOrderValue, StringFormat={}{0:N0}}" Width="0.7*"/>
+                <DataGridTextColumn Header="Đơn tối thiểu" Binding="{Binding MinimumOrderValue, StringFormat={}{0:N0}}" Width="0.7*"/>
 
-                    <DataGridTextColumn Header="Giảm tối đa" Binding="{Binding MaximumDiscountAmount, StringFormat={}{0:N0}}" Width="0.7*"/>
+                <DataGridTextColumn Header="Giảm tối đa" Binding="{Binding MaximumDiscountAmount, StringFormat={}{0:N0}}" Width="0.7*"/>
 
-                    <DataGridTemplateColumn Header="Trạng thái" Width="0.7*">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding DiscountStatus}" 
+                <DataGridTemplateColumn Header="Trạng thái" Width="0.7*">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding DiscountStatus}" 
                                VerticalAlignment="Center" 
                                HorizontalAlignment="Center"
                                FontWeight="SemiBold"/>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
 
-                </DataGrid.Columns>
-            </DataGrid>
-        </materialDesign:Card>
+            </DataGrid.Columns>
+        </DataGrid>
 
         <!-- Thống kê -->
-        <Grid Grid.Row="2">
+        <Grid Grid.Row="3">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>

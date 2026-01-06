@@ -10,7 +10,7 @@
             <TextBlock Text="{Binding Title}" FontSize="24" FontWeight="Bold" 
                        Foreground="#340D05" HorizontalAlignment="Center" Margin="0,0,0,10"/>
 
-            <TextBox materialDesign:HintAssist.Hint="Mã coupon (VD: KM2026)" 
+            <TextBox materialDesign:HintAssist.Hint="Tên mã giảm giá (VD: KM2026)" 
                      Text="{Binding Coupon.DiscountCode, UpdateSourceTrigger=PropertyChanged}" 
                      IsEnabled="{Binding IsCodeEnabled}"
                      Style="{StaticResource MaterialDesignOutlinedTextBox}" Margin="0,8"/>
