@@ -69,6 +69,7 @@
                                 HorizontalAlignment="Center"
                                 Margin="10">
                             <Image Source="{Binding Image}"
+                                   d:Source="/Assets/Images/imgItemExample.jpg"
                                    Stretch="UniformToFill"/>
                         </Border>
 

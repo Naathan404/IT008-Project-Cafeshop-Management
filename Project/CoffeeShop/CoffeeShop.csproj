@@ -29,6 +29,43 @@
     <None Remove="Assets\Images\imgBanner_5.jpg" />
     <None Remove="Assets\Images\imgCoffeeOrder.jpg" />
     <None Remove="Assets\Images\imgItemExample.jpg" />
+    <None Remove="Assets\Images\Menu\imgBongLanTrungMuoi.png" />
+    <None Remove="Assets\Images\Menu\imgCaPheDaXay.png" />
+    <None Remove="Assets\Images\Menu\imgCFBacXiu.png" />
+    <None Remove="Assets\Images\Menu\imgCFCotDua.png" />
+    <None Remove="Assets\Images\Menu\imgCFDen.png" />
+    <None Remove="Assets\Images\Menu\imgCFDenDa.png" />
+    <None Remove="Assets\Images\Menu\imgCFMuoi.png" />
+    <None Remove="Assets\Images\Menu\imgCFSuaDa.png" />
+    <None Remove="Assets\Images\Menu\imgCFTrung.png" />
+    <None Remove="Assets\Images\Menu\imgChocolateDaXay.png" />
+    <None Remove="Assets\Images\Menu\imgColdBrewCamSa.png" />
+    <None Remove="Assets\Images\Menu\imgCookiesDaXay.png" />
+    <None Remove="Assets\Images\Menu\imgCrossant.png" />
+    <None Remove="Assets\Images\Menu\imgEpCam.png" />
+    <None Remove="Assets\Images\Menu\imgEpDuaHau.png" />
+    <None Remove="Assets\Images\Menu\imgEpDuaLuoi.png" />
+    <None Remove="Assets\Images\Menu\imgEpThom.png" />
+    <None Remove="Assets\Images\Menu\imgMatchaDaXay.png" />
+    <None Remove="Assets\Images\Menu\imgMochaDaXay.png" />
+    <None Remove="Assets\Images\Menu\imgPannaCotta.png" />
+    <None Remove="Assets\Images\Menu\imgSinhToBo.png" />
+    <None Remove="Assets\Images\Menu\imgSinhToDau.png" />
+    <None Remove="Assets\Images\Menu\imgSinhToMangCau.png" />
+    <None Remove="Assets\Images\Menu\imgSinhToSauRieng.png" />
+    <None Remove="Assets\Images\Menu\imgTraChanh.png" />
+    <None Remove="Assets\Images\Menu\imgTraDao.png" />
+    <None Remove="Assets\Images\Menu\imgTrangCuon.png" />
+    <None Remove="Assets\Images\Menu\imgTrangTron.png" />
+    <None Remove="Assets\Images\Menu\imgTraSenNhan.png" />
+    <None Remove="Assets\Images\Menu\imgTraThanhLong.png" />
+    <None Remove="Assets\Images\Menu\imgTraTraiCay.png" />
+    <None Remove="Assets\Images\Menu\imgTraVaiHoaHong.png" />
+    <None Remove="Assets\Images\Menu\imgTSGaoRang.png" />
+    <None Remove="Assets\Images\Menu\imgTSKemCheese.png" />
+    <None Remove="Assets\Images\Menu\imgTSMatcha.png" />
+    <None Remove="Assets\Images\Menu\imgTSTiramisu.png" />
+    <None Remove="Assets\Images\Menu\imgTSTruyenThong.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -60,6 +97,117 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Assets\Images\imgItemExample.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\Menu\imgBongLanTrungMuoi.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\Menu\imgCaPheDaXay.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\Menu\imgCFBacXiu.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\Menu\imgCFCotDua.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\Menu\imgCFDen.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\Menu\imgCFDenDa.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\Menu\imgCFMuoi.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\Menu\imgCFSuaDa.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\Menu\imgCFTrung.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\Menu\imgChocolateDaXay.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\Menu\imgColdBrewCamSa.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\Menu\imgCookiesDaXay.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\Menu\imgCrossant.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\Menu\imgEpCam.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\Menu\imgEpDuaHau.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\Menu\imgEpDuaLuoi.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\Menu\imgEpThom.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\Menu\imgMatchaDaXay.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\Menu\imgMochaDaXay.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\Menu\imgPannaCotta.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\Menu\imgSinhToBo.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\Menu\imgSinhToDau.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\Menu\imgSinhToMangCau.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\Menu\imgSinhToSauRieng.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\Menu\imgTraChanh.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\Menu\imgTraDao.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\Menu\imgTrangCuon.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\Menu\imgTrangTron.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\Menu\imgTraSenNhan.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\Menu\imgTraThanhLong.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\Menu\imgTraTraiCay.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\Menu\imgTraVaiHoaHong.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\Menu\imgTSGaoRang.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\Menu\imgTSKemCheese.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\Menu\imgTSMatcha.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\Menu\imgTSTiramisu.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\Menu\imgTSTruyenThong.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>

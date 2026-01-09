@@ -268,7 +268,7 @@ namespace CoffeeShop.ViewModels.AdminVM
                         DataLabels = true,
                         LabelPoint = point => point.Y > 0 ? (IsShowRevenue ? point.Y.ToString("C0", viVn) : point.Y.ToString() + " đơn") : "",
                         Foreground = Brushes.Black,
-                        ScalesYAt = 0
+                        ScalesYAt = 0,
                     },
 
                     new LineSeries

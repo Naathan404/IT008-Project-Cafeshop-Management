@@ -284,14 +284,33 @@ namespace CoffeeShop.ViewModels.AdminVM
                     Info = item.Info ?? "";
 
                     // Chuẩn hóa ImagePath
-                    if (string.IsNullOrWhiteSpace(item.ImagePath) ||
-                        item.ImagePath.Contains("imgItemExample.jpg"))
+                    if (item != null)
                     {
-                        ImagePath = "/Assets/Images/imgItemExample.jpg";
-                    }
-                    else
-                    {
-                        ImagePath = item.ImagePath; // Giữ nguyên đường dẫn tương đối từ DB
+                        string dbPath = item.ImagePath;
+
+                        if (string.IsNullOrWhiteSpace(dbPath) || dbPath.Contains("imgItemExample.jpg"))
+                        {
+                            ImagePath = "pack://application:,,,/Assets/Images/imgItemExample.jpg";
+                        }
+                        else
+                        {
+                            // 1. Xóa dấu gạch ở đầu VÀ chuẩn hóa dấu gạch chéo của Windows
+                            string cleanPath = dbPath.TrimStart('/', '\\').Replace('/', '\\');
+
+                            // 2. Kết hợp với thư mục gốc của App
+                            string absolutePath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, cleanPath);
+
+                            if (System.IO.File.Exists(absolutePath))
+                            {
+                                // Dùng UriKind.Absolute để WPF biết đây là đường dẫn ngoài ổ cứng
+                                ImagePath = absolutePath;
+                            }
+                            else
+                            {
+                                // Nếu vẫn không thấy, thử dùng Pack URI (nếu bạn lỡ để Build Action là Resource)
+                                ImagePath = "pack://application:,,,/" + dbPath.TrimStart('/');
+                            }
+                        }
                     }
 
                     SizePrices.Clear();
@@ -324,32 +343,30 @@ namespace CoffeeShop.ViewModels.AdminVM
                 bitmap.CacheOption = BitmapCacheOption.OnLoad;
                 bitmap.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
 
-                // Case 1: Ảnh mặc định (Pack URI hoặc /Assets)
-                if (string.IsNullOrWhiteSpace(path) ||
-                    path.StartsWith("/Assets") ||
-                    path.StartsWith("pack://") ||
-                    path.Contains("imgItemExample.jpg"))
+                // 1. Chỉ dùng ảnh mặc định khi đường dẫn thực sự trống hoặc chứa tên ảnh mặc định
+                if (string.IsNullOrWhiteSpace(path) || path.Contains("imgItemExample.jpg"))
                 {
                     bitmap.UriSource = new Uri("pack://application:,,,/Assets/Images/imgItemExample.jpg", UriKind.Absolute);
                 }
-                // Case 2: Đường dẫn tuyệt đối (C:\Users\...)
+                // 2. Nếu là Pack URI (đã chuẩn hóa sẵn)
+                else if (path.StartsWith("pack://"))
+                {
+                    bitmap.UriSource = new Uri(path, UriKind.Absolute);
+                }
+                // 3. Nếu là đường dẫn tuyệt đối (C:\...)
                 else if (Path.IsPathRooted(path))
                 {
                     if (File.Exists(path))
-                    {
                         bitmap.UriSource = new Uri(path, UriKind.Absolute);
-                    }
                     else
-                    {
                         bitmap.UriSource = new Uri("pack://application:,,,/Assets/Images/imgItemExample.jpg", UriKind.Absolute);
-                    }
                 }
-                // Case 3: Đường dẫn tương đối từ DB (Assets\Images\Menu\abc.jpg)
+                // 4. Case quan trọng nhất: Đường dẫn từ DB (/Assets/Images/...)
                 else
                 {
-                    // Normalize path separator (\ hoặc /)
-                    string normalizedPath = path.Replace('/', '\\');
-                    string fullPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, normalizedPath);
+                    // Xóa dấu / ở đầu để Path.Combine không hiểu nhầm là gốc ổ đĩa
+                    string cleanPath = path.TrimStart('/', '\\').Replace('/', '\\');
+                    string fullPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, cleanPath);
 
                     if (File.Exists(fullPath))
                     {
@@ -357,7 +374,8 @@ namespace CoffeeShop.ViewModels.AdminVM
                     }
                     else
                     {
-                        System.Diagnostics.Debug.WriteLine($"[Warning] File not found: {fullPath}");
+                        // Thử tìm trong Resource nếu không thấy file vật lý (Dành cho ảnh cũ)
+                        System.Diagnostics.Debug.WriteLine($"[Warning] Khong tim thay file: {fullPath}");
                         bitmap.UriSource = new Uri("pack://application:,,,/Assets/Images/imgItemExample.jpg", UriKind.Absolute);
                     }
                 }
@@ -369,14 +387,8 @@ namespace CoffeeShop.ViewModels.AdminVM
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"[Lỗi Image] {ex.Message}");
-                // Fallback về ảnh mặc định
-                try
-                {
-                    var fallback = new BitmapImage(new Uri("pack://application:,,,/Assets/Images/imgItemExample.jpg", UriKind.Absolute));
-                    fallback.Freeze();
-                    Image = fallback;
-                }
-                catch { }
+                // Fallback an toàn nhất
+                Image = new BitmapImage(new Uri("pack://application:,,,/Assets/Images/imgItemExample.jpg", UriKind.Absolute));
             }
         }
 

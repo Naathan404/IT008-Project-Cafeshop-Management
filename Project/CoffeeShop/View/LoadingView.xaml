@@ -1,12 +1,14 @@
 ﻿<Window x:Class="CoffeeShop.View.LoadingView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="LoadingView" Height="520" Width="850"
+        Title="2G1G Café" 
+        Height="520" Width="850"
         WindowStyle="None" 
         ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen"
         AllowsTransparency="True"
-        Background="Transparent">
+        Background="Transparent"
+        Icon="/CoffeeShop;component/Assets/icoCoffee.ico">
 
     <Border CornerRadius="20" Background="White" BorderBrush="#4E342E" BorderThickness="1">
         <Grid>
