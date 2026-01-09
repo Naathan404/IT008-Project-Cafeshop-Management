@@ -1,15 +1,12 @@
 ﻿using CoffeeShop.Models;
+using CoffeeShop.View.Admin;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Win32;
-using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace CoffeeShop.ViewModels.AdminVM
@@ -82,7 +79,7 @@ namespace CoffeeShop.ViewModels.AdminVM
             {
                 _imagePath = value;
                 OnPropertyChanged();
-                LoadImageFromPath(_imagePath); // 🔥 mấu chốt
+                LoadImageFromPath(_imagePath);
             }
         }
 
@@ -324,59 +321,30 @@ namespace CoffeeShop.ViewModels.AdminVM
                 bitmap.CacheOption = BitmapCacheOption.OnLoad;
                 bitmap.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
 
-                // Case 1: Ảnh mặc định (Pack URI hoặc /Assets)
-                if (string.IsNullOrWhiteSpace(path) ||
-                    path.StartsWith("/Assets") ||
-                    path.StartsWith("pack://") ||
-                    path.Contains("imgItemExample.jpg"))
+                // Trường hợp 1: Ảnh ví dụ/mặc định
+                if (string.IsNullOrEmpty(path) || path.Contains("imgItemExample.jpg"))
                 {
-                    bitmap.UriSource = new Uri("pack://application:,,,/Assets/Images/imgItemExample.jpg", UriKind.Absolute);
+                    bitmap.UriSource = new Uri("pack://application:,,,/Assets/Images/imgItemExample.jpg");
                 }
-                // Case 2: Đường dẫn tuyệt đối (C:\Users\...)
-                else if (Path.IsPathRooted(path))
-                {
-                    if (File.Exists(path))
-                    {
-                        bitmap.UriSource = new Uri(path, UriKind.Absolute);
-                    }
-                    else
-                    {
-                        bitmap.UriSource = new Uri("pack://application:,,,/Assets/Images/imgItemExample.jpg", UriKind.Absolute);
-                    }
-                }
-                // Case 3: Đường dẫn tương đối từ DB (Assets\Images\Menu\abc.jpg)
+                // Trường hợp 2: Đường dẫn file (Bao gồm cả tương đối và tuyệt đối)
                 else
                 {
-                    // Normalize path separator (\ hoặc /)
-                    string normalizedPath = path.Replace('/', '\\');
-                    string fullPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, normalizedPath);
+                    string fullPath = Path.IsPathRooted(path) ? path : Path.Combine(AppDomain.CurrentDomain.BaseDirectory, path);
 
                     if (File.Exists(fullPath))
-                    {
                         bitmap.UriSource = new Uri(fullPath, UriKind.Absolute);
-                    }
                     else
-                    {
-                        System.Diagnostics.Debug.WriteLine($"[Warning] File not found: {fullPath}");
-                        bitmap.UriSource = new Uri("pack://application:,,,/Assets/Images/imgItemExample.jpg", UriKind.Absolute);
-                    }
+                        bitmap.UriSource = new Uri("pack://application:,,,/Assets/Images/imgItemExample.jpg");
                 }
 
                 bitmap.EndInit();
                 if (bitmap.CanFreeze) bitmap.Freeze();
                 Image = bitmap;
             }
-            catch (Exception ex)
+            catch
             {
-                System.Diagnostics.Debug.WriteLine($"[Lỗi Image] {ex.Message}");
-                // Fallback về ảnh mặc định
-                try
-                {
-                    var fallback = new BitmapImage(new Uri("pack://application:,,,/Assets/Images/imgItemExample.jpg", UriKind.Absolute));
-                    fallback.Freeze();
-                    Image = fallback;
-                }
-                catch { }
+                // Fail-safe: Nếu lỗi load, hiện ảnh mặc định
+                Image = new BitmapImage(new Uri("pack://application:,,,/Assets/Images/imgItemExample.jpg"));
             }
         }
 
@@ -386,26 +354,49 @@ namespace CoffeeShop.ViewModels.AdminVM
             var dialog = new OpenFileDialog { Filter = "Image files (*.jpg;*.jpeg;*.png)|*.jpg;*.jpeg;*.png" };
             if (dialog.ShowDialog() != true) return;
 
-            IsLoading = true;
-            try
+            // Lúc này truyền string là hoàn toàn hợp lệ
+            var cropper = new ImageCropperWindow(dialog.FileName);
+            cropper.Owner = Application.Current.MainWindow;
+
+            if (cropper.ShowDialog() == true)
             {
-                string fileName = $"{Guid.NewGuid()}{Path.GetExtension(dialog.FileName)}";
-                string relativeFolder = Path.Combine("Assets", "Images", "Menu");
-                string absoluteFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, relativeFolder);
+                IsLoading = true;
+                LoadingMessage = "Đang xử lý ảnh...";
+                try
+                {
+                    var croppedResult = cropper.CroppedImage;
 
-                if (!Directory.Exists(absoluteFolder))
-                    Directory.CreateDirectory(absoluteFolder);
+                    // QUAN TRỌNG: Đóng băng đối tượng để có thể chuyển sang Thread khác
+                    if (croppedResult.CanFreeze)
+                    {
+                        croppedResult.Freeze();
+                    }
 
-                string destPath = Path.Combine(absoluteFolder, fileName);
+                    string fileName = $"{Guid.NewGuid()}.jpg";
+                    string relativePath = Path.Combine("Assets", "Images", "Menu", fileName);
+                    string absolutePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, relativePath);
 
-                // Copy file
-                await Task.Run(() => File.Copy(dialog.FileName, destPath, true));
+                    string folder = Path.GetDirectoryName(absolutePath);
+                    if (!Directory.Exists(folder)) Directory.CreateDirectory(folder);
 
-                // Cập nhật ImagePath
-                ImagePath = destPath;
+                    // Bây giờ Task.Run sẽ không còn báo lỗi Threading nữa
+                    await Task.Run(() => {
+                        using (var stream = new FileStream(absolutePath, FileMode.Create))
+                        {
+                            var encoder = new JpegBitmapEncoder();
+                            encoder.Frames.Add(BitmapFrame.Create(croppedResult));
+                            encoder.Save(stream);
+                        }
+                    });
+
+                    ImagePath = relativePath;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Lỗi lưu ảnh: {ex.Message}");
+                }
+                finally { IsLoading = false; }
             }
-            catch (Exception ex) { MessageBox.Show($"Lỗi: {ex.Message}"); }
-            finally { IsLoading = false; }
         }
 
 
@@ -467,7 +458,15 @@ namespace CoffeeShop.ViewModels.AdminVM
             if (sizePrice != null)
                 SizePrices.Remove(sizePrice);
         }
-
+        private void SaveBitmapSourceToFile(BitmapSource bitmapSource, string filePath)
+        {
+            using (var fileStream = new FileStream(filePath, FileMode.Create))
+            {
+                BitmapEncoder encoder = new JpegBitmapEncoder(); // Hoặc PngBitmapEncoder
+                encoder.Frames.Add(BitmapFrame.Create(bitmapSource));
+                encoder.Save(fileStream);
+            }
+        }
         private async Task SaveAsync()
         {
             IsLoading = true;
@@ -560,7 +559,7 @@ namespace CoffeeShop.ViewModels.AdminVM
                     item.CategoryId = CategoryId;
                     item.IsAvailable = IsAvailable;
                     item.Info = Info;
-                    item.ImagePath = pathForDb;
+                    item.ImagePath = ImagePath.Replace("\\", "/"); // Chuẩn hóa dấu gạch cho DB
 
                     context.SaveChanges();
 
