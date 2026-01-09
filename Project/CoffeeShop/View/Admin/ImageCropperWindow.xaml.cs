@@ -1,9 +1,8 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.IO;
 
 namespace CoffeeShop.View.Admin
 {
@@ -12,31 +11,53 @@ namespace CoffeeShop.View.Admin
         private Point _startPoint;
         private double _originalLeft, _originalTop;
         private bool _isDragging = false;
-        private BitmapImage _originalBitmap;
         public BitmapSource CroppedImage { get; private set; }
 
+
+        // Constructor cho file path (Chọn ảnh mới)
         public ImageCropperWindow(string filePath)
         {
             InitializeComponent();
-            LoadImage(filePath);
-            this.Loaded += (s, e) => AdjustSelectionRect();
 
-            // Tự động căn lại khi người dùng kéo giãn cửa sổ máy tính
-            this.SizeChanged += (s, e) => AdjustSelectionRect();
-        }
+            if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath))
+            {
+                MessageBox.Show("Đường dẫn ảnh không hợp lệ!");
+                this.Close();
+                return;
+            }
 
-        private void LoadImage(string path)
-        {
             try
             {
-                _originalBitmap = new BitmapImage();
-                _originalBitmap.BeginInit();
-                _originalBitmap.UriSource = new Uri(path, UriKind.Absolute);
-                _originalBitmap.CacheOption = BitmapCacheOption.OnLoad;
-                _originalBitmap.EndInit();
-                SourceImage.Source = _originalBitmap;
+                var bitmap = new BitmapImage();
+                bitmap.BeginInit();
+                bitmap.UriSource = new Uri(filePath);
+                bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                bitmap.EndInit();
+                bitmap.Freeze();
+
+                SourceImage.Source = bitmap;
+                AdjustSelectionRect();
             }
-            catch { this.Close(); }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi load ảnh: " + ex.Message);
+            }
+        }
+
+        // Constructor cho BitmapSource (Cắt lại ảnh cũ)
+        public ImageCropperWindow(BitmapSource existingImage)
+        {
+            InitializeComponent();
+
+            if (existingImage == null)
+            {
+                MessageBox.Show("Dữ liệu ảnh không tồn tại!");
+                this.Close();
+                return;
+            }
+
+            SourceImage.Source = existingImage;
+            AdjustSelectionRect();
         }
 
         private void UpdateOverlay()
@@ -152,21 +173,16 @@ namespace CoffeeShop.View.Admin
 
                 double finalW, finalH;
 
-                // Nếu ảnh "gầy" hơn tỉ lệ mục tiêu -> lấy chiều rộng ảnh làm chuẩn
                 if (currentImgRatio < targetRatio)
                 {
                     finalW = imgW;
                     finalH = imgW / targetRatio;
                 }
-                // Nếu ảnh "béo" hơn tỉ lệ mục tiêu -> lấy chiều cao ảnh làm chuẩn
                 else
                 {
                     finalH = imgH;
                     finalW = imgH * targetRatio;
                 }
-
-                // Giảm xuống một chút (ví dụ 90%) để người dùng dễ nhìn thấy viền nếu muốn
-                // Hoặc để 100% (finalW, finalH) nếu muốn sát khít hoàn toàn
                 SelectionRect.Width = finalW;
                 SelectionRect.Height = finalH;
 

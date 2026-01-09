@@ -4,8 +4,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Win32;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using System.Windows;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 
@@ -21,78 +23,38 @@ namespace CoffeeShop.ViewModels.AdminVM
         }
         #endregion
 
+        private const string DEFAULT_IMAGE_PATH = "/Assets/Images/imgItemExample.jpg";
+        private const int FOOD_CATEGORY_ID = 7;
+
         #region Properties
         private bool _isLoading;
-        public bool IsLoading
-        {
-            get => _isLoading;
-            set { _isLoading = value; OnPropertyChanged(nameof(IsLoading)); }
-        }
+        public bool IsLoading { get => _isLoading; set { _isLoading = value; OnPropertyChanged(nameof(IsLoading)); } }
 
         private string _loadingMessage = "Loading...";
-        public string LoadingMessage
-        {
-            get => _loadingMessage;
-            set { _loadingMessage = value; OnPropertyChanged(nameof(LoadingMessage)); }
-        }
+        public string LoadingMessage { get => _loadingMessage; set { _loadingMessage = value; OnPropertyChanged(nameof(LoadingMessage)); } }
 
-        private int? _itemId;
-        public int? ItemId
-        {
-            get => _itemId;
-            set { _itemId = value; OnPropertyChanged(nameof(ItemId)); }
-        }
-
-        private string _windowTitle = "Thêm món mới";
-        public string WindowTitle
-        {
-            get => _windowTitle;
-            set { _windowTitle = value; OnPropertyChanged(nameof(WindowTitle)); }
-        }
+        public int? ItemId { get; set; }
+        public string WindowTitle { get; set; } = "Thêm món mới";
 
         private string _itemName = "";
-        public string ItemName
-        {
-            get => _itemName;
-            set { _itemName = value; OnPropertyChanged(nameof(ItemName)); }
-        }
+        public string ItemName { get => _itemName; set { _itemName = value; OnPropertyChanged(nameof(ItemName)); } }
 
         private bool _isAvailable = true;
-        public bool IsAvailable
-        {
-            get => _isAvailable;
-            set { _isAvailable = value; OnPropertyChanged(nameof(IsAvailable)); }
-        }
+        public bool IsAvailable { get => _isAvailable; set { _isAvailable = value; OnPropertyChanged(nameof(IsAvailable)); } }
 
         private string _info = "";
-        public string Info
-        {
-            get => _info;
-            set { _info = value; OnPropertyChanged(nameof(Info)); }
-        }
+        public string Info { get => _info; set { _info = value; OnPropertyChanged(nameof(Info)); } }
 
-        private string _imagePath = "/Assets/Images/imgItemExample.jpg";
+        private string _imagePath = DEFAULT_IMAGE_PATH;
         public string ImagePath
         {
             get => _imagePath;
-            set
-            {
-                _imagePath = value;
-                OnPropertyChanged();
-                LoadImageFromPath(_imagePath);
-            }
+            set { _imagePath = value; OnPropertyChanged(); LoadImageFromPath(_imagePath); }
         }
 
-        private BitmapImage _image;
-        public BitmapImage Image
-        {
-            get => _image;
-            set
-            {
-                _image = value;
-                OnPropertyChanged();
-            }
-        }
+        private BitmapImage? _image;
+        public BitmapImage? Image { get => _image; set { _image = value; OnPropertyChanged(); } }
+
         private int _categoryId = 1;
         public int CategoryId
         {
@@ -103,80 +65,17 @@ namespace CoffeeShop.ViewModels.AdminVM
                 {
                     _categoryId = value;
                     OnPropertyChanged(nameof(CategoryId));
-
-                    // Khi chuyển sang Food, tự động xóa hết size (chỉ giữ 1)
-                    if (value == 7 && SizePrices.Count > 1)
-                    {
-                        var firstPrice = SizePrices.FirstOrDefault();
-                        SizePrices.Clear();
-
-                        if (firstPrice != null)
-                        {
-                            // Giữ lại giá đầu tiên, xóa SizeId
-                            firstPrice.SizeId = null;
-                            SizePrices.Add(firstPrice);
-                        }
-                        else
-                        {
-                            // Nếu không có giá nào, thêm giá mặc định
-                            SizePrices.Add(new SizePriceViewModel
-                            {
-                                SizeId = null,
-                                Price = 0
-                            });
-                        }
-
-                        MessageBox.Show("Đã chuyển sang Food. Chỉ giữ lại 1 giá duy nhất.",
-                            "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
-                    }
-                    // Khi chuyển từ Food sang Drinks, nếu chưa có size thì thêm
-                    else if (_categoryId == 7 && value != 7 && SizePrices.Count == 1 && SizePrices[0].SizeId == null)
-                    {
-                        var currentPrice = SizePrices[0].Price;
-                        SizePrices.Clear();
-
-                        // Thêm size mặc định (ví dụ size đầu tiên)
-                        if (AvailableSizes.Count > 0)
-                        {
-                            SizePrices.Add(new SizePriceViewModel
-                            {
-                                SizeId = AvailableSizes[0].SizeId,
-                                Price = currentPrice
-                            });
-                        }
-                    }
+                    HandleCategoryChange(value);
                 }
             }
         }
 
-
-        private ObservableCollection<CategoryViewModel> _categories = new();
-        public ObservableCollection<CategoryViewModel> Categories
-        {
-            get => _categories;
-            set { _categories = value; OnPropertyChanged(nameof(Categories)); }
-        }
-
-        private ObservableCollection<SizeViewModel> _availableSizes = new();
-        public ObservableCollection<SizeViewModel> AvailableSizes
-        {
-            get => _availableSizes;
-            set { _availableSizes = value; OnPropertyChanged(nameof(AvailableSizes)); }
-        }
-
-        private ObservableCollection<SizePriceViewModel> _sizePrices = new();
-        public ObservableCollection<SizePriceViewModel> SizePrices
-        {
-            get => _sizePrices;
-            set { _sizePrices = value; OnPropertyChanged(nameof(SizePrices)); }
-        }
+        public ObservableCollection<CategoryViewModel> Categories { get; set; } = new();
+        public ObservableCollection<SizeViewModel> AvailableSizes { get; set; } = new();
+        public ObservableCollection<SizePriceViewModel> SizePrices { get; set; } = new();
 
         private bool? _dialogResult;
-        public bool? DialogResult
-        {
-            get => _dialogResult;
-            set { _dialogResult = value; OnPropertyChanged(nameof(DialogResult)); }
-        }
+        public bool? DialogResult { get => _dialogResult; set { _dialogResult = value; OnPropertyChanged(nameof(DialogResult)); } }
         #endregion
 
         #region Commands
@@ -187,131 +86,98 @@ namespace CoffeeShop.ViewModels.AdminVM
         public ICommand CancelCommand { get; private set; }
         #endregion
 
-        #region Constructor
         public ItemEditViewModel()
         {
             InitializeCommands();
-            LoadCategories();
-            LoadAvailableSizes();
+            LoadInitialData();
         }
 
-        public ItemEditViewModel(int itemId) : this()
+        public ItemEditViewModel(int? itemId = null) : this()
         {
-            ItemId = itemId;
-            WindowTitle = "Chỉnh sửa món";
-            LoadItemData(itemId);
+            if (itemId.HasValue)
+            {
+                ItemId = itemId;
+                WindowTitle = "Chỉnh sửa món";
+                LoadItemData(itemId.Value);
+            }
+            else
+            {
+                ItemId = null;
+                WindowTitle = "Thêm món mới";
+                AddSize();
+            }
         }
-        #endregion
 
-        #region Command Initialization
         private void InitializeCommands()
         {
-            UploadImageCommand = new RelayCommand<object>(async p => await UploadImageAsync());
-            AddSizeCommand = new RelayCommand<object>(p => AddSize());
+            UploadImageCommand = new RelayCommand<object>(async _ => await UploadImageAsync());
+            AddSizeCommand = new RelayCommand<object>(_ => AddSize());
             RemoveSizeCommand = new RelayCommand<SizePriceViewModel>(p => RemoveSize(p));
-            SaveCommand = new RelayCommand<object>(async p => await SaveAsync());
-            CancelCommand = new RelayCommand<object>(p => Cancel());
+            SaveCommand = new RelayCommand<object>(async _ => await SaveAsync());
+            CancelCommand = new RelayCommand<object>(_ => Cancel());
+        }
+
+        #region Logic Xử lý Category
+        private void HandleCategoryChange(int newId)
+        {
+            if (newId == FOOD_CATEGORY_ID)
+            {
+                var currentPrice = SizePrices.FirstOrDefault()?.Price ?? 0;
+                SizePrices.Clear();
+                SizePrices.Add(new SizePriceViewModel { SizeId = null, Price = currentPrice });
+            }
+            else if (SizePrices.Count > 0 && SizePrices[0].SizeId == null)
+            {
+                if (AvailableSizes.Count > 0)
+                {
+                    SizePrices[0].SizeId = AvailableSizes[0].SizeId;
+                }
+            }
         }
         #endregion
 
-        #region Load Data
-        private void LoadCategories()
+        #region Data Loading
+        private async void LoadInitialData()
         {
-            Categories.Clear();
             try
             {
                 using var context = new CoffeeShopContext();
-                var categories = context.Categories
-                    .Where(c => !c.IsDeleted)
-                    .Select(c => new CategoryViewModel
-                    {
-                        Id = c.CategoryId,
-                        Name = c.CategoryName
-                    })
-                    .ToList();
+                var cats = await context.Categories.Where(c => !c.IsDeleted).ToListAsync();
+                var sizes = await context.Sizes.Where(s => !s.IsDeleted).ToListAsync();
 
-                foreach (var cat in categories)
-                    Categories.Add(cat);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Lỗi khi tải danh mục: {ex.Message}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    Categories.Clear();
+                    cats.ForEach(c => Categories.Add(new CategoryViewModel { Id = c.CategoryId, Name = c.CategoryName }));
 
-        private void LoadAvailableSizes()
-        {
-            AvailableSizes.Clear();
-            try
-            {
-                using var context = new CoffeeShopContext();
-                var sizes = context.Sizes
-                    .Where(s => !s.IsDeleted)
-                    .Select(s => new SizeViewModel
-                    {
-                        SizeId = s.SizeId,
-                        SizeName = s.SizeName
-                    })
-                    .ToList();
-
-                foreach (var size in sizes)
-                    AvailableSizes.Add(size);
+                    AvailableSizes.Clear();
+                    sizes.ForEach(s => AvailableSizes.Add(new SizeViewModel { SizeId = s.SizeId, SizeName = s.SizeName }));
+                });
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Lỗi khi tải size: {ex.Message}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            catch (Exception ex) { MessageBox.Show($"Lỗi tải dữ liệu: {ex.Message}"); }
         }
 
         private void LoadItemData(int itemId)
         {
-            try
+            using var context = new CoffeeShopContext();
+            var item = context.Items.Include(i => i.ItemPrices).FirstOrDefault(i => i.ItemId == itemId && !i.IsDeleted);
+            if (item == null) return;
+
+            ItemName = item.ItemName;
+            CategoryId = item.CategoryId;
+            IsAvailable = item.IsAvailable;
+            Info = item.Info ?? "";
+            ImagePath = string.IsNullOrWhiteSpace(item.ImagePath) ? DEFAULT_IMAGE_PATH : item.ImagePath;
+
+            SizePrices.Clear();
+            foreach (var p in item.ItemPrices.Where(ip => !ip.IsDeleted))
             {
-                using var context = new CoffeeShopContext();
-                var item = context.Items
-                    .Include(i => i.ItemPrices)
-                    .ThenInclude(ip => ip.Size)
-                    .FirstOrDefault(i => i.ItemId == itemId && !i.IsDeleted);
-
-                if (item != null)
-                {
-                    ItemName = item.ItemName;
-                    CategoryId = item.CategoryId;
-                    IsAvailable = item.IsAvailable;
-                    Info = item.Info ?? "";
-
-                    // Chuẩn hóa ImagePath
-                    if (string.IsNullOrWhiteSpace(item.ImagePath) ||
-                        item.ImagePath.Contains("imgItemExample.jpg"))
-                    {
-                        ImagePath = "/Assets/Images/imgItemExample.jpg";
-                    }
-                    else
-                    {
-                        ImagePath = item.ImagePath; // Giữ nguyên đường dẫn tương đối từ DB
-                    }
-
-                    SizePrices.Clear();
-                    foreach (var price in item.ItemPrices.Where(ip => !ip.IsDeleted))
-                    {
-                        SizePrices.Add(new SizePriceViewModel
-                        {
-                            PriceId = price.PriceId,
-                            SizeId = price.SizeId,
-                            Price = price.Price
-                        });
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Lỗi khi tải thông tin món: {ex.Message}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                SizePrices.Add(new SizePriceViewModel { PriceId = p.PriceId, SizeId = p.SizeId, Price = p.Price });
             }
         }
         #endregion
 
-        #region Commands Implementation
-
+        #region Image Handling
         private void LoadImageFromPath(string path)
         {
             try
@@ -319,311 +185,151 @@ namespace CoffeeShop.ViewModels.AdminVM
                 var bitmap = new BitmapImage();
                 bitmap.BeginInit();
                 bitmap.CacheOption = BitmapCacheOption.OnLoad;
-                bitmap.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
 
-                // Trường hợp 1: Ảnh ví dụ/mặc định
-                if (string.IsNullOrEmpty(path) || path.Contains("imgItemExample.jpg"))
+                if (path.StartsWith("/") || path.StartsWith("pack://"))
                 {
-                    bitmap.UriSource = new Uri("pack://application:,,,/Assets/Images/imgItemExample.jpg");
+                    bitmap.UriSource = new Uri($"pack://application:,,,{path}");
                 }
-                // Trường hợp 2: Đường dẫn file (Bao gồm cả tương đối và tuyệt đối)
                 else
                 {
                     string fullPath = Path.IsPathRooted(path) ? path : Path.Combine(AppDomain.CurrentDomain.BaseDirectory, path);
-
                     if (File.Exists(fullPath))
-                        bitmap.UriSource = new Uri(fullPath, UriKind.Absolute);
+                    {
+                        bitmap.UriSource = new Uri(fullPath);
+                    }
                     else
-                        bitmap.UriSource = new Uri("pack://application:,,,/Assets/Images/imgItemExample.jpg");
+                    {
+                        bitmap.UriSource = new Uri($"pack://application:,,,{DEFAULT_IMAGE_PATH}");
+                    }
                 }
 
                 bitmap.EndInit();
-                if (bitmap.CanFreeze) bitmap.Freeze();
+                bitmap.Freeze();
                 Image = bitmap;
             }
-            catch
-            {
-                // Fail-safe: Nếu lỗi load, hiện ảnh mặc định
-                Image = new BitmapImage(new Uri("pack://application:,,,/Assets/Images/imgItemExample.jpg"));
-            }
+            catch { /* Log error */ }
         }
-
 
         private async Task UploadImageAsync()
         {
-            var dialog = new OpenFileDialog { Filter = "Image files (*.jpg;*.jpeg;*.png)|*.jpg;*.jpeg;*.png" };
+            var dialog = new OpenFileDialog { Filter = "Images|*.jpg;*.jpeg;*.png" };
             if (dialog.ShowDialog() != true) return;
 
-            // Lúc này truyền string là hoàn toàn hợp lệ
             var cropper = new ImageCropperWindow(dialog.FileName);
-            cropper.Owner = Application.Current.MainWindow;
-
             if (cropper.ShowDialog() == true)
             {
-                IsLoading = true;
-                LoadingMessage = "Đang xử lý ảnh...";
-                try
-                {
-                    var croppedResult = cropper.CroppedImage;
-
-                    // QUAN TRỌNG: Đóng băng đối tượng để có thể chuyển sang Thread khác
-                    if (croppedResult.CanFreeze)
-                    {
-                        croppedResult.Freeze();
-                    }
-
-                    string fileName = $"{Guid.NewGuid()}.jpg";
-                    string relativePath = Path.Combine("Assets", "Images", "Menu", fileName);
-                    string absolutePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, relativePath);
-
-                    string folder = Path.GetDirectoryName(absolutePath);
-                    if (!Directory.Exists(folder)) Directory.CreateDirectory(folder);
-
-                    // Bây giờ Task.Run sẽ không còn báo lỗi Threading nữa
-                    await Task.Run(() => {
-                        using (var stream = new FileStream(absolutePath, FileMode.Create))
-                        {
-                            var encoder = new JpegBitmapEncoder();
-                            encoder.Frames.Add(BitmapFrame.Create(croppedResult));
-                            encoder.Save(stream);
-                        }
-                    });
-
-                    ImagePath = relativePath;
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Lỗi lưu ảnh: {ex.Message}");
-                }
-                finally { IsLoading = false; }
+                await ProcessAndSaveImage(cropper.CroppedImage);
             }
         }
 
-
-        private void AddSize()
-        {
-            if (CategoryId == 7) // Food - không cần size
-            {
-                if (SizePrices.Count > 0)
-                {
-                    MessageBox.Show("Món Food chỉ có một giá duy nhất!",
-                        "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
-                    return;
-                }
-
-                SizePrices.Add(new SizePriceViewModel
-                {
-                    SizeId = null, // Food không có SizeId
-                    Price = 0
-                });
-            }
-            else // Drinks - cần chọn size
-            {
-                if (AvailableSizes.Count == 0)
-                {
-                    MessageBox.Show("Không có size nào khả dụng!",
-                        "Thông báo", MessageBoxButton.OK, MessageBoxImage.Warning);
-                    return;
-                }
-
-                // Kiểm tra xem size đã được thêm chưa
-                var usedSizeIds = SizePrices.Where(sp => sp.SizeId.HasValue)
-                                            .Select(sp => sp.SizeId.Value)
-                                            .ToHashSet();
-
-                var availableSize = AvailableSizes.FirstOrDefault(s => !usedSizeIds.Contains(s.SizeId));
-
-                if (availableSize == null)
-                {
-                    MessageBox.Show("Đã thêm đủ tất cả các size!",
-                        "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
-                    return;
-                }
-
-                SizePrices.Add(new SizePriceViewModel
-                {
-                    SizeId = availableSize.SizeId,
-                    Price = 0
-                });
-            }
-        }
-
-        private void RemoveSize(SizePriceViewModel? sizePrice)
-        {
-            if (MessageBox.Show("Bạn có chắc muốn xóa size/giá này?", "Xác nhận xóa Size",
-                MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes)
-            {
-                return;
-            }
-            if (sizePrice != null)
-                SizePrices.Remove(sizePrice);
-        }
-        private void SaveBitmapSourceToFile(BitmapSource bitmapSource, string filePath)
-        {
-            using (var fileStream = new FileStream(filePath, FileMode.Create))
-            {
-                BitmapEncoder encoder = new JpegBitmapEncoder(); // Hoặc PngBitmapEncoder
-                encoder.Frames.Add(BitmapFrame.Create(bitmapSource));
-                encoder.Save(fileStream);
-            }
-        }
-        private async Task SaveAsync()
+        private async Task ProcessAndSaveImage(BitmapSource croppedResult)
         {
             IsLoading = true;
-            LoadingMessage = "Đang lưu...";
-
+            LoadingMessage = "Đang xử lý ảnh...";
             try
             {
-                // Validation
-                if (string.IsNullOrWhiteSpace(ItemName))
+                croppedResult.Freeze();
+                string fileName = $"{Guid.NewGuid()}.jpg";
+                string relativePath = Path.Combine("Assets", "Images", "Menu", fileName);
+                string absolutePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, relativePath);
+
+                Directory.CreateDirectory(Path.GetDirectoryName(absolutePath)!);
+
+                await Task.Run(() =>
                 {
-                    MessageBox.Show("Vui lòng nhập tên món!", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Warning);
-                    return;
-                }
+                    using var stream = new FileStream(absolutePath, FileMode.Create);
+                    var encoder = new JpegBitmapEncoder();
+                    encoder.Frames.Add(BitmapFrame.Create(croppedResult));
+                    encoder.Save(stream);
+                });
 
-                if (SizePrices.Count == 0)
-                {
-                    MessageBox.Show("Vui lòng thêm ít nhất 1 size/giá!", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Warning);
-                    return;
-                }
+                ImagePath = relativePath;
+            }
+            catch (Exception ex) { MessageBox.Show($"Lỗi lưu ảnh: {ex.Message}"); }
+            finally { IsLoading = false; }
+        }
+        #endregion
 
-                // Validation cho Food
-                if (CategoryId == 7 && SizePrices.Count > 1)
-                {
-                    MessageBox.Show("Món Food chỉ được có 1 giá duy nhất!", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Warning);
-                    return;
-                }
+        #region Save Logic
+        private async Task SaveAsync()
+        {
+            if (string.IsNullOrWhiteSpace(ItemName)) { MessageBox.Show("Tên món không được để trống!"); return; }
+            if (SizePrices.Count == 0) { MessageBox.Show("Cần ít nhất một mức giá!"); return; }
 
-                // Validation cho Drinks
-                if (CategoryId != 7)
-                {
-                    foreach (var sp in SizePrices)
-                    {
-                        if (!sp.SizeId.HasValue)
-                        {
-                            MessageBox.Show("Vui lòng chọn size cho tất cả các giá!", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Warning);
-                            return;
-                        }
-                    }
-
-                    // Kiểm tra trùng size
-                    var sizeIds = SizePrices.Where(sp => sp.SizeId.HasValue)
-                                           .Select(sp => sp.SizeId.Value)
-                                           .ToList();
-
-                    if (sizeIds.Count != sizeIds.Distinct().Count())
-                    {
-                        MessageBox.Show("Không được chọn trùng size!", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Warning);
-                        return;
-                    }
-                }
-
+            IsLoading = true;
+            try
+            {
                 await Task.Run(() =>
                 {
                     using var context = new CoffeeShopContext();
                     Item? item;
 
                     if (ItemId.HasValue)
-                    {
-                        item = context.Items.FirstOrDefault(i => i.ItemId == ItemId.Value);
-                        if (item == null) throw new Exception("Không tìm thấy món.");
-                    }
+                        item = context.Items.Find(ItemId.Value);
                     else
                     {
-                        item = new Item { IsDeleted = false };
+                        item = new Item();
                         context.Items.Add(item);
                     }
 
-                    // --- XỬ LÝ ẢNH ---
-                    string pathForDb;
-
-                    if (!string.IsNullOrEmpty(ImagePath) && Path.IsPathRooted(ImagePath))
-                    {
-                        pathForDb = Path.GetRelativePath(AppDomain.CurrentDomain.BaseDirectory, ImagePath);
-                    }
-                    else if (!string.IsNullOrEmpty(ImagePath) &&
-                             (ImagePath.StartsWith("/Assets") || ImagePath.StartsWith("pack://")))
-                    {
-                        pathForDb = "Assets/Images/imgItemExample.jpg";
-                    }
-                    else if (string.IsNullOrEmpty(ImagePath))
-                    {
-                        pathForDb = item.ImagePath ?? "Assets/Images/imgItemExample.jpg";
-                    }
-                    else
-                    {
-                        pathForDb = ImagePath;
-                    }
+                    if (item == null) return;
 
                     item.ItemName = ItemName;
                     item.CategoryId = CategoryId;
                     item.IsAvailable = IsAvailable;
                     item.Info = Info;
-                    item.ImagePath = ImagePath.Replace("\\", "/"); // Chuẩn hóa dấu gạch cho DB
+                    item.ImagePath = ImagePath.Replace("\\", "/");
 
                     context.SaveChanges();
 
-                    // Xử lý ItemPrices - XÓA HẾT rồi thêm lại
-                    var existingPrices = context.ItemPrices
-                        .Where(ip => ip.ItemId == item.ItemId)
-                        .ToList();
+                    // Cập nhật giá (Soft Delete logic)
+                    var oldPrices = context.ItemPrices.Where(p => p.ItemId == item.ItemId).ToList();
+                    oldPrices.ForEach(p => p.IsDeleted = true);
 
-                    // Đánh dấu xóa tất cả prices cũ
-                    foreach (var price in existingPrices)
-                    {
-                        price.IsDeleted = true;
-                    }
-
-                    // Thêm/Cập nhật prices mới
                     foreach (var sp in SizePrices)
                     {
-                        ItemPrice? priceToUpdate = null;
-
-                        if (sp.PriceId.HasValue)
+                        var existing = oldPrices.FirstOrDefault(p => p.PriceId == sp.PriceId);
+                        if (existing != null)
                         {
-                            priceToUpdate = existingPrices.FirstOrDefault(p => p.PriceId == sp.PriceId.Value);
-                        }
-
-                        if (priceToUpdate != null)
-                        {
-                            priceToUpdate.SizeId = sp.SizeId;
-                            priceToUpdate.Price = sp.Price;
-                            priceToUpdate.IsDeleted = false;
+                            existing.SizeId = sp.SizeId;
+                            existing.Price = sp.Price;
+                            existing.IsDeleted = false;
                         }
                         else
                         {
-                            context.ItemPrices.Add(new ItemPrice
-                            {
-                                ItemId = item.ItemId,
-                                SizeId = sp.SizeId,
-                                Price = sp.Price,
-                                IsDeleted = false
-                            });
+                            context.ItemPrices.Add(new ItemPrice { ItemId = item.ItemId, SizeId = sp.SizeId, Price = sp.Price });
                         }
                     }
-
                     context.SaveChanges();
                     EventAggregator.Instance.Publish(new ItemsChangedMessage());
                 });
 
-                MessageBox.Show("Lưu thành công!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
                 DialogResult = true;
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Lỗi khi lưu: {ex.Message}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-            finally
-            {
-                IsLoading = false;
-            }
+            catch (Exception ex) { MessageBox.Show($"Lỗi khi lưu: {ex.Message}"); }
+            finally { IsLoading = false; }
         }
 
-
-        private void Cancel()
+        private void AddSize()
         {
-            DialogResult = false;
+            if (CategoryId == FOOD_CATEGORY_ID && SizePrices.Count >= 1) return;
+
+            var usedIds = SizePrices.Select(s => s.SizeId).ToList();
+            var nextSize = AvailableSizes.FirstOrDefault(s => !usedIds.Contains(s.SizeId));
+
+            SizePrices.Add(new SizePriceViewModel
+            {
+                SizeId = CategoryId == FOOD_CATEGORY_ID ? null : nextSize?.SizeId,
+                Price = 0
+            });
         }
+
+        private void RemoveSize(SizePriceViewModel? item)
+        {
+            if (item != null) SizePrices.Remove(item);
+        }
+
+        private void Cancel() => DialogResult = false;
         #endregion
 
         #region Helper Classes
@@ -668,7 +374,7 @@ namespace CoffeeShop.ViewModels.AdminVM
         public class SizePriceViewModel : INotifyPropertyChanged
         {
             private int? _priceId;
-            private int? _sizeId; // Nullable cho Food
+            private int? _sizeId;
             private decimal _price;
 
             public int? PriceId

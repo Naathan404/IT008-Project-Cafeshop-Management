@@ -68,24 +68,15 @@ namespace CoffeeShop.View.Admin
         {
             if (sender is Border border && border.DataContext is AdminMenuViewModel.MenuCoffeeItem item)
             {
-                var result = MessageBox.Show(
-                    $"Bạn có chắc chắn muốn xóa món '{item.ItemName}' không?",
-                    "Xác nhận xóa",
-                    MessageBoxButton.YesNo,
-                    MessageBoxImage.Question);
-
-                if (result == MessageBoxResult.Yes)
+                if (DataContext is AdminMenuViewModel viewModel)
                 {
-                    if (DataContext is AdminMenuViewModel viewModel)
-                    {
-                        // Set selected item để command có thể thực thi
-                        viewModel.SelectedItem = item;
+                    // Set selected item để command có thể thực thi
+                    viewModel.SelectedItem = item;
 
-                        // Execute delete command
-                        if (viewModel.DeleteItemCommand.CanExecute(null))
-                        {
-                            viewModel.DeleteItemCommand.Execute(null);
-                        }
+                    // Execute delete command
+                    if (viewModel.DeleteItemCommand.CanExecute(null))
+                    {
+                        viewModel.DeleteItemCommand.Execute(null);
                     }
                 }
             }

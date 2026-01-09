@@ -90,13 +90,12 @@
                                               VerticalAlignment="Top">
                                     <ItemsControl.Style>
                                         <Style TargetType="ItemsControl">
-                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                            <Setter Property="Visibility" Value="Visible"/>
                                             <Style.Triggers>
-                                                <!-- Hiển thị nếu có nhiều hơn 1 size -->
-                                                <DataTrigger Binding="{Binding ItemPrices.Count, Converter={StaticResource GreaterThanOneConverter}}" Value="True">
-                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                <DataTrigger Binding="{Binding ItemPrices.Count}" Value="0">
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
                                                 </DataTrigger>
-                                                <!-- Ẩn nếu chỉ có 1 size và là Food (CategoryId = 7) -->
+
                                                 <MultiDataTrigger>
                                                     <MultiDataTrigger.Conditions>
                                                         <Condition Binding="{Binding ItemPrices.Count}" Value="1"/>
@@ -348,7 +347,7 @@
                     Padding="10"
                     CornerRadius="15"
                     Cursor="Hand"
-                    Background="#EDE2D3"
+                    Background="#B18252"
                     MouseEnter="border_MouseEnter"
                     MouseLeave="border_MouseLeave"
                     MouseDown="AddNewItem_Click">
@@ -370,7 +369,7 @@
                            HorizontalAlignment="Center"
                            VerticalAlignment="Center"
                            FontFamily="Cascadia Code"
-                           Foreground="#766839"/>
+                           Foreground="#F9F6F0"/>
             </Border>
         </StackPanel>
     </Grid>
