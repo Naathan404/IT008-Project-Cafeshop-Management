@@ -107,24 +107,34 @@ namespace CoffeeShop.View.Admin
 
         private void Crop_Click(object sender, RoutedEventArgs e)
         {
-            // Tính toán tỉ lệ giữa ảnh gốc và ảnh hiển thị trên màn hình
-            double scaleX = _originalBitmap.PixelWidth / SourceImage.ActualWidth;
-            double scaleY = _originalBitmap.PixelHeight / SourceImage.ActualHeight;
+            // Lấy tọa độ thực tế của khung vàng trên Canvas
+            double left = Canvas.GetLeft(SelectionRect);
+            double top = Canvas.GetTop(SelectionRect);
+            double width = SelectionRect.Width;
+            double height = SelectionRect.Height;
 
-            int x = (int)(Canvas.GetLeft(SelectionRect) * scaleX);
-            int y = (int)(Canvas.GetTop(SelectionRect) * scaleY);
-            int w = (int)(SelectionRect.Width * scaleX);
-            int h = (int)(SelectionRect.Height * scaleY);
+            // Tính toán tỉ lệ giữa kích thước file ảnh thật và kích thước hiển thị trên màn hình
+            var bitmap = (BitmapSource)SourceImage.Source;
+            double scaleX = bitmap.PixelWidth / SourceImage.ActualWidth;
+            double scaleY = bitmap.PixelHeight / SourceImage.ActualHeight;
 
-            // Cắt ảnh
+            // Vùng cắt thực tế trên file gốc
+            Int32Rect rect = new Int32Rect(
+                (int)(left * scaleX),
+                (int)(top * scaleY),
+                (int)(width * scaleX),
+                (int)(height * scaleY)
+            );
+
             try
             {
-                CroppedImage = new CroppedBitmap(_originalBitmap, new Int32Rect(x, y, w, h));
+                CroppedBitmap cropped = new CroppedBitmap(bitmap, rect);
+                this.CroppedImage = cropped; // Property để ViewModel nhận ảnh
                 this.DialogResult = true;
             }
-            catch
+            catch (Exception ex)
             {
-                MessageBox.Show("Vùng cắt không hợp lệ!");
+                MessageBox.Show("Vùng chọn vượt quá biên ảnh hoặc không hợp lệ!");
             }
         }
 
@@ -136,22 +146,33 @@ namespace CoffeeShop.View.Admin
                 double imgW = SourceImage.ActualWidth;
                 double imgH = SourceImage.ActualHeight;
 
-                // Tìm cạnh nhỏ nhất của ảnh để làm chuẩn cho hình vuông
-                double minImgSide = Math.Min(imgW, imgH);
+                // Tỉ lệ mục tiêu là 250 / 180 = 1.3888
+                double targetRatio = 250.0 / 180.0;
+                double currentImgRatio = imgW / imgH;
 
-                // Nếu cạnh nhỏ nhất của ảnh < 300, khung sẽ fit sát theo cạnh đó
-                // Nếu ảnh lớn, khung sẽ để mặc định là 300 (hoặc tùy bạn chỉnh)
-                double side = (minImgSide < 300) ? minImgSide : 300;
+                double finalW, finalH;
 
-                SelectionRect.Width = side;
-                SelectionRect.Height = side;
+                // Nếu ảnh "gầy" hơn tỉ lệ mục tiêu -> lấy chiều rộng ảnh làm chuẩn
+                if (currentImgRatio < targetRatio)
+                {
+                    finalW = imgW;
+                    finalH = imgW / targetRatio;
+                }
+                // Nếu ảnh "béo" hơn tỉ lệ mục tiêu -> lấy chiều cao ảnh làm chuẩn
+                else
+                {
+                    finalH = imgH;
+                    finalW = imgH * targetRatio;
+                }
 
-                // Tính toán để đưa khung vào giữa ảnh
-                double left = (imgW - side) / 2;
-                double top = (imgH - side) / 2;
+                // Giảm xuống một chút (ví dụ 90%) để người dùng dễ nhìn thấy viền nếu muốn
+                // Hoặc để 100% (finalW, finalH) nếu muốn sát khít hoàn toàn
+                SelectionRect.Width = finalW;
+                SelectionRect.Height = finalH;
 
-                Canvas.SetLeft(SelectionRect, left);
-                Canvas.SetTop(SelectionRect, top);
+                // Căn giữa
+                Canvas.SetLeft(SelectionRect, (imgW - finalW) / 2);
+                Canvas.SetTop(SelectionRect, (imgH - finalH) / 2);
 
                 UpdateOverlay();
             }), System.Windows.Threading.DispatcherPriority.Loaded);

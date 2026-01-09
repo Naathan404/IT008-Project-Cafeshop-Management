@@ -263,7 +263,7 @@ VALUES
 (N'Food');
 GO
 
-INSERT INTO Item (ItemName, CategoryID, IsAvailable, Info) 
+INSERT INTO Item (ItemName, CategoryID, IsAvailable, Info, ImagePath) 
 VALUES 
 (N'Cà phê sữa đá', 1, 1, N'Vị truyền thống, đậm đà, độ ngọt vừa phải. Món quốc dân dễ uống nhất.'),
 (N'Đen đá không đường', 1, 1, N'Cafe nguyên chất 100%, vị đắng mạnh, thơm nồng. Dành cho khách gu mạnh, cần tỉnh táo gấp.'),

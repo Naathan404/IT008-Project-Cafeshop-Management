@@ -68,8 +68,11 @@
                                 CornerRadius="10"
                                 HorizontalAlignment="Center"
                                 Margin="10">
-                            <Image Source="{Binding Image}"
-                                   Stretch="UniformToFill"/>
+                            <Border.Background>
+                                <ImageBrush ImageSource="{Binding Image}" 
+                                            Stretch="UniformToFill" 
+                                            RenderOptions.BitmapScalingMode="HighQuality"/>
+                            </Border.Background>
                         </Border>
 
                         <!-- Upload Button -->
