@@ -3,14 +3,393 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
       xmlns:local="clr-namespace:CoffeeShop.View.Staff"
       mc:Ignorable="d" 
-      d:DesignHeight="450" d:DesignWidth="800"
-      Title="Staff_Table">
+      d:DesignHeight="700" d:DesignWidth="1310"
+      Title="Staff_Table"
+      Background="#D4BA98">
+    <Page.Resources>
+        <local:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
+        <local:NotNullToVisibilityConverter x:Key="NotNullToVisibilityConverter"/>
+        <local:IntToVisibilityConverter x:Key="IntToVisibilityConverter"/>
+    </Page.Resources>
 
-    <Grid>
-        <TextBlock Text="This is Table page"
-                   Background="White"
-                   FontSize="100"></TextBlock>
+    <Grid Margin="10">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="350"/>
+        </Grid.ColumnDefinitions>
+
+        <Border Grid.Column="0" 
+                Background="#EDE2D3" 
+                CornerRadius="15" 
+                Margin="15">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="20"
+                      Opacity="0.3"
+                      Color="Black"
+                      ShadowDepth="8"/>
+            </Border.Effect>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Border Grid.Row="0" 
+                        Margin="20,15,20,5" 
+                        Background="White" 
+                        CornerRadius="20"
+                        BorderBrush="#BC9466"
+                        BorderThickness="1"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Right">
+                    <Grid Margin="15,5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <materialDesign:PackIcon Kind="Magnify" 
+                                                 Foreground="#462812" 
+                                                 VerticalAlignment="Center" 
+                                                 Margin="0,0,10,0"/>
+
+                        <TextBox Grid.Column="1"
+                                 Text="{Binding SearchTableKeyWords, 
+                                        UpdateSourceTrigger=PropertyChanged}"
+                                 materialDesign:HintAssist.Hint="Tìm kiếm tên bàn..."
+                                 BorderThickness="0"
+                                 VerticalAlignment="Center"
+                                 FontSize="14"
+                                 FontFamily="Cascadia Code"
+                                 Style="{StaticResource MaterialDesignTextBox}"/>
+                    </Grid>
+                </Border>
+
+                <TabControl Grid.Row="0" 
+                            Margin="10"
+                            materialDesign:ColorZoneAssist.Mode="Standard"
+                            HorizontalAlignment="Left"
+                            VerticalContentAlignment="Stretch"
+                            SelectedItem="{Binding SelectedTabItem}"
+                            Style="{StaticResource MaterialDesignTabControl}">
+                    <TabControl.ItemContainerStyle>
+                        <!-- Style cho từng TabItem -->
+                        <Style TargetType="TabItem" BasedOn="{StaticResource MaterialDesignTabItem}">
+                            <Setter Property="Height" Value="45"/>
+                            <Setter Property="MinWidth" Value="0"/>
+                            <Setter Property="Padding" Value="12"/>
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                            <!-- Font cho header -->
+                            <Setter Property="HeaderTemplate">
+                                <Setter.Value>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding}" 
+                                                   FontSize="17" 
+                                                   FontFamily="Cascadia Code" 
+                                                   FontWeight="Bold"
+                                                   HorizontalAlignment="Center"/>
+                                    </DataTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </TabControl.ItemContainerStyle>
+                    <TabItem Header="Tất cả" Tag="-1"/>
+                    <TabItem Header="Bàn trống" Tag="0"/>
+                    <TabItem Header="Đang phục vụ" Tag="1"/>
+                </TabControl>
+
+                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                    <ListBox ItemsSource="{Binding FilteredTables}" 
+                             SelectedItem="{Binding SelectedTable}"
+                             Background="Transparent" BorderThickness="0">
+                        <ListBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel Margin="10"
+                                           Orientation="Horizontal" 
+                                           HorizontalAlignment="Left"/>
+                            </ItemsPanelTemplate>
+                        </ListBox.ItemsPanel>
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="ListBoxItem">
+                                <Setter Property="Padding" Value="2"/>
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="ListBoxItem">
+                                            <ContentPresenter />
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </ListBox.ItemContainerStyle>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Border x:Name="BorderContainer"
+                                        Width="120" Height="130" 
+                                        Margin="8" 
+                                        CornerRadius="10" 
+                                        Background="#E0CEB5">
+                                    <Border.Style>
+                                        <Style TargetType="Border">
+                                            <Setter Property="BorderBrush" Value="Transparent"/>
+                                            <Setter Property="Cursor" Value="Hand"/>
+                                            <Style.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Background" Value="#F5E6D3"/>
+                                                    <Setter Property="BorderBrush" Value="#B18252"/>
+                                                    <Setter Property="BorderThickness" Value="1"/>
+                                                </Trigger>
+                                                <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="True">
+                                                    <Setter Property="Background" Value="#D5BCA1"/>
+                                                    <Setter Property="Effect">
+                                                        <Setter.Value>
+                                                            <DropShadowEffect Color="#B18252" Direction="315" ShadowDepth="7" Opacity="0.4" />
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
+
+                                    <StackPanel VerticalAlignment="Center">
+                                        <materialDesign:PackIcon Kind="Seat" 
+                                                                 Width="35" Height="35" 
+                                                                 HorizontalAlignment="Center">
+                                            <materialDesign:PackIcon.Style>
+                                                <Style TargetType="materialDesign:PackIcon">
+                                                    <Setter Property="Foreground" Value="#766839"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding TableStatus}" Value="1">
+                                                            <Setter Property="Foreground" Value="#C7A57A"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding TableStatus}" Value="2">
+                                                            <Setter Property="Foreground" Value="#C7A57A"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </materialDesign:PackIcon.Style>
+                                        </materialDesign:PackIcon>
+
+                                        <TextBlock Text="{Binding TableName}" 
+                                                   FontWeight="Bold" 
+                                                   FontSize="15"
+                                                   FontFamily="Cascadia Code"
+                                                   HorizontalAlignment="Center" 
+                                                   Margin="0,5,0,2"/>
+                                        <Border VerticalAlignment="Center"
+                                                HorizontalAlignment="Center"
+                                                CornerRadius="5">
+                                            <Border.Style>
+                                                <Style TargetType="Border">
+                                                    <Setter Property="Background" Value="Transparent"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding TableStatus}" Value="0">
+                                                            <Setter Property="Background" Value="#766839"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Border.Style>
+                                            <TextBlock HorizontalAlignment="Center" 
+                                                       VerticalAlignment="Center"
+                                                       Margin="3"
+                                                       FontSize="12" 
+                                                       FontWeight="Bold"
+                                                       FontFamily="Cascadia Code">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Setter Property="Foreground" Value="#F9F6F0"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding TableStatus}" Value="0">
+                                                                <Setter Property="Text" Value="Còn trống"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding TableStatus}" Value="1">
+                                                                <Setter Property="Text" Value="Đang phục vụ"/>
+                                                                <Setter Property="Foreground" Value="#766839"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding TableStatus}" Value="2">
+                                                                <Setter Property="Text" Value="Đã đặt trước"/>
+                                                                <Setter Property="Foreground" Value="#766839"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+                                        </Border>
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </ScrollViewer>
+            </Grid>
+        </Border>
+
+        <Border Grid.Column="1" 
+                Background="White" 
+                CornerRadius="15" 
+                Margin="15" 
+                Padding="20">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="20"
+                      Opacity="0.3"
+                      Color="Black"
+                      ShadowDepth="8"/>
+            </Border.Effect>
+
+            <Grid>
+                <TextBlock Text="Vui lòng chọn bàn để xem chi tiết" 
+                           VerticalAlignment="Center" 
+                           HorizontalAlignment="Center" 
+                           Foreground="Gray"
+                           FontFamily="Cascadia Code"
+                           FontStyle="Italic" 
+                           TextWrapping="Wrap"
+                           Visibility="{Binding SelectedTable, 
+                                    Converter={StaticResource NullToVisibilityConverter}}"/>
+
+                <StackPanel Visibility="{Binding SelectedTable, 
+                                    Converter={StaticResource NotNullToVisibilityConverter}}">
+                    <Border Background="#E0CEB5"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            CornerRadius="7">
+                        <TextBlock Text="CHI TIẾT BÀN" 
+                                   FontSize="20" 
+                                   FontWeight="Bold" 
+                                   FontFamily="Cascadia Code"
+                                   Foreground="#766839" 
+                                   Margin="7"/>
+                    </Border>
+
+                    <Border Background="#F9F9F9" 
+                            Padding="15" 
+                            CornerRadius="10"
+                            Margin="0 20 0 0">
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal" 
+                                        Margin="0,5">
+                                <TextBlock Text="Tên bàn: " 
+                                           FontWeight="Bold" 
+                                           FontFamily="Cascadia Code"
+                                           FontSize="15"
+                                           Width="100"
+                                           VerticalAlignment="Center"/>
+                                <TextBlock Text="{Binding SelectedTable.TableName}" 
+                                           FontSize="18"
+                                           VerticalAlignment="Center"/>
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal" 
+                                        Margin="0,5">
+                                <TextBlock Text="Trạng thái: " 
+                                           FontWeight="Bold" 
+                                           FontFamily="Cascadia Code"
+                                           FontSize="15"
+                                           Width="100"
+                                           VerticalAlignment="Center"/>
+                                <Border CornerRadius="10" 
+                                        Padding="12,4" 
+                                        Margin="0,0,0,0">
+                                    <Border.Style>
+                                        <Style TargetType="Border">
+                                            <Setter Property="Background" Value="#EEEEEE"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding SelectedTable.TableStatus}" Value="0">
+                                                    <Setter Property="Background" Value="#766839"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding SelectedTable.TableStatus}" Value="1">
+                                                    <Setter Property="Background" Value="#C7A57A"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding SelectedTable.TableStatus}" Value="2">
+                                                    <Setter Property="Background" Value="#C7A57A"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
+
+                                    <TextBlock FontSize="15" 
+                                               FontWeight="SemiBold"
+                                               VerticalAlignment="Center" 
+                                               HorizontalAlignment="Center">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Foreground" Value="#F9F6F0"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding SelectedTable.TableStatus}" Value="0">
+                                                        <Setter Property="Text" Value="Còn trống"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding SelectedTable.TableStatus}" Value="1">
+                                                        <Setter Property="Text" Value="Đang phục vụ"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding SelectedTable.TableStatus}" Value="2">
+                                                        <Setter Property="Text" Value="Đã đặt trước"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </Border>
+                            </StackPanel>
+
+                            <StackPanel Margin="0,15,0,0">
+                                <TextBlock Text="Ghi chú:" 
+                                           FontWeight="Bold" 
+                                           FontFamily="Cascadia Code"
+                                           FontSize="15"
+                                           Margin="0,0,0,5"
+                                           VerticalAlignment="Center"/>
+                                <TextBlock Text="{Binding SelectedTable.Note}" 
+                                           TextWrapping="Wrap" 
+                                           Foreground="#B18252"
+                                           FontFamily="Cascadia Code"
+                                           FontSize="18"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <StackPanel Margin="0,30,0,0">
+                        <Button Style="{StaticResource MaterialDesignRaisedButton}"
+                                Background="#BC9466" 
+                                BorderThickness="0" 
+                                Height="45" 
+                                Margin="0,5"
+                                materialDesign:ButtonAssist.CornerRadius="10"
+                                Command="{Binding ChangeStatusToServingCommand}"
+                                CommandParameter="{Binding SelectedTable}"
+                                Visibility="{Binding SelectedTable.TableStatus, 
+                                            Converter={StaticResource IntToVisibilityConverter}, 
+                                            ConverterParameter=0}">
+                            <TextBlock Text="Phục vụ"
+                                       FontSize="20"
+                                       FontFamily="Cascadia Code"
+                                       FontWeight="Bold"
+                                       Foreground="#F9F6F0"/>
+                        </Button>
+
+                        <Button Style="{StaticResource MaterialDesignRaisedButton}"
+                                materialDesign:ButtonAssist.CornerRadius="10"
+                                Background="#766839" 
+                                BorderThickness="0" 
+                                Height="45" 
+                                Margin="0,5"
+                                Command="{Binding ChangeStatusToEmptyCommand}"
+                                CommandParameter="{Binding SelectedTable}"
+                                Visibility="{Binding SelectedTable.TableStatus, 
+                                            Converter={StaticResource IntToVisibilityConverter}, 
+                                            ConverterParameter=1}">
+                            <TextBlock Text="Trả bàn"
+                                       FontSize="20"
+                                       FontFamily="Cascadia Code"
+                                       FontWeight="Bold"
+                                       Foreground="#F9F6F0"/>
+                        </Button>
+                    </StackPanel>
+                </StackPanel>
+            </Grid>
+        </Border>
     </Grid>
 </Page>
