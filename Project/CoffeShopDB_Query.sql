@@ -263,38 +263,45 @@ VALUES
 (N'Food');
 GO
 
-INSERT INTO Item (ItemName, CategoryID, IsAvailable, Info) 
+INSERT INTO Item (ItemName, CategoryID, IsAvailable, Info, ImagePath) 
 VALUES 
-(N'Cà phê sữa đá', 1, 1, N'Vị truyền thống, đậm đà, độ ngọt vừa phải. Món quốc dân dễ uống nhất.'),
-(N'Đen đá không đường', 1, 1, N'Cafe nguyên chất 100%, vị đắng mạnh, thơm nồng. Dành cho khách gu mạnh, cần tỉnh táo gấp.'),
-(N'Trà sữa truyền thống', 2, 1, N'Vị trà và sữa cân bằng, có sẵn trân châu đen. Lựa chọn an toàn nếu khách không biết uống gì.'),
-(N'Cà phê muối', 1, 1, N'Hot trend. Vị mặn nhẹ của lớp kem muối bên trên làm dịu vị đắng cafe, uống rất cuốn.'),
-(N'Cà phê đen', 1, 1, N'Có đường nhẹ, vẫn giữ vị đắng đặc trưng nhưng dễ uống hơn loại không đường.'),
-(N'Trà sữa kem cheese', 2, 1, N'Điểm nhấn là lớp kem phô mai mặn béo bên trên. Khuyên khách nên uống nghiêng ly để cảm nhận cả 2 lớp.'),
-(N'Bạc xỉu', 1, 1, N'Nhiều sữa đặc, rất ít cafe. Dành cho khách thích vị ngọt béo hoặc sợ say cafe.'),
-(N'Trà sữa tiramisu', 2, 1, N'Vị bánh Tiramisu thơm mùi ca cao và rượu nhẹ (siro), hơi béo ngậy, lạ miệng.'),
-(N'Trà sữa olong', 2, 1, N'Vị trà nướng đậm đà hơn trà thường, hậu vị ngọt thanh, ít béo hơn truyền thống.'),
-(N'Trà sữa gạo rang', 2, 1, N'Mùi gạo rang rất thơm và dễ chịu (giống bỏng ngô), vị thanh nhẹ, ít ngọt gắt.'),
-(N'Trà trái cây nhiệt đới', 4, 1, N'Kết hợp Dưa hấu, Táo, Cam... Vị chua ngọt tự nhiên, rất mát, giải khát tốt nhất.'),
-(N'Trà đào', 4, 1, N'Trà đen kết hợp miếng đào ngâm giòn. Món kinh điển, dễ uống, vị ngọt đậm.'),
-(N'Trà vải', 4, 1, N'Hương vải thơm nồng nàn, có trái vải tươi. Vị ngọt thanh hơn trà đào.'),
-(N'Nước ép cam', 5, 1, N'Cam tươi vắt 100%, có thể chỉnh độ đường. Bổ sung Vitamin C.'),
-(N'Nước ép thơm', 5, 1, N'Ép từ trái thơm chín, vị chua ngọt, hỗ trợ tiêu hóa tốt sau khi ăn.'),
-(N'Sinh tố bơ', 6, 1, N'Dùng bơ sáp, xay đặc và dẻo, vị béo ngậy tự nhiên. Có thể thêm ít sữa đặc.'),
-(N'Sinh tố dâu', 6, 1, N'Vị chua nhiều hơn ngọt, màu hồng đẹp. Thích hợp cho khách nữ hoặc trẻ em.'),
-(N'Sinh tố sầu riêng', 6, 1, N'Mùi rất nồng và đặc trưng, cực kỳ béo. Chỉ tư vấn cho khách ăn được sầu riêng.'),
-(N'Sinh tố mãng cầu', 6, 1, N'Vị chua chua ngọt ngọt rất lạ miệng, không hề bị ngán như các loại sinh tố khác.'),
-(N'Trà chanh giã tay', 4, 1, N'Dùng chanh Quảng Đông (vỏ dày) giã tay để lấy tinh dầu thơm, chua dịu không gắt.'),
-(N'Bánh crossant', 7, 1, N'Bánh sừng trâu, vỏ giòn ruột xốp. Ăn kèm cafe nóng hoặc Cappuccino là chuẩn bài.'),
-(N'Bánh bông lan trứng muối', 7, 1, N'Cốt bánh mềm, có sốt dầu trứng béo và trứng muối mặn. Dùng ăn sáng hoặc ăn xế.'),
-(N'Bánh tráng trộn', 7, 1, N'Vị chua cay mặn ngọt đủ cả, có khô bò, xoài. Món ăn vặt quốc dân.'),
-(N'Bánh tráng cuộn', 7, 1, N'Cuộn chặt tay với sốt bơ và tôm khô, dễ ăn, không bị dính tay như bánh trộn.'),
-(N'Panna cotta', 7, 1, N'Thạch kem sữa mềm mịn kiểu Ý, ăn kèm sốt dâu/chanh dây chua nhẹ để cân bằng.'),
-(N'Cà phê đá xay', 3, 1, N'Cafe xay nhuyễn với đá, trên có kem tươi (whipping cream). Tỉnh táo nhưng mát lạnh.'),
-(N'Matcha đá xay', 3, 1, N'Dùng bột Matcha Nhật, vị chát nhẹ đặc trưng, xay cùng sữa béo. Màu xanh đẹp mắt.'),
-(N'Chocolate đá xay', 3, 1, N'Đậm vị sô-cô-la, hơi đắng nhẹ nhưng hậu ngọt. Trẻ em rất thích món này.'),
-(N'Cookies đá xay', 3, 1, N'Xay chung với bánh Oreo, có vụn bánh giòn giòn vui miệng, vị ngọt béo.'),
-(N'Mocha đá xay', 3, 1, N'Kết hợp Cafe và Chocolate. Dành cho khách muốn uống cafe nhưng sợ đắng.')
+(N'Cà phê sữa đá', 1, 1, N'Vị truyền thống, đậm đà, độ ngọt vừa phải.', '/Assets/Images/Menu/imgCFSuaDa.png'),
+(N'Đen đá không đường', 1, 1, N'Cafe nguyên chất 100%, vị đắng mạnh.', '/Assets/Images/Menu/imgCFDenDa.png'),
+(N'Trà sữa truyền thống', 2, 1, N'Vị trà và sữa cân bằng, có sẵn trân châu.', '/Assets/Images/Menu/imgTSTruyenThong.png'),
+(N'Cà phê muối', 1, 1, N'Hot trend. Vị mặn nhẹ của lớp kem muối.', '/Assets/Images/Menu/imgCFMuoi.png'),
+(N'Cà phê đen', 1, 1, N'Có đường nhẹ, vẫn giữ vị đắng đặc trưng.', '/Assets/Images/Menu/imgCFDen.png'),
+(N'Trà sữa kem cheese', 2, 1, N'Điểm nhấn là lớp kem phô mai mặn béo.', '/Assets/Images/Menu/imgTSKemCheese.png'),
+(N'Bạc xỉu', 1, 1, N'Nhiều sữa đặc, rất ít cafe.', '/Assets/Images/Menu/imgCFBacXiu.png'),
+(N'Trà sữa tiramisu', 2, 1, N'Vị bánh Tiramisu thơm mùi ca cao.', '/Assets/Images/Menu/imgTSTiramisu.png'),
+(N'Trà sữa matcha', 2, 1, N'Vị trà nướng đậm đà hơn trà thường.', '/Assets/Images/Menu/imgTSMatcha.png'),
+(N'Trà sữa gạo rang', 2, 1, N'Mùi gạo rang rất thơm và dễ chịu.', '/Assets/Images/Menu/imgTSGaoRang.png'),
+(N'Trà trái cây nhiệt đới', 4, 1, N'Kết hợp Dưa hấu, Táo, Cam...', '/Assets/Images/Menu/imgTraTraiCay.png'),
+(N'Trà đào', 4, 1, N'Trà đen kết hợp miếng đào ngâm giòn.', '/Assets/Images/Menu/imgTraDao.png'),
+(N'Trà vải', 4, 1, N'Hương vải thơm nồng nàn, có trái vải tươi.', '/Assets/Images/Menu/imgTraVaiHoaHong.png'),
+(N'Nước ép cam', 5, 1, N'Cam tươi vắt 100%, bổ sung Vitamin C.', '/Assets/Images/Menu/imgEpCam.png'),
+(N'Nước ép thơm', 5, 1, N'Ép từ trái thơm chín, vị chua ngọt.', '/Assets/Images/Menu/imgEpThom.png'),
+(N'Sinh tố bơ', 6, 1, N'Dùng bơ sáp, xay đặc và dẻo.', '/Assets/Images/Menu/imgSinhToBo.png'),
+(N'Sinh tố dâu', 6, 1, N'Vị chua nhiều hơn ngọt, màu hồng đẹp.', '/Assets/Images/Menu/imgSinhToDau.png'),
+(N'Sinh tố sầu riêng', 6, 1, N'Mùi rất nồng và đặc trưng, cực kỳ béo.', '/Assets/Images/Menu/imgSinhToSauRieng.png'),
+(N'Sinh tố mãng cầu', 6, 1, N'Vị chua chua ngọt ngọt rất lạ miệng.', '/Assets/Images/Menu/imgSinhToMangCau.png'),
+(N'Trà chanh giã tay', 4, 1, N'Dùng chanh Quảng Đông giã tay thơm.', '/Assets/Images/Menu/imgTraChanh.png'),
+(N'Bánh crossant', 7, 1, N'Bánh sừng trâu, vỏ giòn ruột xốp.', '/Assets/Images/Menu/imgCrossant.png'),
+(N'Bánh bông lan trứng muối', 7, 1, N'Cốt bánh mềm, có sốt dầu trứng béo.', '/Assets/Images/Menu/imgBongLanTrungMuoi.png'),
+(N'Bánh tráng trộn', 7, 1, N'Vị chua cay mặn ngọt, có khô bò, xoài.', '/Assets/Images/Menu/imgTrangTron.png'),
+(N'Bánh tráng cuộn', 7, 1, N'Cuộn chặt tay với sốt bơ và tôm khô.', '/Assets/Images/Menu/imgTrangCuon.png'),
+(N'Panna cotta', 7, 1, N'Thạch kem sữa mềm mịn kiểu Ý.', '/Assets/Images/Menu/imgPannaCotta.png'),
+(N'Cà phê đá xay', 3, 1, N'Cafe xay nhuyễn với đá, trên có kem tươi.', '/Assets/Images/Menu/imgCaPheDaXay.png'),
+(N'Matcha đá xay', 3, 1, N'Dùng bột Matcha Nhật, vị chát nhẹ.', '/Assets/Images/Menu/imgMatchaDaXay.png'),
+(N'Chocolate đá xay', 3, 1, N'Đậm vị sô-cô-la, hơi đắng nhẹ.', '/Assets/Images/Menu/imgChocolateDaXay.png'),
+(N'Cookies đá xay', 3, 1, N'Xay chung với bánh Oreo, béo ngậy.', '/Assets/Images/Menu/imgCookiesDaXay.png'),
+(N'Mocha đá xay', 3, 1, N'Kết hợp Cafe và Chocolate.', '/Assets/Images/Menu/imgMochaDaXay.png'),
+(N'Nước ép dưa hấu', 5, 1, N'Nước ép từ dưa hấu thanh mát, đậm chất nhiệt đới tropical.', '/Assets/Images/Menu/imgEpDuaHau.png'),
+(N'Nước ép dưa lưới', 5, 1, N'Nước ép từ dưa lưới thanh mát, đậm chất ôn hòa.', '/Assets/Images/Menu/imgEpDuaLuoi.png'),
+(N'Cà phê cốt dừa', 1, 1, N'Sự kết hợp hoàn hảo giữa cafe đậm đà và cốt dừa béo ngậy xay đá tuyết.', '/Assets/Images/Menu/imgCFCotDua.png'),
+(N'Cà phê trứng', 1, 1, N'Đặc sản Hà Nội. Lớp kem trứng bông mịn, béo thơm hòa quyện cùng cafe nóng.', '/Assets/Images/Menu/imgCFTrung.png'),
+(N'Cold Brew Cam Sả', 1, 1, N'Cafe ủ lạnh thanh khiết kết hợp hương vị cam sả tươi mát, giải nhiệt cực tốt.', '/Assets/Images/Menu/imgColdBrewCamSa.png'),
+(N'Trà sen nhãn', 4, 1, N'Vị trà thanh tao hòa quyện cùng nhãn lồng mọng nước và hạt sen bùi bùi.', '/Assets/Images/Menu/imgTraSenNhan.png'),
+(N'Trà thanh long đỏ', 4, 1, N'Màu đỏ tự nhiên từ thanh long, vị ngọt thanh, giàu vitamin và đẹp da.', '/Assets/Images/Menu/imgTraThanhLong.png')
 GO
 
 INSERT INTO Size (SizeName)
@@ -304,13 +311,9 @@ VALUES
 ('L')
 GO
 
-select i.itemname, ip.sizeid, ip.price
-from item i
-join itemprice ip on ip.itemid = i.itemid
-
 INSERT INTO ItemPrice (ItemID, SizeID, Price) 
 VALUES 
-(1, 1, 19000), (1, 2, 29000), (1, 3, 39000),   -- Cà phê sữa đá
+(1, 1, 19000), (1, 2, 24000), (1, 3, 29000),   -- Cà phê sữa đá
 (2, 1, 19000), (2, 2, 25000), (2, 3, 29000),   -- Đen đá không đường
 (3, 1, 29000), (3, 2, 35000), (3, 3, 39000),   -- Trà sữa truyền thống
 (4, 1, 20000), (4, 2, 25000),                  -- Cà phê muối (Chỉ có size S, M)
@@ -320,7 +323,7 @@ VALUES
 (8, 1, 29000), (8, 2, 35000), (8, 3, 39000),   -- Trà sữa tiramisu
 (9, 1, 29000), (9, 2, 35000), (9, 3, 39000),   -- Trà sữa olong
 (10, 1, 29000), (10, 2, 35000), (10, 3, 39000), -- Trà sữa gạo rang
-(11, 1, 25000), (11, 2, 30000), (11, 3, 35000), -- Trà trái cây nhiệt đới
+(11, 1, 29000), (11, 2, 34000), (11, 3, 39000), -- Trà trái cây nhiệt đới
 (12, 1, 25000), (12, 2, 30000), (12, 3, 35000), -- Trà đào
 (13, 1, 25000), (13, 2, 30000), (13, 3, 35000), -- Trà vải
 (14, 1, 18000), (14, 2, 23000), (14, 3, 28000), -- Nước ép cam
@@ -339,7 +342,14 @@ VALUES
 (27, 1, 29000), (27, 2, 35000), (27, 3, 39000),
 (28, 1, 29000), (28, 2, 35000), (28, 3, 39000),
 (29, 1, 34000), (29, 2, 39000), (29, 3, 45000),
-(30, 1, 29000), (30, 2, 35000), (30, 3, 39000);
+(30, 1, 29000), (30, 2, 35000), (30, 3, 39000),
+(31, 1, 18000), (31, 2, 23000), (31, 3, 28000), -- Ép dưa hấu
+(32, 1, 18000), (32, 2, 23000), (32, 3, 28000), -- Ép dưa lưới
+(33, 1, 19000), (33, 2, 29000), (33, 3, 39000),   -- Cà phê cốt dừa
+(34, 2, 29000), (34, 3, 35000),   -- Cà phê trứng
+(35, 2, 34000), (35, 3, 39000),   -- Cold brew cam sả
+(36, 1, 25000), (36, 2, 30000), (36, 3, 35000), -- Trà sen nhãn
+(37, 1, 25000), (37, 2, 30000), (37, 3, 35000) -- Trà thanh long đỏ
 GO
 
 INSERT INTO Customer (CustomerName, PhoneNumber, Email, Point, Tier, JoinDate) 
@@ -490,11 +500,11 @@ GO
 
 -- KHAI BÁO CÁC BIẾN CẤU HÌNH
 DECLARE @StartDate DATE = '2025-10-01'; -- Ngày bắt đầu
-DECLARE @DaysRange INT = 100;            -- Chạy dữ liệu cho 61 ngày (2 tháng)
+DECLARE @DaysRange INT = 120;            -- Chạy dữ liệu cho 100 ngày (3 tháng)
 
 -- Cấu hình khoảng số lượng đơn mỗi ngày (Min - Max)
 DECLARE @MinOrdersPerDay INT = 5;      -- Ít nhất 15 đơn/ngày
-DECLARE @MaxOrdersPerDay INT = 30;      -- Nhiều nhất 40 đơn/ngày
+DECLARE @MaxOrdersPerDay INT = 35;      -- Nhiều nhất 35 đơn/ngày
 
 -- Bảng tạm để lưu dữ liệu "nháp"
 DECLARE @StagingOrders TABLE (

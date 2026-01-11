@@ -139,23 +139,29 @@ namespace CoffeeShop.ViewModels.StaffVM
                     foreach (var item in items)
                     {
                         string displayImagePath;
+                        // Chuẩn hóa: Xóa dấu gạch ở đầu và đổi / thành \ để dùng cho Windows Path
+                        string rawPath = item.ImagePath?.TrimStart('/', '\\').Replace('/', '\\') ?? "";
 
-                        // Xử lý ảnh mặc định
-                        if (string.IsNullOrEmpty(item.ImagePath) ||
-                            item.ImagePath.Contains("imgItemExample.jpg") ||
-                            item.ImagePath == "Assets/Images/imgItemExample.jpg" ||
-                            item.ImagePath == "Assets\\Images\\imgItemExample.jpg")
+                        // 1. Tạo đường dẫn tuyệt đối để kiểm tra file vật lý trên ổ cứng
+                        // (Dành cho: Ảnh người dùng chọn upload hoặc ảnh để Build Action = Content)
+                        string absolutePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, rawPath);
+
+                        // CẤP ĐỘ 1: Kiểm tra ảnh thực tế trên ổ cứng (User upload / Content)
+                        if (!string.IsNullOrEmpty(rawPath) && File.Exists(absolutePath))
                         {
-                            // Dùng Pack URI cho ảnh mặc định
-                            displayImagePath = "/Assets/Images/imgItemExample.jpg";
+                            displayImagePath = absolutePath;
                         }
+                        // CẤP ĐỘ 2: Nếu không thấy file ngoài, kiểm tra xem có phải ảnh Resource hệ thống (Ảnh nén trong EXE)
+                        // (Dành cho: Ảnh cứng bạn gán trong Query SQL ban đầu)
+                        else if (!string.IsNullOrEmpty(rawPath) && !rawPath.Contains("imgItemExample.jpg"))
+                        {
+                            // Chuyển sang Pack URI (Lưu ý: Replace lại \ thành / cho đúng định dạng URI)
+                            displayImagePath = "pack://application:,,,/" + rawPath.Replace('\\', '/');
+                        }
+                        // CẤP ĐỘ 3: Fallback cuối cùng - Ảnh mặc định
                         else
                         {
-                            // Convert đường dẫn tương đối sang tuyệt đối cho ảnh user upload
-                            displayImagePath = Path.Combine(
-                                AppDomain.CurrentDomain.BaseDirectory,
-                                item.ImagePath
-                            );
+                            displayImagePath = "pack://application:,,,/Assets/Images/imgItemExample.jpg";
                         }
 
                         _items.Add(new OrderItem
@@ -171,17 +177,16 @@ namespace CoffeeShop.ViewModels.StaffVM
                                     .ToList()
                             ),
                             Info = item.Info ?? string.Empty,
-                            ImagePath = displayImagePath
+                            ImagePath = displayImagePath // Đường dẫn đã được xử lý chuẩn
                         });
                     }
                 }
-
                 FilteredItems = new ObservableCollection<OrderItem>(_items);
                 OnPropertyChanged(nameof(FilteredItems));
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error loading items: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Error loading items: {ex.Message}");
             }
         }
 

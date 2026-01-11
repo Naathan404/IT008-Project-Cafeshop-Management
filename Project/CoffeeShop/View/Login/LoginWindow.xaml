@@ -7,7 +7,7 @@
         xmlns:local="clr-namespace:CoffeeShop"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
-        Title="Coffee Shop" 
+        Title="2G1G Café" 
         Icon="/CoffeeShop;component/Assets/icoCoffee.ico"
         Height="520" Width="850"
         MinHeight="520" MinWidth="850"
