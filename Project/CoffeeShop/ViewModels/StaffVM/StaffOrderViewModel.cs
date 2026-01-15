@@ -4,8 +4,9 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Windows;
+using System.Diagnostics;
 using System.IO;
+using System.Windows;
 using System.Windows.Data;
 
 namespace CoffeeShop.ViewModels.StaffVM
@@ -13,59 +14,71 @@ namespace CoffeeShop.ViewModels.StaffVM
     public partial class StaffOrderViewModel
     {
         #region Constructor
+        #region Constructor
         public StaffOrderViewModel()
         {
-            Items.Clear();
-            Tables.Clear();
-            Customers.Clear();
-            Orders.Clear();
-            AvailableTables.Clear();
-            FilteredItems.Clear();
-            FilteredCustomers.Clear();
-            CurrentCategoryId = 1; // mặc định mở tab đầu tiên
+            // 1. Chỉ khởi tạo danh sách trống (Phải làm trước khi Load)
+            Items = new ObservableCollection<OrderItem>();
+            Orders = new ObservableCollection<OrderDetailItem>();
+            AvailableTables = new ObservableCollection<OrderTable>();
+            FilteredItems = new ObservableCollection<OrderItem>();
+            FilteredCustomers = new ObservableCollection<OrderCustomer>();
+            Customers = new ObservableCollection<OrderCustomer>(); // Đảm bảo list gốc cũng được Init
 
             InitializeCommands();
-            LoadData();
-            // Load toàn bộ customers vào FilteredCustomers ban đầu
-            LoadAllCustomersToFiltered();
-
-            // Mặc định chọn khách hàng là vãng lai (ID = 0)
-            SelectedCustomer = Customers.FirstOrDefault(c => c.CustomerId == 0);
-            // Mặc định chọn bàn có ID = 0 (mang về)
-            SelectedTable = AvailableTables.FirstOrDefault(t => t.TableId == 0);
-            // Mặc định chọn thanh toán bằng tiền mặt
-            SelectedPaymentMethod = PaymentMethod.FirstOrDefault(p => p.Equals("Tiền mặt")) ?? "";
-            // Mặc định không in bill
-            IsCheckedPrintBill = false;
-            LoadDiscountByCustomer();
-            // Mặc định chọn không áp dụng mã giảm giá
-            SelectedDiscount = AvailableDiscounts.FirstOrDefault(d => d.DiscountId == 0);
             Orders.CollectionChanged += Orders_CollectionChanged;
 
-            // Khi có bất kỳ sự thay đổi availabe của items thì sẽ nhận được ReloadMenuMessage ==> load lại dữ liệu và kiểm tra giỏ hàng
-            WeakReferenceMessenger.Default.Register<ReloadMenuMessage>(this, (r, m) =>
-            {
-                // Kiểm tra giỏ hàng
-                var invalidItems = GetInvalidOrderItems();
-                ReloadListItems();
-                if (invalidItems.Any())
-                {
-                    string names = string.Join(", ", invalidItems.Select(x => x.ItemName));
-                    Application.Current.Dispatcher.Invoke(() =>
-                    {
-                        if (MessageBox.Show($"Cảnh báo: Món [{names}] vừa bị tắt hoặc không còn tồn tại.\n" +
-                            "Hệ thống sẽ xóa món này khỏi giỏ hàng!",
-                            "Món ăn không khả dụng", MessageBoxButton.OK, MessageBoxImage.Warning) == MessageBoxResult.OK)
-                        {
-                            // Xóa món lỗi
-                            foreach (var item in invalidItems.ToList())
-                            {
-                                Orders.Remove(item);
-                            }
-                        }
-                    });
-                }
+            // Đăng ký nhận tin nhắn load lại menu
+            WeakReferenceMessenger.Default.Register<ReloadMenuMessage>(this, (r, m) => {
+                _ = LoadOrderItemsFromDB(); // Chạy ngầm khi có thay đổi
             });
+
+            // 2. GỌI DUY NHẤT 1 HÀM NÀY ĐỂ LOAD DỮ LIỆU LẦN ĐẦU
+            _ = InitializeApplicationAsync();
+        }
+        #endregion
+
+        // Hàm tổng hợp tất cả các tác vụ khởi tạo
+        private async Task InitializeApplicationAsync()
+        {
+            IsLoading = true;
+
+            // Mẹo: Cho UI "thở" 50ms để nó kịp hiện cái LoadingOverlay lên
+            await Task.Delay(50);
+
+            try
+            {
+                // Chạy tất cả các hàm DB nặng trong Task.Run để không đơ UI
+                await Task.Run(() => {
+                    // Lưu ý: Các hàm này bên trong chỉ nên có code truy vấn Database
+                    LoadCustomerFromDB();
+                    LoadTableFromDB();
+                    LoadDiscountFromDB();
+                    LoadPaymentMethod();
+                });
+
+                // Load danh sách món ăn (Hàm này bạn đã sửa có Task.Run bên trong)
+                await LoadOrderItemsFromDB();
+
+                // Sau khi xong dữ liệu thô, thực hiện logic UI trên luồng chính
+                LoadAvailableTable();
+                LoadAllCustomersToFiltered();
+                FilterItemsByCategory();
+
+                // Thiết lập mặc định
+                SelectedCustomer = Customers.FirstOrDefault(c => c.CustomerId == 0);
+                SelectedTable = AvailableTables.FirstOrDefault(t => t.TableId == 0);
+                SelectedPaymentMethod = PaymentMethod.FirstOrDefault(p => p.Equals("Tiền mặt")) ?? "";
+                SelectedDiscount = AvailableDiscounts.FirstOrDefault(d => d.DiscountId == 0);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Lỗi khởi tạo: {ex.Message}");
+            }
+            finally
+            {
+                IsLoading = false; // Tắt loading
+            }
         }
         #endregion
 
@@ -106,87 +119,69 @@ namespace CoffeeShop.ViewModels.StaffVM
         }
         #endregion
 
-        #region Load Data Methods
-        private void LoadData()
+        private async Task LoadOrderItemsFromDB()
         {
-            LoadOrderItemsFromDB();
-            LoadCustomerFromDB();
-            LoadTableFromDB();
-            LoadAvailableTable();
-            FilterItemsByCategory();
-            LoadPaymentMethod();
-            LoadDiscountFromDB();
-        }
+            IsLoading = true;
+            await Task.Delay(100);
 
-        private void ReloadListItems()
-        {
-            LoadOrderItemsFromDB();
-        }
-
-        //Load dữ liệu từ DB vào MenuPanel
-        private void LoadOrderItemsFromDB()
-        {
-            _items.Clear();
             try
             {
-                using (var context = new CoffeeShopContext())
+                var dbItems = await Task.Run(() =>
                 {
-                    var items = context.Items
-                        .Where(i => i.IsDeleted == false)
-                        .OrderByDescending(i => i.IsAvailable)
-                        .ToList();
-
-                    foreach (var item in items)
+                    using (var context = new CoffeeShopContext())
                     {
-                        string displayImagePath;
-                        // Chuẩn hóa: Xóa dấu gạch ở đầu và đổi / thành \ để dùng cho Windows Path
-                        string rawPath = item.ImagePath?.TrimStart('/', '\\').Replace('/', '\\') ?? "";
-
-                        // 1. Tạo đường dẫn tuyệt đối để kiểm tra file vật lý trên ổ cứng
-                        // (Dành cho: Ảnh người dùng chọn upload hoặc ảnh để Build Action = Content)
-                        string absolutePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, rawPath);
-
-                        // CẤP ĐỘ 1: Kiểm tra ảnh thực tế trên ổ cứng (User upload / Content)
-                        if (!string.IsNullOrEmpty(rawPath) && File.Exists(absolutePath))
-                        {
-                            displayImagePath = absolutePath;
-                        }
-                        // CẤP ĐỘ 2: Nếu không thấy file ngoài, kiểm tra xem có phải ảnh Resource hệ thống (Ảnh nén trong EXE)
-                        // (Dành cho: Ảnh cứng bạn gán trong Query SQL ban đầu)
-                        else if (!string.IsNullOrEmpty(rawPath) && !rawPath.Contains("imgItemExample.jpg"))
-                        {
-                            // Chuyển sang Pack URI (Lưu ý: Replace lại \ thành / cho đúng định dạng URI)
-                            displayImagePath = "pack://application:,,,/" + rawPath.Replace('\\', '/');
-                        }
-                        // CẤP ĐỘ 3: Fallback cuối cùng - Ảnh mặc định
-                        else
-                        {
-                            displayImagePath = "pack://application:,,,/Assets/Images/imgItemExample.jpg";
-                        }
-
-                        _items.Add(new OrderItem
-                        {
-                            ItemId = item.ItemId,
-                            ItemName = item.ItemName,
-                            CategoryId = item.CategoryId,
-                            IsAvailable = item.IsAvailable,
-                            ItemPrices = new ObservableCollection<ItemPrice>(
-                                context.ItemPrices
-                                    .Include(ip => ip.Size)
-                                    .Where(ip => ip.ItemId == item.ItemId && ip.IsDeleted == false)
-                                    .ToList()
-                            ),
-                            Info = item.Info ?? string.Empty,
-                            ImagePath = displayImagePath // Đường dẫn đã được xử lý chuẩn
-                        });
+                        return context.Items
+                            .Include(i => i.ItemPrices).ThenInclude(ip => ip.Size)
+                            .Where(i => i.IsDeleted == false)
+                            .OrderByDescending(i => i.IsAvailable)
+                            .ToList();
                     }
+                });
+
+                _items.Clear();
+                FilteredItems.Clear();
+
+                foreach (var item in dbItems)
+                {
+                    string displayImagePath;
+                    string rawPath = item.ImagePath?.TrimStart('/', '\\').Replace('/', '\\') ?? "";
+                    string absolutePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, rawPath);
+
+                    if (!string.IsNullOrEmpty(rawPath) && File.Exists(absolutePath))
+                    {
+                        displayImagePath = absolutePath;
+                    }
+                    else if (!string.IsNullOrEmpty(rawPath) && !rawPath.Contains("imgItemExample.jpg"))
+                    {
+                        displayImagePath = "pack://application:,,,/" + rawPath.Replace('\\', '/');
+                    }
+                    else
+                    {
+                        displayImagePath = "pack://application:,,,/Assets/Images/imgItemExample.jpg";
+                    }
+
+                    var newItem = new OrderItem
+                    {
+                                ItemId = item.ItemId,
+                                ItemName = item.ItemName,
+                                CategoryId = item.CategoryId,
+                                IsAvailable = item.IsAvailable,
+                                ItemPrices = new ObservableCollection<ItemPrice>(item.ItemPrices.Where(ip => !ip.IsDeleted)),
+                                Info = item.Info ?? string.Empty,
+                                ImagePath = displayImagePath
+                    };
+
+                    await Application.Current.Dispatcher.InvokeAsync(() =>
+                    {
+                        _items.Add(newItem);
+                        FilteredItems.Add(newItem);
+                    }, System.Windows.Threading.DispatcherPriority.Background);
                 }
-                FilteredItems = new ObservableCollection<OrderItem>(_items);
-                OnPropertyChanged(nameof(FilteredItems));
             }
-            catch (Exception ex)
+            catch (Exception ex) { Debug.WriteLine(ex.Message); }
+            finally
             {
-                System.Diagnostics.Debug.WriteLine($"Error loading items: {ex.Message}");
+                IsLoading = false;
             }
         }
 
@@ -411,7 +406,6 @@ namespace CoffeeShop.ViewModels.StaffVM
             PaymentMethod.Add("Tiền mặt");
             PaymentMethod.Add("Chuyển khoản");
         }
-        #endregion
 
         #region Management Orders Methods 
         private void Orders_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)

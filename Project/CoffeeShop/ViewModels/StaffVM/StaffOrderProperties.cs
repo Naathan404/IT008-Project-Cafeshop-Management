@@ -308,6 +308,13 @@ namespace CoffeeShop.ViewModels.StaffVM
                 OnPropertyChanged(nameof(IsCheckedPrintBill));
             }
         }
+
+        private bool _isLoading;
+        public bool IsLoading
+        {
+            get => _isLoading;
+            set { _isLoading = value; OnPropertyChanged(); }
+        }
         #endregion
 
         #region Commands
