@@ -8,7 +8,8 @@
       mc:Ignorable="d" 
       d:DesignHeight="700" d:DesignWidth="1310"
       xmlns:local="clr-namespace:CoffeeShop.View.Admin"
-      Title="MenuManagementPage">
+      Title="MenuManagementPage"
+      Background="#E0CEB5">
     <!-- ===================== -->
     <!-- Resources -->
     <!-- ===================== -->
@@ -228,18 +229,24 @@
     <!-- ===================== -->
     <!-- Layout -->
     <!-- ===================== -->
-    <Grid Background="#D4BA98">
+    <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="7*"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         
-        
-        <Grid>
+        <TextBlock Text="QUẢN LÝ MENU" 
+                   Grid.Row="0" Margin="30,10,0,10"
+                   FontSize="24" FontWeight="ExtraBlack" Foreground="#4E342E"
+                   FontFamily="Cascadia Code"/>
+
+        <Grid Grid.Row="1">
             <Border Grid.Column="0" 
-                    Margin="20" 
-                    Background="#EDE2D3" 
-                    CornerRadius="15">
+                    Margin="30 0 30 10" 
+                    Background="#F9F6F0" 
+                    CornerRadius="15"
+                    BorderThickness="2"
+                    BorderBrush="#766839">
                 <Border.Effect>
                     <DropShadowEffect BlurRadius="20"
                        Opacity="0.3"
@@ -255,6 +262,7 @@
                     <Grid Grid.Row="0" Margin="10 5 10 0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
 
@@ -277,6 +285,50 @@
                                      materialDesign:HintAssist.Hint="Tìm kiếm"
                                      materialDesign:HintAssist.FontFamily="Cascadia Code"
                                      Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
+                        </StackPanel>
+
+                        <!--Buttons-->
+                        <StackPanel Grid.Column="2" 
+                            Orientation="Horizontal"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Margin="0 0 0 0">
+                                    <Border x:Name="bdrAddNewItem"
+                            BorderBrush="#766839"
+                            BorderThickness="2"
+                            Padding="2"
+                            CornerRadius="15"
+                            Cursor="Hand"
+                            Background="#EDE2D3"
+                            MouseEnter="border_MouseEnter"
+                            MouseLeave="border_MouseLeave"
+                            MouseDown="AddNewItem_Click">
+                                <Border.Effect>
+                                    <DropShadowEffect BlurRadius="20"
+                                        Opacity="0.3"
+                                        Color="Black"
+                                        ShadowDepth="8"/>
+                                </Border.Effect>
+                                <Border.InputBindings>
+                                    <MouseBinding Command="{Binding DataContext.SetIsAvailableForItem,
+                                            RelativeSource={RelativeSource AncestorType=Page}}"
+                                  CommandParameter="{Binding}"
+                                  MouseAction="LeftClick"/>
+                                </Border.InputBindings>
+                                <materialDesign:PackIcon
+                                    Foreground="#340D05"
+                                    Kind="Plus"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Height="30"
+                                    Width="30">
+                                </materialDesign:PackIcon>
+                                <Border.ToolTip>
+                                    <ToolTip Style="{StaticResource CustomTooltip}">
+                                        <TextBlock Text="Thêm sản phẩm" FontFamily="Cascadia Code" FontWeight="Bold" Foreground="#FF340D05"/>
+                                    </ToolTip>
+                                </Border.ToolTip>
+                            </Border>
                         </StackPanel>
 
                         <TabControl x:Name="tabMain"
@@ -336,42 +388,5 @@
                 </Grid>
             </Border>
         </Grid>
-        <!--Buttons-->
-        <StackPanel Grid.Row="1" 
-                    Orientation="Horizontal"
-                    HorizontalAlignment="Right"
-                    Margin="15">
-            <Border x:Name="bdrAddNewItem"
-                    BorderBrush="#766839"
-                    BorderThickness="2"
-                    Margin="30 0 0 0"
-                    Padding="10"
-                    CornerRadius="15"
-                    Cursor="Hand"
-                    Background="#EDE2D3"
-                    MouseEnter="border_MouseEnter"
-                    MouseLeave="border_MouseLeave"
-                    MouseDown="AddNewItem_Click">
-                <Border.Effect>
-                    <DropShadowEffect BlurRadius="20"
-                       Opacity="0.3"
-                       Color="Black"
-                       ShadowDepth="8"/>
-                </Border.Effect>
-                <Border.InputBindings>
-                    <MouseBinding Command="{Binding DataContext.SetIsAvailableForItem,
-                                            RelativeSource={RelativeSource AncestorType=Page}}"
-                                  CommandParameter="{Binding}"
-                                  MouseAction="LeftClick"/>
-                </Border.InputBindings>
-                <TextBlock Text="Thêm món"
-                           FontSize="25"
-                           FontWeight="Bold"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Center"
-                           FontFamily="Cascadia Code"
-                           Foreground="#766839"/>
-            </Border>
-        </StackPanel>
     </Grid>
 </Page>

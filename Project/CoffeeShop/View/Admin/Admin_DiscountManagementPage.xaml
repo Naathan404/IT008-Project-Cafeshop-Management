@@ -46,40 +46,140 @@
                 </StackPanel>
 
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                    <Button Width="57" Height="40" 
-                            Command="{Binding RefreshPageCommand}" Content="{materialDesign:PackIcon Kind=Refresh}" 
-                            Background="#E0CEB5" BorderThickness="0" Foreground="#340D05" Margin="5,0">
+                    <Button
+                            Grid.Column="0"
+                            Command="{Binding RefreshPageCommand}"
+                            materialDesign:ButtonAssist.CornerRadius="10"
+                            Padding="0"
+                            Margin="0 0 15 0"
+                            IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
+                            Background="#E0ceb5"
+                            HorizontalAlignment="Right"
+                            Height="50"
+                            Width="50"
+                            BorderBrush="#67582c"
+                            BorderThickness="2" >
                         <Button.ToolTip>
-                            <ToolTip Style="{StaticResource CustomTooltip}" Content="Tải lại"/>
+                            <ToolTip Style="{StaticResource CustomTooltip}">
+                                <TextBlock Text="Làm mới trang" FontFamily="Cascadia Code" FontWeight="Bold" Foreground="#FF340D05"/>
+                            </ToolTip>
                         </Button.ToolTip>
+                        <materialDesign:PackIcon
+                                    Foreground="#340D05"
+                                    Kind="Refresh"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Height="40"
+                                    Width="40">
+                        </materialDesign:PackIcon>
                     </Button>
-                    <Button Width="57" Height="40"
-                            Command="{Binding InsertCouponCommand}" Content="{materialDesign:PackIcon Kind=Plus}" 
-                            Background="#E0CEB5" BorderThickness="0" Foreground="#340D05" Margin="5,0">
+                    <Button
+                            Grid.Column="0"
+                            Command="{Binding InsertCouponCommand}"
+                            materialDesign:ButtonAssist.CornerRadius="10"
+                            Padding="0"
+                            Margin="0 0 15 0"
+                            IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
+                            Background="#E0ceb5"
+                            HorizontalAlignment="Right"
+                            Height="50"
+                            Width="50"
+                            BorderBrush="#67582c"
+                            BorderThickness="2" >
                         <Button.ToolTip>
-                            <ToolTip Style="{StaticResource CustomTooltip}" Content="Thêm"/>
+                            <ToolTip Style="{StaticResource CustomTooltip}">
+                                <TextBlock Text="Thêm mã giảm giá" FontFamily="Cascadia Code" FontWeight="Bold" Foreground="#FF340D05"/>
+                            </ToolTip>
                         </Button.ToolTip>
+                        <materialDesign:PackIcon
+                                    Foreground="#340D05"
+                                    Kind="Plus"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Height="40"
+                                    Width="40">
+                        </materialDesign:PackIcon>
                     </Button>
-                    <Button Width="57" Height="40"
-                            Command="{Binding UpdateCouponCommand}" Content="{materialDesign:PackIcon Kind=Pencil}" 
-                            Background="#E0CEB5" BorderThickness="0" Foreground="#340D05" Margin="5,0">
+                    <Button
+                            Grid.Column="0"
+                            Command="{Binding UpdateCouponCommand}"
+                            materialDesign:ButtonAssist.CornerRadius="10"
+                            Padding="0"
+                            Margin="0 0 15 0"
+                            IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
+                            Background="#E0ceb5"
+                            HorizontalAlignment="Right"
+                            Height="50"
+                            Width="50"
+                            BorderBrush="#67582c"
+                            BorderThickness="2" >
                         <Button.ToolTip>
-                            <ToolTip Style="{StaticResource CustomTooltip}" Content="Sửa"/>
+                            <ToolTip Style="{StaticResource CustomTooltip}">
+                                <TextBlock Text="Chỉnh sửa mã giảm giá" FontFamily="Cascadia Code" FontWeight="Bold" Foreground="#FF340D05"/>
+                            </ToolTip>
                         </Button.ToolTip>
+                        <materialDesign:PackIcon
+                                    Foreground="#340D05"
+                                    Kind="Pencil"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Height="40"
+                                    Width="40">
+                        </materialDesign:PackIcon>
                     </Button>
-                    <Button Width="57" Height="40"
-                            Command="{Binding DeleteCouponCommand}" Content="{materialDesign:PackIcon Kind=Delete}" 
-                            Background="#E0CEB5" BorderThickness="0" Foreground="#340D05" Margin="5,0">
+                    <Button
+                            Grid.Column="0"
+                            Command="{Binding DeleteCouponCommand}"
+                            materialDesign:ButtonAssist.CornerRadius="10"
+                            Padding="0"
+                            Margin="0 0 15 0"
+                            IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
+                            Background="#E0ceb5"
+                            HorizontalAlignment="Right"
+                            Height="50"
+                            Width="50"
+                            BorderBrush="#67582c"
+                            BorderThickness="2" >
                         <Button.ToolTip>
-                            <ToolTip Style="{StaticResource CustomTooltip}" Content="Xóa"/>
+                            <ToolTip Style="{StaticResource CustomTooltip}">
+                                <TextBlock Text="Xóa mã giảm giá" FontFamily="Cascadia Code" FontWeight="Bold" Foreground="#FF340D05"/>
+                            </ToolTip>
                         </Button.ToolTip>
+                        <materialDesign:PackIcon
+                                    Foreground="#340D05"
+                                    Kind="Delete"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Height="40"
+                                    Width="40">
+                        </materialDesign:PackIcon>
                     </Button>
-                    <Button Width="57" Height="40"
-                            Command="{Binding ToggleStatusCommand}" Content="{materialDesign:PackIcon Kind=Power}" 
-                            Background="#E0CEB5" BorderThickness="0" Foreground="#340D05" Margin="5,0">
+                    <Button
+                            Grid.Column="0"
+                            Command="{Binding ToggleStatusCommand}"
+                            materialDesign:ButtonAssist.CornerRadius="10"
+                            Padding="0"
+                            Margin="0 0 15 0"
+                            IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
+                            Background="#E0ceb5"
+                            HorizontalAlignment="Right"
+                            Height="50"
+                            Width="50"
+                            BorderBrush="#67582c"
+                            BorderThickness="2" >
                         <Button.ToolTip>
-                            <ToolTip Style="{StaticResource CustomTooltip}" Content="Bật/Tắt"/>
+                            <ToolTip Style="{StaticResource CustomTooltip}">
+                                <TextBlock Text="Bật/tắt mã giảm giá" FontFamily="Cascadia Code" FontWeight="Bold" Foreground="#FF340D05"/>
+                            </ToolTip>
                         </Button.ToolTip>
+                        <materialDesign:PackIcon
+                                    Foreground="#340D05"
+                                    Kind="Power"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Height="40"
+                                    Width="40">
+                        </materialDesign:PackIcon>
                     </Button>
                 </StackPanel>
             </Grid>
