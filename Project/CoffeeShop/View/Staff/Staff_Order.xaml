@@ -14,8 +14,9 @@
     <Page.DataContext>
         <vm:StaffOrderViewModel/>
     </Page.DataContext>
-
+    
     <Page.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         <local:IndexToNumberConverter x:Key="IndexToNumberConverter"/>
         <local:AndBooleanConverter x:Key="AndBooleanConverter"/>
 
@@ -918,5 +919,27 @@
                 </Grid>
             </Grid>
         </Border>
+        <Grid x:Name="LoadingOverlay" 
+          Background="#AAEDE2D3" 
+          Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                <materialDesign:Card UniformCornerRadius="50" Padding="20" Background="White">
+                    <StackPanel>
+                        <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}" 
+                                 Value="0" 
+                                 IsIndeterminate="True" 
+                                 Width="60" Height="60"
+                                 Foreground="#462812"/>
+                        <TextBlock Text="Đang pha cà phê..." 
+                               Margin="0,15,0,0" 
+                               FontSize="16"
+                               FontWeight="Bold"
+                               FontFamily="Cascadia Code"
+                               Foreground="#462812"
+                               HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </materialDesign:Card>
+            </StackPanel>
+        </Grid>
     </Grid>
 </Page>
