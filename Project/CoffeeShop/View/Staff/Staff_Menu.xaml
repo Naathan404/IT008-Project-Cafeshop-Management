@@ -8,7 +8,8 @@
       xmlns:vm="clr-namespace:CoffeeShop.ViewModels.StaffVM"
       mc:Ignorable="d" 
       d:DesignHeight="700" d:DesignWidth="1310"
-      Title="Staff_Menu">
+      Title="Staff_Menu"
+      Background="#E0CEB5">
     <Page.Resources>
         <local:ObjectEqualsConverter x:Key="ObjectEqualsConverter"/>
         <local:CountToVisibilityConverter x:Key="CountToVisibilityConverter"/>
@@ -201,7 +202,16 @@
         </Style>
     </Page.Resources>
 
-    <Grid Background="#D4BA98">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <TextBlock Text="TRẠNG THÁI SỬ DỤNG BÀN" 
+                   Grid.Row="0" Margin="30,10,0,10"
+                   FontSize="24" FontWeight="ExtraBlack" Foreground="#4E342E"
+                   FontFamily="Cascadia Code"/>
+        <Grid Grid.Row="1">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="2.5*"/>
             <ColumnDefinition Width="1.5*"/>
@@ -210,9 +220,11 @@
         <!-- Menu Panel -->
         <Grid Grid.Column="0">
             <Border x:Name="bdrMenuTab"
-                    Margin="10 10 10 15"
-                    Background="#EDE2D3"
-                    CornerRadius="15">
+                    Margin="30 0 10 15"
+                    Background="#F9F6F0"
+                    CornerRadius="15"
+                    BorderThickness="2"
+                    BorderBrush="#766839">
                 <Border.Effect>
                     <DropShadowEffect BlurRadius="20"
                                       Opacity="0.3"
@@ -452,10 +464,12 @@
         <!-- Order Panel -->
         <Grid Grid.Column="1">
             <Border x:Name="bdrItemDetail"
-                    Margin="5 10 15 15"
-                    Background="#EDE2D3"
+                    Margin="5 0 30 15"
+                    Background="#F9F6F0"
                     CornerRadius="15"
-                    DataContext="{Binding SelectedItem}">
+                    DataContext="{Binding SelectedItem}"
+                    BorderBrush="#766839"
+                    BorderThickness="2">
                 <Border.Effect>
                     <DropShadowEffect BlurRadius="20"
                                       Opacity="0.3"
@@ -669,5 +683,6 @@
                 </Grid>
             </Border>
         </Grid>
+    </Grid>
     </Grid>
 </Page>

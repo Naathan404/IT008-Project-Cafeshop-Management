@@ -51,6 +51,11 @@
                                   Style="{StaticResource MaterialDesignOutlinedComboBox}"
                                   ItemsSource="{Binding RoleListFilter}"
                                   SelectedItem="{Binding SelectedRoleFilter}">
+                            <ComboBox.ToolTip>
+                                <ToolTip Style="{StaticResource CustomTooltip}">
+                                    <TextBlock Text="Chọn chức vụ" FontFamily="Cascadia Code" FontWeight="Bold" Foreground="#FF340D05"/>
+                                </ToolTip>
+                            </ComboBox.ToolTip>
                         </ComboBox>
 
                         <ComboBox Grid.Column="1"
@@ -60,6 +65,11 @@
                                   Style="{StaticResource MaterialDesignOutlinedComboBox}"
                                   ItemsSource="{Binding ShiftListFilter}"
                                   SelectedItem="{Binding SelectedShiftFilter}">
+                            <ComboBox.ToolTip>
+                                <ToolTip Style="{StaticResource CustomTooltip}">
+                                    <TextBlock Text="Chọn ca làm việc" FontFamily="Cascadia Code" FontWeight="Bold" Foreground="#FF340D05"/>
+                                </ToolTip>
+                            </ComboBox.ToolTip>
                         </ComboBox>
 
                         <TextBox Grid.Column="2"
@@ -92,7 +102,9 @@
                                 BorderBrush="#67582c" BorderThickness="2">
                             <materialDesign:PackIcon Foreground="#340D05" Kind="AccountPlus" Height="30" Width="30"/>
                             <Button.ToolTip>
-                                <ToolTip Content="Thêm nhân viên mới" FontFamily="Cascadia Code"/>
+                                <ToolTip Style="{StaticResource CustomTooltip}">
+                                    <TextBlock Text="Thêm nhân viên" FontFamily="Cascadia Code" FontWeight="Bold" Foreground="#FF340D05"/>
+                                </ToolTip>
                             </Button.ToolTip>
                         </Button>
 
@@ -102,7 +114,9 @@
                                 BorderBrush="#67582c" BorderThickness="2">
                             <materialDesign:PackIcon Foreground="#340D05" Kind="ContentSave" Height="30" Width="30"/>
                             <Button.ToolTip>
-                                <ToolTip Content="Lưu thông tin" FontFamily="Cascadia Code"/>
+                                <ToolTip Style="{StaticResource CustomTooltip}">
+                                    <TextBlock Text="Lưu thông tin" FontFamily="Cascadia Code" FontWeight="Bold" Foreground="#FF340D05"/>
+                                </ToolTip>
                             </Button.ToolTip>
                         </Button>
 
@@ -112,7 +126,9 @@
                                 BorderBrush="#67582c" BorderThickness="2">
                             <materialDesign:PackIcon Foreground="#B71C1C" Kind="TrashCan" Height="30" Width="30"/>
                             <Button.ToolTip>
-                                <ToolTip Content="Xóa nhân viên" FontFamily="Cascadia Code"/>
+                                <ToolTip Style="{StaticResource CustomTooltip}">
+                                    <TextBlock Text="Xóa nhân viên" FontFamily="Cascadia Code" FontWeight="Bold" Foreground="#FF340D05"/>
+                                </ToolTip>
                             </Button.ToolTip>
                         </Button>
 
@@ -121,6 +137,11 @@
                                 Background="#E0ceb5" Height="50" Width="50"
                                 BorderBrush="#67582c" BorderThickness="2">
                             <materialDesign:PackIcon Foreground="#340D05" Kind="Refresh" Height="30" Width="30"/>
+                            <Button.ToolTip>
+                                <ToolTip Style="{StaticResource CustomTooltip}">
+                                    <TextBlock Text="Làm mới trang" FontFamily="Cascadia Code" FontWeight="Bold" Foreground="#FF340D05"/>
+                                </ToolTip>
+                            </Button.ToolTip>
                         </Button>
                     </Grid>
                 </Grid>

@@ -6,25 +6,36 @@
       xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
       xmlns:local="clr-namespace:CoffeeShop.View.Staff"
       mc:Ignorable="d" 
-      d:DesignHeight="700" d:DesignWidth="1310"
+      d:DesignHeight="610" d:DesignWidth="1110"
       Title="Staff_Table"
-      Background="#D4BA98">
+      Background="#E0CEB5">
     <Page.Resources>
         <local:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
         <local:NotNullToVisibilityConverter x:Key="NotNullToVisibilityConverter"/>
         <local:IntToVisibilityConverter x:Key="IntToVisibilityConverter"/>
     </Page.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
 
-    <Grid Margin="10">
+        <TextBlock Text="TRẠNG THÁI SỬ DỤNG BÀN" 
+                   Grid.Row="0" Margin="30,10,0,10"
+                   FontSize="24" FontWeight="ExtraBlack" Foreground="#4E342E"
+                   FontFamily="Cascadia Code"/>
+    <Grid Grid.Row="1">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="2*"/>
             <ColumnDefinition Width="350"/>
         </Grid.ColumnDefinitions>
 
         <Border Grid.Column="0" 
-                Background="#EDE2D3" 
+                Background="#F9F6F0" 
                 CornerRadius="15" 
-                Margin="15">
+                Margin="30 0 15 10"
+                BorderThickness="2"
+                BorderBrush="#766839">
             <Border.Effect>
                 <DropShadowEffect BlurRadius="20"
                       Opacity="0.3"
@@ -229,10 +240,12 @@
         </Border>
 
         <Border Grid.Column="1" 
-                Background="White" 
+                Background="#F9F6F0" 
                 CornerRadius="15" 
-                Margin="15" 
-                Padding="20">
+                Margin="5 0 30 10" 
+                Padding="20"
+                BorderThickness="2"
+                BorderBrush="#766839">
             <Border.Effect>
                 <DropShadowEffect BlurRadius="20"
                       Opacity="0.3"
@@ -391,5 +404,6 @@
                 </StackPanel>
             </Grid>
         </Border>
+    </Grid>
     </Grid>
 </Page>

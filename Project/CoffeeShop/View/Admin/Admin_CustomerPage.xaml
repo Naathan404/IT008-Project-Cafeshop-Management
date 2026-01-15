@@ -5,7 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
       mc:Ignorable="d" 
-      d:DesignHeight="700" d:DesignWidth="1110"
+      d:DesignHeight="610" d:DesignWidth="1110"
       Background="#E0CEB5"
       Title="AdminCustomerPage"
       FontFamily="Cascadia Code">
@@ -23,11 +23,11 @@
 
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="317*"/>
-                <ColumnDefinition Width="238*"/>
+                <ColumnDefinition Width="5*"/>
+                <ColumnDefinition Width="3*"/>
             </Grid.ColumnDefinitions>
 
-            <Border Grid.Column="0" Margin="30,0,15,15" 
+            <Border Grid.Column="0" Margin="30,0,15,10" 
                     Background="#f9f6f0" BorderBrush="#766839" BorderThickness="2" CornerRadius="20">
                 <Grid>
                     <Grid.RowDefinitions>
@@ -46,18 +46,29 @@
                                  materialDesign:HintAssist.Hint="Tìm tên hoặc Số điện thoại..."
                                  materialDesign:HintAssist.Foreground="#6D4C41"
                                  Style="{StaticResource MaterialDesignOutlinedTextBox}"
-                                 BorderBrush="#6D4C41" Height="45" Padding="10,0"/>
+                                 BorderBrush="#6D4C41" Height="45" Padding="10,0"></TextBox>
 
                         <Button Grid.Column="1" Command="{Binding AddCommand}" Margin="10,0,0,0"
                                 Style="{StaticResource MaterialDesignFloatingActionMiniButton}"
-                                Background="#b18252" BorderBrush="#b28252" ToolTip="Thêm khách mới">
-                            <materialDesign:PackIcon Kind="Plus" Height="30" Width="30"/>
+                                Background="#E0ceb5" BorderBrush="#67582c" BorderThickness="2"
+                                >
+                            <Button.ToolTip>
+                                <ToolTip Style="{StaticResource CustomTooltip}">
+                                    <TextBlock Text="Thêm khách hàng" FontFamily="Cascadia Code" FontWeight="Bold" Foreground="#FF340D05"/>
+                                </ToolTip>
+                            </Button.ToolTip>
+                            <materialDesign:PackIcon Kind="Plus" Height="30" Width="30" Foreground="#340D05"/>
                         </Button>
 
                         <Button Grid.Column="2" Command="{Binding ExportExcelCommand}" Margin="10,0,0,0"
                                 Style="{StaticResource MaterialDesignFloatingActionMiniButton}"
-                                Background="Green" BorderBrush="Green" ToolTip="Xuất file Excel">
-                            <materialDesign:PackIcon Kind="TableUpload" Height="30" Width="30"/>
+                                Background="#E0ceb5" BorderBrush="#67582c" BorderThickness="2">
+                            <Button.ToolTip>
+                                <ToolTip Style="{StaticResource CustomTooltip}">
+                                    <TextBlock Text="Xuất excel" FontFamily="Cascadia Code" FontWeight="Bold" Foreground="#FF340D05"/>
+                                </ToolTip>
+                            </Button.ToolTip>
+                            <materialDesign:PackIcon Kind="TableUpload" Height="30" Width="30" Foreground="#340D05"/>
                         </Button>
                     </Grid>
 
@@ -153,7 +164,7 @@
                 </Grid>
             </Border>
 
-            <Border Grid.Column="1" Margin="0,0,30,15" 
+            <Border Grid.Column="1" Margin="0,0,30,10" 
                     Background="#f9f6f0" BorderBrush="#766839" BorderThickness="2" CornerRadius="20">
                 <Grid Margin="20">
                     <Grid.RowDefinitions>
@@ -312,24 +323,46 @@
 
                         <Button Grid.Column="0" Command="{Binding DeleteCommand}"
                                 Style="{StaticResource MaterialDesignOutlinedButton}"
-                                Foreground="#D32F2F" BorderBrush="#D32F2F" Content="XÓA"/>
+                                Foreground="#D32F2F" BorderBrush="#D32F2F" Content="XÓA">
+                            <Button.ToolTip>
+                                <ToolTip Style="{StaticResource CustomTooltip}">
+                                    <TextBlock Text="Xóa khách hàng" FontFamily="Cascadia Code" FontWeight="Bold" Foreground="#FF340D05"/>
+                                </ToolTip>
+                            </Button.ToolTip>
+                        </Button>
 
                         <StackPanel Grid.Column="2" Orientation="Horizontal">
                             <Button Command="{Binding RefreshCommand}" Margin="0,0,10,0"
                                     Style="{StaticResource MaterialDesignOutlinedButton}"
                                     Foreground="#4E342E" BorderBrush="#4E342E">
                                 <materialDesign:PackIcon Kind="Refresh" Height="20" Width="20"/>
+                                <Button.ToolTip>
+                                    <ToolTip Style="{StaticResource CustomTooltip}">
+                                        <TextBlock Text="Làm mới" FontFamily="Cascadia Code" FontWeight="Bold" Foreground="#FF340D05"/>
+                                    </ToolTip>
+                                </Button.ToolTip>
                             </Button>
 
                             <Button Command="{Binding ShowOrderDetailCommand}" Margin="0,0,10,0"
                                     Style="{StaticResource MaterialDesignOutlinedButton}"
                                     Foreground="#4E342E" BorderBrush="#4E342E">
                                 <materialDesign:PackIcon Kind="InfoCircleOutline" Height="20" Width="20"/>
+                                <Button.ToolTip>
+                                    <ToolTip Style="{StaticResource CustomTooltip}">
+                                        <TextBlock Text="Xem chi tiết hóa đơn" FontFamily="Cascadia Code" FontWeight="Bold" Foreground="#FF340D05"/>
+                                    </ToolTip>
+                                </Button.ToolTip>
                             </Button>
-                            
+
                             <Button Command="{Binding SaveCommand}"
                                     Style="{StaticResource MaterialDesignRaisedButton}"
-                                    Background="#b18252" BorderBrush="#4E342E" Content="LƯU"/>
+                                    Background="#b18252" BorderBrush="#4E342E" Content="LƯU">
+                                <Button.ToolTip>
+                                    <ToolTip Style="{StaticResource CustomTooltip}">
+                                        <TextBlock Text="Lưu thông tin" FontFamily="Cascadia Code" FontWeight="Bold" Foreground="#FF340D05"/>
+                                    </ToolTip>
+                                </Button.ToolTip>
+                            </Button>
                         </StackPanel>
                     </Grid>
                 </Grid>

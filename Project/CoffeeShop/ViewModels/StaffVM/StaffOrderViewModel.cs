@@ -17,50 +17,40 @@ namespace CoffeeShop.ViewModels.StaffVM
         #region Constructor
         public StaffOrderViewModel()
         {
-            // 1. Chỉ khởi tạo danh sách trống (Phải làm trước khi Load)
             Items = new ObservableCollection<OrderItem>();
             Orders = new ObservableCollection<OrderDetailItem>();
             AvailableTables = new ObservableCollection<OrderTable>();
             FilteredItems = new ObservableCollection<OrderItem>();
             FilteredCustomers = new ObservableCollection<OrderCustomer>();
-            Customers = new ObservableCollection<OrderCustomer>(); // Đảm bảo list gốc cũng được Init
+            Customers = new ObservableCollection<OrderCustomer>();
 
             InitializeCommands();
             Orders.CollectionChanged += Orders_CollectionChanged;
 
-            // Đăng ký nhận tin nhắn load lại menu
             WeakReferenceMessenger.Default.Register<ReloadMenuMessage>(this, (r, m) => {
-                _ = LoadOrderItemsFromDB(); // Chạy ngầm khi có thay đổi
+                _ = LoadOrderItemsFromDB(); 
             });
 
-            // 2. GỌI DUY NHẤT 1 HÀM NÀY ĐỂ LOAD DỮ LIỆU LẦN ĐẦU
             _ = InitializeApplicationAsync();
         }
         #endregion
 
-        // Hàm tổng hợp tất cả các tác vụ khởi tạo
         private async Task InitializeApplicationAsync()
         {
             IsLoading = true;
 
-            // Mẹo: Cho UI "thở" 50ms để nó kịp hiện cái LoadingOverlay lên
             await Task.Delay(50);
 
             try
             {
-                // Chạy tất cả các hàm DB nặng trong Task.Run để không đơ UI
                 await Task.Run(() => {
-                    // Lưu ý: Các hàm này bên trong chỉ nên có code truy vấn Database
                     LoadCustomerFromDB();
                     LoadTableFromDB();
                     LoadDiscountFromDB();
                     LoadPaymentMethod();
                 });
 
-                // Load danh sách món ăn (Hàm này bạn đã sửa có Task.Run bên trong)
                 await LoadOrderItemsFromDB();
-
-                // Sau khi xong dữ liệu thô, thực hiện logic UI trên luồng chính
                 LoadAvailableTable();
                 LoadAllCustomersToFiltered();
                 FilterItemsByCategory();
@@ -77,7 +67,7 @@ namespace CoffeeShop.ViewModels.StaffVM
             }
             finally
             {
-                IsLoading = false; // Tắt loading
+                IsLoading = false;
             }
         }
         #endregion
