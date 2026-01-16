@@ -54,6 +54,24 @@
         </Setter>
     </Style>
 
+    <!-- Align Text - Chỉnh Horizontal alignment cho giá trị của ô trong datagrid -->
+    <Style x:Key="LeftAlignStyle" TargetType="TextBlock">
+        <Setter Property="Margin" Value="10,0,0,0"/>
+        <Setter Property="HorizontalAlignment" Value="Left"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+
+    <Style x:Key="CenterAlignStyle" TargetType="TextBlock">
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+    
+    <Style x:Key="RightAlignStyle" TargetType="TextBlock">
+        <Setter Property="Margin" Value="0,0,10,0"/>
+        <Setter Property="HorizontalAlignment" Value="Right"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+
     <!-- Datagrid template -->
     <Style x:Key="CoffeeDataGridHeaderStyle" TargetType="DataGridColumnHeader">
         <Setter Property="BorderThickness" Value="0"/>
@@ -68,6 +86,73 @@
         <Setter Property="VerticalContentAlignment" Value="Center"/>
         <Setter Property="BorderThickness" Value="0,0,1,1"/>
         <Setter Property="BorderBrush" Value="#5D522C"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="DataGridColumnHeader">
+                    <Grid>
+                        <Border x:Name="HeaderBorder"
+                                Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}"
+                                BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}">
+                            <Grid>
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+                                <Path x:Name="PART_SortArrow"
+                                    Data="M0,0 L4,4 L8,0" 
+                                    Stroke="{TemplateBinding Foreground}"
+                                    StrokeThickness="1.5"
+                                    Visibility="Collapsed"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    Margin="0,0,8,0"
+                                    RenderTransformOrigin="0.5,0.5">
+                                    <Path.RenderTransform>
+                                        <RotateTransform x:Name="ArrowRotation" Angle="-180"/>
+                                    </Path.RenderTransform>
+                                </Path>
+                            </Grid>
+                        </Border>
+                    </Grid>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="SortDirection" Value="Ascending">
+                            <Setter TargetName="PART_SortArrow" Property="Visibility" Value="Visible"/>
+                            <Trigger.EnterActions>
+                                <RemoveStoryboard BeginStoryboardName="DescStory"/>
+                                <BeginStoryboard Name="AscStory">
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="ArrowRotation" 
+                                     Storyboard.TargetProperty="Angle"
+                                     To="0" Duration="0:0:0.2"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+                        </Trigger>
+
+                        <Trigger Property="SortDirection" Value="Descending">
+                            <Setter TargetName="PART_SortArrow" Property="Visibility" Value="Visible"/>
+                            <Trigger.EnterActions>
+                                <RemoveStoryboard BeginStoryboardName="AscStory"/>
+                                <BeginStoryboard Name="DescStory">
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="ArrowRotation" 
+                                     Storyboard.TargetProperty="Angle"
+                                     To="-180" Duration="0:0:0.2"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+                        </Trigger>
+
+                        <Trigger Property="SortDirection" Value="{x:Null}">
+                            <Setter TargetName="PART_SortArrow" Property="Visibility" Value="Collapsed"/>
+                            <Trigger.EnterActions>
+                                <RemoveStoryboard BeginStoryboardName="AscStory"/>
+                                <RemoveStoryboard BeginStoryboardName="DescStory"/>
+                            </Trigger.EnterActions>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
 
     <Style x:Key="CoffeeDataGridCellStyle" TargetType="DataGridCell">
@@ -81,7 +166,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type DataGridCell}">
-                    <Border Padding="5"
+                    <Border Padding="5, 0"
                         Background="{TemplateBinding Background}"
                         BorderBrush="{TemplateBinding BorderBrush}"
                         BorderThickness="{TemplateBinding BorderThickness}">
@@ -101,11 +186,12 @@
     <Style x:Key="CoffeeDataGridStyle" TargetType="DataGrid" BasedOn="{x:Null}">
         <Setter Property="CellStyle" Value="{StaticResource CoffeeDataGridCellStyle}"/>
         <Setter Property="ColumnHeaderStyle" Value="{StaticResource CoffeeDataGridHeaderStyle}"/>
+        <Setter Property="AutoGenerateColumns" Value="False"/>
         <Setter Property="Background" Value="#F9F6F0"/>
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="SelectionMode" Value="Single"/>
         <Setter Property="GridLinesVisibility" Value="None"/>
-        <Setter Property="AutoGenerateColumns" Value="False"/>
         <Setter Property="CanUserAddRows" Value="False"/>
         <Setter Property="CanUserDeleteRows" Value="False"/>
         <Setter Property="CanUserReorderColumns" Value="False"/>
@@ -115,16 +201,20 @@
         <Setter Property="AlternatingRowBackground" Value="#F2EDE4"/>
         <Setter Property="SelectionMode" Value="Single"/>
         <Setter Property="HeadersVisibility" Value="Column"/>
+        <Setter Property="VerticalScrollBarVisibility" Value="Visible"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="DataGrid">
                     <Grid>
-                        <Border Background="{TemplateBinding Background}" 
-                            CornerRadius="15" Margin="1"
-                            ClipToBounds="True">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="15" Margin="5,2,0,2" ClipToBounds="True">
                             <ScrollViewer x:Name="DG_ScrollViewer" Focusable="false">
                                 <ScrollViewer.Template>
                                     <ControlTemplate TargetType="ScrollViewer">
+                                        <ControlTemplate.Resources>
+                                            <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource CoffeeDataGridHeaderStyle}"/>
+                                            <Style TargetType="DataGridCell" BasedOn="{StaticResource CoffeeDataGridCellStyle}"/>
+                                        </ControlTemplate.Resources>
+
                                         <Grid>
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="*"/>
@@ -144,7 +234,7 @@
                                                             CanContentScroll="{TemplateBinding CanContentScroll}"/>
 
                                             <ScrollBar x:Name="PART_VerticalScrollBar"
-                                               Grid.Row="1" Grid.Column="1"
+                                               Grid.Row="0" Grid.Column="1" Grid.RowSpan="2"
                                                Orientation="Vertical"
                                                ViewportSize="{TemplateBinding ViewportHeight}"
                                                Maximum="{TemplateBinding ScrollableHeight}"
@@ -154,16 +244,27 @@
                                         </Grid>
                                     </ControlTemplate>
                                 </ScrollViewer.Template>
+
                                 <ItemsPresenter />
                             </ScrollViewer>
                         </Border>
 
-                        <Border BorderBrush="#B18252" 
-                            BorderThickness="7" 
-                            CornerRadius="15" 
-                            IsHitTestVisible="False"/>
+                        <Border BorderBrush="#B18252" BorderThickness="7" CornerRadius="15" IsHitTestVisible="False"/>
                     </Grid>
                 </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="RowStyle">
+            <Setter.Value>
+                <Style TargetType="DataGridRow" BasedOn="{StaticResource {x:Type DataGridRow}}">
+                    <Setter Property="Opacity" Value="{Binding RowOpacity}"/>
+                    <Setter Property="Foreground" Value="{Binding RowForeground}"/>
+                    <Style.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Background" Value="#EDE2D3"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
             </Setter.Value>
         </Setter>
     </Style>
@@ -183,6 +284,41 @@
                             CornerRadius="7" 
                             Background="{Binding PerformanceColor}"/>
                     </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Small Button Style -->
+    <Style x:Key="SmallButton" TargetType="Button">
+        <Setter Property="Width" Value="55"/>
+        <Setter Property="Height" Value="47"/>
+        <Setter Property="Background" Value="#E0CEB5"/>
+        <Setter Property="Foreground" Value="#340D05"/>
+        <Setter Property="Margin" Value="5"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="border" 
+                        Background="{TemplateBinding Background}" 
+                        BorderBrush="#340D05" BorderThickness="1" 
+                        CornerRadius="5">
+                        <!-- Icon -->
+                        <materialDesign:PackIcon Kind="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}" 
+                             Width="30" Height="30"
+                             HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="#E0CEB5"/>
+                            <Setter Property="Cursor" Value="Hand"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="#8E6841"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

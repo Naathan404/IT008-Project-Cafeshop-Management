@@ -196,7 +196,7 @@
                         <TextBlock FontSize="13"
                                TextAlignment="Center"
                                Margin="7">
-                            <Hyperlink NavigateUri="https://hehed.carrd.co/"
+                            <Hyperlink NavigateUri="https://2g1g-about.carrd.co/"
                                 RequestNavigate="Hyperlink_RequestNavigate"
                                 Foreground="Black"
                                 TextDecorations="{x:Null}">

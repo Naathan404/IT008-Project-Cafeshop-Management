@@ -6,7 +6,7 @@ namespace CoffeeShop.Service.Interfaces
 {
     public interface IDialogService
     {
-        public void OpenInsertMaterialWindow(ObservableCollection<DepotItemDTO> depotItems,
+        public bool? OpenInsertMaterialWindow(ObservableCollection<DepotItemDTO> depotItems,
             DepotItemDTO? itemToEdit);
 
         public void OpenDepotHistoryWindow();
