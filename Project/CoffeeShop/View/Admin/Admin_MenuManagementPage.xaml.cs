@@ -13,7 +13,7 @@ namespace CoffeeShop.View.Admin
         public MenuManagementPage()
         {
             InitializeComponent();
-            DataContext = new AdminMenuViewModel();
+            this.DataContext = new AdminMenuViewModel();
         }
 
         private void ItemsContainer_SizeChanged(object sender, SizeChangedEventArgs e)
