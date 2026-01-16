@@ -14,6 +14,7 @@
     <!-- Resources -->
     <!-- ===================== -->
     <Page.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         <local:ObjectEqualsConverter x:Key="ObjectEqualsConverter"/>
         <local:CountToVisibilityConverter x:Key="CountToVisibilityConverter"/>
         <local:GreaterThanOneConverter x:Key="GreaterThanOneConverter"/>
@@ -387,6 +388,26 @@
                     </Border>
                 </Grid>
             </Border>
+            <Grid x:Name="LoadingOverlay" 
+          Background="#AAEDE2D3" 
+          Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <StackPanel>
+                            <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}" 
+                                 Value="0" 
+                                 IsIndeterminate="True" 
+                                 Width="60" Height="60"
+                                 Foreground="#462812"/>
+                            <TextBlock Text="Đang pha cà phê..." 
+                               Margin="0,15,0,0" 
+                               FontSize="16"
+                               FontWeight="Bold"
+                               FontFamily="Cascadia Code"
+                               Foreground="#462812"
+                               HorizontalAlignment="Center"/>
+                        </StackPanel>
+                </StackPanel>
+            </Grid>
         </Grid>
     </Grid>
 </Page>

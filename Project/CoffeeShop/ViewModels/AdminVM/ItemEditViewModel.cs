@@ -180,6 +180,8 @@ namespace CoffeeShop.ViewModels.AdminVM
             get => _dialogResult;
             set { _dialogResult = value; OnPropertyChanged(nameof(DialogResult)); }
         }
+
+        private string _path;
         #endregion
 
         #region Commands
@@ -282,7 +284,7 @@ namespace CoffeeShop.ViewModels.AdminVM
                     CategoryId = item.CategoryId;
                     IsAvailable = item.IsAvailable;
                     Info = item.Info ?? "";
-
+                    _path = item.ImagePath;
                     // Chuẩn hóa ImagePath
                     if (item != null)
                     {
@@ -548,25 +550,7 @@ namespace CoffeeShop.ViewModels.AdminVM
                     }
 
                     // --- XỬ LÝ ẢNH ---
-                    string pathForDb;
-
-                    if (!string.IsNullOrEmpty(ImagePath) && Path.IsPathRooted(ImagePath))
-                    {
-                        pathForDb = Path.GetRelativePath(AppDomain.CurrentDomain.BaseDirectory, ImagePath);
-                    }
-                    else if (!string.IsNullOrEmpty(ImagePath) &&
-                             (ImagePath.StartsWith("/Assets") || ImagePath.StartsWith("pack://")))
-                    {
-                        pathForDb = "Assets/Images/imgItemExample.jpg";
-                    }
-                    else if (string.IsNullOrEmpty(ImagePath))
-                    {
-                        pathForDb = item.ImagePath ?? "Assets/Images/imgItemExample.jpg";
-                    }
-                    else
-                    {
-                        pathForDb = ImagePath;
-                    }
+                    string pathForDb = _path ?? "";
 
                     item.ItemName = ItemName;
                     item.CategoryId = CategoryId;

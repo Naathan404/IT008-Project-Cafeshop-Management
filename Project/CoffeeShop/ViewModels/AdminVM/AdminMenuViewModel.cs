@@ -3,24 +3,18 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Win32;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace CoffeeShop.ViewModels.AdminVM
 {
-    public class AdminMenuViewModel : INotifyPropertyChanged
+    public class AdminMenuViewModel : BaseViewModel
     {
-        #region INotifyPropertyChanged
-        public event PropertyChangedEventHandler? PropertyChanged;
-        protected virtual void OnPropertyChanged(string? propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-        #endregion
-
         #region Properties
         private bool _isLoading;
         public bool IsLoading
@@ -189,22 +183,35 @@ namespace CoffeeShop.ViewModels.AdminVM
             Items = new ObservableCollection<MenuCoffeeItem>();
             FilteredItems = new ObservableCollection<MenuCoffeeItem>();
             InitializeCommands();
-            LoadData();
             SubscribeToMessages();
+            _ = InitializeAsync();
+        }
+
+        private async Task InitializeAsync()
+        {
+            await LoadOrderItemsFromDB();
+            FilterItemsByCategory();
         }
         public AdminMenuViewModel(int itemId)
         {
             InitializeViewModel();
-            LoadSelectedItem(itemId); // Chỉ load món được chọn cho màn hình Edit
+            _ = InitializeEditModeAsync(itemId);
+        }
+
+        private async Task InitializeEditModeAsync(int itemId)
+        {
+            IsLoading = true;
+            await Task.Run(() => LoadSelectedItem(itemId));
+            IsLoading = false;
         }
 
         private void InitializeViewModel()
         {
             Items = new ObservableCollection<MenuCoffeeItem>();
             FilteredItems = new ObservableCollection<MenuCoffeeItem>();
-            AvailableSizes = new ObservableCollection<SizeViewModel>(); // Khởi tạo danh sách size
-            InitializeCommands();    // Khởi tạo các nút bấm (Add, Edit, Delete)
-            SubscribeToMessages();   // Đăng ký nhận thông báo thay đổi
+            AvailableSizes = new ObservableCollection<SizeViewModel>(); 
+            InitializeCommands();   
+            SubscribeToMessages();  
         }
 
         ~AdminMenuViewModel()
@@ -236,63 +243,67 @@ namespace CoffeeShop.ViewModels.AdminVM
             EventAggregator.Instance.Unsubscribe<ItemsChangedMessage>(OnItemsChanged);
         }
 
-        private void OnItemsChanged(ItemsChangedMessage message)
+        //private void OnItemsChanged(ItemsChangedMessage message)
+        //{
+        //    Application.Current.Dispatcher.Invoke(() =>
+        //    {
+        //        var currentSelectedId = SelectedItem?.ItemId;
+
+        //        LoadOrderItemsFromDB();
+        //        FilterItemsByCategory();
+
+        //        // Giữ lại selection và refresh sizes + image
+        //        if (currentSelectedId.HasValue)
+        //        {
+        //            var updatedItem = FilteredItems.FirstOrDefault(i => i.ItemId == currentSelectedId.Value);
+        //            if (updatedItem != null)
+        //            {
+        //                SelectedItem = updatedItem;
+
+        //                // Force reload image
+        //                if (!string.IsNullOrEmpty(updatedItem.ImagePath))
+        //                {
+        //                    ImagePath = updatedItem.ImagePath;
+        //                }
+        //            }
+        //            else
+        //            {
+        //                SelectedItem = null;
+        //            }
+        //        }
+        //        else
+        //        {
+        //            SelectedItem = null;
+        //        }
+        //    });
+        //}
+
+        private async void OnItemsChanged(ItemsChangedMessage message)
         {
-            Application.Current.Dispatcher.Invoke(() =>
+            var currentSelectedId = SelectedItem?.ItemId;
+
+            // Chỉ cần await Load, mọi thứ sẽ được làm mới sạch sẽ
+            await LoadOrderItemsFromDB();
+
+            // Khôi phục lại item đang chọn nếu nó vẫn tồn tại
+            if (currentSelectedId.HasValue)
             {
-                var currentSelectedId = SelectedItem?.ItemId;
-
-                LoadOrderItemsFromDB();
-                FilterItemsByCategory();
-
-                // Giữ lại selection và refresh sizes + image
-                if (currentSelectedId.HasValue)
-                {
-                    var updatedItem = FilteredItems.FirstOrDefault(i => i.ItemId == currentSelectedId.Value);
-                    if (updatedItem != null)
-                    {
-                        SelectedItem = updatedItem;
-
-                        // Force reload image
-                        if (!string.IsNullOrEmpty(updatedItem.ImagePath))
-                        {
-                            ImagePath = updatedItem.ImagePath;
-                        }
-                    }
-                    else
-                    {
-                        SelectedItem = null;
-                    }
-                }
-                else
-                {
-                    SelectedItem = null;
-                }
-            });
+                SelectedItem = FilteredItems.FirstOrDefault(i => i.ItemId == currentSelectedId.Value);
+            }
         }
 
         #endregion
 
         #region Load, Search, Edit, Delete Items
-        private void LoadData()
-        {
-            LoadOrderItemsFromDB();
-            FilterItemsByCategory();
-        }
-
         private void LoadSelectedItem(int itemId)
         {
             try
             {
                 using (var context = new CoffeeShopContext())
                 {
-                    // Lấy thông tin cơ bản của Item
-                    var item = context.Items
-                        .FirstOrDefault(i => i.ItemId == itemId && !i.IsDeleted);
-
+                    var item = context.Items.FirstOrDefault(i => i.ItemId == itemId && !i.IsDeleted);
                     if (item != null)
                     {
-                        // Chuyển đổi sang MenuCoffeeItem
                         var editItem = new MenuCoffeeItem
                         {
                             ItemId = item.ItemId,
@@ -300,90 +311,218 @@ namespace CoffeeShop.ViewModels.AdminVM
                             CategoryId = item.CategoryId,
                             IsAvailable = item.IsAvailable,
                             Info = item.Info ?? string.Empty,
-                            ImagePath = item.ImagePath ?? string.Empty,
-                            // Load danh sách giá kèm theo Size
+                            ImagePath = item.ImagePath ?? string.Empty, // Đường dẫn gốc DB
                             ItemPrices = new ObservableCollection<ItemPrice>(
-                                context.ItemPrices
-                                    .Include(ip => ip.Size)
-                                    .Where(ip => ip.ItemId == itemId && !ip.IsDeleted)
-                                    .ToList()
-                            )
+                                context.ItemPrices.Include(ip => ip.Size)
+                                       .Where(ip => ip.ItemId == itemId && !ip.IsDeleted).ToList())
                         };
 
-                        // Gán vào SelectedItem để giao diện Binding dữ liệu lên các TextBox/Image
                         SelectedItem = editItem;
-                        this.ImagePath = item.ImagePath;
 
-                        // Load các Size hiện có của món này vào ComboBox/List
+                        // QUAN TRỌNG: Phải gán SelectedImagePath bằng đường dẫn cũ trong DB
+                        // để nếu người dùng không chọn ảnh mới, giá trị này vẫn tồn tại để lưu lại.
+                        this.SelectedImagePath = item.ImagePath;
+
+                        // Hiển thị ảnh lên UI
+                        this.ImagePath = GetDisplayPath(item.ImagePath);
+
                         LoadAvailableSizes();
                     }
                 }
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Lỗi khi tải thông tin món: {ex.Message}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            catch (Exception ex) { Debug.WriteLine(ex.Message); }
         }
 
-        private void LoadOrderItemsFromDB()
+
+        //public async Task LoadOrderItemsFromDB()
+        //{
+        //    if (IsLoading) return;
+        //    IsLoading = true;
+
+        //    // Cho UI một khoảng nghỉ 50ms để kịp hiện icon loading lên
+        //    await Task.Delay(50);
+
+        //    try
+        //    {
+        //        var dbItems = await Task.Run(() =>
+        //        {
+        //            using var context = new CoffeeShopContext();
+        //            return context.Items
+        //                .Where(i => !i.IsDeleted)
+        //                .OrderByDescending(i => i.IsAvailable)
+        //                .ToList();
+        //        });
+
+        //        _items.Clear();
+        //        foreach (var item in dbItems)
+        //        {
+        //            var newItem = new MenuCoffeeItem
+        //            {
+        //                ItemId = item.ItemId,
+        //                ItemName = item.ItemName,
+        //                CategoryId = item.CategoryId,
+        //                IsAvailable = item.IsAvailable,
+        //                Info = item.Info ?? string.Empty,
+        //                ImagePath = GetDisplayPath(item.ImagePath),
+        //                ItemPrices = new ObservableCollection<ItemPrice>(
+        //                    item.ItemPrices
+        //                        .Where(ip => ip.ItemId == item.ItemId && ip.IsDeleted == false)
+        //                        .ToList()
+        //                ),
+        //            };
+
+        //            await Application.Current.Dispatcher.InvokeAsync(() =>
+        //            {
+        //                _items.Add(newItem);
+        //                FilteredItems.Add(newItem);
+        //            }, System.Windows.Threading.DispatcherPriority.Background);
+        //        }
+        //    }
+        //    catch (Exception ex) { Debug.WriteLine(ex.Message); }
+        //    finally { IsLoading = false; }
+        //}
+
+        public async Task LoadOrderItemsFromDB()
         {
-            _items.Clear();
+            if (IsLoading) return;
+            IsLoading = true;
+            await Task.Delay(50); // Nhường UI vẽ icon loading
+
             try
             {
-                using (var context = new CoffeeShopContext())
+                // 1. CHUẨN BỊ DỮ LIỆU SẠCH Ở LUỒNG PHỤ
+                var cleanList = await Task.Run(() =>
                 {
-                    var items = context.Items
-                        .Where(i => i.IsDeleted == false)
-                        .OrderByDescending(i => i.IsAvailable)
-                        .ToList();
+                    using var context = new CoffeeShopContext();
+                    var dbItems = context.Items
+                        .Include(i => i.ItemPrices).ThenInclude(ip => ip.Size)
+                        .Where(i => !i.IsDeleted)
+                        .OrderByDescending(i => i.IsAvailable).ToList();
 
-                    foreach (var item in items)
+                    // Chuyển đổi sang MenuCoffeeItem ngay tại luồng phụ
+                    return dbItems.Select(item => new MenuCoffeeItem
                     {
-                        string displayImagePath;
+                        ItemId = item.ItemId,
+                        ItemName = item.ItemName,
+                        CategoryId = item.CategoryId,
+                        IsAvailable = item.IsAvailable,
+                        Info = item.Info ?? string.Empty,
+                        ImagePath = GetDisplayPath(item.ImagePath), // Đường dẫn hiển thị UI
+                        ItemPrices = new ObservableCollection<ItemPrice>(item.ItemPrices.Where(ip => !ip.IsDeleted).ToList())
+                    }).ToList();
+                });
 
-                        // Nếu là ảnh mặc định, giữ nguyên dạng Pack URI
-                        if (string.IsNullOrEmpty(item.ImagePath) ||
-                            item.ImagePath.Contains("imgItemExample.jpg") ||
-                            item.ImagePath == "Assets/Images/imgItemExample.jpg" ||
-                            item.ImagePath == "Assets\\Images\\imgItemExample.jpg")
-                        {
-                            displayImagePath = "/Assets/Images/imgItemExample.jpg";
-                        }
-                        // Ảnh thật từ user upload
-                        else
-                        {
-                            displayImagePath = Path.Combine(
-                                AppDomain.CurrentDomain.BaseDirectory,
-                                item.ImagePath
-                            );
-                        }
-
-                        _items.Add(new MenuCoffeeItem
-                        {
-                            ItemId = item.ItemId,
-                            ItemName = item.ItemName,
-                            CategoryId = item.CategoryId,
-                            IsAvailable = item.IsAvailable,
-                            ItemPrices = new ObservableCollection<ItemPrice>(
-                                context.ItemPrices
-                                    .Include(ip => ip.Size)
-                                    .Where(ip => ip.ItemId == item.ItemId && ip.IsDeleted == false)
-                                    .ToList()
-                            ),
-                            Info = item.Info ?? string.Empty,
-                            ImagePath = displayImagePath
-                        });
-                    }
-                }
-                FilteredItems = new ObservableCollection<MenuCoffeeItem>(_items);
-                OnPropertyChanged(nameof(FilteredItems));
+                // 2. GÁN 1 LẦN DUY NHẤT VÀO UI (Triệt tiêu lỗi nhân đôi)
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    // Gán mới hoàn toàn thay vì Clear/Add
+                    Items = new ObservableCollection<MenuCoffeeItem>(cleanList);
+                    FilterItemsByCategory();
+                });
             }
-            catch (Exception ex)
+            catch (Exception ex) { Debug.WriteLine($"Error: {ex.Message}"); }
+            finally { IsLoading = false; }
+        }
+        private string GetDisplayPath(string? imagePath)
+        {
+            string displayImagePath;
+            if (string.IsNullOrEmpty(imagePath) ||
+                imagePath.Contains("imgItemExample.jpg") ||
+                imagePath == "Assets/Images/imgItemExample.jpg" ||
+                imagePath == "Assets\\Images\\imgItemExample.jpg")
             {
-                MessageBox.Show($"Error loading items: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                displayImagePath = "/Assets/Images/imgItemExample.jpg";
             }
+            // Ảnh thật từ user upload
+            else
+            {
+                string cleanRelativePath = imagePath?.TrimStart('/', '\\') ?? "";
+                displayImagePath = Path.Combine(
+                    AppDomain.CurrentDomain.BaseDirectory,
+                    imagePath
+                );
+            }
+            return displayImagePath;
         }
 
+        //public async Task LoadOrderItemsFromDB()
+        //{
+        //    if (IsLoading) return;
+        //    IsLoading = true;
+        //    await Task.Delay(100);
+
+        //    try
+        //    {
+        //        var processedItems = await Task.Run(() =>
+        //        {
+        //            using (var context = new CoffeeShopContext())
+        //            {
+        //                var dbItems = context.Items
+        //                    .Include(i => i.ItemPrices)
+        //                    .ThenInclude(ip => ip.Size)
+        //                    .Where(i => !i.IsDeleted)
+        //                    .OrderByDescending(i => i.IsAvailable)
+        //                    .ToList();
+
+        //                var tempList = new List<MenuCoffeeItem>();
+        //                foreach (var item in dbItems)
+        //                {
+        //                    string displayImagePath;
+        //                    if (string.IsNullOrEmpty(item.ImagePath) ||
+        //                        item.ImagePath.Contains("imgItemExample.jpg") ||
+        //                        item.ImagePath == "Assets/Images/imgItemExample.jpg" ||
+        //                        item.ImagePath == "Assets\\Images\\imgItemExample.jpg")
+        //                    {
+        //                        displayImagePath = "/Assets/Images/imgItemExample.jpg";
+        //                    }
+        //                    // Ảnh thật từ user upload
+        //                    else
+        //                    {
+        //                        string cleanRelativePath = item.ImagePath?.TrimStart('/', '\\') ?? "";
+        //                        displayImagePath = Path.Combine(
+        //                            AppDomain.CurrentDomain.BaseDirectory,
+        //                            item.ImagePath
+        //                        );
+        //                    }
+
+        //                    tempList.Add(new MenuCoffeeItem
+        //                    {
+        //                        ItemId = item.ItemId,
+        //                        ItemName = item.ItemName,
+        //                        CategoryId = item.CategoryId,
+        //                        IsAvailable = item.IsAvailable,
+        //                        Info = item.Info ?? string.Empty,
+        //                        ImagePath = displayImagePath,
+        //                        ItemPrices = new ObservableCollection<ItemPrice>(item.ItemPrices.Where(ip => !ip.IsDeleted))
+        //                    });
+        //                }
+        //                return tempList;
+        //            }
+        //        });
+
+        //        _items.Clear();
+        //        FilteredItems.Clear();
+
+        //        foreach (var item in processedItems)
+        //        {
+        //            _items.Add(item);
+        //            FilteredItems.Add(item);
+
+        //            if (_items.Count % 5 == 0) await Task.Delay(1);
+        //        }
+
+        //        OnPropertyChanged(nameof(FilteredItems));
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Debug.WriteLine($"Error: {ex.Message}");
+        //    }
+        //    finally
+        //    {
+        //        // 4. Tắt loading
+        //        IsLoading = false;
+        //    }
+        //}
         private void LoadImage()
         {
             if (string.IsNullOrWhiteSpace(ImagePath))
@@ -519,15 +658,16 @@ namespace CoffeeShop.ViewModels.AdminVM
                 Directory.CreateDirectory(Path.GetDirectoryName(absolutePath)!);
                 File.Copy(dialog.FileName, absolutePath, true);
 
-                // Cập nhật UI trên Thread chính
-                Application.Current.Dispatcher.Invoke(() =>
+                // Cập nhật đường dẫn TUYỆT ĐỐI để hiển thị lên UI ngay lập tức
+                this.ImagePath = absolutePath;
+
+                // Cập nhật đường dẫn để chuẩn bị lưu vào DB (dùng đường dẫn tương đối)
+                this.SelectedImagePath = relativePath;
+
+                if (SelectedItem != null)
                 {
-                    this.ImagePath = absolutePath; // tự chạy LoadImage()
-                    if (SelectedItem != null)
-                    {
-                        SelectedItem.ImagePath = absolutePath;
-                    }
-                });
+                    SelectedItem.ImagePath = relativePath;
+                }
             }
             finally { IsLoading = false; }
         }
@@ -538,39 +678,20 @@ namespace CoffeeShop.ViewModels.AdminVM
             IsLoading = true;
             try
             {
-                // Chạy tác vụ DB ở background
-                var newMenu = await Task.Run(() =>
+                int newId = 0;
+                await Task.Run(() =>
                 {
                     using var context = new CoffeeShopContext();
-                    var item = new Item
-                    {
-                        ItemName = "New Item",
-                        CategoryId = CurrentCategoryId == 0 ? 1 : CurrentCategoryId,
-                        IsAvailable = true,
-                        ImagePath = string.IsNullOrEmpty(ImagePath) ? null : Path.GetRelativePath(AppDomain.CurrentDomain.BaseDirectory, ImagePath)
-                    };
+                    var item = new Item { /* gán giá trị... */ };
                     context.Items.Add(item);
                     context.SaveChanges();
-
-                    return new MenuCoffeeItem
-                    {
-                        ItemId = item.ItemId,
-                        ItemName = item.ItemName,
-                        CategoryId = item.CategoryId,
-                        IsAvailable = item.IsAvailable,
-                        ImagePath = this.ImagePath // Dùng đường dẫn tuyệt đối
-                    };
+                    newId = item.ItemId;
                 });
 
-                // Cập nhật trực tiếp vào Collection trên UI Thread
-                Items.Add(newMenu);
-                FilterItemsByCategory();
-                SelectedItem = newMenu;
-
-                // Thông báo cho các màn hình khác
-                EventAggregator.Instance.Publish(new ItemsChangedMessage { Action = "Added", ItemId = newMenu.ItemId });
+                // Không cần Items.Add(newMenu) ở đây nữa
+                // Chỉ cần bắn tin nhắn, danh sách sẽ tự làm mới từ DB
+                EventAggregator.Instance.Publish(new ItemsChangedMessage { Action = "Added", ItemId = newId });
             }
-            catch (Exception ex) { MessageBox.Show(ex.Message); }
             finally { IsLoading = false; }
         }
 
@@ -578,69 +699,86 @@ namespace CoffeeShop.ViewModels.AdminVM
         {
             if (SelectedItem == null) return;
             IsLoading = true;
+            await Task.Delay(100);
+
             try
             {
-                await Task.Run(() => {
-                    Application.Current.Dispatcher.Invoke(() => {
-                        using var context = new CoffeeShopContext();
-                        var item = context.Items.Find(SelectedItem.ItemId);
-                        if (item != null)
-                        {
-                            item.ItemName = SelectedItem.ItemName;
-                            item.CategoryId = SelectedItem.CategoryId;
-                            item.IsAvailable = SelectedItem.IsAvailable;
-                            item.Info = SelectedItem.Info;
-                            if (!string.IsNullOrEmpty(SelectedImagePath))
-                            {
-                                item.ImagePath = Path.Combine(
-                                    "Assets", "Images", "Items",
-                                    Path.GetFileName(SelectedImagePath)
-                                );
-                            }
+                var itemId = SelectedItem.ItemId;
+                var itemName = SelectedItem.ItemName;
+                var categoryId = SelectedItem.CategoryId;
+                var isAvailable = SelectedItem.IsAvailable;
+                var info = SelectedItem.Info;
 
-                            context.SaveChanges();
-                        }
-                    });
-                });
-            }
-            finally
-            {
-                IsLoading = false;
-                EventAggregator.Instance.Publish(new ItemsChangedMessage
+                // Lấy đường dẫn đã được chuẩn bị (có thể là đường dẫn cũ hoặc mới từ Upload)
+                var pathToSave = SelectedImagePath;
+
+                await Task.Run(() =>
                 {
-                    Action = "Updated",
-                    ItemId = SelectedItem.ItemId
-                });
-            }
+                    using var context = new CoffeeShopContext();
+                    var item = context.Items.Find(itemId);
+                    if (item != null)
+                    {
+                        item.ItemName = itemName;
+                        item.CategoryId = categoryId;
+                        item.IsAvailable = isAvailable;
+                        item.Info = info;
 
+                        if (!string.IsNullOrEmpty(pathToSave))
+                        {
+                            item.ImagePath = GetDisplayPath(pathToSave);
+                        }
+                        context.SaveChanges();
+                    }
+                });
+
+                EventAggregator.Instance.Publish(new ItemsChangedMessage { Action = "Updated", ItemId = itemId });
+            }
+            finally { IsLoading = false; }
         }
 
         private async Task DeleteItemAsync()
         {
             if (SelectedItem == null) return;
-            if (MessageBox.Show("Bạn có chắc muốn xóa món này?", "Xác nhận xóa món", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+
+            if (MessageBox.Show("Bạn có chắc muốn xóa món này?", "Xác nhận", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
+                return;
+
+            IsLoading = true;
+            await Task.Delay(50);
+
+            try
             {
-                IsLoading = true;
-                try
+                int itemId = SelectedItem.ItemId;
+
+                // 1. Xóa ngầm trong Database
+                await Task.Run(() =>
                 {
-                    await Task.Run(() => {
-                        Application.Current.Dispatcher.Invoke(() => {
-                            using var context = new CoffeeShopContext();
-                            var item = context.Items.Find(SelectedItem.ItemId);
-                            if (item != null)
-                            {
-                                item.IsDeleted = true;
-                                context.SaveChanges();
-                                Items.Remove(SelectedItem);
-                                FilterItemsByCategory();
-                            }
-                        });
-                    });
-                }
-                finally { IsLoading = false; }
+                    using var context = new CoffeeShopContext();
+                    var item = context.Items.Find(itemId);
+                    if (item != null)
+                    {
+                        item.IsDeleted = true; // Soft delete
+                        context.SaveChanges();
+                    }
+                });
+
+                // 2. Bắn tin nhắn để refresh lại toàn bộ danh sách
+                EventAggregator.Instance.Publish(new ItemsChangedMessage { Action = "Deleted", ItemId = itemId });
+
+                // Reset lựa chọn về null
+                SelectedItem = null;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi: {ex.Message}");
+            }
+            finally
+            {
+                IsLoading = false;
             }
         }
         #endregion
+
 
         #region Helper Classes
         public class MenuCoffeeItem : INotifyPropertyChanged
@@ -652,7 +790,12 @@ namespace CoffeeShop.ViewModels.AdminVM
             private string? _imagePath;
             private string _info = string.Empty;
             private ObservableCollection<ItemPrice> _itemPrices = new();
-
+            private ImageSource? _imageSource;
+            public ImageSource? ImageSource
+            {
+                get => _imageSource;
+                set { _imageSource = value; OnPropertyChanged(nameof(ImageSource)); }
+            }
             public int ItemId { get => _itemId; set { _itemId = value; OnPropertyChanged(nameof(ItemId)); } }
             public string ItemName { get => _itemName; set { _itemName = value; OnPropertyChanged(nameof(ItemName)); } }
             public int CategoryId { get => _categoryId; set { _categoryId = value; OnPropertyChanged(nameof(CategoryId)); } }
