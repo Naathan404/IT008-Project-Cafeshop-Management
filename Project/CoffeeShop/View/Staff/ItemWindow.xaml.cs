@@ -13,6 +13,7 @@ namespace CoffeeShop.View.Staff
         private OrderItem _currentItem;
         private string? _selectedSize;
         private decimal _selectedPrice;
+        private int _selectedPriceID;
         public ItemWindow(StaffOrderViewModel viewModel, OrderItem item)
         {
             InitializeComponent();
@@ -29,11 +30,15 @@ namespace CoffeeShop.View.Staff
                 {
                     _selectedSize = null; // food không có size
                     _selectedPrice = firstSize.Price;
+                    _selectedPriceID = firstSize.PriceId;
                 }
                 else if (firstSize.Size != null)
                 {
                     _selectedSize = firstSize.Size.SizeName;
                     _selectedPrice = firstSize.Price;
+                    _selectedPriceID = firstSize.PriceId;
+                    bdrItemSize0.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#D4BA98"));
+                    txtSize0.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#340D05"));
                 }
             }
 
@@ -153,6 +158,8 @@ namespace CoffeeShop.View.Staff
                 }
                 // Lấy giá
                 _selectedPrice = GetPriceFromBorder(bdrSize);
+                _selectedPriceID = _currentItem.ItemPrices
+                    .First(p => p is { Size: { SizeName: not null } s } && s.SizeName == _selectedSize).PriceId;
 
                 // Cập nhật hiển thị giá
                 ItemPrice_Changed(_selectedPrice);
@@ -229,7 +236,7 @@ namespace CoffeeShop.View.Staff
             }
 
             // Thêm vào order thông qua ViewModel
-            _viewModel.AddItemToOrder(_currentItem, _selectedSize, note, _selectedPrice);
+            _viewModel.AddItemToOrder(_currentItem, _selectedSize, note, _selectedPrice, _selectedPriceID);
 
             // Đóng window
             this.Close();

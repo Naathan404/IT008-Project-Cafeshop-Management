@@ -417,6 +417,7 @@ namespace CoffeeShop.ViewModels.AdminVM
 
                 // Cập nhật ImagePath
                 ImagePath = destPath;
+                _path = Path.Combine(relativeFolder, fileName).Replace('\\', '/');
             }
             catch (Exception ex) { MessageBox.Show($"Lỗi: {ex.Message}"); }
             finally { IsLoading = false; }

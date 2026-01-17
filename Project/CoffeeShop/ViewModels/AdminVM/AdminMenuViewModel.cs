@@ -386,12 +386,12 @@ namespace CoffeeShop.ViewModels.AdminVM
         {
             if (IsLoading) return;
             IsLoading = true;
-            await Task.Delay(50); // Nhường UI vẽ icon loading
+            await Task.Delay(100); // Nhường UI vẽ icon loading
 
             try
             {
                 // 1. CHUẨN BỊ DỮ LIỆU SẠCH Ở LUỒNG PHỤ
-                var cleanList = await Task.Run(() =>
+                var res = await Task.Run(() =>
                 {
                     using var context = new CoffeeShopContext();
                     var dbItems = context.Items
@@ -400,7 +400,7 @@ namespace CoffeeShop.ViewModels.AdminVM
                         .OrderByDescending(i => i.IsAvailable).ToList();
 
                     // Chuyển đổi sang MenuCoffeeItem ngay tại luồng phụ
-                    return dbItems.Select(item => new MenuCoffeeItem
+                    var cleanList = dbItems.Select(item => new MenuCoffeeItem
                     {
                         ItemId = item.ItemId,
                         ItemName = item.ItemName,
@@ -410,18 +410,23 @@ namespace CoffeeShop.ViewModels.AdminVM
                         ImagePath = GetDisplayPath(item.ImagePath), // Đường dẫn hiển thị UI
                         ItemPrices = new ObservableCollection<ItemPrice>(item.ItemPrices.Where(ip => !ip.IsDeleted).ToList())
                     }).ToList();
+
+                    var filtered = cleanList;
+                    if (CurrentCategoryId != 0)
+                        filtered = cleanList.Where(x => x.CategoryId == CurrentCategoryId).ToList();
+
+                    return new { All = cleanList, Filtered = filtered };
                 });
 
-                // 2. GÁN 1 LẦN DUY NHẤT VÀO UI (Triệt tiêu lỗi nhân đôi)
-                Application.Current.Dispatcher.Invoke(() =>
-                {
-                    // Gán mới hoàn toàn thay vì Clear/Add
-                    Items = new ObservableCollection<MenuCoffeeItem>(cleanList);
-                    FilterItemsByCategory();
-                });
+                Items = new ObservableCollection<MenuCoffeeItem>(res.All);
+                FilteredItems = new ObservableCollection<MenuCoffeeItem>(res.Filtered);
             }
-            catch (Exception ex) { Debug.WriteLine($"Error: {ex.Message}"); }
-            finally { IsLoading = false; }
+            catch (Exception ex) { Debug.WriteLine(ex.Message); }
+            finally
+            {
+                await Task.Delay(100);
+                IsLoading = false;
+            }
         }
         private string GetDisplayPath(string? imagePath)
         {

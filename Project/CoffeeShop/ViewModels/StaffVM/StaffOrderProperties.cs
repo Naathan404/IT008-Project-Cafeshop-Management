@@ -543,6 +543,13 @@ namespace CoffeeShop.ViewModels.StaffVM
                     OnPropertyChanged(nameof(Note));
                 }
             }
+
+            private int _priceId;
+            public int PriceId
+            {
+                get => _priceId;
+                set { _priceId = value; OnPropertyChanged(nameof(PriceId)); }
+            }
         }
 
         public class NotificationBase : INotifyPropertyChanged

@@ -1,6 +1,8 @@
 ﻿using CoffeeShop.Models;
+using CoffeeShop.Service;
 using CoffeeShop.Service.DTOs;
 using CoffeeShop.View.General;
+using CoffeeShop.ViewModels.AdminVM;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.ObjectModel;
@@ -86,6 +88,12 @@ namespace CoffeeShop.ViewModels.StaffVM
             RefreshCommand = new RelayCommand<object>(p => Refresh());
             AddCommand = new RelayCommand<object>(p => PrepareAdd());
             SaveCommand = new RelayCommand<object>(async p => await SaveCustomer());
+
+            EventAggregator.Instance.Subscribe<OrderCompletedMessage>(async (msg) =>
+            {
+                await LoadCustomers();
+            });
+
             ShowOrderDetailCommand = new RelayCommand<object>((p) =>
             {
                 ShowOrderDetail();

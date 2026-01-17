@@ -1,6 +1,8 @@
 ﻿using CoffeeShop.Models;
+using CoffeeShop.Service;
 using CoffeeShop.Service.DTOs;
 using CoffeeShop.View.General;
+using CoffeeShop.ViewModels.AdminVM;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.ObjectModel;
 using System.Globalization;
@@ -226,6 +228,11 @@ namespace CoffeeShop.ViewModels.StaffVM
             FromTime = null;
             ToTime = null;
             SelectedPaymentMethod = PaymentMethods.First();
+
+            EventAggregator.Instance.Subscribe<OrderCompletedMessage>(async (msg) =>
+            {
+                await LoadOrderHistory();
+            });
 
             RefreshPageCommand = new RelayCommand<object>(
                 async (p) =>

@@ -1,10 +1,12 @@
 ﻿using CoffeeShop.Models;
+using CoffeeShop.Service;
+using CoffeeShop.ViewModels.AdminVM;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Linq;
 using static CoffeeShop.ViewModels.StaffVM.StaffOrderViewModel;
 
 namespace CoffeeShop.ViewModels.StaffVM
@@ -90,6 +92,10 @@ namespace CoffeeShop.ViewModels.StaffVM
 
         public StaffTableViewModel()
         {
+            EventAggregator.Instance.Subscribe<OrderCompletedMessage>(async (msg) =>
+            {
+                LoadData();
+            });
             ChangeStatusToServingCommand = new RelayCommand<VMTable>(
                 p => UpdateTableStatus(p, 1), // Execute
                 p => p != null                // CanExecute

@@ -15,10 +15,11 @@ namespace CoffeeShop.View.Staff
     public partial class Staff_Order : Page
     {
         private StaffOrderViewModel _viewModel;
-        public Staff_Order()
+        private int _priceId;
+        public Staff_Order(CoffeeShop.Models.Staff staff = null)
         {
             InitializeComponent();
-            _viewModel = new StaffOrderViewModel();
+            _viewModel = new StaffOrderViewModel(staff);
             this.DataContext = _viewModel;
         }
 
@@ -176,6 +177,7 @@ namespace CoffeeShop.View.Staff
 
                 // Lấy giá
                 decimal price = GetPriceFromBorder(bdrSize);
+                _priceId = GetPriceIdFromBorder(bdrSize);
 
                 // Lấy item từ DataContext cha
                 var card = FindParent<Border>(bdrSize);
@@ -183,7 +185,7 @@ namespace CoffeeShop.View.Staff
                 if (item == null) return;
 
                 // Thêm vào DataGrid qua ViewModel
-                _viewModel.AddItemToOrder(item, selectedSize, null, price);
+                _viewModel.AddItemToOrder(item, selectedSize, null, price, _priceId);
             }
         }
         private decimal GetPriceFromBorder(Border bdrItemSize)
@@ -207,6 +209,25 @@ namespace CoffeeShop.View.Staff
                 ?.Price ?? 0;
 
             return selectedPrice;
+        }
+
+        private int GetPriceIdFromBorder(Border bdrItemSize)
+        {
+            if (bdrItemSize?.Child is not TextBlock txtSize)
+                return 0;
+            string sizeName = txtSize.Text;
+            if (string.IsNullOrWhiteSpace(sizeName))
+                return 0;
+            var stackPanel = FindParent<StackPanel>(bdrItemSize);
+            if (stackPanel?.DataContext is not OrderItem item)
+                return 0;
+            if (item.ItemPrices == null || item.ItemPrices.Count == 0)
+                return 0;
+            var selectedPriceId = item.ItemPrices
+                .Where(p => p?.Size?.SizeName != null)
+                .FirstOrDefault(p => p!.Size!.SizeName == sizeName)
+                ?.PriceId ?? 0;
+            return selectedPriceId;
         }
 
         #endregion

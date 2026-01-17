@@ -18,17 +18,18 @@ namespace CoffeeShop.View.Staff
         private float _animationDuration = 200;
         private bool _isAnimating = false;
 
+        /// Account informations
+        /// Name, Role, Phonenumber, Email, BaseSalary
+        private CoffeeShop.Models.Staff _account;
+
         /// Inial all pages
-        private Staff_Order _orderPage = new Staff_Order();
+        private Staff_Order _orderPage;
         private Staff_Menu _menuPage = new Staff_Menu();
         private Staff_Table _tablePage = new Staff_Table();
         private Staff_Customer _customerPage = new Staff_Customer();
         private Staff_History _historyPage = new Staff_History();
         private Staff_Depot _depotPage = new Staff_Depot();
 
-        /// Account informations
-        /// Name, Role, Phonenumber, Email, BaseSalary
-        private CoffeeShop.Models.Staff _account;
 
         // Replace the following line:
         // private readonly Brush _colorActive = (Brush)new BrushConverter().ConvertFrom("#D7CCC8"); 
@@ -42,7 +43,8 @@ namespace CoffeeShop.View.Staff
         {
             InitializeComponent();
             Debug.WriteLine($"Width = {this.ActualWidth}, Height = {this.ActualHeight}");
-            StaffFrame.Navigate(new Staff_Order());
+            _orderPage = new Staff_Order(account);
+            StaffFrame.Navigate(_orderPage);
             bdrStaffWindowFunction.Width = _minimumNavigationBarWidth;
             _account = account;
             SetActiveTabUI("Order");
