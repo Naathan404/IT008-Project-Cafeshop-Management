@@ -14,8 +14,8 @@ namespace CoffeeShop.View.Controls
 
         public CustomMessageBox(string message,
                                 string title = "Thông báo", // Mặc định là "Thông báo"
-                                MessageType? type = null,
-                                MessageButtons buttons = MessageButtons.OK ) // Mặc định là button OK
+                                MessageButtons buttons = MessageButtons.OK, // Mặc định là button OK
+                                MessageType? type = null) 
         {
             InitializeComponent();
 
@@ -63,10 +63,10 @@ namespace CoffeeShop.View.Controls
         }
         public static MessageBoxResult Show(string message,
                                             string title = "Thông báo",
-                                            MessageType type = MessageType.Info,
-                                            MessageButtons buttons = MessageButtons.OK)
+                                            MessageButtons buttons = MessageButtons.OK,
+                                            MessageType type = MessageType.Info)
         {
-            var msgBox = new CustomMessageBox(message, title, type, buttons);
+            var msgBox = new CustomMessageBox(message, title, buttons, type);
             msgBox.ShowDialog();
             return msgBox.Result;
         }
