@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using CoffeeShop.View.Controls;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -29,11 +30,11 @@ namespace CoffeeShop.ViewModels.StaffVM
 
                 bdr.Effect = new DropShadowEffect
                 {
-                    Color = (Color)ColorConverter.ConvertFromString("#766839"), // Màu bóng tối
-                    Direction = 315, // Góc đổ bóng
-                    ShadowDepth = 4, // Độ sâu/khoảng cách của bóng
-                    BlurRadius = 10, // Độ mờ của bóng
-                    Opacity = 0.6 // Độ trong suốt của bóng
+                    Color = (Color)ColorConverter.ConvertFromString("#766839"),
+                    Direction = 315,
+                    ShadowDepth = 4,
+                    BlurRadius = 10,
+                    Opacity = 0.6
                 };
             }
         }
@@ -52,8 +53,9 @@ namespace CoffeeShop.ViewModels.StaffVM
         }
         private void bdrCancelPayOrder_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            var result = MessageBox.Show("Bạn có chắc muốn hủy thanh toán đơn hàng này không?", "Xác nhận hủy thanh toán", MessageBoxButton.YesNo, MessageBoxImage.Question);
-            if (result == MessageBoxResult.Yes)
+            var result = CustomMessageBox.Show("Bạn có chắc muốn hủy thanh toán đơn hàng này không?", 
+                "Xác nhận hủy thanh toán", CustomMessageBox.MessageButtons.YesNo, CustomMessageBox.MessageType.Info);
+            if (result == CustomMessageBox.MessageBoxResult.Yes)
             {
                 _viewModel.IsCheckedPrintBill = false;
                 _viewModel.SelectedPaymentMethod = _viewModel.PaymentMethod.FirstOrDefault(p => p.Equals("Tiền mặt")) ?? "";

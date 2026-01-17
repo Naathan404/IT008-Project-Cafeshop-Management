@@ -31,7 +31,7 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <Border Background="#E0CEB5"
+            <Border Background="#EDE2D3"
                     CornerRadius="12,12,0,0"
                     HorizontalAlignment="Left">
                 <!-- Title -->
@@ -45,7 +45,7 @@
                            d:Text="Thông báo"/>
             </Border>
 
-            <Border Background="#E0CEB5"
+            <Border Background="#EDE2D3"
                     Grid.Row="1"
                     CornerRadius="0 10 10 10">
                 <!-- Message -->
@@ -77,7 +77,7 @@
                                Source="/Assets/Images/MessageBoxIcons/imgWarning.png"
                                Grid.Column="0"
                                Margin="0,0,10,0"
-                               Visibility="Visible"/>
+                               Visibility="Collapsed"/>
                         <Image x:Name="imgSuccess"
                                Width="50" Height="50"
                                VerticalAlignment="Center"

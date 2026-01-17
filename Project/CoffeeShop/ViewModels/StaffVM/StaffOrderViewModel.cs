@@ -563,8 +563,8 @@ namespace CoffeeShop.ViewModels.StaffVM
             if (CanCancelOrder)
             {
                 var result = CustomMessageBox.Show(
-                    "Xác nhận hủy đơn",
-                    "Bạn có chắc muốn hủy đơn này không?", MessageType.Warning, MessageButtons.YesNo);
+                    "Bạn có chắc muốn hủy đơn này không?",
+                    "Xác nhận hủy đơn", MessageButtons.YesNo, MessageType.Warning);
 
                 if (result == CustomMessageBox.MessageBoxResult.Yes)
                 {
@@ -572,7 +572,7 @@ namespace CoffeeShop.ViewModels.StaffVM
                 }
             }
             else
-                CustomMessageBox.Show("Lỗi","Chưa chọn mặt hàng nào để hủy đơn hàng!", MessageType.Warning, MessageButtons.OK);
+                CustomMessageBox.Show("Chưa chọn mặt hàng nào để hủy đơn hàng!", "Lỗi", MessageButtons.OK, MessageType.Warning);
         }
         private void CancelOrder(object param)
         {
@@ -684,7 +684,7 @@ namespace CoffeeShop.ViewModels.StaffVM
                 var existingCustomer = db.Customers.FirstOrDefault(c => c.PhoneNumber == customerPhoneNumber);
                 if (existingCustomer != null)
                 {
-                    CustomMessageBox.Show("Lỗi", "Khách hàng với số điện thoại này đã tồn tại.", MessageType.Error, MessageButtons.OK);
+                    CustomMessageBox.Show("Khách hàng với số điện thoại này đã tồn tại.", "Lỗi", MessageButtons.OK, MessageType.Error);
                     // Trả về khách hàng đã tồn tại (dùng để chọn vào SelectedCustomer)
                     var exist = new OrderCustomer
                     {
@@ -710,7 +710,7 @@ namespace CoffeeShop.ViewModels.StaffVM
                 };
                 db.Customers.Add(newcustomer);
                 db.SaveChanges();
-                CustomMessageBox.Show("Thành công", "Thêm khách hàng thành công.", MessageType.Success, MessageButtons.OK);
+                CustomMessageBox.Show("Thêm khách hàng thành công.", "Thành công", MessageButtons.OK, MessageType.Success);
                 // Reload danh sách khách hàng
                 LoadCustomerFromDB();
 
@@ -738,8 +738,8 @@ namespace CoffeeShop.ViewModels.StaffVM
 
             if (SelectedTable != null && SelectedTable.TableId != table.TableId)
             {
-                if (CustomMessageBox.Show("Xác nhận đổi bàn", $"Bạn đang chọn {SelectedTable.TableName}. Đổi sang {table.TableName}?",
-                             MessageType.Warning, MessageButtons.YesNo) == CustomMessageBox.MessageBoxResult.No)
+                if (CustomMessageBox.Show($"Bạn đang chọn {SelectedTable.TableName}. Đổi sang {table.TableName}?", "Xác nhận đổi bàn",
+                             MessageButtons.YesNo, MessageType.Info) == CustomMessageBox.MessageBoxResult.No)
                     return;
             }
             SelectedTable = table;
@@ -767,7 +767,7 @@ namespace CoffeeShop.ViewModels.StaffVM
             }
             else
             {
-                CustomMessageBox.Show("Chưa chọn mặt hàng nào để thanh toán!", "Lỗi", MessageType.Error, MessageButtons.OK);
+                CustomMessageBox.Show("Chưa chọn mặt hàng nào để thanh toán!", "Lỗi", MessageButtons.OK, MessageType.Warning);
             }
         }
         private async void ConfirmPayOrder(object param)
@@ -778,14 +778,14 @@ namespace CoffeeShop.ViewModels.StaffVM
                 if (invalidItems.Any())
                 {
                     string names = string.Join(", ", invalidItems.Select(x => x.ItemName));
-                    CustomMessageBox.Show("Món ăn không khả dụng", $"Cảnh báo: Món [{names}] vừa bị tắt.\n" + "Vui lòng xóa khỏi giỏ hàng trước khi thanh toán!", 
-                        MessageType.Warning, MessageButtons.OK);
+                    CustomMessageBox.Show($"Cảnh báo: Món [{names}] vừa bị tắt.\n" + "Vui lòng xóa khỏi giỏ hàng trước khi thanh toán!", "Món ăn không khả dụng",
+                        MessageButtons.OK, MessageType.Warning);
                     return; // Dừng quá trình thanh toán
                 }
             }
             // Xác nhận thanh toán đơn hàng
-            var confirm = CustomMessageBox.Show("Xác nhận", "Xác nhận thanh toán đơn hàng?",
-                MessageType.Info, MessageButtons.YesNo);
+            var confirm = CustomMessageBox.Show("Xác nhận thanh toán đơn hàng?", "Xác nhận",
+                MessageButtons.YesNo, MessageType.Info);
             if (confirm != CustomMessageBox.MessageBoxResult.Yes) return;
 
             IsLoading = true;
@@ -881,7 +881,7 @@ namespace CoffeeShop.ViewModels.StaffVM
                     }
                 });
 
-                CustomMessageBox.Show("Thành công", "Thanh toán và lưu hóa đơn thành công!", MessageType.Success, MessageButtons.OK);
+                CustomMessageBox.Show("Thanh toán và lưu hóa đơn thành công!", "Thành công", MessageButtons.OK, MessageType.Success);
 
                 // Reset giao diện
                 CancelOrder(null);
@@ -895,7 +895,7 @@ namespace CoffeeShop.ViewModels.StaffVM
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Lỗi thanh toán: {ex.Message}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                CustomMessageBox.Show($"Lỗi thanh toán: {ex.Message}", "Lỗi", MessageButtons.OK, MessageType.Error);
             }
             finally
             {
