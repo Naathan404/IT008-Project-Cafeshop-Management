@@ -1,8 +1,6 @@
 ﻿using CoffeeShop.Models;
 using CoffeeShop.Service.DTOs;
 using CoffeeShop.Service.Interfaces;
-using CoffeeShop.View.Admin;
-using CoffeeShop.View.General;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.ObjectModel;
 using System.Windows;

@@ -61,6 +61,20 @@ namespace CoffeeShop.ViewModels.StaffVM
             }
         }
 
+        private decimal _threshold;
+        public decimal Threshold
+        {
+            get => _threshold;
+            set
+            {
+                if (_threshold != value)
+                {
+                    _threshold = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         private string? _note;
         public string? Note
         {
@@ -73,6 +87,13 @@ namespace CoffeeShop.ViewModels.StaffVM
                     OnPropertyChanged();
                 }
             }
+        }
+
+        private bool _isAddMode;
+        public bool IsAddMode
+        {
+            get => _isAddMode;
+            set { _isAddMode = value; OnPropertyChanged(); }
         }
         #endregion
 
@@ -92,37 +113,36 @@ namespace CoffeeShop.ViewModels.StaffVM
             // Setup cho chế độ Thêm mới
             this.WindowTitle = "Thêm vật tư mới";
             this.SaveButtonContent = "Thêm mới";
+            IsAddMode = true;
         }
 
         // Constructor Update
         public InsertMaterialViewModel(DepotItemDTO selectedItem, ObservableCollection<DepotItemDTO> itemsCollection)
-            : this(itemsCollection) // Gọi constructor Thêm mới để khởi tạo chung
+            : this(itemsCollection)
         {
-            // Setup cho chế độ Cập nhật
             _itemToEdit = selectedItem;
             this.WindowTitle = $"Sửa vật tư: {selectedItem.MaterialName}";
             this.SaveButtonContent = "Cập nhật";
 
-            // Gán dữ liệu của item được chọn vào các ô dữ liệu của cửa sổ
             this.MaterialName = selectedItem.MaterialName;
             this.Quantity = selectedItem.Quantity;
             this.SelectedUnit = selectedItem.Unit;
+            this.Threshold = selectedItem.Threshold;
             this.Note = selectedItem.Note;
+            IsAddMode = false;
         }
 
         private void InitializeData()
         {
-            // Chọn giá trị mặc định cho đơn vị (Giá trị đầu tiên)
             if (Units.Any())
             {
                 SelectedUnit = Units.First();
             }
         }
 
-        // Kiểm tra dữ liệu nhập vào
         private bool CanExecuteSave(Window p)
         {
-            if (string.IsNullOrWhiteSpace(MaterialName) || Quantity <= 0 || string.IsNullOrWhiteSpace(SelectedUnit))
+            if (string.IsNullOrWhiteSpace(MaterialName) || Quantity < 0 || string.IsNullOrWhiteSpace(SelectedUnit))
                 return false;
 
             return true;
@@ -133,7 +153,7 @@ namespace CoffeeShop.ViewModels.StaffVM
             // Nếu dữ liệu ko hợp lệ
             if (!CanExecuteSave(window))
             {
-                MessageBox.Show("Vui lòng nhập đầy đủ Tên, Số lượng (> 0) và Đơn vị hợp lệ.", "Lỗi nhập liệu", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Vui lòng nhập đầy đủ Tên, Số lượng (>= 0) và Đơn vị hợp lệ.", "Lỗi nhập liệu", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
@@ -167,7 +187,6 @@ namespace CoffeeShop.ViewModels.StaffVM
                                     MaterialId = itemToUpdate.MaterialId,
                                     ActionTypeId = actionType,
                                     Quantity = Math.Abs(itemToUpdate.Quantity - Quantity),
-                                    //InputPrice = InputPrice,
                                     Date = DateTime.Now,
                                     StaffId = staffId
                                 };
@@ -186,6 +205,7 @@ namespace CoffeeShop.ViewModels.StaffVM
                                 _itemToEdit.MaterialName = MaterialName;
                                 _itemToEdit.Quantity = Quantity;
                                 _itemToEdit.Unit = SelectedUnit;
+                                _itemToEdit.Threshold = Threshold;
                                 _itemToEdit.Note = Note;
                             }
                             catch (Exception ex)

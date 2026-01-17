@@ -28,7 +28,7 @@
            FontFamily="Cascadia Code"/>
         
         <!-- Nút chức năng -->
-        <materialDesign:Card Padding="5" UniformCornerRadius="10" BorderThickness="2" BorderBrush="#340D05" Grid.Row="1">
+        <materialDesign:Card Padding="4" UniformCornerRadius="10" BorderThickness="2" BorderBrush="#340D05" Grid.Row="1">
             <Grid>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
                     <ComboBox ItemsSource="{Binding CouponTypes}" SelectedItem="{Binding SelectedType}" 
@@ -190,21 +190,7 @@
                   ItemsSource="{Binding Coupons}" 
                   SelectedItem="{Binding SelectedCoupon}"
                   Style="{StaticResource CoffeeDataGridStyle}"
-                  CellStyle="{StaticResource CoffeeDataGridCellStyle}" 
-                  ColumnHeaderStyle="{StaticResource CoffeeDataGridHeaderStyle}"
                   ScrollViewer.VerticalScrollBarVisibility="Visible">
-
-            <DataGrid.RowStyle>
-                <Style TargetType="DataGridRow" BasedOn="{StaticResource {x:Type DataGridRow}}">
-                    <Setter Property="Opacity" Value="{Binding RowOpacity}"/>
-                    <Setter Property="Foreground" Value="{Binding RowForeground}"/>
-                    <Style.Triggers>
-                        <Trigger Property="IsSelected" Value="True">
-                            <Setter Property="Background" Value="#EDE2D3"/>
-                        </Trigger>
-                    </Style.Triggers>
-                </Style>
-            </DataGrid.RowStyle>
 
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Tên mã" Binding="{Binding DiscountCode}" Width="0.5*">

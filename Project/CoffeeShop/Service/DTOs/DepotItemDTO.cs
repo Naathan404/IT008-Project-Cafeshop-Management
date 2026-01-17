@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CoffeeShop.Service.DTOs
 {
@@ -13,11 +9,18 @@ namespace CoffeeShop.Service.DTOs
         private decimal _quantity;
         private string? _unit;
         private string? _note;
-        public int MaterialId { get; set; }
-        public string? MaterialName
+        private decimal _threshold;
+
+        public int MaterialId
         {
-            get => _materialName;
-            set =>SetProperty(ref _materialName, value);
+            get => _materialId;
+            set => SetProperty(ref _materialId, value);
+        }
+
+        public string MaterialName
+        {
+            get => _materialName ?? string.Empty;
+            set => SetProperty(ref _materialName, value);
         }
 
         public decimal Quantity
@@ -26,16 +29,32 @@ namespace CoffeeShop.Service.DTOs
             set => SetProperty(ref _quantity, value);
         }
 
-        public string? Unit
+        public string Unit
         {
-            get => _unit;
+            get => _unit ?? string.Empty;
             set => SetProperty(ref _unit, value);
         }
 
-        public string? Note
+        public string Note
         {
-            get => _note;
+            get => _note ?? string.Empty;
             set => SetProperty(ref _note, value);
+        }
+
+        public decimal Threshold
+        {
+            get => _threshold;
+            set => SetProperty(ref _threshold, value);
+        }
+
+        public string StatusBackground
+        {
+            get
+            {
+                if (Quantity <= 0) return "#FF9999";
+                if (Quantity <= Threshold) return "#FFE066"; 
+                return "Transparent";
+            }
         }
     }
 }

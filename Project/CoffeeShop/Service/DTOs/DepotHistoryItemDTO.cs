@@ -15,6 +15,13 @@ namespace CoffeeShop.Service.DTOs
             set => SetProperty(ref _staffName, value);
         }
 
+        private int _materialId;
+        public int MaterialId
+        {
+            get => _materialId;
+            set => SetProperty(ref _materialId, value);
+        }
+
         private string? _materialName;
         public string? MaterialName
         {

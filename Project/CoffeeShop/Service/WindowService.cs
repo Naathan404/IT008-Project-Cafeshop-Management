@@ -9,21 +9,21 @@ namespace CoffeeShop.Service
     public class WindowService : IDialogService
     {
         // Triển khai hàm theo đúng hợp đồng của Interface
-        public void OpenInsertMaterialWindow(ObservableCollection<DepotItemDTO> collection,
-                                 DepotItemDTO? itemToEdit)
+        public bool? OpenInsertMaterialWindow(ObservableCollection<DepotItemDTO> collection,
+                                             DepotItemDTO? itemToEdit)
         {
+            InsertMaterial insertMaterial;
             if (itemToEdit != null)
             {
-                // CHẾ ĐỘ CẬP NHẬT: Dùng constructor 2 (truyền đối tượng đang sửa)
-                InsertMaterial insertMaterial = new InsertMaterial(itemToEdit, collection);
-                insertMaterial.ShowDialog();
+                // CHẾ ĐỘ CẬP NHẬT
+                insertMaterial = new InsertMaterial(itemToEdit, collection);
             }
             else
             {
-                // CHẾ ĐỘ THÊM MỚI: Dùng constructor 1
-                InsertMaterial insertMaterial = new InsertMaterial(collection);
-                insertMaterial.ShowDialog();
+                // CHẾ ĐỘ THÊM MỚI
+                insertMaterial = new InsertMaterial(collection);
             }
+            return insertMaterial.ShowDialog();
         }
 
         public void OpenDepotHistoryWindow()

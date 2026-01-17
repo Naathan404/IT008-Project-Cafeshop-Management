@@ -61,13 +61,11 @@ namespace CoffeeShop.ViewModels.AdminVM
 
         public int ActiveCouponsCount => Coupons?.Count(x => x.IsActive) ?? 0;
 
-        // 2. Mã Hot nhất (Chỉ lấy mã đang Bật - IsActive)
         public string BestPerformanceCoupon => Coupons?
             .Where(x => x.IsActive) // Chỉ xét những thằng đang bật
             .OrderByDescending(x => x.UsagePercentage)
             .FirstOrDefault()?.DiscountCode ?? "N/A";
 
-        // 3. Tổng tiền đã giảm
         private decimal? _totalDiscountAmount;
         public decimal? TotalDiscountAmount
         {
