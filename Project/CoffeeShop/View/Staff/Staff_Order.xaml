@@ -11,9 +11,7 @@
       d:DesignHeight="700" d:DesignWidth="1310"
       MinHeight="0" MinWidth="1000"
       Title="Staff_Order">
-    <Page.DataContext>
-        <vm:StaffOrderViewModel/>
-    </Page.DataContext>
+
     
     <Page.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>

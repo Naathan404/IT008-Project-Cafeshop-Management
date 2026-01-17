@@ -1,4 +1,6 @@
 ﻿using CoffeeShop.Models;
+using CoffeeShop.Service;
+using CoffeeShop.ViewModels.AdminVM;
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.ObjectModel;
@@ -13,10 +15,13 @@ namespace CoffeeShop.ViewModels.StaffVM
 {
     public partial class StaffOrderViewModel
     {
+        private Staff _currentStaff;
         #region Constructor
         #region Constructor
-        public StaffOrderViewModel()
+        public StaffOrderViewModel(Staff staff = null!)
         {
+            _currentStaff = staff;
+
             Items = new ObservableCollection<OrderItem>();
             Orders = new ObservableCollection<OrderDetailItem>();
             AvailableTables = new ObservableCollection<OrderTable>();
@@ -77,8 +82,8 @@ namespace CoffeeShop.ViewModels.StaffVM
         {
             AddItemCommand = new RelayCommand<object>(param =>
             {
-                if (param is Tuple<OrderItem, string, string, decimal> data)
-                    AddItemToOrder(data.Item1, data.Item2, data.Item3, data.Item4);
+                if (param is Tuple<OrderItem, string, string, decimal, int> data)
+                    AddItemToOrder(data.Item1, data.Item2, data.Item3, data.Item4, data.Item5);
             });
             RemoveItemCommand = new RelayCommand<OrderDetailItem>(RemoveItemFromOrder);
             IncreaseQuantityCommand = new RelayCommand<OrderDetailItem>(IncreaseQuantity);
@@ -123,6 +128,7 @@ namespace CoffeeShop.ViewModels.StaffVM
                         return context.Items
                             .Include(i => i.ItemPrices).ThenInclude(ip => ip.Size)
                             .Where(i => i.IsDeleted == false)
+                            .Where(i => i.IsAvailable == true)
                             .OrderByDescending(i => i.IsAvailable)
                             .ToList();
                     }
@@ -446,29 +452,34 @@ namespace CoffeeShop.ViewModels.StaffVM
             }
         }
         // Thêm món vào đơn hàng  
-        public void AddItemToOrder(OrderItem item, string? selectedSize, string? note, decimal price)
+        public void AddItemToOrder(OrderItem item, string? selectedSize, string? note, decimal price, int priceId)
         {
             if (item == null) return;
             selectedSize = selectedSize ?? string.Empty;
             note = string.IsNullOrEmpty(note) ? null : note.Trim();
 
-            var newItem = new OrderDetailItem
-            {
-                ItemId = item.ItemId,
-                ItemName = item.ItemName,
-                SizeName = selectedSize,
-                Quantity = 1,
-                Price = price,
-                Note = note
-            };
-            newItem.NoteChangedCallback = MergeItemOnNoteChange;
-
-            var existingItem = Orders.FirstOrDefault(i => i.ItemId == item.ItemId && i.SizeName == selectedSize && i.Note == note);
+            // Tìm xem món này với Size này đã có trong giỏ hàng chưa
+            var existingItem = Orders.FirstOrDefault(i => i.PriceId == priceId && i.Note == note);
 
             if (existingItem != null)
+            {
                 existingItem.Quantity++;
+            }
             else
+            {
+                var newItem = new OrderDetailItem
+                {
+                    ItemId = item.ItemId,
+                    PriceId = priceId,
+                    ItemName = item.ItemName,
+                    SizeName = selectedSize,
+                    Quantity = 1,
+                    Price = price,
+                    Note = note
+                };
+                newItem.NoteChangedCallback = MergeItemOnNoteChange;
                 Orders.Add(newItem);
+            }
             CalculateTotalAmount();
         }
 
@@ -631,8 +642,8 @@ namespace CoffeeShop.ViewModels.StaffVM
             else
             {
                 var filtered = _customers.Where(c =>
-                    !string.IsNullOrEmpty(c.PhoneNumber) &&
-                    c.PhoneNumber.Contains(SearchCustomerKeyword, StringComparison.OrdinalIgnoreCase)
+                    (!string.IsNullOrEmpty(c.PhoneNumber) && c.PhoneNumber.Contains(SearchCustomerKeyword, StringComparison.OrdinalIgnoreCase))
+                    || (!string.IsNullOrEmpty(c.CustomerName) && c.CustomerName.Contains(SearchCustomerKeyword, StringComparison.OrdinalIgnoreCase))
                 );
 
                 foreach (var c in filtered)
@@ -736,6 +747,7 @@ namespace CoffeeShop.ViewModels.StaffVM
         #endregion
 
         #region PayOrder Methods
+        PaymentWindow payWindow;
         private void PayOrderWindow (object param)
         {
             // Force commit edit trước khi refresh view hoặc mở window mới
@@ -750,7 +762,7 @@ namespace CoffeeShop.ViewModels.StaffVM
             }
             if (CanPayOrder)
             {
-                PaymentWindow payWindow = new PaymentWindow(this);
+                payWindow = new PaymentWindow(this);
                 payWindow.Show();
             }
             else
@@ -758,7 +770,7 @@ namespace CoffeeShop.ViewModels.StaffVM
                 MessageBox.Show("Chưa chọn mặt hàng nào để thanh toán!", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
-        private void ConfirmPayOrder(object param)
+        private async void ConfirmPayOrder(object param)
         {
             if (GetInvalidOrderItems != null)
             {
@@ -771,11 +783,124 @@ namespace CoffeeShop.ViewModels.StaffVM
                     return; // Dừng quá trình thanh toán
                 }
             }
-            var result = MessageBox.Show(
-                    "Bạn có chắc muốn thanh toán đơn hàng này không?",
-                    "Xác nhận thanh toán",
-                    MessageBoxButton.YesNo,
-                    MessageBoxImage.Warning);
+            // 2. Xác nhận từ người dùng
+            var confirm = MessageBox.Show("Xác nhận thanh toán đơn hàng?", "Xác nhận",
+                MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if (confirm != MessageBoxResult.Yes) return;
+
+            IsLoading = true;
+            try
+            {
+                await Task.Run(() =>
+                {
+                    using (var db = new CoffeeShopContext())
+                    {
+                        using (var transaction = db.Database.BeginTransaction())
+                        {
+                            try
+                            {
+                                var newOrder = new Order
+                                {
+                                    TableId = SelectedTable?.TableId != 0 ? SelectedTable?.TableId : null,
+                                    CustomerId = SelectedCustomer?.CustomerId != 0 ? SelectedCustomer?.CustomerId : null,
+                                    StaffId = _currentStaff.StaffId,
+                                    OrderDate = DateTime.Now,
+                                    SubTotal = TotalAmount,
+                                    DiscountId = SelectedDiscount?.DiscountId != 0 ? SelectedDiscount?.DiscountId : null,
+                                    DiscountMoney = FinalDiscount, 
+                                    TotalAmount = FinalTotal,
+                                    PaymentMethod = SelectedPaymentMethod ?? "Tiền mặt"
+                                };
+
+                                db.Orders.Add(newOrder);
+                                db.SaveChanges();
+
+                                foreach (var item in Orders)
+                                {
+                                    var detail = new OrderDetail
+                                    {
+                                        OrderId = newOrder.OrderId,
+                                        PriceId = item.PriceId,
+                                        Quantity = item.Quantity,
+                                        UnitPrice = item.Price,
+                                        TotalPrice = item.TotalPrice,
+                                        Note = item.Note
+                                    };
+                                    db.OrderDetails.Add(detail);
+                                }
+
+                                // Cập nhật bàn đang sử dụng
+                                if (newOrder.TableId != null)
+                                {
+                                    var table = db.CafeTables.Find(newOrder.TableId);
+                                    if (table != null)
+                                    {   
+                                        table.TableStatus = 1;
+                                    }
+                                }
+
+                                // Cập nhật lượt dùng ddiiss cao
+                                if (newOrder.DiscountId != null)
+                                {
+                                    var disc = db.Discounts.Find(newOrder.DiscountId);
+                                    if (disc != null) disc.UsedCount += 1;
+                                }
+
+                                // Cập nhật điểm cho khách hàng, cứ mỗi 2k giá trị đơn <=> 1 điểm
+                                if (newOrder.CustomerId != null)
+                                {
+                                    var customer = db.Customers.Find(newOrder.CustomerId);
+                                    if (customer != null) customer.Point += (int)(newOrder.TotalAmount / 2000);
+                                    switch(customer!.Point)
+                                    {
+                                        case int points when points >= 3000:
+                                            customer.Tier = "VIP100";
+                                            break;
+                                        case int points when points >= 1500:
+                                            customer.Tier = "VIP10";
+                                            break;
+                                        case int points when points >= 500:
+                                            customer.Tier = "VIP1";
+                                            break;
+                                        default:
+                                            customer.Tier = "MEMBER";
+                                            break;
+                                    }
+                                }
+
+                                db.SaveChanges();
+                                transaction.Commit();
+                                EventAggregator.Instance.Publish(new OrderCompletedMessage { TableId = newOrder.TableId });
+                            }
+                            catch (Exception ex)
+                            {
+                                transaction.Rollback();
+                                throw new Exception("Lỗi dữ liệu: " + ex.Message);
+                            }
+                        }
+                    }
+                });
+
+                MessageBox.Show("Thanh toán và lưu hóa đơn thành công!", "Thành công", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                // Reset giao diện
+                CancelOrder(null);
+                // Đóng cửa sổ thanh toán
+                payWindow.Close();
+                //
+                SelectedCustomer = Customers.FirstOrDefault(c => c.CustomerId == 0);
+                SelectedTable = AvailableTables.FirstOrDefault(t => t.TableId == 0);
+                SelectedDiscount = AvailableDiscounts.FirstOrDefault(d => d.DiscountId == 0);
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi thanh toán: {ex.Message}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            finally
+            {
+                IsLoading = false;
+            }
         }
         #endregion
     }
