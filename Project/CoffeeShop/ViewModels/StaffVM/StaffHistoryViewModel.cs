@@ -1,6 +1,7 @@
 ﻿using CoffeeShop.Models;
 using CoffeeShop.Service;
 using CoffeeShop.Service.DTOs;
+using CoffeeShop.View.Controls;
 using CoffeeShop.View.General;
 using CoffeeShop.ViewModels.AdminVM;
 using Microsoft.EntityFrameworkCore;
@@ -8,6 +9,7 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Input;
+using static CoffeeShop.View.Controls.CustomMessageBox;
 
 namespace CoffeeShop.ViewModels.StaffVM
 {
@@ -251,7 +253,7 @@ namespace CoffeeShop.ViewModels.StaffVM
 
             PrintCommand = new RelayCommand<object>((p) =>
             {
-                MessageBox.Show("Chức năng in hóa đơn đang được phát triển.", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+                CustomMessageBox.Show("Chức năng in hóa đơn đang được phát triển.", "Thông báo", MessageButtons.OK, MessageType.Info);
             });
             _ = LoadOrderHistory();
         }

@@ -1,15 +1,12 @@
 ﻿using CoffeeShop.Models;
 using CoffeeShop.Service;
 using CoffeeShop.Service.DTOs;
+using CoffeeShop.View.Controls;
 using CoffeeShop.View.General;
 using CoffeeShop.ViewModels.AdminVM;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.ObjectModel;
 using System.Globalization;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Input;
 
 namespace CoffeeShop.ViewModels.StaffVM
@@ -138,7 +135,7 @@ namespace CoffeeShop.ViewModels.StaffVM
                     CustomerList = new ObservableCollection<CustomerDTO>(dtoList);
                 }
             }
-            catch (Exception ex) { MessageBox.Show("Lỗi tải dữ liệu: " + ex.Message); }
+            catch (Exception ex) { CustomMessageBox.Show("Lỗi tải dữ liệu: " + ex.Message); }
         }
 
         private async Task LoadTransactionHistory(int customerId)
@@ -194,7 +191,7 @@ namespace CoffeeShop.ViewModels.StaffVM
             if (SelectedCustomer == null) return;
             if (string.IsNullOrEmpty(SelectedCustomer.CustomerName) || string.IsNullOrEmpty(SelectedCustomer.PhoneNumber))
             {
-                MessageBox.Show("Vui lòng nhập Tên và Số điện thoại!"); return;
+                CustomMessageBox.Show("Vui lòng nhập Tên và Số điện thoại!"); return;
             }
 
             using (var db = new CoffeeShopContext())
@@ -203,7 +200,7 @@ namespace CoffeeShop.ViewModels.StaffVM
                 {
                     if (await db.Customers.AnyAsync(c => c.PhoneNumber == SelectedCustomer.PhoneNumber && !c.IsDeleted))
                     {
-                        MessageBox.Show("Số điện thoại này đã tồn tại!"); return;
+                        CustomMessageBox.Show("Số điện thoại này đã tồn tại!"); return;
                     }
 
                     var newCus = new Customer
@@ -218,7 +215,7 @@ namespace CoffeeShop.ViewModels.StaffVM
                     };
                     db.Customers.Add(newCus);
                     await db.SaveChangesAsync();
-                    MessageBox.Show("Thêm khách hàng thành công!");
+                    CustomMessageBox.Show("Thêm khách hàng thành công!");
                 }
                 else // Cập nhật
                 {
@@ -229,7 +226,7 @@ namespace CoffeeShop.ViewModels.StaffVM
                         cus.PhoneNumber = SelectedCustomer.PhoneNumber;
                         cus.Email = SelectedCustomer.Email;
                         await db.SaveChangesAsync();
-                        MessageBox.Show("Cập nhật thành công!");
+                        CustomMessageBox.Show("Cập nhật thành công!");
                     }
                 }
             }
