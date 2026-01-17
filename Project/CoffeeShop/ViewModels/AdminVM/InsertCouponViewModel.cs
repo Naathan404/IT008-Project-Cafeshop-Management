@@ -1,8 +1,10 @@
 ﻿using CoffeeShop.Models;
 using CoffeeShop.Service.DTOs;
+using CoffeeShop.View.Controls;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
+using static CoffeeShop.View.Controls.CustomMessageBox;
 
 namespace CoffeeShop.ViewModels.AdminVM
 {
@@ -76,7 +78,7 @@ namespace CoffeeShop.ViewModels.AdminVM
             ApplyCommand = new RelayCommand<Window>(async w => {
                 if (string.IsNullOrWhiteSpace(Coupon.DiscountCode))
                 {
-                    MessageBox.Show("Mã giảm giá không được để trống!");
+                    CustomMessageBox.Show("Mã giảm giá không được để trống!", "Thông báo", MessageButtons.OK, MessageType.Warning);
                     return;
                 }
 
@@ -132,7 +134,7 @@ namespace CoffeeShop.ViewModels.AdminVM
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Lỗi lưu dữ liệu: " + ex.Message);
+                    CustomMessageBox.Show("Lỗi lưu dữ liệu: " + ex.Message, "Lỗi", MessageButtons.OK, MessageType.Error);
                 }
             });
 

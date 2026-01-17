@@ -1,15 +1,16 @@
 ﻿using CoffeeShop.Models;
+using CoffeeShop.View.Controls;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Win32;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
-using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using static CoffeeShop.View.Controls.CustomMessageBox;
 
 namespace CoffeeShop.ViewModels.AdminVM
 {
@@ -745,7 +746,7 @@ namespace CoffeeShop.ViewModels.AdminVM
         {
             if (SelectedItem == null) return;
 
-            if (MessageBox.Show("Bạn có chắc muốn xóa món này?", "Xác nhận", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
+            if (CustomMessageBox.Show("Bạn có chắc muốn xóa món này?", "Xác nhận", MessageButtons.YesNo, MessageType.Question) != CustomMessageBox.MessageBoxResult.Yes)
                 return;
 
             IsLoading = true;
@@ -775,7 +776,7 @@ namespace CoffeeShop.ViewModels.AdminVM
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Lỗi: {ex.Message}");
+                CustomMessageBox.Show($"Lỗi: {ex.Message}", "Lỗi", MessageButtons.OK, MessageType.Error);
             }
             finally
             {

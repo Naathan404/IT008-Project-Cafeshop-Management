@@ -1,4 +1,5 @@
 ﻿using CoffeeShop.Models;
+using CoffeeShop.View.Controls;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Win32;
 using System;
@@ -11,6 +12,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using static CoffeeShop.View.Controls.CustomMessageBox;
 
 namespace CoffeeShop.ViewModels.AdminVM
 {
@@ -129,8 +131,8 @@ namespace CoffeeShop.ViewModels.AdminVM
                             });
                         }
 
-                        MessageBox.Show("Đã chuyển sang Food. Chỉ giữ lại 1 giá duy nhất.",
-                            "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+                        CustomMessageBox.Show("Đã chuyển sang Food. Chỉ giữ lại 1 giá duy nhất.",
+                            "Thông báo", MessageButtons.OK, MessageType.Info);
                     }
                     // Khi chuyển từ Food sang Drinks, nếu chưa có size thì thêm
                     else if (_categoryId == 7 && value != 7 && SizePrices.Count == 1 && SizePrices[0].SizeId == null)
@@ -240,7 +242,7 @@ namespace CoffeeShop.ViewModels.AdminVM
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Lỗi khi tải danh mục: {ex.Message}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                CustomMessageBox.Show($"Lỗi khi tải danh mục: {ex.Message}", "Lỗi", MessageButtons.OK, MessageType.Error);
             }
         }
 
@@ -264,7 +266,7 @@ namespace CoffeeShop.ViewModels.AdminVM
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Lỗi khi tải size: {ex.Message}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                CustomMessageBox.Show($"Lỗi khi tải size: {ex.Message}", "Lỗi", MessageButtons.OK, MessageType.Error);
             }
         }
 
@@ -296,20 +298,15 @@ namespace CoffeeShop.ViewModels.AdminVM
                         }
                         else
                         {
-                            // 1. Xóa dấu gạch ở đầu VÀ chuẩn hóa dấu gạch chéo của Windows
                             string cleanPath = dbPath.TrimStart('/', '\\').Replace('/', '\\');
-
-                            // 2. Kết hợp với thư mục gốc của App
                             string absolutePath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, cleanPath);
 
                             if (System.IO.File.Exists(absolutePath))
                             {
-                                // Dùng UriKind.Absolute để WPF biết đây là đường dẫn ngoài ổ cứng
                                 ImagePath = absolutePath;
                             }
                             else
                             {
-                                // Nếu vẫn không thấy, thử dùng Pack URI (nếu bạn lỡ để Build Action là Resource)
                                 ImagePath = "pack://application:,,,/" + dbPath.TrimStart('/');
                             }
                         }
@@ -329,7 +326,7 @@ namespace CoffeeShop.ViewModels.AdminVM
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Lỗi khi tải thông tin món: {ex.Message}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                CustomMessageBox.Show($"Lỗi khi tải thông tin món: {ex.Message}", "Lỗi", MessageButtons.OK, MessageType.Error);
             }
         }
         #endregion
@@ -345,17 +342,17 @@ namespace CoffeeShop.ViewModels.AdminVM
                 bitmap.CacheOption = BitmapCacheOption.OnLoad;
                 bitmap.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
 
-                // 1. Chỉ dùng ảnh mặc định khi đường dẫn thực sự trống hoặc chứa tên ảnh mặc định
+                // ảnh mặc định khi đường dẫn trống/path là ảnh mặc định
                 if (string.IsNullOrWhiteSpace(path) || path.Contains("imgItemExample.jpg"))
                 {
                     bitmap.UriSource = new Uri("pack://application:,,,/Assets/Images/imgItemExample.jpg", UriKind.Absolute);
                 }
-                // 2. Nếu là Pack URI (đã chuẩn hóa sẵn)
+                // Pack URI
                 else if (path.StartsWith("pack://"))
                 {
                     bitmap.UriSource = new Uri(path, UriKind.Absolute);
                 }
-                // 3. Nếu là đường dẫn tuyệt đối (C:\...)
+                // đường dẫn tuyệt đối (C:\...)
                 else if (Path.IsPathRooted(path))
                 {
                     if (File.Exists(path))
@@ -363,10 +360,9 @@ namespace CoffeeShop.ViewModels.AdminVM
                     else
                         bitmap.UriSource = new Uri("pack://application:,,,/Assets/Images/imgItemExample.jpg", UriKind.Absolute);
                 }
-                // 4. Case quan trọng nhất: Đường dẫn từ DB (/Assets/Images/...)
+                // Đường dẫn từ DB
                 else
                 {
-                    // Xóa dấu / ở đầu để Path.Combine không hiểu nhầm là gốc ổ đĩa
                     string cleanPath = path.TrimStart('/', '\\').Replace('/', '\\');
                     string fullPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, cleanPath);
 
@@ -376,7 +372,6 @@ namespace CoffeeShop.ViewModels.AdminVM
                     }
                     else
                     {
-                        // Thử tìm trong Resource nếu không thấy file vật lý (Dành cho ảnh cũ)
                         System.Diagnostics.Debug.WriteLine($"[Warning] Khong tim thay file: {fullPath}");
                         bitmap.UriSource = new Uri("pack://application:,,,/Assets/Images/imgItemExample.jpg", UriKind.Absolute);
                     }
@@ -389,7 +384,6 @@ namespace CoffeeShop.ViewModels.AdminVM
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"[Lỗi Image] {ex.Message}");
-                // Fallback an toàn nhất
                 Image = new BitmapImage(new Uri("pack://application:,,,/Assets/Images/imgItemExample.jpg", UriKind.Absolute));
             }
         }
@@ -419,7 +413,7 @@ namespace CoffeeShop.ViewModels.AdminVM
                 ImagePath = destPath;
                 _path = Path.Combine(relativeFolder, fileName).Replace('\\', '/');
             }
-            catch (Exception ex) { MessageBox.Show($"Lỗi: {ex.Message}"); }
+            catch (Exception ex) { CustomMessageBox.Show($"Lỗi: {ex.Message}", "Lỗi", MessageButtons.OK, MessageType.Error); }
             finally { IsLoading = false; }
         }
 
@@ -430,8 +424,8 @@ namespace CoffeeShop.ViewModels.AdminVM
             {
                 if (SizePrices.Count > 0)
                 {
-                    MessageBox.Show("Món Food chỉ có một giá duy nhất!",
-                        "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+                    CustomMessageBox.Show("Món Food chỉ có một giá duy nhất!",
+                        "Thông báo", MessageButtons.OK, MessageType.Warning);
                     return;
                 }
 
@@ -441,12 +435,12 @@ namespace CoffeeShop.ViewModels.AdminVM
                     Price = 0
                 });
             }
-            else // Drinks - cần chọn size
+            else
             {
                 if (AvailableSizes.Count == 0)
                 {
-                    MessageBox.Show("Không có size nào khả dụng!",
-                        "Thông báo", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    CustomMessageBox.Show("Không có size nào khả dụng!",
+                        "Thông báo", MessageButtons.OK, MessageType.Warning);
                     return;
                 }
 
@@ -459,8 +453,8 @@ namespace CoffeeShop.ViewModels.AdminVM
 
                 if (availableSize == null)
                 {
-                    MessageBox.Show("Đã thêm đủ tất cả các size!",
-                        "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+                    CustomMessageBox.Show("Đã thêm đủ tất cả các size!",
+                        "Thông báo", MessageButtons.OK, MessageType.Info);
                     return;
                 }
 
@@ -474,8 +468,8 @@ namespace CoffeeShop.ViewModels.AdminVM
 
         private void RemoveSize(SizePriceViewModel? sizePrice)
         {
-            if (MessageBox.Show("Bạn có chắc muốn xóa size/giá này?", "Xác nhận xóa Size",
-                MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes)
+            if (CustomMessageBox.Show("Bạn có chắc muốn xóa size/giá này?", "Xác nhận xóa Size",
+                MessageButtons.YesNo, MessageType.Question) != CustomMessageBox.MessageBoxResult.Yes)
             {
                 return;
             }
@@ -493,31 +487,30 @@ namespace CoffeeShop.ViewModels.AdminVM
                 // Validation
                 if (string.IsNullOrWhiteSpace(ItemName))
                 {
-                    MessageBox.Show("Vui lòng nhập tên món!", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    CustomMessageBox.Show("Vui lòng nhập tên món!", "Lỗi", MessageButtons.OK, MessageType.Warning);
                     return;
                 }
 
                 if (SizePrices.Count == 0)
                 {
-                    MessageBox.Show("Vui lòng thêm ít nhất 1 size/giá!", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    CustomMessageBox.Show("Vui lòng thêm ít nhất 1 size/giá!", "Lỗi", MessageButtons.OK, MessageType.Warning);
                     return;
                 }
 
                 // Validation cho Food
                 if (CategoryId == 7 && SizePrices.Count > 1)
                 {
-                    MessageBox.Show("Món Food chỉ được có 1 giá duy nhất!", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    CustomMessageBox.Show("Món Food chỉ được có 1 giá duy nhất!", "Lỗi", MessageButtons.OK, MessageType.Warning);
                     return;
                 }
 
-                // Validation cho Drinks
                 if (CategoryId != 7)
                 {
                     foreach (var sp in SizePrices)
                     {
                         if (!sp.SizeId.HasValue)
                         {
-                            MessageBox.Show("Vui lòng chọn size cho tất cả các giá!", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Warning);
+                            CustomMessageBox.Show("Vui lòng chọn size cho tất cả các giá!", "Lỗi", MessageButtons.OK, MessageType.Warning);
                             return;
                         }
                     }
@@ -529,7 +522,7 @@ namespace CoffeeShop.ViewModels.AdminVM
 
                     if (sizeIds.Count != sizeIds.Distinct().Count())
                     {
-                        MessageBox.Show("Không được chọn trùng size!", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        CustomMessageBox.Show("Không được chọn trùng size!", "Lỗi", MessageButtons.OK, MessageType.Error);
                         return;
                     }
                 }
@@ -550,7 +543,6 @@ namespace CoffeeShop.ViewModels.AdminVM
                         context.Items.Add(item);
                     }
 
-                    // --- XỬ LÝ ẢNH ---
                     string pathForDb = _path ?? "";
 
                     item.ItemName = ItemName;
@@ -561,7 +553,7 @@ namespace CoffeeShop.ViewModels.AdminVM
 
                     context.SaveChanges();
 
-                    // Xử lý ItemPrices - XÓA HẾT rồi thêm lại
+                    // Xử lý ItemPrices
                     var existingPrices = context.ItemPrices
                         .Where(ip => ip.ItemId == item.ItemId)
                         .ToList();
@@ -604,12 +596,12 @@ namespace CoffeeShop.ViewModels.AdminVM
                     EventAggregator.Instance.Publish(new ItemsChangedMessage());
                 });
 
-                MessageBox.Show("Lưu thành công!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+                CustomMessageBox.Show("Lưu thành công!", "Thành công", MessageButtons.OK, MessageType.Success);
                 DialogResult = true;
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Lỗi khi lưu: {ex.Message}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                CustomMessageBox.Show($"Lỗi khi lưu: {ex.Message}", "Lỗi", MessageButtons.OK, MessageType.Error);
             }
             finally
             {

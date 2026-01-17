@@ -1,8 +1,10 @@
-﻿using CoffeeShop.ViewModels.StaffVM;
+﻿using CoffeeShop.View.Controls;
+using CoffeeShop.ViewModels.StaffVM;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using static CoffeeShop.View.Controls.CustomMessageBox;
 using static CoffeeShop.ViewModels.StaffVM.StaffOrderViewModel;
 
 namespace CoffeeShop.View.Staff
@@ -230,8 +232,8 @@ namespace CoffeeShop.View.Staff
             // Kiểm tra đã chọn size chưa
             if (string.IsNullOrEmpty(_selectedSize) && _currentItem.CategoryId != 7)
             {
-                MessageBox.Show("Vui lòng chọn size!", "Thông báo",
-                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                CustomMessageBox.Show("Vui lòng chọn size!", "Thông báo",
+                    MessageButtons.OK, MessageType.Warning);
                 return;
             }
 
