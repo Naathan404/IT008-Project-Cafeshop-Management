@@ -1,6 +1,9 @@
-﻿using System.ComponentModel;
+﻿using CoffeeShop.View.Controls;
+using System.ComponentModel;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Input;
+using static CoffeeShop.View.Controls.CustomMessageBox;
 
 namespace CoffeeShop.ViewModels.StaffVM
 {
@@ -48,16 +51,37 @@ namespace CoffeeShop.ViewModels.StaffVM
         #endregion
         private void ExecuteAdd(object param)
         {
-            if (string.IsNullOrWhiteSpace(CustomerName))
+            // Kiểm tra dữ liệu nhập
+            // Tên khách hàng và số điện thoại không được để trống
+            if (string.IsNullOrWhiteSpace(CustomerName) || string.IsNullOrWhiteSpace(CustomerPhoneNumber))
             {
-                MessageBox.Show("Tên khách hàng không được để trống");
+                CustomMessageBox.Show("Tên khách hàng và SĐT khách hàng không được để trống", "Lỗi", MessageType.Error , MessageButtons.OK);
                 return;
             }
 
-            if (string.IsNullOrWhiteSpace(CustomerPhoneNumber))
+            string namePattern = @"^[\p{L} ]+$";
+            // Tên KH chỉ được chứa chữ cái
+            if (!Regex.IsMatch(CustomerName, namePattern))
             {
-                MessageBox.Show("Số điện thoại không được để trống");
+                CustomMessageBox.Show("Tên khách hàng không được chứa chữ số và ký tự đặc biệt!", "Lỗi định dạng", MessageType.Error, MessageButtons.OK);
                 return;
+            }
+
+            // Số điện thoại chỉ được chứa chữ số
+            if (!Regex.IsMatch(CustomerPhoneNumber, @"^[0-9]+$"))
+            {
+                CustomMessageBox.Show("Số điện thoại chỉ được chứa các chữ số!", "Lỗi định dạng", MessageType.Error, MessageButtons.OK);
+                return;
+            }
+
+            // Email phải có '@' nếu được nhập
+            if (!string.IsNullOrWhiteSpace(CustomerEmail))
+            {
+                if (!CustomerEmail.Contains("@"))
+                {
+                    CustomMessageBox.Show("Email không hợp lệ (thiếu ký tự @)!", "Lỗi định dạng", MessageType.Error, MessageButtons.OK);
+                    return;
+                }
             }
             var newCustomer = _parentVM.AddCustomer(CustomerName, CustomerPhoneNumber, CustomerEmail);
             // Cập nhật SelectedCustomer tại StaffOrderViewModel

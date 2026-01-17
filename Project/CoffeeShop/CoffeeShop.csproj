@@ -29,6 +29,7 @@
     <None Remove="Assets\Images\imgBanner_5.jpg" />
     <None Remove="Assets\Images\imgCoffeeOrder.jpg" />
     <None Remove="Assets\Images\imgItemExample.jpg" />
+    <None Remove="Assets\Images\imgMessageBox.png" />
     <None Remove="Assets\Images\Menu\imgBongLanTrungMuoi.png" />
     <None Remove="Assets\Images\Menu\imgCaPheDaXay.png" />
     <None Remove="Assets\Images\Menu\imgCFBacXiu.png" />
@@ -66,6 +67,10 @@
     <None Remove="Assets\Images\Menu\imgTSMatcha.png" />
     <None Remove="Assets\Images\Menu\imgTSTiramisu.png" />
     <None Remove="Assets\Images\Menu\imgTSTruyenThong.png" />
+    <None Remove="Assets\Images\MessageBoxIcons\imgError.png" />
+    <None Remove="Assets\Images\MessageBoxIcons\imgInfo.png" />
+    <None Remove="Assets\Images\MessageBoxIcons\imgSuccess.png" />
+    <None Remove="Assets\Images\MessageBoxIcons\imgWarning.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -99,6 +104,7 @@
     <Resource Include="Assets\Images\imgItemExample.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Assets\Images\imgMessageBox.png" />
     <Resource Include="Assets\Images\Menu\imgBongLanTrungMuoi.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
@@ -210,6 +216,10 @@
     <Resource Include="Assets\Images\Menu\imgTSTruyenThong.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Assets\Images\MessageBoxIcons\imgError.png" />
+    <Resource Include="Assets\Images\MessageBoxIcons\imgInfo.png" />
+    <Resource Include="Assets\Images\MessageBoxIcons\imgSuccess.png" />
+    <Resource Include="Assets\Images\MessageBoxIcons\imgWarning.png" />
   </ItemGroup>
 
   <ItemGroup>
