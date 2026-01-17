@@ -767,7 +767,7 @@ namespace CoffeeShop.ViewModels.StaffVM
             }
             else
             {
-                CustomMessageBox.Show("Lỗi", "Chưa chọn mặt hàng nào để thanh toán!", MessageType.Error, MessageButtons.OK);
+                CustomMessageBox.Show("Chưa chọn mặt hàng nào để thanh toán!", "Lỗi", MessageType.Error, MessageButtons.OK);
             }
         }
         private async void ConfirmPayOrder(object param)
