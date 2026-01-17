@@ -1,0 +1,209 @@
+﻿<Window x:Class="CoffeeShop.View.Controls.CustomMessageBox"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        mc:Ignorable="d"
+        Icon="/Assets/Images/imgMessageBox.png"
+        Title="Thông báo" 
+        SizeToContent="WidthAndHeight" 
+        MinWidth="350" MaxWidth="550"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen"
+        Background="Transparent"
+        AllowsTransparency="True"
+        WindowStyle="None">
+    <Border Margin="10"
+            CornerRadius="10"
+            Background="#C7A57A">
+        <Border.Effect>
+            <DropShadowEffect BlurRadius="20"
+                      Opacity="0.3"
+                      Color="Black"
+                      ShadowDepth="9"/>
+        </Border.Effect>
+        
+        <Grid Margin="15">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <Border Background="#E0CEB5"
+                    CornerRadius="12,12,0,0"
+                    HorizontalAlignment="Left">
+                <!-- Title -->
+                <TextBlock x:Name="txtTitle"
+                           Grid.Column="0"
+                           Margin="8"
+                           FontFamily="Cascadia Code"
+                           FontSize="20" FontWeight="Bold"
+                           Foreground="#340D05"
+                           TextAlignment="Left"
+                           d:Text="Thông báo"/>
+            </Border>
+
+            <Border Background="#E0CEB5"
+                    Grid.Row="1"
+                    CornerRadius="0 10 10 10">
+                <!-- Message -->
+                <Grid Margin="8">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <Grid Grid.Row="0"
+                          Margin="0 0 0 10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        
+                        <!-- Image of Message Type -->
+                        <Image x:Name="imgInfo"
+                               Width="50" Height="50"
+                               VerticalAlignment="Center"
+                               Source="/Assets/Images/MessageBoxIcons/imgInfo.png"
+                               Grid.Column="0"
+                               Margin="0,0,10,0"
+                               Visibility="Collapsed"/>
+
+                        <Image x:Name="imgWarning"
+                               Width="50" Height="50"
+                               VerticalAlignment="Center"
+                               Source="/Assets/Images/MessageBoxIcons/imgWarning.png"
+                               Grid.Column="0"
+                               Margin="0,0,10,0"
+                               Visibility="Visible"/>
+                        <Image x:Name="imgSuccess"
+                               Width="50" Height="50"
+                               VerticalAlignment="Center"
+                               Source="/Assets/Images/MessageBoxIcons/imgSuccess.png"
+                               Grid.Column="0"
+                               Margin="0,0,10,0"
+                               Visibility="Collapsed"/>
+                        <Image x:Name="imgError"
+                               Width="50" Height="50"
+                               VerticalAlignment="Center"
+                               Source="/Assets/Images/MessageBoxIcons/imgError.png"
+                               Grid.Column="0"
+                               Margin="0,0,10,0"
+                               Visibility="Collapsed"/>
+
+                        <!-- Dòng thông báo -->
+                        <TextBlock x:Name="txtMessage"
+                                   Grid.Column="1"
+                                   FontFamily="Cascadia Code"
+                                   FontSize="15"
+                                   Foreground="#766839"
+                                   TextWrapping="Wrap"
+                                   VerticalAlignment="Center"
+                                   TextAlignment="Left"
+                                   d:Text="Thông báo ...................
+                                           Lỗi ................
+                                           Vui lòng nhập lại!"/>
+                    </Grid>
+
+                    <!-- Buttons -->
+                    <StackPanel Grid.Row="1" Orientation="Horizontal" 
+                                HorizontalAlignment="Right">
+                        <!-- Cancel -->
+                        <Border x:Name="btnCancel"
+                                BorderBrush="#766839"
+                                BorderThickness="2"
+                                CornerRadius="12"
+                                Width="70" Height="35"
+                                HorizontalAlignment="Right" 
+                                VerticalAlignment="Bottom"
+                                Margin="0 0 8 0"
+                                MouseDown="btnCancel_MouseDown"
+                                MouseEnter="btn_MouseEnter"
+                                MouseLeave="btn_MouseLeave"
+                                Visibility="Collapsed">
+                            <TextBlock Text="Thoát"
+                                        FontSize="15"
+                                        FontWeight="Bold"
+                                        Margin="8"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        FontFamily="Cascadia Code"
+                                        Foreground="#766839"/>
+                        </Border>
+
+                        <!-- Ok -->
+                        <Border x:Name="btnOk"
+                                BorderBrush="#766839"
+                                BorderThickness="2"
+                                CornerRadius="12"
+                                Width="70" Height="35"
+                                HorizontalAlignment="Right" 
+                                VerticalAlignment="Bottom"
+                                Margin="0 0 8 0"
+                                MouseDown="btnOk_MouseDown"
+                                MouseEnter="btn_MouseEnter"
+                                MouseLeave="btn_MouseLeave"
+                                Visibility="Collapsed">
+                            <TextBlock Text="OK"
+                                        FontSize="15"
+                                        FontWeight="Bold"
+                                        Margin="8"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        FontFamily="Cascadia Code"
+                                        Foreground="#766839"/>
+                        </Border>
+
+                        <!-- Yes -->
+                        <Border x:Name="btnYes"
+                                BorderBrush="#766839"
+                                BorderThickness="2"
+                                CornerRadius="12"
+                                Width="70" Height="35"
+                                HorizontalAlignment="Right" 
+                                VerticalAlignment="Bottom"
+                                Margin="0 0 8 0"
+                                MouseDown="btnYes_MouseDown"
+                                MouseEnter="btn_MouseEnter"
+                                MouseLeave="btn_MouseLeave"
+                                Visibility="Collapsed">
+                            <TextBlock Text="Có"
+                                        FontSize="15"
+                                        FontWeight="Bold"
+                                        Margin="8"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        FontFamily="Cascadia Code"
+                                        Foreground="#766839"/>
+                        </Border>
+
+                        <!-- No -->
+                        <Border x:Name="btnNo"
+                                BorderBrush="#766839"
+                                BorderThickness="2"
+                                CornerRadius="12"
+                                Width="70" Height="35"
+                                HorizontalAlignment="Right" 
+                                VerticalAlignment="Bottom"
+                                Margin="0 0 8 0"
+                                MouseDown="btnNo_MouseDown"
+                                MouseEnter="btn_MouseEnter"
+                                MouseLeave="btn_MouseLeave"
+                                Visibility="Collapsed">
+                            <TextBlock Text="Không"
+                                        FontSize="15"
+                                        FontWeight="Bold"
+                                        Margin="8"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        FontFamily="Cascadia Code"
+                                        Foreground="#766839"/>
+                        </Border>
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </Grid>
+    </Border>
+</Window>
