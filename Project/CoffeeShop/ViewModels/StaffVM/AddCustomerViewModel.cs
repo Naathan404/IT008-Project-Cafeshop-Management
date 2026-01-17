@@ -55,7 +55,7 @@ namespace CoffeeShop.ViewModels.StaffVM
             // Tên khách hàng và số điện thoại không được để trống
             if (string.IsNullOrWhiteSpace(CustomerName) || string.IsNullOrWhiteSpace(CustomerPhoneNumber))
             {
-                CustomMessageBox.Show("Tên khách hàng và SĐT khách hàng không được để trống", "Lỗi", MessageType.Error , MessageButtons.OK);
+                CustomMessageBox.Show("Tên khách hàng và SĐT khách hàng không được để trống", "Lỗi", MessageButtons.OK, MessageType.Error);
                 return;
             }
 
@@ -63,14 +63,14 @@ namespace CoffeeShop.ViewModels.StaffVM
             // Tên KH chỉ được chứa chữ cái
             if (!Regex.IsMatch(CustomerName, namePattern))
             {
-                CustomMessageBox.Show("Tên khách hàng không được chứa chữ số và ký tự đặc biệt!", "Lỗi định dạng", MessageType.Error, MessageButtons.OK);
+                CustomMessageBox.Show("Tên khách hàng không được chứa chữ số và ký tự đặc biệt!", "Lỗi định dạng", MessageButtons.OK, MessageType.Error);
                 return;
             }
 
             // Số điện thoại chỉ được chứa chữ số
             if (!Regex.IsMatch(CustomerPhoneNumber, @"^[0-9]+$"))
             {
-                CustomMessageBox.Show("Số điện thoại chỉ được chứa các chữ số!", "Lỗi định dạng", MessageType.Error, MessageButtons.OK);
+                CustomMessageBox.Show("Số điện thoại chỉ được chứa các chữ số!", "Lỗi định dạng", MessageButtons.OK, MessageType.Error);
                 return;
             }
 
@@ -79,7 +79,7 @@ namespace CoffeeShop.ViewModels.StaffVM
             {
                 if (!CustomerEmail.Contains("@"))
                 {
-                    CustomMessageBox.Show("Email không hợp lệ (thiếu ký tự @)!", "Lỗi định dạng", MessageType.Error, MessageButtons.OK);
+                    CustomMessageBox.Show("Email không hợp lệ (thiếu ký tự @)!", "Lỗi định dạng", MessageButtons.OK, MessageType.Error);
                     return;
                 }
             }
