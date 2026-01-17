@@ -71,6 +71,13 @@
                                Margin="0,0,10,0"
                                Visibility="Collapsed"/>
 
+                        <Image x:Name="imgQuestion"
+                               Width="50" Height="50"
+                               VerticalAlignment="Center"
+                               Source="/Assets/Images/MessageBoxIcons/imgQuestion.png"
+                               Grid.Column="0"
+                               Margin="0,0,10,0"
+                               Visibility="Collapsed"/>
                         <Image x:Name="imgWarning"
                                Width="50" Height="50"
                                VerticalAlignment="Center"

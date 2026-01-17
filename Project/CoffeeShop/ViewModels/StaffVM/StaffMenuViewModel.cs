@@ -1,12 +1,13 @@
 ﻿using CoffeeShop.Models;
+using CoffeeShop.View.Controls;
+using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Windows;
+using System.IO;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.IO;
-using CommunityToolkit.Mvvm.Messaging;
+using static CoffeeShop.View.Controls.CustomMessageBox;
 using static CoffeeShop.ViewModels.StaffVM.StaffOrderViewModel;
 
 namespace CoffeeShop.ViewModels.StaffVM
@@ -308,7 +309,7 @@ namespace CoffeeShop.ViewModels.StaffVM
             if (thisItem == null) return;
             string txt = thisItem.IsAvailable ? "Bạn có chắc muốn tắt món này?" : "Bạn có chắc muốn hủy tắt món này?";
 
-            if (MessageBox.Show(txt, "Thông báo", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+            if (CustomMessageBox.Show(txt, "Xác nhận", MessageButtons.YesNo, MessageType.Question) == CustomMessageBox.MessageBoxResult.Yes)
             {
                 // Đảo trạng thái
                 thisItem.IsAvailable = !thisItem.IsAvailable;

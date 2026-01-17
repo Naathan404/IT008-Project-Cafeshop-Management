@@ -564,7 +564,7 @@ namespace CoffeeShop.ViewModels.StaffVM
             {
                 var result = CustomMessageBox.Show(
                     "Bạn có chắc muốn hủy đơn này không?",
-                    "Xác nhận hủy đơn", MessageButtons.YesNo, MessageType.Warning);
+                    "Xác nhận hủy đơn", MessageButtons.YesNo, MessageType.Question);
 
                 if (result == CustomMessageBox.MessageBoxResult.Yes)
                 {

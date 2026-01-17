@@ -6,7 +6,7 @@ namespace CoffeeShop.View.Controls
 {
     public partial class CustomMessageBox : Window
     {
-        public enum MessageType { Info, Warning, Error, Success }
+        public enum MessageType { Info, Warning, Error, Success, Question }
         public enum MessageBoxResult { Ok, Cancel, Yes, No }
         public enum MessageButtons { OK, OKCancel, YesNo, YesNoCancel }
 
@@ -15,7 +15,7 @@ namespace CoffeeShop.View.Controls
         public CustomMessageBox(string message,
                                 string title = "Thông báo", // Mặc định là "Thông báo"
                                 MessageButtons buttons = MessageButtons.OK, // Mặc định là button OK
-                                MessageType? type = null) 
+                                MessageType? type = MessageType.Info) // Mặc định là Info 
         {
             InitializeComponent();
 
@@ -58,6 +58,9 @@ namespace CoffeeShop.View.Controls
                     break;
                 case MessageType.Success:
                     imgSuccess.Visibility = Visibility.Visible;
+                    break;
+                case MessageType.Question:
+                    imgQuestion.Visibility = Visibility.Visible;
                     break;
             }
         }
