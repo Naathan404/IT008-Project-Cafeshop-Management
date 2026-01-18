@@ -69,24 +69,15 @@ namespace CoffeeShop.View.Admin
         {
             if (sender is Border border && border.DataContext is AdminMenuViewModel.MenuCoffeeItem item)
             {
-                var result = CustomMessageBox.Show(
-                    $"Bạn có chắc chắn muốn xóa món '{item.ItemName}' không?",
-                    "Xác nhận xóa",
-                    MessageButtons.YesNo,
-                    MessageType.Question);
-
-                if (result == CustomMessageBox.MessageBoxResult.Yes)
+                if (DataContext is AdminMenuViewModel viewModel)
                 {
-                    if (DataContext is AdminMenuViewModel viewModel)
-                    {
-                        // Set selected item để command có thể thực thi
-                        viewModel.SelectedItem = item;
+                    // Set selected item để command có thể thực thi
+                    viewModel.SelectedItem = item;
 
-                        // Execute delete command
-                        if (viewModel.DeleteItemCommand.CanExecute(null))
-                        {
-                            viewModel.DeleteItemCommand.Execute(null);
-                        }
+                    // Execute delete command
+                    if (viewModel.DeleteItemCommand.CanExecute(null))
+                    {
+                        viewModel.DeleteItemCommand.Execute(null);
                     }
                 }
             }
@@ -131,23 +122,6 @@ namespace CoffeeShop.View.Admin
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
             => throw new NotImplementedException();
-    }
-    // Converter để chuyển Count thành Visibility
-    public class CountToVisibilityConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            if (value is int count)
-            {
-                return count > 0 ? Visibility.Visible : Visibility.Collapsed;
-            }
-            return Visibility.Collapsed;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
     }
 
     // Converter để kiểm tra Count > 1

@@ -72,7 +72,7 @@
                           FontWeight="Bold"
                           FontFamily="Cascadia Code"
                           Foreground="#766839"
-                          Margin="0 0 0 10"
+                          Margin="0 10 0 10"
                           BorderBrush="#766839"
                           BorderThickness="2"
                           Background="#F9F6F0">
@@ -87,7 +87,7 @@
                                 Width="250" 
                                 Height="180"
                                 HorizontalAlignment="Center"
-                                Margin="10"
+                                Margin="0 15 0 10"
                                 ClipToBounds="True">
                             <Image Source="{Binding Image}"
                                    d:Source="/Assets/Images/imgItemExample.jpg"

@@ -16,7 +16,6 @@
     <Page.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         <local:ObjectEqualsConverter x:Key="ObjectEqualsConverter"/>
-        <local:CountToVisibilityConverter x:Key="CountToVisibilityConverter"/>
         <local:GreaterThanOneConverter x:Key="GreaterThanOneConverter"/>
 
         <!-- Style for Action Buttons (Edit, Delete) -->
@@ -51,18 +50,13 @@
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto"/>
-                                    <!-- Ảnh -->
                                     <RowDefinition Height="Auto"/>
-                                    <!-- Tên -->
                                     <RowDefinition Height="*"/>
-                                    <!-- EMPTY SPACE -->
                                     <RowDefinition Height="Auto"/>
-                                    <!-- Size -->
                                     <RowDefinition Height="Auto"/>
-                                    <!-- Giá -->
                                     <RowDefinition Height="Auto"/>
-                                    <!-- Buttons -->
                                 </Grid.RowDefinitions>
+
                                 <!--Item Image-->
                                 <Image x:Name="imgItem"
                                        Grid.Row="0"
@@ -71,6 +65,7 @@
                                        Source="{Binding ImagePath, TargetNullValue={x:Null}, FallbackValue={x:Null}}"
                                        d:Source="/Assets/Images/imgItemExample.jpg">
                                 </Image>
+
                                 <!--Item Name-->
                                 <TextBlock x:Name="txtblItemName"
                                            Text="{Binding ItemName}"
@@ -83,32 +78,30 @@
                                            HorizontalAlignment="Left"
                                            VerticalAlignment="Center"
                                            TextWrapping="Wrap"/>
+
                                 <Grid Grid.Row="2"></Grid>
-                                <!--Item Size - Hiển thị sizes bằng ItemsControl-->
+                                
                                 <ItemsControl Grid.Row="3"
-                                              ItemsSource="{Binding ItemPrices}"
+                                              ItemsSource="{Binding ItemPrices, UpdateSourceTrigger=PropertyChanged}"
                                               Margin="0 5 10 0"
                                               HorizontalAlignment="Right"
                                               VerticalAlignment="Top">
                                     <ItemsControl.Style>
                                         <Style TargetType="ItemsControl">
-                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                            <Setter Property="Visibility" Value="Visible"/>
                                             <Style.Triggers>
-                                                <!-- Hiển thị nếu có nhiều hơn 1 size -->
-                                                <DataTrigger Binding="{Binding ItemPrices.Count, Converter={StaticResource GreaterThanOneConverter}}" Value="True">
-                                                    <Setter Property="Visibility" Value="Visible"/>
-                                                </DataTrigger>
-                                                <!-- Ẩn nếu chỉ có 1 size và là Food (CategoryId = 7) -->
-                                                <MultiDataTrigger>
-                                                    <MultiDataTrigger.Conditions>
-                                                        <Condition Binding="{Binding ItemPrices.Count}" Value="1"/>
-                                                        <Condition Binding="{Binding CategoryId}" Value="7"/>
-                                                    </MultiDataTrigger.Conditions>
+                                                <DataTrigger Binding="{Binding CategoryId, UpdateSourceTrigger=PropertyChanged}" 
+                                                             Value="7">
                                                     <Setter Property="Visibility" Value="Collapsed"/>
-                                                </MultiDataTrigger>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding CategoryId, UpdateSourceTrigger=PropertyChanged}" 
+                                                             Value="7">
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
                                     </ItemsControl.Style>
+
                                     <ItemsControl.ItemsPanel>
                                         <ItemsPanelTemplate>
                                             <StackPanel Orientation="Horizontal"/>
@@ -134,7 +127,7 @@
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>
 
-                                <!--Item Price - Hiển thị giá đầu tiên-->
+                                <!--Item Price-->
                                 <TextBlock Grid.Row="4"
                                            FontFamily="Bahnschrift"
                                            FontSize="15"
@@ -144,11 +137,11 @@
                                            HorizontalAlignment="Right">
                                     <TextBlock.Text>
                                         <MultiBinding StringFormat="{}{0:N0} VND">
-                                            <Binding Path="ItemPrices[0].Price"/>
+                                            <Binding Path="DisplayPrice.Price"/>
                                         </MultiBinding>
                                     </TextBlock.Text>
                                 </TextBlock>
-                                
+
                                 <!--Edit & Delete Buttons-->
                                 <Grid Grid.Row="5" Margin="0 0 0 10"
                                       HorizontalAlignment="Right"
@@ -196,14 +189,11 @@
                                 </Setter>
                             </Trigger>
 
-                            <!-- Item đang được chọn -->
                             <DataTrigger Value="True">
                                 <DataTrigger.Binding>
                                     <MultiBinding Converter="{StaticResource ObjectEqualsConverter}">
-                                        <!-- SelectedItem -->
                                         <Binding Path="DataContext.SelectedItem"
                                                  RelativeSource="{RelativeSource AncestorType=Page}"/>
-                                        <!-- Item hiện tại -->
                                         <Binding/>
                                     </MultiBinding>
                                 </DataTrigger.Binding>
@@ -216,7 +206,8 @@
                                                           Opacity="0.45" />
                                     </Setter.Value>
                                 </Setter>
-                                <Setter TargetName="BorderContainer" Property="Background" Value="#D5BCA1"/>
+                                <Setter TargetName="BorderContainer" 
+                                        Property="Background" Value="#D5BCA1"/>
                             </DataTrigger>
                         </ControlTemplate.Triggers>
 

@@ -12,6 +12,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Text.RegularExpressions;
 using static CoffeeShop.View.Controls.CustomMessageBox;
 
 namespace CoffeeShop.ViewModels.AdminVM
@@ -200,6 +201,10 @@ namespace CoffeeShop.ViewModels.AdminVM
             InitializeCommands();
             LoadCategories();
             LoadAvailableSizes();
+
+            // Ảnh mặc định
+            ImagePath = "pack://application:,,,/Assets/Images/imgItemExample.jpg";
+            _path = "Assets/Images/imgItemExample.jpg";
         }
 
         public ItemEditViewModel(int itemId) : this()
@@ -444,7 +449,6 @@ namespace CoffeeShop.ViewModels.AdminVM
                     return;
                 }
 
-                // Kiểm tra xem size đã được thêm chưa
                 var usedSizeIds = SizePrices.Where(sp => sp.SizeId.HasValue)
                                             .Select(sp => sp.SizeId.Value)
                                             .ToHashSet();
@@ -484,7 +488,6 @@ namespace CoffeeShop.ViewModels.AdminVM
 
             try
             {
-                // Validation
                 if (string.IsNullOrWhiteSpace(ItemName))
                 {
                     CustomMessageBox.Show("Vui lòng nhập tên món!", "Lỗi", MessageButtons.OK, MessageType.Warning);
@@ -503,6 +506,26 @@ namespace CoffeeShop.ViewModels.AdminVM
                     CustomMessageBox.Show("Món Food chỉ được có 1 giá duy nhất!", "Lỗi", MessageButtons.OK, MessageType.Warning);
                     return;
                 }
+
+                // tên món không chứa số và ký tự đặc biệt
+                var vietnameseRegex = new Regex(@"^[a-zA-ZÀ-ỹ\s]+$"); 
+                if (!vietnameseRegex.IsMatch(ItemName))
+                { 
+                    CustomMessageBox.Show("Tên món chỉ được chứa chữ cái tiếng Việt và khoảng trắng, không có số hoặc ký tự đặc biệt!", "Lỗi", 
+                            MessageButtons.OK, MessageType.Warning); 
+                    return; 
+                }
+
+                // giá phải là số nguyên > 0
+                foreach (var sp in SizePrices)
+                {
+                    if (sp.Price <= 0 || sp.Price % 1 != 0)
+                    {
+                        CustomMessageBox.Show("Giá phải là số nguyên dương!", "Lỗi", MessageButtons.OK, MessageType.Warning);
+                        return;
+                    }
+                }
+
 
                 if (CategoryId != 7)
                 {
