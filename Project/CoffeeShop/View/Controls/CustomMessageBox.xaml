@@ -33,7 +33,8 @@
 
             <Border Background="#EDE2D3"
                     CornerRadius="12,12,0,0"
-                    HorizontalAlignment="Left">
+                    HorizontalAlignment="Left"
+                    Margin="0 0 0 -1">
                 <!-- Title -->
                 <TextBlock x:Name="txtTitle"
                            Grid.Column="0"

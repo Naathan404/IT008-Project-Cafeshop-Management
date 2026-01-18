@@ -369,15 +369,19 @@
                     </Grid>
                     <Border Grid.Row="1" Margin="10 0 10 10">
                         <ScrollViewer VerticalScrollBarVisibility="Auto"
-                                      CanContentScroll="True" 
-                                      SizeChanged="ItemsContainer_SizeChanged">
+                                      CanContentScroll="True"
+                                      HorizontalContentAlignment="Stretch">
                             <ItemsControl ItemsSource="{Binding FilteredItems}"
                                         VirtualizingPanel.IsVirtualizing="True"
                                         VirtualizingPanel.VirtualizationMode="Recycling"
-                                        ScrollViewer.CanContentScroll="True">
+                                        ScrollViewer.CanContentScroll="True"
+                                          HorizontalAlignment="Stretch"
+                                          SizeChanged="ItemsContainer_SizeChanged">
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
-                                        <UniformGrid VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                                        <UniformGrid VerticalAlignment="Top" 
+                                                     HorizontalAlignment="Left"
+                                                     Width="Auto"/>
                                     </ItemsPanelTemplate>
                                 </ItemsControl.ItemsPanel>
                                 <ItemsControl.ItemTemplate>

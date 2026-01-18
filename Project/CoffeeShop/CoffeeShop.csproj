@@ -27,6 +27,7 @@
     <None Remove="Assets\Images\imgBanner_3.png" />
     <None Remove="Assets\Images\imgBanner_4.png" />
     <None Remove="Assets\Images\imgBanner_5.jpg" />
+    <None Remove="Assets\Images\imgCoffeeDrawing.png" />
     <None Remove="Assets\Images\imgCoffeeOrder.jpg" />
     <None Remove="Assets\Images\imgItemExample.jpg" />
     <None Remove="Assets\Images\imgMessageBox.png" />
@@ -99,6 +100,7 @@
     <Resource Include="Assets\Images\imgBanner_2.png" />
     <Resource Include="Assets\Images\imgBanner_3.png" />
     <Resource Include="Assets\Images\imgBanner_5.jpg" />
+    <Resource Include="Assets\Images\imgCoffeeDrawing.png" />
     <Resource Include="Assets\Images\imgCoffeeOrder.jpg">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>

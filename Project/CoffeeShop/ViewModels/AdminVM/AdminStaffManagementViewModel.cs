@@ -7,7 +7,6 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 using static CoffeeShop.View.Controls.CustomMessageBox;
 
@@ -380,7 +379,7 @@ namespace CoffeeShop.ViewModels.AdminVM
                 }
                 else
                 {
-                    CustomMessageBox.Show("Tiền lương không hợp lệ! Vui lòng nhập số (ví dụ: 5.000.000)", "Lỗi nhập liệu", MessageButtons.OK, MessageType.Error);
+                    CustomMessageBox.Show("Tiền lương không hợp lệ! Vui lòng nhập số (ví dụ: 5.000.000)", "Lỗi", MessageButtons.OK, MessageType.Error);
                     return;
                 }
             }
@@ -401,7 +400,7 @@ namespace CoffeeShop.ViewModels.AdminVM
                 {
                     if (await db.Staff.AnyAsync(x => x.Username == SelectedEmployee.Username))
                     {
-                        MessageBox.Show("Tên đăng nhập đã tồn tại!", "Lỗi");
+                        CustomMessageBox.Show("Tên đăng nhập đã tồn tại!", "Lỗi", MessageButtons.OK, MessageType.Error);
                         return;
                     }
 
@@ -447,7 +446,7 @@ namespace CoffeeShop.ViewModels.AdminVM
                     }
                     else
                     {
-                        CustomMessageBox.Show("Không tìm thấy nhân viên này (có thể đã bị xóa).", , "Thông báo", MessageButtons.OK, MessageType.Warning);
+                        CustomMessageBox.Show("Không tìm thấy nhân viên này (có thể đã bị xóa).", "Thông báo", MessageButtons.OK, MessageType.Error);
                     }    
                 }
             }
