@@ -80,6 +80,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="ClosedXML" Version="0.105.0" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
     <PackageReference Include="EPPlus" Version="8.3.1" />
     <PackageReference Include="LiveCharts.Wpf" Version="0.9.7" />
