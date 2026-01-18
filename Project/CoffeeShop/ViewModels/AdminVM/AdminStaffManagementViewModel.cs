@@ -446,7 +446,7 @@ namespace CoffeeShop.ViewModels.AdminVM
                     }
                     else
                     {
-                        CustomMessageBox.Show("Không tìm thấy nhân viên này (có thể đã bị xóa).", "Thông báo", MessageButtons.OK, MessageType.Error);
+                        CustomMessageBox.Show("Không tìm thấy nhân viên này (có thể đã bị xóa).", "Thông báo", MessageButtons.OK, MessageType.Warning);
                     }    
                 }
             }

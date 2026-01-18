@@ -29,6 +29,7 @@
     <None Remove="Assets\Images\imgBanner_5.jpg" />
     <None Remove="Assets\Images\imgCoffeeDrawing.png" />
     <None Remove="Assets\Images\imgCoffeeOrder.jpg" />
+    <None Remove="Assets\Images\imgCoffeeSmile.png" />
     <None Remove="Assets\Images\imgItemExample.jpg" />
     <None Remove="Assets\Images\imgMessageBox.png" />
     <None Remove="Assets\Images\Menu\imgBongLanTrungMuoi.png" />
@@ -81,6 +82,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="ClosedXML" Version="0.105.0" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
     <PackageReference Include="EPPlus" Version="8.3.1" />
     <PackageReference Include="LiveCharts.Wpf" Version="0.9.7" />
@@ -104,6 +106,7 @@
     <Resource Include="Assets\Images\imgCoffeeOrder.jpg">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Assets\Images\imgCoffeeSmile.png" />
     <Resource Include="Assets\Images\imgItemExample.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>

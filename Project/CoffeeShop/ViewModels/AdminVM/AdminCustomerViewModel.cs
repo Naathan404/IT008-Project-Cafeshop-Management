@@ -13,6 +13,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.Text.RegularExpressions;
 using static CoffeeShop.View.Controls.CustomMessageBox;
 
 namespace CoffeeShop.ViewModels.AdminVM
@@ -195,11 +196,32 @@ namespace CoffeeShop.ViewModels.AdminVM
         private async Task SaveCustomer()
         {
             if (SelectedCustomer == null) return;
+
+            // Kiểm thử dữ liệu
             if (string.IsNullOrEmpty(SelectedCustomer.CustomerName) || string.IsNullOrEmpty(SelectedCustomer.PhoneNumber))
             {
                 CustomMessageBox.Show("Vui lòng nhập Tên và Số điện thoại!", "Thông báo", MessageButtons.OK, MessageType.Warning); return;
             }
+            if (!Regex.IsMatch(SelectedCustomer.CustomerName, @"^[\p{L} ]+$"))
+            {
+                CustomMessageBox.Show("Tên khách hàng chỉ được chứa chữ cái và khoảng trắng!", "Thông báo", MessageButtons.OK, MessageType.Warning);
+                return;
+            }
+            if (!SelectedCustomer.PhoneNumber.All(char.IsDigit))
+            {
+                CustomMessageBox.Show("Số điện thoại chỉ được chứa các chữ số!", "Thông báo", MessageButtons.OK, MessageType.Warning);
+                return;
+            }
+            if (!string.IsNullOrWhiteSpace(SelectedCustomer.Email))
+            {
+                if (!SelectedCustomer.Email.Contains("@"))
+                {
+                    CustomMessageBox.Show("Email không hợp lệ!", "Thông báo", MessageButtons.OK, MessageType.Warning);
+                    return;
+                }
+            }
 
+            // Lưu vào DB
             using (var db = new CoffeeShopContext())
             {
                 string newTier = CalculateTier(SelectedCustomer.Point);

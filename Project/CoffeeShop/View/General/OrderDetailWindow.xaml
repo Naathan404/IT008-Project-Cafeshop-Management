@@ -5,23 +5,21 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CoffeeShop.View.Staff"
         mc:Ignorable="d"
-        Title="Chi tiết mua hàng" Height="610" Width="800"
+        Title="Chi tiết mua hàng" Height="630" Width="800"
         Background="#E0CEB5"
         WindowStartupLocation="CenterScreen"
-        MinHeight="610"
-        MinWidth="800"
-        ResizeMode="NoResize">
+        ResizeMode="NoResize"
+        Icon="/Assets/Images/imgCoffeeSmile.png">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="40"></RowDefinition>
-            <RowDefinition Height="30"></RowDefinition>
-            <RowDefinition Height="30"></RowDefinition>
-            <RowDefinition Height="30"></RowDefinition>
-            <RowDefinition Height="350"></RowDefinition>
-            <RowDefinition Height="30"></RowDefinition>
-            <RowDefinition Height="30"></RowDefinition>
-            <RowDefinition Height="30"></RowDefinition>
-            <RowDefinition Height="30"></RowDefinition>
+            <RowDefinition Height="35"></RowDefinition>
+            <RowDefinition Height="35"></RowDefinition>
+            <RowDefinition Height="35"></RowDefinition>
+            <RowDefinition Height="330"></RowDefinition>
+            <RowDefinition Height="35"></RowDefinition>
+            <RowDefinition Height="35"></RowDefinition>
+            <RowDefinition Height="35"></RowDefinition>
         </Grid.RowDefinitions>
 
         <Grid Grid.Row="0">
@@ -36,7 +34,6 @@
                     Text="Mã hóa đơn: "
                     Foreground="#FF340D05"
                     FontFamily="Cascadia Code"
-                    FontWeight="Bold"
                     FontSize="20"
                     Margin="20 5 0 5"
                     VerticalAlignment="Bottom">
@@ -79,7 +76,6 @@
                     Text="Ngày tạo: "
                     Foreground="#FF340D05"
                     FontFamily="Cascadia Code"
-                    FontWeight="Bold"
                     FontSize="20"
                     Margin="20 5 0 5"
                     VerticalAlignment="Bottom">
@@ -113,7 +109,6 @@
                     Text="Khách hàng: "
                     Foreground="#FF340D05"
                     FontFamily="Cascadia Code"
-                    FontWeight="Bold"
                     FontSize="20"
                     Margin="20 5 0 5"
                     VerticalAlignment="Bottom">
@@ -136,7 +131,6 @@
                     Text="Nhân viên: "
                     Foreground="#FF340D05"
                     FontFamily="Cascadia Code"
-                    FontWeight="Bold"
                     FontSize="20"
                     Margin="20 5 0 5"
                     VerticalAlignment="Bottom">
@@ -155,7 +149,7 @@
         <Border Grid.Row="4"
                 Margin="20 10 20 5"
                 BorderBrush="#BC9466"
-                BorderThickness="10"
+                BorderThickness="5"
                 CornerRadius="5">
             <DataGrid 
                 ItemsSource="{Binding OrderDetails}"

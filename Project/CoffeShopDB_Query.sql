@@ -247,9 +247,21 @@ DELETE FROM Category;
 DELETE FROM OTPRequest;
 
 -- SELECT 
-SELECT * FROM Staff
-SELECT * FROM [Order]
-SELECT * FROM Item
+SELECT * FROM InventoryHistory;
+SELECT * FROM OrderDetail;
+SELECT * FROM [Order];
+SELECT * FROM ItemPrice;
+SELECT * FROM Item;
+SELECT * FROM Discount;
+SELECT * FROM Staff;
+SELECT * FROM Shift;
+SELECT * FROM Inventory;
+SELECT * FROM ActionType;
+SELECT * FROM CafeTable;
+SELECT * FROM Customer;
+SELECT * FROM Size;
+SELECT * FROM Category;
+SELECT * FROM OTPRequest;
 
 ------------------------------------------------------------------SEED DATA----------------------------------------------------------------------------------------------
 INSERT INTO Category (CategoryName) 
