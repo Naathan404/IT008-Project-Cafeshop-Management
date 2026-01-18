@@ -18,26 +18,31 @@ Xuất phát từ thực tế đó, đề tài *“Xây dựng phần mềm Qu�
 ## I. GIỚI THIỆU CHUNG
 ### 1. Cấu trúc dự án 📂
 ```
-.
-├── Project/
-│   ├── CoffeeShop/
-│   │   ├── Assets/
-│   │   │   ├── Images/
-│   │   │   └── Fonts/
-│   │   ├── Helper/
-│   │   │   └── * Các Class hỗ trợ 
-│   │   ├── Models/
-│   │   │   └── * Các Class ánh xạ đến cơ sở dữ liệu 
-│   │   ├── Resources/
-│   │   └── View/
-│   │       ├── Admin/
-│   │       ├── Login/
-│   │       └── Staff/
-│   └── CoffeShopDB_Query.sql
-├── README.md
-├── SRS.md
-├── CodingConvention.md
-└── .gitignore
+CoffeeShop
+├── Assets
+│   ├── Images/
+│   └── Fonts/
+├── Helper/
+│   └── * Các lớp hỗ trợ 
+├── Service/
+│   ├── DTOs/
+│   └── Interfaces/
+├── Models/
+│   └── * Ánh xạ đến cơ sở dữ liệu 
+├── View/
+│   ├── * Xây dựng giao diện ứng dụng
+│   ├── Login/
+│   ├── Admin/
+│   ├── Staff/
+│   ├── General/
+│   └── Controls/
+├── ViewModels
+│   ├── * Xử lý trung gian giữa giao diện và dữ liệu
+│   ├── AdminVM/
+│   ├── StaffVM/
+│   └── GeneralVM/
+└── Resources/
+    └── * Chứa tài nguyên chung của ứng dụng
 ```
 --- 
 ### 2. Công nghệ sử dụng ⚙️
@@ -105,14 +110,19 @@ Microsoft.EntityFrameworkCore.Design
 ```shell
 Scaffold-DbContext "Server=Your_Server_Name;Database=CoffeeShopDB;Trusted_Connection=True;TrustServerCertificate=True;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models -Context CoffeeShopContext -Force
 ```
-- Your_Server_Name là tên máy chủ SQL Server của bạn, thường là `.` hoặc `(local)` hoặc `TEN_MAY_TINH\SQLEXPRESS` hoặc `TEN_MAY_TINH` tùy theo tên tên mà bạn đặt.
+- Your_Server_Name là tên máy chủ SQL Server của bạn, thường là `localhost` hoặc `.` hoặc `(local)` hoặc `TEN_MAY_TINH\SQLEXPRESS` hoặc `TEN_MAY_TINH` tùy theo tên tên mà bạn đặt.
 
 #### Bước 4: Chạy ứng dụng
 - Build và run ứng dụng.
-- Đăng nhập thử bằng tài khoản bên dưới:
+- Đăng nhập thử bằng tài khoản bên dưới:  
+
+*Tài khoản quản lý*
 ```
 Username: admin
 Password: 123
 ```
-
-## III. NHẬT KÝ PHÁT TRIỂN ỨNG DỤNG
+*Tài khoản nhân viên*
+```
+Username: 1
+Password: 123
+```
