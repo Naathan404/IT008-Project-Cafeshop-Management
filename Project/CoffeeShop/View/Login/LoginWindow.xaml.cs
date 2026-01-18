@@ -2,6 +2,7 @@
 using CoffeeShop.Models;
 using CoffeeShop.Service;
 using CoffeeShop.View.Admin;
+using CoffeeShop.View.Controls;
 using CoffeeShop.View.Staff;
 using System.Windows;
 using System.Windows.Controls;
@@ -10,6 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using static CoffeeShop.View.Controls.CustomMessageBox;
 
 namespace CoffeeShop.View.Login
 {
@@ -168,7 +170,7 @@ namespace CoffeeShop.View.Login
                             LoginAdminWindow(account);
                             break;
                         default:
-                            MessageBox.Show("Unidentified user");
+                            CustomMessageBox.Show("Unidentified user", "Error", MessageButtons.OK, MessageType.Error);
                             break;
                     }
                     UserSession.Instance.SetUser(account);

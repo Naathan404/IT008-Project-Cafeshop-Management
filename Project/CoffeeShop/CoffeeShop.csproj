@@ -69,6 +69,7 @@
     <None Remove="Assets\Images\Menu\imgTSTruyenThong.png" />
     <None Remove="Assets\Images\MessageBoxIcons\imgError.png" />
     <None Remove="Assets\Images\MessageBoxIcons\imgInfo.png" />
+    <None Remove="Assets\Images\MessageBoxIcons\imgQuestion.png" />
     <None Remove="Assets\Images\MessageBoxIcons\imgSuccess.png" />
     <None Remove="Assets\Images\MessageBoxIcons\imgWarning.png" />
   </ItemGroup>
@@ -218,6 +219,7 @@
     </Resource>
     <Resource Include="Assets\Images\MessageBoxIcons\imgError.png" />
     <Resource Include="Assets\Images\MessageBoxIcons\imgInfo.png" />
+    <Resource Include="Assets\Images\MessageBoxIcons\imgQuestion.png" />
     <Resource Include="Assets\Images\MessageBoxIcons\imgSuccess.png" />
     <Resource Include="Assets\Images\MessageBoxIcons\imgWarning.png" />
   </ItemGroup>

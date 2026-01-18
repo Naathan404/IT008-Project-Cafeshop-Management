@@ -1,13 +1,15 @@
 ﻿using CoffeeShop.Helper;
 using CoffeeShop.Models;
 using CoffeeShop.Service.DTOs;
+using CoffeeShop.View.Admin;
+using CoffeeShop.View.Controls;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Windows;
-using System.Windows.Input;
-using CoffeeShop.View.Admin;
 using System.Windows.Controls;
+using System.Windows.Input;
+using static CoffeeShop.View.Controls.CustomMessageBox;
 
 namespace CoffeeShop.ViewModels.AdminVM
 {
@@ -199,8 +201,8 @@ namespace CoffeeShop.ViewModels.AdminVM
             {
                 if (SelectedEmployee == null || SelectedEmployee.StaffId == 0) return;
 
-                var result = MessageBox.Show($"Bạn có chắc muốn xóa nhân viên {SelectedEmployee.StaffName}?", "Xác nhận", MessageBoxButton.YesNo);
-                if (result == MessageBoxResult.Yes)
+                var result = CustomMessageBox.Show($"Bạn có chắc muốn xóa nhân viên {SelectedEmployee.StaffName}?", "Xác nhận", MessageButtons.YesNo, MessageType.Question);
+                if (result == CustomMessageBox.MessageBoxResult.Yes)
                 {
                     using (var db = new CoffeeShopContext())
                     {
@@ -209,7 +211,7 @@ namespace CoffeeShop.ViewModels.AdminVM
                         {
                             staff.IsDeleted = true; // Xóa mềm
                             await db.SaveChangesAsync();
-                            MessageBox.Show("Đã xóa thành công!");
+                            CustomMessageBox.Show("Đã xóa thành công!", "Thành công", MessageButtons.OK, MessageType.Success);
                             Refresh(); // Tải lại trang
                         }
                     }
@@ -365,7 +367,7 @@ namespace CoffeeShop.ViewModels.AdminVM
             string.IsNullOrEmpty(SelectedEmployee.Username) ||
             SelectedEmployee.Birthday == null || SelectedEmployee.StartDate == null)
             {
-                MessageBox.Show("Vui lòng nhập đầy đủ Tên và Tài khoản!", "Thông báo");
+                CustomMessageBox.Show("Vui lòng nhập đầy đủ Tên và Tài khoản!", "Thông báo", MessageButtons.OK, MessageType.Warning);
                 return;
             }
             decimal? finalSalary = null;
@@ -378,7 +380,7 @@ namespace CoffeeShop.ViewModels.AdminVM
                 }
                 else
                 {
-                    MessageBox.Show("Tiền lương không hợp lệ! Vui lòng nhập số (ví dụ: 5.000.000)", "Lỗi nhập liệu");
+                    CustomMessageBox.Show("Tiền lương không hợp lệ! Vui lòng nhập số (ví dụ: 5.000.000)", "Lỗi nhập liệu", MessageButtons.OK, MessageType.Error);
                     return;
                 }
             }
@@ -421,7 +423,7 @@ namespace CoffeeShop.ViewModels.AdminVM
 
                     db.Staff.Add(staff);
                     await db.SaveChangesAsync();
-                    MessageBox.Show("Thêm nhân viên thành công!");
+                    CustomMessageBox.Show("Thêm nhân viên thành công!", "Thành công", MessageButtons.OK, MessageType.Success);
                 }
                 else
                 {
@@ -441,11 +443,11 @@ namespace CoffeeShop.ViewModels.AdminVM
                         staff.PasswordHash = HashHelper.SHA256_Encode(HashHelper.Base64_Encode(_page.GetPasswordFromPasswordBox()));
 
                         await db.SaveChangesAsync();
-                        MessageBox.Show("Cập nhật thông tin thành công!");
+                        CustomMessageBox.Show("Cập nhật thông tin thành công!", "Thành công", MessageButtons.OK, MessageType.Success);
                     }
                     else
                     {
-                        MessageBox.Show("Không tìm thấy nhân viên này (có thể đã bị xóa).");
+                        CustomMessageBox.Show("Không tìm thấy nhân viên này (có thể đã bị xóa).", , "Thông báo", MessageButtons.OK, MessageType.Warning);
                     }    
                 }
             }

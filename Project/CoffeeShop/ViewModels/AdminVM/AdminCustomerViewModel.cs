@@ -1,5 +1,6 @@
 ﻿using CoffeeShop.Models;
 using CoffeeShop.Service.DTOs;
+using CoffeeShop.View.Controls;
 using CoffeeShop.View.General;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Win32; // Cần cái này cho SaveFileDialog
@@ -12,6 +13,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using static CoffeeShop.View.Controls.CustomMessageBox;
 
 namespace CoffeeShop.ViewModels.AdminVM
 {
@@ -136,7 +138,7 @@ namespace CoffeeShop.ViewModels.AdminVM
                     CustomerList = new ObservableCollection<CustomerDTO>(dtoList);
                 }
             }
-            catch (Exception ex) { MessageBox.Show("Lỗi tải dữ liệu: " + ex.Message); }
+            catch (Exception ex) { CustomMessageBox.Show("Lỗi tải dữ liệu: " + ex.Message, "Lỗi", MessageButtons.OK, MessageType.Error); }
         }
 
         private async Task LoadTransactionHistory(int customerId)
@@ -195,7 +197,7 @@ namespace CoffeeShop.ViewModels.AdminVM
             if (SelectedCustomer == null) return;
             if (string.IsNullOrEmpty(SelectedCustomer.CustomerName) || string.IsNullOrEmpty(SelectedCustomer.PhoneNumber))
             {
-                MessageBox.Show("Vui lòng nhập Tên và Số điện thoại!"); return;
+                CustomMessageBox.Show("Vui lòng nhập Tên và Số điện thoại!", "Thông báo", MessageButtons.OK, MessageType.Warning); return;
             }
 
             using (var db = new CoffeeShopContext())
@@ -206,7 +208,7 @@ namespace CoffeeShop.ViewModels.AdminVM
                 {
                     if (await db.Customers.AnyAsync(c => c.PhoneNumber == SelectedCustomer.PhoneNumber && !c.IsDeleted))
                     {
-                        MessageBox.Show("Số điện thoại này đã tồn tại!"); return;
+                        CustomMessageBox.Show("Số điện thoại này đã tồn tại!", "Thông báo", MessageButtons.OK, MessageType.Warning); return;
                     }
 
                     var newCus = new Customer
@@ -221,7 +223,7 @@ namespace CoffeeShop.ViewModels.AdminVM
                     };
                     db.Customers.Add(newCus);
                     await db.SaveChangesAsync();
-                    MessageBox.Show("Thêm khách hàng thành công!");
+                    CustomMessageBox.Show("Thêm khách hàng thành công!", "Thành công", MessageButtons.OK, MessageType.Success);
                 }
                 else        // Cập nhật 
                 {
@@ -235,7 +237,7 @@ namespace CoffeeShop.ViewModels.AdminVM
                         cus.Tier = newTier;
 
                         await db.SaveChangesAsync();
-                        MessageBox.Show("Cập nhật thông tin thành công!");
+                        CustomMessageBox.Show("Cập nhật thông tin thành công!", "Thành công", MessageButtons.OK, MessageType.Success);
                     }
                 }
             }
@@ -246,8 +248,8 @@ namespace CoffeeShop.ViewModels.AdminVM
         {
             if (SelectedCustomer == null || SelectedCustomer.CustomerID == 0) return;
 
-            if (MessageBox.Show($"Bạn chắc chắn muốn xóa khách hàng '{SelectedCustomer.CustomerName}'?\nHành động này không thể hoàn tác.",
-                "Cảnh báo", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
+            if (CustomMessageBox.Show($"Bạn chắc chắn muốn xóa khách hàng '{SelectedCustomer.CustomerName}'?\nHành động này không thể hoàn tác.",
+                "Cảnh báo", MessageButtons.YesNo, MessageType.Warning) == CustomMessageBox.MessageBoxResult.Yes)
             {
                 using (var db = new CoffeeShopContext())
                 {
@@ -295,7 +297,7 @@ namespace CoffeeShop.ViewModels.AdminVM
             {
                 if (CustomerList == null || CustomerList.Count == 0)
                 {
-                    MessageBox.Show("Không có dữ liệu để xuất!");
+                    CustomMessageBox.Show("Không có dữ liệu để xuất!", "Thông báo", MessageButtons.OK, MessageType.Warning);
                     return;
                 }
 
@@ -327,12 +329,12 @@ namespace CoffeeShop.ViewModels.AdminVM
 
                     File.WriteAllText(saveFileDialog.FileName, csvContent.ToString(), Encoding.UTF8);
 
-                    MessageBox.Show("Xuất file thành công!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+                    CustomMessageBox.Show("Xuất file thành công!", "Thành công", MessageButtons.OK, MessageType.Success);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Có lỗi khi xuất file: " + ex.Message);
+                CustomMessageBox.Show("Có lỗi khi xuất file: " + ex.Message, "Lỗi", MessageButtons.OK, MessageType.Error);
             }
         }
     }

@@ -1,10 +1,12 @@
-﻿using CoffeeShop.Models;
+﻿using CoffeeShop.Helper;
+using CoffeeShop.Models;
 using CoffeeShop.View;
-using CoffeeShop.Helper;
+using CoffeeShop.View.Controls;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Animation;
+using static CoffeeShop.View.Controls.CustomMessageBox;
 
 namespace CoffeeShop.View.Login
 {
@@ -113,7 +115,7 @@ namespace CoffeeShop.View.Login
                 }
                 else // Không tìm thấy được nhân viên nào thỏa điều kiện
                 {
-                    MessageBox.Show("Có lỗi xảy ra. Vui lòng thử lại!");
+                    CustomMessageBox.Show("Có lỗi xảy ra. Vui lòng thử lại!", "Lỗi", MessageButtons.OK, MessageType.Error);
                     pwdBox.Password = "";
                     pwdBox2.Password = "";
                     pwdBox.Focus();

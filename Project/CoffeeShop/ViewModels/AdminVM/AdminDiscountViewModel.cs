@@ -1,10 +1,12 @@
 ﻿using CoffeeShop.Models;
 using CoffeeShop.Service.DTOs;
 using CoffeeShop.Service.Interfaces;
+using CoffeeShop.View.Controls;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
+using static CoffeeShop.View.Controls.CustomMessageBox;
 
 namespace CoffeeShop.ViewModels.AdminVM
 {
@@ -82,7 +84,7 @@ namespace CoffeeShop.ViewModels.AdminVM
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi: " + ex.Message);
+                CustomMessageBox.Show("Lỗi: " + ex.Message, "Lỗi", MessageButtons.OK, MessageType.Error);
             }
         }
 
@@ -127,14 +129,14 @@ namespace CoffeeShop.ViewModels.AdminVM
         {
             if (SelectedCoupon == null)
             {
-                MessageBox.Show("Hãy chọn mã cần xóa!");
+                CustomMessageBox.Show("Hãy chọn mã cần xóa!", "Thông báo", MessageButtons.OK, MessageType.Info);
                 return;
             }
 
-            var result = MessageBox.Show($"Bạn có chắc muốn xóa mã {SelectedCoupon.DiscountCode} không?",
-                                        "Xác nhận xóa", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+            var result = CustomMessageBox.Show($"Bạn có chắc muốn xóa mã {SelectedCoupon.DiscountCode} không?",
+                                        "Xác nhận xóa", MessageButtons.YesNo, MessageType.Question);
 
-            if (result == MessageBoxResult.Yes)
+            if (result == CustomMessageBox.MessageBoxResult.Yes)
             {
                 using (var db = new CoffeeShopContext())
                 {
