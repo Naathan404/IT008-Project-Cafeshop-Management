@@ -5,9 +5,12 @@ using CoffeeShop.View.Controls;
 using CoffeeShop.View.General;
 using CoffeeShop.ViewModels.AdminVM;
 using Microsoft.EntityFrameworkCore;
+using Org.BouncyCastle.Tls;
 using System.Collections.ObjectModel;
 using System.Globalization;
+using System.Text.RegularExpressions;
 using System.Windows.Input;
+using static CoffeeShop.View.Controls.CustomMessageBox;
 
 namespace CoffeeShop.ViewModels.StaffVM
 {
@@ -189,9 +192,32 @@ namespace CoffeeShop.ViewModels.StaffVM
         private async Task SaveCustomer()
         {
             if (SelectedCustomer == null) return;
+
+            // Kiểm thử
             if (string.IsNullOrEmpty(SelectedCustomer.CustomerName) || string.IsNullOrEmpty(SelectedCustomer.PhoneNumber))
             {
-                CustomMessageBox.Show("Vui lòng nhập Tên và Số điện thoại!"); return;
+                CustomMessageBox.Show("Vui lòng nhập Tên và Số điện thoại!", "Thông báo", MessageButtons.OK, MessageType.Warning); 
+                return;
+            }
+            
+            if (!Regex.IsMatch(SelectedCustomer.CustomerName, @"^[a-zA-ZÀ-ỹ\s]+$"))
+            {
+                CustomMessageBox.Show("Tên khách hàng chỉ được chứa chữ cái và khoảng trắng!", "Thông báo", MessageButtons.OK, MessageType.Warning);
+                return;
+            }
+
+            if (!Regex.IsMatch(SelectedCustomer.PhoneNumber, @"^[0-9]{10,11}$"))
+            {
+                CustomMessageBox.Show("Số điện thoại không hợp lệ (chỉ chứa số, từ 10-11 chữ số)!", "Thông báo", MessageButtons.OK, MessageType.Warning);
+                return;
+            }
+            if (!string.IsNullOrEmpty(SelectedCustomer.Email))
+            {
+                if (!SelectedCustomer.Email.Contains("@") || !Regex.IsMatch(SelectedCustomer.Email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
+                {
+                    CustomMessageBox.Show("Email không đúng định dạng!", "Thông báo", MessageButtons.OK, MessageType.Warning);
+                    return;
+                }
             }
 
             using (var db = new CoffeeShopContext())
@@ -200,7 +226,7 @@ namespace CoffeeShop.ViewModels.StaffVM
                 {
                     if (await db.Customers.AnyAsync(c => c.PhoneNumber == SelectedCustomer.PhoneNumber && !c.IsDeleted))
                     {
-                        CustomMessageBox.Show("Số điện thoại này đã tồn tại!"); return;
+                        CustomMessageBox.Show("Số điện thoại này đã tồn tại!", "Lỗi", MessageButtons.OK, MessageType.Error); return;
                     }
 
                     var newCus = new Customer
@@ -215,7 +241,7 @@ namespace CoffeeShop.ViewModels.StaffVM
                     };
                     db.Customers.Add(newCus);
                     await db.SaveChangesAsync();
-                    CustomMessageBox.Show("Thêm khách hàng thành công!");
+                    CustomMessageBox.Show("Thêm khách hàng thành công!", "Thành công", MessageButtons.OK, MessageType.Success);
                 }
                 else // Cập nhật
                 {
@@ -226,7 +252,7 @@ namespace CoffeeShop.ViewModels.StaffVM
                         cus.PhoneNumber = SelectedCustomer.PhoneNumber;
                         cus.Email = SelectedCustomer.Email;
                         await db.SaveChangesAsync();
-                        CustomMessageBox.Show("Cập nhật thành công!");
+                        CustomMessageBox.Show("Cập nhật thành công!", "Thành công", MessageButtons.OK, MessageType.Success);
                     }
                 }
             }

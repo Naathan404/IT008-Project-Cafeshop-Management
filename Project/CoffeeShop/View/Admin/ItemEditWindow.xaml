@@ -6,35 +6,54 @@
         xmlns:local="clr-namespace:CoffeeShop.View.Admin"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
-        Title="ItemEditWindow" 
+        Icon="/Assets/Images/imgCoffeeDrawing.png"
+        Title="Chỉnh sửa món" 
         Height="700" Width="900"
         WindowStartupLocation="CenterOwner"
         ResizeMode="CanResize">
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+
+        <Style TargetType="GroupBox" x:Key="RoundedGroupBox">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="GroupBox">
+                        <Grid>
+                            <Border CornerRadius="10"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    Background="{TemplateBinding Background}">
+                                <ContentPresenter Margin="10"/>
+                            </Border>
+                            <Border CornerRadius="5"
+                                    Background="#E0CEB5"
+                                    Padding="5"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Margin="15 -10 0 0">
+                                <TextBlock Text="{TemplateBinding Header}"
+                                           FontSize="{TemplateBinding FontSize}"
+                                           FontWeight="{TemplateBinding FontWeight}"
+                                           FontFamily="{TemplateBinding FontFamily}"
+                                           Foreground="{TemplateBinding Foreground}"/>
+                            </Border>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+
     </Window.Resources>
 
-    <Grid>
+    <Grid Background="#EDE2D3">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <!-- Header -->
-        <Border Grid.Row="0" 
-                Background="#C7A57A" 
-                Padding="10">
-            <TextBlock Text="{Binding WindowTitle}"
-                       FontSize="24"
-                       FontWeight="Bold"
-                       FontFamily="Cascadia Code"
-                       Foreground="White"
-                       HorizontalAlignment="Center"/>
-        </Border>
-
         <!-- Content -->
-        <Grid Grid.Row="1" Margin="15">
+        <Grid Grid.Row="0" Margin="15">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1.2*"/>
                 <ColumnDefinition Width="*"/>
@@ -48,11 +67,15 @@
                 </Grid.RowDefinitions>
                 <!-- Image Section -->
                 <GroupBox Header="Hình ảnh món" 
+                          Style="{StaticResource RoundedGroupBox}"
                           FontSize="16" 
                           FontWeight="Bold"
                           FontFamily="Cascadia Code"
                           Foreground="#766839"
-                          Margin="0 0 0 10">
+                          Margin="0 10 0 10"
+                          BorderBrush="#766839"
+                          BorderThickness="2"
+                          Background="#F9F6F0">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
@@ -63,11 +86,9 @@
                         <Border Grid.Row="0"
                                 Width="250" 
                                 Height="180"
-                                BorderBrush="#766839"
-                                BorderThickness="2"
-                                CornerRadius="10"
                                 HorizontalAlignment="Center"
-                                Margin="10">
+                                Margin="0 15 0 10"
+                                ClipToBounds="True">
                             <Image Source="{Binding Image}"
                                    d:Source="/Assets/Images/imgItemExample.jpg"
                                    Stretch="UniformToFill"/>
@@ -81,7 +102,6 @@
                                 Height="35"
                                 FontSize="14"
                                 FontWeight="Bold"
-                                Margin="10"
                                 HorizontalAlignment="Center"
                                 Style="{StaticResource MaterialDesignRaisedButton}"
                                 Background="#766839"
@@ -90,12 +110,17 @@
                 </GroupBox>
 
                 <!-- Info Section -->
-                <GroupBox Header="Thông tin cơ bản" 
+                <GroupBox Header="Thông tin món"
                           Grid.Row="1"
+                          Style="{StaticResource RoundedGroupBox}"
                           FontSize="16" 
                           FontWeight="Bold"
                           FontFamily="Cascadia Code"
-                          Foreground="#766839">
+                          Foreground="#766839"
+                          Margin="0 10 0 10"
+                          BorderBrush="#766839"
+                          BorderThickness="2"
+                          Background="#F9F6F0">
                     <ScrollViewer VerticalScrollBarVisibility="Auto"
                                   HorizontalScrollBarVisibility="Disabled">
                         <StackPanel Margin="10">
@@ -154,12 +179,16 @@
 
             <!-- Right Column: Sizes & Prices -->
             <GroupBox Grid.Column="1" 
-                      Header="Kích cỡ và giá" 
-                      FontFamily="Cascadia Code"
+                      Header="Kích cỡ và giá"
+                      Style="{StaticResource RoundedGroupBox}"
                       FontSize="16" 
                       FontWeight="Bold"
+                      FontFamily="Cascadia Code"
                       Foreground="#766839"
-                      Margin="10 0 0 0">
+                      Margin="0 10 0 10"
+                      BorderBrush="#766839"
+                      BorderThickness="2"
+                      Background="#F9F6F0">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="119*"/>
@@ -180,7 +209,7 @@
                             FontWeight="Bold"
                             FontFamily="Cascadia Code"
                             HorizontalAlignment="Center"
-                            Margin="5,5,0,5"
+                            Margin="5,15,0,5"
                             Style="{StaticResource MaterialDesignRaisedButton}"
                             Background="#C7A57A"
                             Foreground="White"/>
@@ -283,8 +312,8 @@
         </Grid>
 
         <!-- Buttons -->
-        <Border Grid.Row="2" 
-                Background="#E8E8E8" 
+        <Border Grid.Row="1" 
+                Background="#C7A57A" 
                 Padding="15"
                 BorderBrush="#CCCCCC"
                 BorderThickness="0 1 0 0">
@@ -299,8 +328,8 @@
                         FontFamily="Cascadia Code"
                         Margin="0 0 10 0"
                         Style="{StaticResource MaterialDesignRaisedButton}"
-                        Background="#C7A57A"
-                        Foreground="White"/>
+                        Background="#EDE2D3"
+                        Foreground="#340D05"/>
 
                 <Button Content="Hủy"
                         Command="{Binding CancelCommand}"
@@ -310,8 +339,8 @@
                         FontFamily="Cascadia Code"
                         FontWeight="Bold"
                         Style="{StaticResource MaterialDesignRaisedButton}"
-                        Background="#C7A57A"
-                        Foreground="White"/>
+                        Background="#EDE2D3"
+                        Foreground="#340D05"/>
             </StackPanel>
         </Border>
 

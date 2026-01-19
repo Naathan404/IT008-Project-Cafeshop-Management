@@ -1,10 +1,13 @@
-﻿using CoffeeShop.ViewModels.AdminVM;
+﻿using CoffeeShop.View.Controls;
+using CoffeeShop.ViewModels.AdminVM;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Media;
+using static CoffeeShop.View.Controls.CustomMessageBox;
 
 namespace CoffeeShop.View.Admin
 {
@@ -18,18 +21,16 @@ namespace CoffeeShop.View.Admin
 
         private void ItemsContainer_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            if (sender is ScrollViewer scrollViewer)
+            if (sender is ItemsControl itemsControl)
             {
-                var itemsControl = scrollViewer.Content as ItemsControl;
-                if (itemsControl?.ItemsPanel != null)
+                var grid = FindVisualChild<UniformGrid>(itemsControl);
+                if (grid != null)
                 {
-                    var panel = itemsControl.ItemsPanel.LoadContent() as UniformGrid;
-                    if (panel != null)
-                    {
-                        double width = scrollViewer.ActualWidth - 20;
-                        int columns = (int)(width / 210);
-                        panel.Columns = columns > 0 ? columns : 1;
-                    }
+                    double w = itemsControl.ActualWidth;
+                    int minItemWidth = 150;
+
+                    int columns = Math.Max(1, (int)(w / minItemWidth));
+                    grid.Columns = columns;
                 }
             }
         }
@@ -68,24 +69,15 @@ namespace CoffeeShop.View.Admin
         {
             if (sender is Border border && border.DataContext is AdminMenuViewModel.MenuCoffeeItem item)
             {
-                var result = MessageBox.Show(
-                    $"Bạn có chắc chắn muốn xóa món '{item.ItemName}' không?",
-                    "Xác nhận xóa",
-                    MessageBoxButton.YesNo,
-                    MessageBoxImage.Question);
-
-                if (result == MessageBoxResult.Yes)
+                if (DataContext is AdminMenuViewModel viewModel)
                 {
-                    if (DataContext is AdminMenuViewModel viewModel)
-                    {
-                        // Set selected item để command có thể thực thi
-                        viewModel.SelectedItem = item;
+                    // Set selected item để command có thể thực thi
+                    viewModel.SelectedItem = item;
 
-                        // Execute delete command
-                        if (viewModel.DeleteItemCommand.CanExecute(null))
-                        {
-                            viewModel.DeleteItemCommand.Execute(null);
-                        }
+                    // Execute delete command
+                    if (viewModel.DeleteItemCommand.CanExecute(null))
+                    {
+                        viewModel.DeleteItemCommand.Execute(null);
                     }
                 }
             }
@@ -98,6 +90,22 @@ namespace CoffeeShop.View.Admin
             addWindow.Owner = Window.GetWindow(this);
             addWindow.ShowDialog();
         }
+
+        private T FindVisualChild<T>(DependencyObject parent) where T : DependencyObject
+        {
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
+            {
+                var child = VisualTreeHelper.GetChild(parent, i);
+                if (child is T tChild)
+                    return tChild;
+
+                var result = FindVisualChild<T>(child);
+                if (result != null)
+                    return result;
+            }
+            return null;
+        }
+
     }
 
     // Converters
@@ -114,23 +122,6 @@ namespace CoffeeShop.View.Admin
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
             => throw new NotImplementedException();
-    }
-    // Converter để chuyển Count thành Visibility
-    public class CountToVisibilityConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            if (value is int count)
-            {
-                return count > 0 ? Visibility.Visible : Visibility.Collapsed;
-            }
-            return Visibility.Collapsed;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
     }
 
     // Converter để kiểm tra Count > 1

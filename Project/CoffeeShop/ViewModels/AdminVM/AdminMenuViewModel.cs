@@ -3,9 +3,11 @@ using CoffeeShop.View.Controls;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Win32;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -279,19 +281,31 @@ namespace CoffeeShop.ViewModels.AdminVM
         //    });
         //}
 
+        //private async void OnItemsChanged(ItemsChangedMessage message)
+        //{
+        //    var currentSelectedId = SelectedItem?.ItemId;
+
+        //    // Chỉ cần await Load, mọi thứ sẽ được làm mới sạch sẽ
+        //    await LoadOrderItemsFromDB();
+
+        //    // Khôi phục lại item đang chọn nếu nó vẫn tồn tại
+        //    if (currentSelectedId.HasValue)
+        //    {
+        //        SelectedItem = FilteredItems.FirstOrDefault(i => i.ItemId == currentSelectedId.Value);
+        //    }
+        //}
         private async void OnItemsChanged(ItemsChangedMessage message)
         {
-            var currentSelectedId = SelectedItem?.ItemId;
-
-            // Chỉ cần await Load, mọi thứ sẽ được làm mới sạch sẽ
-            await LoadOrderItemsFromDB();
-
-            // Khôi phục lại item đang chọn nếu nó vẫn tồn tại
-            if (currentSelectedId.HasValue)
+            await System.Windows.Application.Current.Dispatcher.InvokeAsync(async () =>
             {
-                SelectedItem = FilteredItems.FirstOrDefault(i => i.ItemId == currentSelectedId.Value);
-            }
+                Items.Clear();
+                FilteredItems.Clear();
+                SelectedItem = null;
+
+                await LoadOrderItemsFromDB();
+            });
         }
+
 
         #endregion
 
@@ -302,7 +316,12 @@ namespace CoffeeShop.ViewModels.AdminVM
             {
                 using (var context = new CoffeeShopContext())
                 {
-                    var item = context.Items.FirstOrDefault(i => i.ItemId == itemId && !i.IsDeleted);
+                    // Lấy Item kèm theo danh sách giá và size
+                    var item = context.Items
+                        .Include(i => i.ItemPrices)
+                        .ThenInclude(ip => ip.Size)
+                        .FirstOrDefault(i => i.ItemId == itemId && !i.IsDeleted);
+
                     if (item != null)
                     {
                         var editItem = new MenuCoffeeItem
@@ -312,21 +331,27 @@ namespace CoffeeShop.ViewModels.AdminVM
                             CategoryId = item.CategoryId,
                             IsAvailable = item.IsAvailable,
                             Info = item.Info ?? string.Empty,
-                            ImagePath = item.ImagePath ?? string.Empty, // Đường dẫn gốc DB
-                            ItemPrices = new ObservableCollection<ItemPrice>(
-                                context.ItemPrices.Include(ip => ip.Size)
-                                       .Where(ip => ip.ItemId == itemId && !ip.IsDeleted).ToList())
+                            ImagePath = item.ImagePath ?? string.Empty,
                         };
+
+                        // SỬA TẠI ĐÂY: Chuyển đổi từ ItemPrice (Model) sang ItemPriceViewModel
+                        var viewModels = item.ItemPrices
+                            .Where(ip => !ip.IsDeleted)
+                            .Select(ip => new ItemPriceViewModel
+                            {
+                                Price = ip.Price,
+                                Size = ip.Size, // Gán object Size vào để lấy SizeName
+                                SizeId = ip.SizeId,
+                            }).ToList();
+
+                        editItem.ItemPrices = new ObservableCollection<ItemPriceViewModel>(viewModels);
 
                         SelectedItem = editItem;
 
-                        // QUAN TRỌNG: Phải gán SelectedImagePath bằng đường dẫn cũ trong DB
-                        // để nếu người dùng không chọn ảnh mới, giá trị này vẫn tồn tại để lưu lại.
                         this.SelectedImagePath = item.ImagePath;
-
-                        // Hiển thị ảnh lên UI
                         this.ImagePath = GetDisplayPath(item.ImagePath);
 
+                        // Sau khi gán ItemPrices xong mới load size lên UI
                         LoadAvailableSizes();
                     }
                 }
@@ -387,11 +412,10 @@ namespace CoffeeShop.ViewModels.AdminVM
         {
             if (IsLoading) return;
             IsLoading = true;
-            await Task.Delay(100); // Nhường UI vẽ icon loading
+            await Task.Delay(100);
 
             try
             {
-                // 1. CHUẨN BỊ DỮ LIỆU SẠCH Ở LUỒNG PHỤ
                 var res = await Task.Run(() =>
                 {
                     using var context = new CoffeeShopContext();
@@ -400,7 +424,6 @@ namespace CoffeeShop.ViewModels.AdminVM
                         .Where(i => !i.IsDeleted)
                         .OrderByDescending(i => i.IsAvailable).ToList();
 
-                    // Chuyển đổi sang MenuCoffeeItem ngay tại luồng phụ
                     var cleanList = dbItems.Select(item => new MenuCoffeeItem
                     {
                         ItemId = item.ItemId,
@@ -408,8 +431,19 @@ namespace CoffeeShop.ViewModels.AdminVM
                         CategoryId = item.CategoryId,
                         IsAvailable = item.IsAvailable,
                         Info = item.Info ?? string.Empty,
-                        ImagePath = GetDisplayPath(item.ImagePath), // Đường dẫn hiển thị UI
-                        ItemPrices = new ObservableCollection<ItemPrice>(item.ItemPrices.Where(ip => !ip.IsDeleted).ToList())
+                        ImagePath = GetDisplayPath(item.ImagePath),
+
+                        // Chuyển đổi từ ItemPrice sang ItemPriceViewModel
+                        ItemPrices = new ObservableCollection<ItemPriceViewModel>(
+                            item.ItemPrices
+                                .Where(ip => !ip.IsDeleted)
+                                .Select(ip => new ItemPriceViewModel
+                                {
+                                    Price = ip.Price,
+                                    Size = ip.Size,     // Model Size
+                                    SizeId = ip.SizeId  // ID của Size
+                                }).ToList()
+                        )
                     }).ToList();
 
                     var filtered = cleanList;
@@ -693,9 +727,6 @@ namespace CoffeeShop.ViewModels.AdminVM
                     context.SaveChanges();
                     newId = item.ItemId;
                 });
-
-                // Không cần Items.Add(newMenu) ở đây nữa
-                // Chỉ cần bắn tin nhắn, danh sách sẽ tự làm mới từ DB
                 EventAggregator.Instance.Publish(new ItemsChangedMessage { Action = "Added", ItemId = newId });
             }
             finally { IsLoading = false; }
@@ -705,41 +736,74 @@ namespace CoffeeShop.ViewModels.AdminVM
         {
             if (SelectedItem == null) return;
             IsLoading = true;
-            await Task.Delay(100);
 
             try
             {
-                var itemId = SelectedItem.ItemId;
-                var itemName = SelectedItem.ItemName;
-                var categoryId = SelectedItem.CategoryId;
-                var isAvailable = SelectedItem.IsAvailable;
-                var info = SelectedItem.Info;
+                int itemId = SelectedItem.ItemId;
 
-                // Lấy đường dẫn đã được chuẩn bị (có thể là đường dẫn cũ hoặc mới từ Upload)
-                var pathToSave = SelectedImagePath;
+                if (!string.IsNullOrEmpty(SelectedSize))
+                {
+                    var currentSizePrice = SelectedItem.ItemPrices.FirstOrDefault(p =>
+                        p.Size?.SizeName?.Equals(SelectedSize, StringComparison.OrdinalIgnoreCase) == true);
 
+                    if (currentSizePrice != null)
+                    {
+                        currentSizePrice.Price = SelectedPrice;
+                    }
+                }
                 await Task.Run(() =>
                 {
                     using var context = new CoffeeShopContext();
-                    var item = context.Items.Find(itemId);
-                    if (item != null)
-                    {
-                        item.ItemName = itemName;
-                        item.CategoryId = categoryId;
-                        item.IsAvailable = isAvailable;
-                        item.Info = info;
 
-                        if (!string.IsNullOrEmpty(pathToSave))
+                    var dbItem = context.Items
+                        .Include(i => i.ItemPrices)
+                        .FirstOrDefault(i => i.ItemId == itemId);
+
+                    if (dbItem != null)
+                    {
+                        dbItem.ItemName = SelectedItem.ItemName;
+                        dbItem.CategoryId = SelectedItem.CategoryId;
+                        dbItem.IsAvailable = SelectedItem.IsAvailable;
+                        dbItem.Info = SelectedItem.Info;
+                        dbItem.ImagePath = SelectedImagePath;
+                        foreach (var vmPrice in SelectedItem.ItemPrices)
                         {
-                            item.ImagePath = GetDisplayPath(pathToSave);
+                            if (vmPrice.SizeId.HasValue)
+                            {
+                                var dbPrice = dbItem.ItemPrices.FirstOrDefault(ip =>
+                                    ip.SizeId == vmPrice.SizeId.Value && !ip.IsDeleted);
+
+                                if (dbPrice != null)
+                                {
+                                    dbPrice.Price = vmPrice.Price;
+                                }
+                            }
                         }
+
                         context.SaveChanges();
                     }
                 });
 
-                EventAggregator.Instance.Publish(new ItemsChangedMessage { Action = "Updated", ItemId = itemId });
+                // refresh UI
+                EventAggregator.Instance.Publish(new ItemsChangedMessage
+                {
+                    Action = "Updated",
+                    ItemId = itemId
+                });
+
+                CustomMessageBox.Show("Cập nhật thành công!", "Thông báo",
+                    MessageButtons.OK, MessageType.Info);
             }
-            finally { IsLoading = false; }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error updating item: {ex.Message}");
+                CustomMessageBox.Show($"Lỗi khi cập nhật: {ex.Message}", "Lỗi",
+                    MessageButtons.OK, MessageType.Error);
+            }
+            finally
+            {
+                IsLoading = false;
+            }
         }
 
         private async Task DeleteItemAsync()
@@ -756,19 +820,19 @@ namespace CoffeeShop.ViewModels.AdminVM
             {
                 int itemId = SelectedItem.ItemId;
 
-                // 1. Xóa ngầm trong Database
+                // Xóa ngầm trong Database
                 await Task.Run(() =>
                 {
                     using var context = new CoffeeShopContext();
                     var item = context.Items.Find(itemId);
                     if (item != null)
                     {
-                        item.IsDeleted = true; // Soft delete
+                        item.IsDeleted = true;
                         context.SaveChanges();
                     }
                 });
 
-                // 2. Bắn tin nhắn để refresh lại toàn bộ danh sách
+                // refresh lại toàn bộ danh sách
                 EventAggregator.Instance.Publish(new ItemsChangedMessage { Action = "Deleted", ItemId = itemId });
 
                 // Reset lựa chọn về null
@@ -795,23 +859,63 @@ namespace CoffeeShop.ViewModels.AdminVM
             private bool _isAvailable;
             private string? _imagePath;
             private string _info = string.Empty;
-            private ObservableCollection<ItemPrice> _itemPrices = new();
+            private ObservableCollection<ItemPriceViewModel> _itemPrices = new();
+            public ObservableCollection<ItemPriceViewModel> ItemPrices
+            {
+                get => _itemPrices;
+                set
+                {
+                    if (_itemPrices != null)
+                        _itemPrices.CollectionChanged -= ItemPrices_CollectionChanged;
+
+                    _itemPrices = value ?? new ObservableCollection<ItemPriceViewModel>();
+                    _itemPrices.CollectionChanged += ItemPrices_CollectionChanged;
+
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(DisplayPrice));
+                }
+            }
+
             private ImageSource? _imageSource;
             public ImageSource? ImageSource
             {
                 get => _imageSource;
                 set { _imageSource = value; OnPropertyChanged(nameof(ImageSource)); }
             }
+
             public int ItemId { get => _itemId; set { _itemId = value; OnPropertyChanged(nameof(ItemId)); } }
             public string ItemName { get => _itemName; set { _itemName = value; OnPropertyChanged(nameof(ItemName)); } }
-            public int CategoryId { get => _categoryId; set { _categoryId = value; OnPropertyChanged(nameof(CategoryId)); } }
+            public int CategoryId
+            {
+                get => _categoryId;
+                set
+                {
+                    _categoryId = value;
+                    OnPropertyChanged(nameof(CategoryId));
+                    OnPropertyChanged(nameof(ItemPrices));
+                }
+            }
             public bool IsAvailable { get => _isAvailable; set { _isAvailable = value; OnPropertyChanged(nameof(IsAvailable)); } }
             public string ImagePath { get => _imagePath; set { _imagePath = value; OnPropertyChanged(nameof(ImagePath)); } }
             public string Info { get => _info; set { _info = value; OnPropertyChanged(nameof(Info)); } }
-            public ObservableCollection<ItemPrice> ItemPrices { get => _itemPrices; set { _itemPrices = value; OnPropertyChanged(nameof(ItemPrices)); } }
+
+            public MenuCoffeeItem()
+            {
+                // Khởi tạo và đăng ký sự kiện thay đổi danh sách
+                _itemPrices.CollectionChanged += ItemPrices_CollectionChanged;
+            }
+            public ItemPriceViewModel? DisplayPrice
+            {
+                get => ItemPrices != null && ItemPrices.Count > 0 ? ItemPrices[0] : null;
+            }
+            private void ItemPrices_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+            {
+                OnPropertyChanged(nameof(DisplayPrice));
+            }
 
             public event PropertyChangedEventHandler? PropertyChanged;
-            protected void OnPropertyChanged(string name) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+            protected void OnPropertyChanged([CallerMemberName] string? name = null)
+                => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
         public class SizeViewModel : INotifyPropertyChanged
@@ -826,6 +930,29 @@ namespace CoffeeShop.ViewModels.AdminVM
 
             public event PropertyChangedEventHandler? PropertyChanged;
             protected void OnPropertyChanged(string name) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+
+        public class ItemPriceViewModel : INotifyPropertyChanged
+        {
+            private decimal _price;
+            private int? _sizeId;
+
+            public int? SizeId
+            {
+                get => _sizeId;
+                set { _sizeId = value; OnPropertyChanged(); }
+            }
+
+            public decimal Price
+            {
+                get => _price;
+                set { _price = value; OnPropertyChanged(); }
+            }
+            public Size? Size { get; set; }
+
+            public event PropertyChangedEventHandler? PropertyChanged;
+            protected void OnPropertyChanged([CallerMemberName] string? name = null)
+                => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
         #endregion
     }
