@@ -298,7 +298,7 @@ namespace CoffeeShop.ViewModels.StaffVM
         }
 
         // Yêu cầu in Bill
-        private bool _isCheckedPrintBill;
+        private bool _isCheckedPrintBill = true;
         public bool IsCheckedPrintBill
         {
             get => _isCheckedPrintBill;

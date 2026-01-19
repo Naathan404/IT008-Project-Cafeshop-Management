@@ -4,9 +4,12 @@ using CoffeeShop.Service.DTOs;
 using CoffeeShop.View.Controls;
 using CoffeeShop.View.General;
 using CoffeeShop.ViewModels.AdminVM;
+using DocumentFormat.OpenXml.Wordprocessing;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Windows;
 using System.Windows.Input;
 using static CoffeeShop.View.Controls.CustomMessageBox;
@@ -251,9 +254,21 @@ namespace CoffeeShop.ViewModels.StaffVM
                 orderDetailWindow.ShowDialog();
             });
 
-            PrintCommand = new RelayCommand<object>((p) =>
+            PrintCommand = new RelayCommand<object>(async (p) =>
             {
-                CustomMessageBox.Show("Chức năng in hóa đơn đang được phát triển.", "Thông báo", MessageButtons.OK, MessageType.Info);
+                //CustomMessageBox.Show("Chức năng in hóa đơn đang được phát triển.", "Thông báo", MessageButtons.OK, MessageType.Info);
+                // Khởi tạo hóa đơn
+                string fileName = $"Bill_{SelectedOrder!.OrderID}_{DateTime.Now:yyyyMMddHHmmss}.xlsx";
+                string folderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Exports");
+                if (!Directory.Exists(folderPath)) Directory.CreateDirectory(folderPath);
+
+                string fullPath = Path.Combine(folderPath, fileName);
+
+                var exporter = new BillExporter(SelectedOrder!.OrderID);
+                await exporter.ExportToExcel(fullPath);
+
+                // Tự động mở file Excel
+                Process.Start(new ProcessStartInfo(fullPath) { UseShellExecute = true });
             });
             _ = LoadOrderHistory();
         }
