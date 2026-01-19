@@ -84,10 +84,8 @@ namespace CoffeeShop.ViewModels.StaffVM
                 return;
             }
 
-            // 2. BẮT ĐẦU QUY TRÌNH GỬI MAIL
             try
             {
-                // GỌI HÀM GỬI EMAIL CHÍNH (SendReportEmail đã có logic gửi mail)
                 SendReportEmail(currentStaffId);
 
                 MessageBox.Show("Đã gửi báo cáo thành công cho Admin!", "Thành công");
@@ -96,8 +94,6 @@ namespace CoffeeShop.ViewModels.StaffVM
             catch (Exception ex)
             {
                 MessageBox.Show($"Lỗi gửi báo cáo: Vui lòng kiểm tra lại cấu hình email (Mật khẩu ứng dụng) và kết nối mạng. Chi tiết: {ex.Message}", "Lỗi");
-
-                // Quan trọng: Nếu gửi lỗi, ta không đóng cửa sổ để người dùng có thể xem lại lỗi hoặc thử lại
             }
         }
 
@@ -125,7 +121,6 @@ namespace CoffeeShop.ViewModels.StaffVM
                 workSheet.Cells[workSheet.Dimension.Address].AutoFitColumns();
                 workSheet.Cells[1, 1, 1, 6].Style.Font.Bold = true;
 
-                // Ví dụ định dạng cột số lượng (giả sử cột số 4 là Quantity)
                 workSheet.Column(4).Style.Numberformat.Format = "#,##0.00";
 
                 package.Save();
@@ -133,12 +128,12 @@ namespace CoffeeShop.ViewModels.StaffVM
             }
         }
 
+        // Dành cho nhân viên - Gửi báo cáo
         private async void SendReportEmail(int staffId)
         {
             string staffName = UserSession.Instance.StaffName;
             try
             {
-
                 using (var db = new CoffeeShopContext())
                 {
                     var emailList = db.Staff
@@ -179,6 +174,7 @@ namespace CoffeeShop.ViewModels.StaffVM
             
         }
 
+        // Dành cho admin - Xuất báo cáo
         private void ExecuteExport(Window window)
         {
             CreateExcelReport(ReportData); // Chi tao file khong gui mail

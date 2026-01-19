@@ -26,7 +26,11 @@ namespace CoffeeShop.Service.DTOs
         public decimal Quantity
         {
             get => _quantity;
-            set => SetProperty(ref _quantity, value);
+            set
+            {
+                SetProperty(ref _quantity, value);
+                OnPropertyChanged(nameof(StatusBackground));
+            }
         }
 
         public string Unit

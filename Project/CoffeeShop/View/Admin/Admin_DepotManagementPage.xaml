@@ -52,7 +52,13 @@
                             materialDesign:TextFieldAssist.OutlinedBorderActiveThickness="3"
                             BorderThickness="1"
                             TextWrapping="Wrap"
-                            VerticalScrollBarVisibility="Auto"/>
+                            VerticalScrollBarVisibility="Auto">
+                            <TextBox.ToolTip>
+                                <ToolTip Style="{StaticResource CustomTooltip}">
+                                    <TextBlock Text="Lọc số lượng từ..." TextWrapping="Wrap" Width="200"/>
+                                </ToolTip>
+                            </TextBox.ToolTip>
+                        </TextBox>
 
                         <TextBox x:Name="txbMaxAmount"
                             Height="50" Width="100" Margin="5,0"
@@ -68,12 +74,24 @@
                             materialDesign:TextFieldAssist.OutlinedBorderActiveThickness="3"
                             BorderThickness="1"
                             TextWrapping="Wrap"
-                            VerticalScrollBarVisibility="Auto"/>
+                            VerticalScrollBarVisibility="Auto">
+                            <TextBox.ToolTip>
+                                <ToolTip Style="{StaticResource CustomTooltip}">
+                                    <TextBlock Text="Lọc số lượng đến..." TextWrapping="Wrap" Width="200"/>
+                                </ToolTip>
+                            </TextBox.ToolTip>
+                        </TextBox>
 
                         <ComboBox x:Name="cbUnits" Width="120" Margin="5"
                             ItemsSource="{Binding units}" SelectedItem="{Binding SelectedUnit}" 
                             materialDesign:HintAssist.Hint="Đơn vị"
-                            Style="{StaticResource MaterialDesignOutlinedComboBox}"/>
+                            Style="{StaticResource MaterialDesignOutlinedComboBox}">
+                            <ComboBox.ToolTip>
+                                <ToolTip Style="{StaticResource CustomTooltip}">
+                                    <TextBlock Text="Lọc nguyên liệu theo đơn vị" TextWrapping="Wrap" Width="200"/>
+                                </ToolTip>
+                            </ComboBox.ToolTip>
+                        </ComboBox>
                         <!-- Search bar -->
                         <TextBox x:Name="txbSearchBar"
                             Height="50" Width="200" Margin="5,0"
@@ -89,7 +107,13 @@
                             materialDesign:TextFieldAssist.OutlinedBorderActiveThickness="3"
                             BorderThickness="1"
                             TextWrapping="Wrap"
-                            VerticalScrollBarVisibility="Auto"/>
+                            VerticalScrollBarVisibility="Auto">
+                            <TextBox.ToolTip>
+                                <ToolTip Style="{StaticResource CustomTooltip}">
+                                    <TextBlock Text="Tìm kiếm nguyên liệu theo tên" TextWrapping="Wrap" Width="200"/>
+                                </ToolTip>
+                            </TextBox.ToolTip>
+                        </TextBox>
                     </DockPanel>
                     <!-- Function Buttons -->
                     <StackPanel Grid.Column="2"
@@ -97,28 +121,54 @@
 
                         <Button x:Name="btnReload"
                             Command="{Binding ReloadCommand}"
-                            Style="{StaticResource SmallButton}" Tag="Reload"/>
+                            Style="{StaticResource SmallButton}" Tag="Reload">
+                            <Button.ToolTip>
+                                <ToolTip Style="{StaticResource CustomTooltip}">
+                                    <TextBlock Text="Tải lại danh sách nguyên liệu" TextWrapping="Wrap" Width="200"/>
+                                </ToolTip>
+                            </Button.ToolTip>
+                        </Button>
                         <Button x:Name="btnAdd"
                             Command="{Binding AddItemCommand}"
-                            Style="{StaticResource SmallButton}" Tag="Plus"/>
+                            Style="{StaticResource SmallButton}" Tag="Plus">
+                            <Button.ToolTip>
+                                <ToolTip Style="{StaticResource CustomTooltip}">
+                                    <TextBlock Text="Thêm nguyên liệu mới" TextWrapping="Wrap" Width="200"/>
+                                </ToolTip>
+                            </Button.ToolTip>
+                        </Button>
 
                         <Button x:Name="btnUpdate"
                             Command="{Binding UpdateItemCommand}"
                             CommandParameter="{Binding ElementName=dgDepot, Path=SelectedItem}"
-                            Style="{StaticResource SmallButton}" Tag="Pen"/>
+                            Style="{StaticResource SmallButton}" Tag="Pen">
+                            <Button.ToolTip>
+                                <ToolTip Style="{StaticResource CustomTooltip}">
+                                    <TextBlock Text="Cập nhật nguyên liệu" TextWrapping="Wrap" Width="200"/>
+                                </ToolTip>
+                            </Button.ToolTip>
+                        </Button>
 
                         <Button x:Name="btnDelete" 
                             Command="{Binding DeleteItemCommand}"
                             CommandParameter="{Binding ElementName=dgDepot, Path=SelectedItem}"
-                            Style="{StaticResource SmallButton}" Tag="Bin"/>
+                            Style="{StaticResource SmallButton}" Tag="Bin">
+                            <Button.ToolTip>
+                                <ToolTip Style="{StaticResource CustomTooltip}">
+                                    <TextBlock Text="Xóa nguyên liệu" TextWrapping="Wrap" Width="200"/>
+                                </ToolTip>
+                            </Button.ToolTip>
+                        </Button>
 
                         <Button x:Name="btnReport" 
                             Command="{Binding ExportFileCommand}"
-                            Style="{StaticResource SmallButton}" Tag="FileExcel"/>
-
-                        <Button x:Name="btnHistory"
-                            Command="{Binding ShowDepotHistory}"
-                            Style="{StaticResource SmallButton}" Tag="History"/>
+                            Style="{StaticResource SmallButton}" Tag="FileExcel">
+                            <Button.ToolTip>
+                                <ToolTip Style="{StaticResource CustomTooltip}">
+                                    <TextBlock Text="Xuất file excel" TextWrapping="Wrap" Width="200"/>
+                                </ToolTip>
+                            </Button.ToolTip>
+                        </Button>
                     </StackPanel>
                 </Grid>
             </materialDesign:Card>
@@ -132,21 +182,21 @@
                 <!-- Datagrid -->
                 <DataGrid x:Name="dgDepot" Grid.Column="0" Margin="0,10"
                         Style="{StaticResource CoffeeDataGridStyle}"
-                        ItemsSource="{Binding DepotItems}">
+                        ItemsSource="{Binding DepotItems}"
+                        SelectedItem="{Binding SelectedItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="ID" Binding="{Binding MaterialId}" Width="0.6*" IsReadOnly="True"
-                                            ElementStyle="{StaticResource CenterAlignStyle}"/>
                         <DataGridTextColumn Header="Tên nguyên liệu" Binding="{Binding MaterialName}" Width="1.2*"/>
                         <DataGridTemplateColumn Header="Số lượng" Width="*" SortMemberPath="Quantity">
+                            <DataGridTemplateColumn.CellStyle>
+                                <Style TargetType="DataGridCell" BasedOn="{StaticResource CoffeeDataGridCellStyle}">
+                                    <Setter Property="Background" Value="{Binding StatusBackground, UpdateSourceTrigger=PropertyChanged}"/>
+                                </Style>
+                            </DataGridTemplateColumn.CellStyle>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <Border Background="{Binding StatusBackground}" Margin="-4, -10"
-                                        HorizontalAlignment="Stretch" 
-                                        VerticalAlignment="Stretch">
-                                        <TextBlock Text="{Binding Quantity, StringFormat='{}{0:#,##0.##}'}" 
-                                           Style="{StaticResource CenterAlignStyle}"
-                                           VerticalAlignment="Center"/>
-                                    </Border>
+                                    <TextBlock Text="{Binding Quantity, StringFormat='{}{0:#,##0.##}'}" 
+                                       HorizontalAlignment="Center" 
+                                       VerticalAlignment="Center"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
@@ -171,18 +221,18 @@
                                    VerticalAlignment="Top" HorizontalAlignment="Center"/>
 
                         <!-- Tên nguyên liệu -->
-                        <StackPanel Grid.Row="1">
+                        <StackPanel Grid.Row="1" Orientation="Horizontal">
                             <TextBlock Text="Tên:" Width="50"
                                        FontSize="17" FontWeight="SemiBold" FontFamily="Cascadia Code" Foreground="#462812"
                                        VerticalAlignment="Top" HorizontalAlignment="Left">
                                 <TextBlock.ToolTip>
                                     <ToolTip Style="{StaticResource CustomTooltip}">
-                                        <TextBlock Text="Tên nguyên liệu hiện có trong kho." TextWrapping="Wrap" Width="200"/>
+                                        <TextBlock Text="Tên nguyên liệu hiện có trong kho" TextWrapping="Wrap" Width="200"/>
                                     </ToolTip>
                                 </TextBlock.ToolTip>
                             </TextBlock>
 
-                            <TextBlock Text="{Binding MaterialName}"
+                            <TextBlock Text="{Binding SelectedItem.MaterialName, UpdateSourceTrigger=PropertyChanged}"
                                        FontSize="17" FontWeight="SemiBold" FontFamily="Cascadia Code" Foreground="#462812"
                                        VerticalAlignment="Top" HorizontalAlignment="Right">
                                 <TextBlock.ToolTip>
@@ -193,10 +243,14 @@
                             </TextBlock>
                         </StackPanel>
 
-                        <DataGrid Grid.Row="2" Style="{StaticResource CoffeeDataGridStyle}"
-                                  ItemsSource="{Binding DepotHistoryItems}">
+                        <DataGrid Grid.Row="2" 
+                                Style="{StaticResource CoffeeDataGridStyle}"
+                                ItemsSource="{Binding DepotHistoryItems, UpdateSourceTrigger=PropertyChanged}"
+                                IsReadOnly="True"
+                                EnableRowVirtualization="False"
+                                VirtualizingStackPanel.VirtualizationMode="Standard">
                             <DataGrid.Columns>
-                                <DataGridTextColumn Header="Thời gian" Binding="{Binding Date, StringFormat='{}{0:dd/MM/yyyy HH:mm}'}" Width="1.5*"
+                                <DataGridTextColumn Header="Thời gian" Binding="{Binding Date, StringFormat='{}{0:dd/MM/yy HH:mm}'}" Width="1.5*"
                                                     ElementStyle="{StaticResource CenterAlignStyle}"/>
                                 <DataGridTextColumn Header="Số lượng" Binding="{Binding Quantity, StringFormat='{}{0:#,##0.##}'}" Width="1*"
                                                     ElementStyle="{StaticResource CenterAlignStyle}"/>
