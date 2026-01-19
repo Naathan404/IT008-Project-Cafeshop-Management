@@ -1,6 +1,8 @@
 ﻿using CoffeeShop.Models;
 using CoffeeShop.Service;
 using CoffeeShop.Service.DTOs;
+using CoffeeShop.View.Controls;
+using DocumentFormat.OpenXml.Math;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
@@ -142,19 +144,33 @@ namespace CoffeeShop.ViewModels.StaffVM
 
         private bool CanExecuteSave(Window p)
         {
-            if (string.IsNullOrWhiteSpace(MaterialName) || Quantity < 0 || string.IsNullOrWhiteSpace(SelectedUnit))
+            // Check Condition
+            if (string.IsNullOrWhiteSpace(MaterialName))
+            {
+                CustomMessageBox.Show("Tên vật tư không được để trống!", "Lỗi", CustomMessageBox.MessageButtons.OK, CustomMessageBox.MessageType.Error);
                 return false;
-
+            }
+            else if (Quantity < 0)
+            {
+                CustomMessageBox.Show("Số lượng phải lớn hơn hoặc bằng 0!", "Lỗi", CustomMessageBox.MessageButtons.OK, CustomMessageBox.MessageType.Error);
+                return false;
+            }
+            else if (Threshold < 0)
+            {
+                CustomMessageBox.Show("Ngưỡng cảnh báo phải lớn hơn hoặc bằng 0!", "Lỗi", CustomMessageBox.MessageButtons.OK, CustomMessageBox.MessageType.Error);
+                return false;
+            }
+            else if (string.IsNullOrWhiteSpace(SelectedUnit))
+            {
+                CustomMessageBox.Show("Chưa chọn đơn vị!", "Lỗi", CustomMessageBox.MessageButtons.OK, CustomMessageBox.MessageType.Error);
+                return false;
+            }
             return true;
         }
 
         private async void ExecuteSave(Window window)
         {
-            if (!CanExecuteSave(window))
-            {
-                MessageBox.Show("Vui lòng nhập đầy đủ Tên, Số lượng (>= 0) và Đơn vị hợp lệ.", "Lỗi nhập liệu", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
+            if (!CanExecuteSave(window)) return;
 
             using (var db = new CoffeeShopContext())
             {

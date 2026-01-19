@@ -9,8 +9,6 @@ namespace CoffeeShop.Service.Interfaces
         public bool? OpenInsertMaterialWindow(ObservableCollection<DepotItemDTO> depotItems,
             DepotItemDTO? itemToEdit);
 
-        public void OpenDepotHistoryWindow();
-
         public void OpenReportDepotWindow();
 
         public bool? OpenInsertCouponWindow(CouponDTO? itemToEdit = null);

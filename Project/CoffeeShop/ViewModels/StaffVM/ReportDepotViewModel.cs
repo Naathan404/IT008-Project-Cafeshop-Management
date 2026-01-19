@@ -2,6 +2,7 @@
 using CoffeeShop.Models;
 using CoffeeShop.Service;
 using CoffeeShop.Service.DTOs;
+using CoffeeShop.View.Controls;
 using OfficeOpenXml;
 using OfficeOpenXml.Table;
 using System.Collections.ObjectModel;
@@ -70,7 +71,7 @@ namespace CoffeeShop.ViewModels.StaffVM
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Lỗi tạo báo cáo: {ex.Message}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                CustomMessageBox.Show($"Lỗi tạo báo cáo: {ex.Message}", "Lỗi", CustomMessageBox.MessageButtons.OK, CustomMessageBox.MessageType.Error);
             }
 
 
@@ -80,7 +81,7 @@ namespace CoffeeShop.ViewModels.StaffVM
             // Kiểm tra an toàn trước khi gửi
             if (currentStaffId == 0)
             {
-                MessageBox.Show("Vui lòng đăng nhập lại. Không tìm thấy thông tin nhân viên.", "Lỗi");
+                CustomMessageBox.Show("Vui lòng đăng nhập lại. Không tìm thấy thông tin nhân viên.", "Lỗi", CustomMessageBox.MessageButtons.OK, CustomMessageBox.MessageType.Error);
                 return;
             }
 
@@ -88,12 +89,13 @@ namespace CoffeeShop.ViewModels.StaffVM
             {
                 SendReportEmail(currentStaffId);
 
-                MessageBox.Show("Đã gửi báo cáo thành công cho Admin!", "Thành công");
+                CustomMessageBox.Show("Đã gửi báo cáo thành công cho Admin!", "Thành công", CustomMessageBox.MessageButtons.OK, CustomMessageBox.MessageType.Success);
                 window?.Close(); // Đóng cửa sổ sau khi gửi thành công
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Lỗi gửi báo cáo: Vui lòng kiểm tra lại cấu hình email (Mật khẩu ứng dụng) và kết nối mạng. Chi tiết: {ex.Message}", "Lỗi");
+                CustomMessageBox.Show($"Lỗi gửi báo cáo: Vui lòng kiểm tra lại cấu hình email (Mật khẩu ứng dụng) và kết nối mạng. Chi tiết: {ex.Message}", "Lỗi",
+                    CustomMessageBox.MessageButtons.OK, CustomMessageBox.MessageType.Error);
             }
         }
 
@@ -162,7 +164,7 @@ namespace CoffeeShop.ViewModels.StaffVM
             }
             catch(Exception ex)
             {
-                MessageBox.Show($"Lỗi trong quá trình gửi email: {ex.Message}", "Lỗi");
+                CustomMessageBox.Show($"Lỗi trong quá trình gửi email: {ex.Message}", "Lỗi", CustomMessageBox.MessageButtons.OK, CustomMessageBox.MessageType.Error);
             }
             finally
             {
@@ -181,11 +183,11 @@ namespace CoffeeShop.ViewModels.StaffVM
             if (!string.IsNullOrEmpty(_filePath))
             {
                 window?.Close();
-                MessageBox.Show($"Báo cáo đã được xuất thành công tại: {_filePath}", "Thành công");
+                CustomMessageBox.Show($"Báo cáo đã được xuất thành công tại: {_filePath}", "Thành công", CustomMessageBox.MessageButtons.OK, CustomMessageBox.MessageType.Success);
             }
             else
             {
-                MessageBox.Show("Xuất báo cáo thất bại.", "Lỗi");
+                CustomMessageBox.Show("Xuất báo cáo thất bại.", "Lỗi", CustomMessageBox.MessageButtons.OK, CustomMessageBox.MessageType.Error);
             }
         }
 

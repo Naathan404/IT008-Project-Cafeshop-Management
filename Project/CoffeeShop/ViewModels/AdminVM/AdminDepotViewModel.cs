@@ -2,6 +2,7 @@
 using CoffeeShop.Service;
 using CoffeeShop.Service.DTOs;
 using CoffeeShop.Service.Interfaces;
+using CoffeeShop.View.Controls;
 using CoffeeShop.View.Staff;
 using Microsoft.EntityFrameworkCore;
 using OfficeOpenXml;
@@ -22,7 +23,6 @@ namespace CoffeeShop.ViewModels.AdminVM
         public ICommand AddItemCommand { get; private set; } = null!;
         public ICommand UpdateItemCommand { get; private set; } = null!;
         public ICommand DeleteItemCommand { get; private set; } = null!;
-        public ICommand ShowDepotHistory { get; private set; } = null!;
         public ICommand ExportFileCommand { get; private set; } = null!;
 
         #region Properties
@@ -44,7 +44,7 @@ namespace CoffeeShop.ViewModels.AdminVM
             set { _depotHistoryItems = value; OnPropertyChanged(); }
         }
 
-        public ObservableCollection<string> units { get; set; } = new ObservableCollection<string>()
+        public ObservableCollection<string> Units { get; set; } = new ObservableCollection<string>()
         {
             "Tất cả", "Kg", "Lon", "Chai", "Hộp", "Hộp 1L", "Hũ"
         };
@@ -135,6 +135,17 @@ namespace CoffeeShop.ViewModels.AdminVM
                 }
             }
         }
+
+        private bool _isLoading;
+        public bool IsLoading
+        {
+            get => _isLoading;
+            set
+            {
+                _isLoading = value;
+                OnPropertyChanged();
+            }
+        }
         #endregion
 
         // Constructor
@@ -146,9 +157,15 @@ namespace CoffeeShop.ViewModels.AdminVM
             _ = LoadHistory();
         }
 
-        #region Core Logic
+        #region Logic
         public async Task LoadItem()
         {
+            MinQuantity = null;
+            MaxQuantity = null;
+            SelectedUnit = Units.First();
+            SearchTerm = string.Empty;
+
+            IsLoading = true;
             try
             {
                 using (var db = new CoffeeShopContext())
@@ -174,7 +191,14 @@ namespace CoffeeShop.ViewModels.AdminVM
                     });
                 }
             }
-            catch (Exception ex) { MessageBox.Show($"Lỗi: {ex.Message}"); }
+            catch (Exception ex)
+            {
+                CustomMessageBox.Show($"Lỗi: {ex.Message}", "Lỗi", CustomMessageBox.MessageButtons.OK, CustomMessageBox.MessageType.Error); 
+            }
+            finally
+            {
+                IsLoading = false;
+            }
         }
 
         public async Task LoadHistory(int? forcedId = null)
@@ -215,7 +239,10 @@ namespace CoffeeShop.ViewModels.AdminVM
                     });
                 }
             }
-            catch (Exception ex) { MessageBox.Show(ex.Message); }
+            catch (Exception ex)
+            {
+                CustomMessageBox.Show(ex.Message, "Lỗi", CustomMessageBox.MessageButtons.OK,CustomMessageBox.MessageType.Error);
+            }
         }
 
         public void ApplyFilter()
@@ -238,7 +265,7 @@ namespace CoffeeShop.ViewModels.AdminVM
         }
         #endregion
 
-        #region Commands Execution
+        #region Execution Methods
         private async void ExecuteAddItem(object? parameter)
         {
             if (_dialogService.OpenInsertMaterialWindow(DepotItems, null) == true)
@@ -268,7 +295,7 @@ namespace CoffeeShop.ViewModels.AdminVM
         private async void ExecuteDeleteItem(DepotItemDTO? itemToDelete)
         {
             if (itemToDelete == null) return;
-            if (MessageBox.Show($"Xóa: {itemToDelete.MaterialName}?", "Xác nhận", MessageBoxButton.YesNoCancel) == MessageBoxResult.Yes)
+            if (CustomMessageBox.Show($"Xóa: {itemToDelete.MaterialName}?", "Xác nhận", CustomMessageBox.MessageButtons.YesNo, CustomMessageBox.MessageType.Question) == CustomMessageBox.MessageBoxResult.Yes)
             {
                 using (var db = new CoffeeShopContext())
                 {
@@ -294,7 +321,7 @@ namespace CoffeeShop.ViewModels.AdminVM
 
         private void ExecuteReport(object? parameter)
         {
-            if (DepotItems.Count == 0) { MessageBox.Show("Không có dữ liệu."); return; }
+            if (DepotItems.Count == 0) { CustomMessageBox.Show("Không có dữ liệu."); return; }
 
             _dialogService.OpenReportDepotWindow();
         }
@@ -306,7 +333,6 @@ namespace CoffeeShop.ViewModels.AdminVM
             AddItemCommand = new RelayCommand<object>(ExecuteAddItem);
             DeleteItemCommand = new RelayCommand<DepotItemDTO>(ExecuteDeleteItem);
             UpdateItemCommand = new RelayCommand<DepotItemDTO>(ExecuteUpdateItem);
-            ShowDepotHistory = new RelayCommand<object>(p => _dialogService.OpenDepotHistoryWindow());
             ExportFileCommand = new RelayCommand<object>(ExecuteReport);
         }
     }
