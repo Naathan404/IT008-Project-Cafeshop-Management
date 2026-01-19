@@ -81,7 +81,25 @@ namespace CoffeeShop.ViewModels.AdminVM
                     CustomMessageBox.Show("Mã giảm giá không được để trống!", "Thông báo", MessageButtons.OK, MessageType.Warning);
                     return;
                 }
-
+                // kiểm thử
+                if (Coupon.DiscountValue <= 0)
+                {
+                    CustomMessageBox.Show("Mức giảm giá phải lớn hơn 0!", "Thông báo",
+                        MessageButtons.OK, MessageType.Warning);
+                    return;
+                }
+                if (!Coupon.MaximumDiscountAmount.HasValue || Coupon.MaximumDiscountAmount <= 0)
+                {
+                    CustomMessageBox.Show("Số tiền giảm tối đa phải lớn hơn 0!", "Thông báo",
+                        MessageButtons.OK, MessageType.Warning);
+                    return;
+                }
+                if (Coupon.MinimumOrderValue < 0)
+                {
+                    CustomMessageBox.Show("Giá trị đơn hàng tối thiểu phải lớn hơn 0!", "Thông báo",
+                        MessageButtons.OK, MessageType.Warning);
+                    return;
+                }
                 try
                 {
                     using (var db = new CoffeeShopContext())

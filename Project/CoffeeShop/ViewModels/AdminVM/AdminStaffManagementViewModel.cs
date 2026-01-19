@@ -8,6 +8,7 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Input;
+using System.Text.RegularExpressions;
 using static CoffeeShop.View.Controls.CustomMessageBox;
 
 namespace CoffeeShop.ViewModels.AdminVM
@@ -362,27 +363,95 @@ namespace CoffeeShop.ViewModels.AdminVM
         {
             if (SelectedEmployee == null) return;
 
-            if (string.IsNullOrEmpty(SelectedEmployee.StaffName) ||
-            string.IsNullOrEmpty(SelectedEmployee.Username) ||
-            SelectedEmployee.Birthday == null || SelectedEmployee.StartDate == null)
+            if (string.IsNullOrWhiteSpace(SelectedEmployee.StaffName) ||
+            string.IsNullOrWhiteSpace(SelectedEmployee.Username))
             {
                 CustomMessageBox.Show("Vui lòng nhập đầy đủ Tên và Tài khoản!", "Thông báo", MessageButtons.OK, MessageType.Warning);
                 return;
             }
-            decimal? finalSalary = null;
-            if (!string.IsNullOrEmpty(SelectedEmployee.BaseSalary) && SelectedEmployee.BaseSalary != "---")
+            if (string.IsNullOrWhiteSpace(SelectedEmployee.Phonenumber) || string.IsNullOrWhiteSpace(SelectedEmployee.Email))
             {
-                string cleanSalary = SelectedEmployee.BaseSalary.Replace(".", "").Replace(",", "");
+                CustomMessageBox.Show("Vui lòng nhập Số điện thoại và Email!", "Thông báo", MessageButtons.OK, MessageType.Warning);
+                return;
+            }
+            if (SelectedEmployee.Birthday == null || SelectedEmployee.StartDate == null)
+            {
+                CustomMessageBox.Show("Vui lòng chọn Ngày sinh và Ngày vào làm!", "Thông báo", MessageButtons.OK, MessageType.Warning);
+                return;
+            }
+            // Tên chỉ chứa chữ cái tiếng Việt và khoảng trắng
+            if (!Regex.IsMatch(SelectedEmployee.StaffName, @"^[a-zA-ZÀ-ỹ\s]+$"))
+            {
+                CustomMessageBox.Show(
+                    "Tên nhân viên chỉ được chứa chữ cái tiếng Việt và khoảng trắng!",
+                    "Thông báo",
+                    MessageButtons.OK,
+                    MessageType.Warning);
+                return;
+            }
+            // Ngày sinh < ngày hiện tại
+            if (SelectedEmployee.Birthday >= DateTime.Today)
+            {
+                CustomMessageBox.Show(
+                    "Ngày sinh không được lớn hơn hoặc bằng ngày hiện tại!",
+                    "Thông báo",
+                    MessageButtons.OK,
+                    MessageType.Warning);
+                return;
+            }
+
+            // Ngày sinh < Ngày vào làm
+            if (SelectedEmployee.Birthday >= SelectedEmployee.StartDate)
+            {
+                CustomMessageBox.Show("Ngày sinh phải nhỏ hơn ngày vào làm!", "Thông báo",
+                    MessageButtons.OK, MessageType.Warning);
+                return;
+            }
+
+            // Số điện thoại chỉ chứa chữ số
+            if (!string.IsNullOrEmpty(SelectedEmployee.Phonenumber) &&
+                !SelectedEmployee.Phonenumber.All(char.IsDigit))
+            {
+                CustomMessageBox.Show("Số điện thoại chỉ được chứa chữ số!", "Thông báo",
+                    MessageButtons.OK, MessageType.Warning);
+                return;
+            }
+
+            // Email
+            if (!string.IsNullOrEmpty(SelectedEmployee.Email) &&
+                !SelectedEmployee.Email.Contains("@"))
+            {
+                CustomMessageBox.Show("Email không hợp lệ! Vui lòng nhập đúng định dạng.", "Thông báo",
+                    MessageButtons.OK, MessageType.Warning);
+                return;
+            }
+
+            decimal? finalSalary = null;
+            if (!string.IsNullOrEmpty(SelectedEmployee.BaseSalary) &&
+                SelectedEmployee.BaseSalary != "---")
+            {
+                string cleanSalary = SelectedEmployee.BaseSalary
+                    .Replace(".", "")
+                    .Replace(",", "");
+
                 if (decimal.TryParse(cleanSalary, out decimal parsedSalary))
                 {
+                    if (parsedSalary <= 0)
+                    {
+                        CustomMessageBox.Show("Lương cơ bản phải lớn hơn 0!", "Thông báo",
+                            MessageButtons.OK, MessageType.Warning);
+                        return;
+                    }
                     finalSalary = parsedSalary;
                 }
                 else
                 {
-                    CustomMessageBox.Show("Tiền lương không hợp lệ! Vui lòng nhập số (ví dụ: 5.000.000)", "Lỗi", MessageButtons.OK, MessageType.Error);
+                    CustomMessageBox.Show("Tiền lương không hợp lệ! Vui lòng nhập số (ví dụ: 5.000.000)",
+                        "Lỗi", MessageButtons.OK, MessageType.Error);
                     return;
                 }
             }
+
 
 
             using (var db = new CoffeeShopContext())
