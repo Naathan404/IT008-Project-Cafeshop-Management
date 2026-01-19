@@ -297,26 +297,49 @@
         <Setter Property="Foreground" Value="#340D05"/>
         <Setter Property="Margin" Value="5"/>
         <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
                     <Border x:Name="border" 
                         Background="{TemplateBinding Background}" 
-                        BorderBrush="#340D05" BorderThickness="1" 
-                        CornerRadius="5">
-                        <!-- Icon -->
+                        BorderBrush="#340D05" 
+                        BorderThickness="1" 
+                        CornerRadius="7"
+                        SnapsToDevicePixels="True">
+                        <Border.Effect>
+                            <DropShadowEffect BlurRadius="3" Direction="270" Opacity="0.1" ShadowDepth="1"/>
+                        </Border.Effect>
+
                         <materialDesign:PackIcon Kind="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}" 
-                             Width="30" Height="30"
-                             HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                             Width="28" Height="28"
+                                             HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Border>
 
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="border" Property="Background" Value="#E0CEB5"/>
+                            <Setter TargetName="border" Property="Background" Value="#D4BC9C"/>
+                            <Setter TargetName="border" Property="BorderBrush" Value="#4E342E"/>
                             <Setter Property="Cursor" Value="Hand"/>
+                            <Setter Property="RenderTransform">
+                                <Setter.Value>
+                                    <ScaleTransform ScaleX="1.03" ScaleY="1.03"/>
+                                </Setter.Value>
+                            </Setter>
                         </Trigger>
+
                         <Trigger Property="IsPressed" Value="True">
                             <Setter TargetName="border" Property="Background" Value="#8E6841"/>
+                            <Setter Property="RenderTransform">
+                                <Setter.Value>
+                                    <ScaleTransform ScaleX="0.97" ScaleY="0.97"/>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="border" Property="Opacity" Value="0.5"/>
+                            <Setter TargetName="border" Property="Background" Value="#CCCCCC"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

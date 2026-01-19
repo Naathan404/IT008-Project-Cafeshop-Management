@@ -32,13 +32,29 @@
             <Grid>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
                     <ComboBox ItemsSource="{Binding CouponTypes}" SelectedItem="{Binding SelectedType}" 
-                              materialDesign:HintAssist.Hint="Loại" Width="120" Margin="5" Style="{StaticResource MaterialDesignOutlinedComboBox}"/>
+                              materialDesign:HintAssist.Hint="Loại" Width="120" Margin="5" 
+                              Style="{StaticResource MaterialDesignOutlinedComboBox}">
+                        <ComboBox.ToolTip>
+                            <ToolTip Style="{StaticResource CustomTooltip}" Content="Lọc theo loại mã giảm giá"/>
+                        </ComboBox.ToolTip>
+                    </ComboBox>
                     <ComboBox ItemsSource="{Binding Performances}" SelectedItem="{Binding SelectedPerformance}" 
-                              materialDesign:HintAssist.Hint="Hiệu suất" Width="130" Margin="5" Style="{StaticResource MaterialDesignOutlinedComboBox}"/>
+                              materialDesign:HintAssist.Hint="Hiệu suất" Width="130" Margin="5" 
+                              Style="{StaticResource MaterialDesignOutlinedComboBox}">
+                        <ComboBox.ToolTip>
+                            <ToolTip Style="{StaticResource CustomTooltip}" Content="Lọc theo hiệu suất mã giảm giá"/>
+                        </ComboBox.ToolTip>
+                    </ComboBox>
                     <ComboBox ItemsSource="{Binding Statuses}" SelectedItem="{Binding SelectedStatus}" 
-                              materialDesign:HintAssist.Hint="Trạng thái" Width="130" Margin="5" Style="{StaticResource MaterialDesignOutlinedComboBox}"/>
+                              materialDesign:HintAssist.Hint="Trạng thái" Width="130" Margin="5" 
+                              Style="{StaticResource MaterialDesignOutlinedComboBox}">
+                        <ComboBox.ToolTip>
+                            <ToolTip Style="{StaticResource CustomTooltip}" Content="Lọc theo trạng thái mã giảm giá"/>
+                        </ComboBox.ToolTip>
+                    </ComboBox>
                     <TextBox Text="{Binding SearchTerm, UpdateSourceTrigger=PropertyChanged}" 
-                             materialDesign:HintAssist.Hint="Tìm mã..." Width="150" Margin="5" Style="{StaticResource MaterialDesignOutlinedTextBox}">
+                             materialDesign:HintAssist.Hint="Tìm mã..." Width="150" Margin="5" 
+                             Style="{StaticResource MaterialDesignOutlinedTextBox}">
                         <TextBox.ToolTip>
                             <ToolTip Style="{StaticResource CustomTooltip}" Content="Tìm theo tên mã"/>
                         </TextBox.ToolTip>
@@ -49,137 +65,62 @@
                     <Button
                             Grid.Column="0"
                             Command="{Binding RefreshPageCommand}"
-                            materialDesign:ButtonAssist.CornerRadius="10"
-                            Padding="0"
-                            Margin="0 0 15 0"
+                            Style="{StaticResource SmallButton}" Tag="Reload"
                             IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
-                            Background="#E0ceb5"
-                            HorizontalAlignment="Right"
-                            Height="50"
-                            Width="50"
-                            BorderBrush="#67582c"
-                            BorderThickness="2" >
+                             >
                         <Button.ToolTip>
                             <ToolTip Style="{StaticResource CustomTooltip}">
                                 <TextBlock Text="Làm mới trang" FontFamily="Cascadia Code" FontWeight="Bold" Foreground="#FF340D05"/>
                             </ToolTip>
                         </Button.ToolTip>
-                        <materialDesign:PackIcon
-                                    Foreground="#340D05"
-                                    Kind="Refresh"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    Height="40"
-                                    Width="40">
-                        </materialDesign:PackIcon>
                     </Button>
                     <Button
-                            Grid.Column="0"
                             Command="{Binding InsertCouponCommand}"
-                            materialDesign:ButtonAssist.CornerRadius="10"
-                            Padding="0"
-                            Margin="0 0 15 0"
+                            Grid.Column="0"
+                            Style="{StaticResource SmallButton}" Tag="Plus"
                             IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
-                            Background="#E0ceb5"
-                            HorizontalAlignment="Right"
-                            Height="50"
-                            Width="50"
-                            BorderBrush="#67582c"
-                            BorderThickness="2" >
+                            >
                         <Button.ToolTip>
                             <ToolTip Style="{StaticResource CustomTooltip}">
                                 <TextBlock Text="Thêm mã giảm giá" FontFamily="Cascadia Code" FontWeight="Bold" Foreground="#FF340D05"/>
                             </ToolTip>
                         </Button.ToolTip>
-                        <materialDesign:PackIcon
-                                    Foreground="#340D05"
-                                    Kind="Plus"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    Height="40"
-                                    Width="40">
-                        </materialDesign:PackIcon>
                     </Button>
                     <Button
                             Grid.Column="0"
                             Command="{Binding UpdateCouponCommand}"
-                            materialDesign:ButtonAssist.CornerRadius="10"
-                            Padding="0"
-                            Margin="0 0 15 0"
+                            Style="{StaticResource SmallButton}" Tag="Pen"
                             IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
-                            Background="#E0ceb5"
-                            HorizontalAlignment="Right"
-                            Height="50"
-                            Width="50"
-                            BorderBrush="#67582c"
-                            BorderThickness="2" >
+                            >
                         <Button.ToolTip>
                             <ToolTip Style="{StaticResource CustomTooltip}">
                                 <TextBlock Text="Chỉnh sửa mã giảm giá" FontFamily="Cascadia Code" FontWeight="Bold" Foreground="#FF340D05"/>
                             </ToolTip>
                         </Button.ToolTip>
-                        <materialDesign:PackIcon
-                                    Foreground="#340D05"
-                                    Kind="Pencil"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    Height="40"
-                                    Width="40">
-                        </materialDesign:PackIcon>
                     </Button>
                     <Button
                             Grid.Column="0"
                             Command="{Binding DeleteCouponCommand}"
-                            materialDesign:ButtonAssist.CornerRadius="10"
-                            Padding="0"
-                            Margin="0 0 15 0"
+                            Style="{StaticResource SmallButton}" Tag="Bin"
                             IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
-                            Background="#E0ceb5"
-                            HorizontalAlignment="Right"
-                            Height="50"
-                            Width="50"
-                            BorderBrush="#67582c"
-                            BorderThickness="2" >
+                            >
                         <Button.ToolTip>
                             <ToolTip Style="{StaticResource CustomTooltip}">
                                 <TextBlock Text="Xóa mã giảm giá" FontFamily="Cascadia Code" FontWeight="Bold" Foreground="#FF340D05"/>
                             </ToolTip>
                         </Button.ToolTip>
-                        <materialDesign:PackIcon
-                                    Foreground="#340D05"
-                                    Kind="Delete"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    Height="40"
-                                    Width="40">
-                        </materialDesign:PackIcon>
                     </Button>
                     <Button
                             Grid.Column="0"
                             Command="{Binding ToggleStatusCommand}"
-                            materialDesign:ButtonAssist.CornerRadius="10"
-                            Padding="0"
-                            Margin="0 0 15 0"
+                            Style="{StaticResource SmallButton}" Tag="Power"
                             IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
-                            Background="#E0ceb5"
-                            HorizontalAlignment="Right"
-                            Height="50"
-                            Width="50"
-                            BorderBrush="#67582c"
-                            BorderThickness="2" >
+                            >
                         <Button.ToolTip>
                             <ToolTip Style="{StaticResource CustomTooltip}">
                                 <TextBlock Text="Bật/tắt mã giảm giá" FontFamily="Cascadia Code" FontWeight="Bold" Foreground="#FF340D05"/>
                             </ToolTip>
                         </Button.ToolTip>
-                        <materialDesign:PackIcon
-                                    Foreground="#340D05"
-                                    Kind="Power"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    Height="40"
-                                    Width="40">
-                        </materialDesign:PackIcon>
                     </Button>
                 </StackPanel>
             </Grid>
