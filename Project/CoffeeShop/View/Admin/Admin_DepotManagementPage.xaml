@@ -189,7 +189,7 @@
                         <DataGridTemplateColumn Header="Số lượng" Width="*" SortMemberPath="Quantity">
                             <DataGridTemplateColumn.CellStyle>
                                 <Style TargetType="DataGridCell" BasedOn="{StaticResource CoffeeDataGridCellStyle}">
-                                    <Setter Property="Background" Value="{Binding StatusBackground}"/>
+                                    <Setter Property="Background" Value="{Binding StatusBackground, UpdateSourceTrigger=PropertyChanged}"/>
                                 </Style>
                             </DataGridTemplateColumn.CellStyle>
                             <DataGridTemplateColumn.CellTemplate>
@@ -227,12 +227,12 @@
                                        VerticalAlignment="Top" HorizontalAlignment="Left">
                                 <TextBlock.ToolTip>
                                     <ToolTip Style="{StaticResource CustomTooltip}">
-                                        <TextBlock Text="Tên nguyên liệu hiện có trong kho." TextWrapping="Wrap" Width="200"/>
+                                        <TextBlock Text="Tên nguyên liệu hiện có trong kho" TextWrapping="Wrap" Width="200"/>
                                     </ToolTip>
                                 </TextBlock.ToolTip>
                             </TextBlock>
 
-                            <TextBlock Text="{Binding SelectedItem.MaterialName}"
+                            <TextBlock Text="{Binding SelectedItem.MaterialName, UpdateSourceTrigger=PropertyChanged}"
                                        FontSize="17" FontWeight="SemiBold" FontFamily="Cascadia Code" Foreground="#462812"
                                        VerticalAlignment="Top" HorizontalAlignment="Right">
                                 <TextBlock.ToolTip>
@@ -243,8 +243,12 @@
                             </TextBlock>
                         </StackPanel>
 
-                        <DataGrid Grid.Row="2" Style="{StaticResource CoffeeDataGridStyle}"
-                                  ItemsSource="{Binding DepotHistoryItems}">
+                        <DataGrid Grid.Row="2" 
+                                Style="{StaticResource CoffeeDataGridStyle}"
+                                ItemsSource="{Binding DepotHistoryItems, UpdateSourceTrigger=PropertyChanged}"
+                                IsReadOnly="True"
+                                EnableRowVirtualization="False"
+                                VirtualizingStackPanel.VirtualizationMode="Standard">
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="Thời gian" Binding="{Binding Date, StringFormat='{}{0:dd/MM/yy HH:mm}'}" Width="1.5*"
                                                     ElementStyle="{StaticResource CenterAlignStyle}"/>
