@@ -1,9 +1,13 @@
 ﻿using CoffeeShop.Models;
+using CoffeeShop.Service;
 using CoffeeShop.Service.DTOs;
 using CoffeeShop.View.General;
+using DocumentFormat.OpenXml.Wordprocessing;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Windows.Input;
 
 namespace CoffeeShop.ViewModels.GeneralVM
@@ -16,6 +20,22 @@ namespace CoffeeShop.ViewModels.GeneralVM
         public OrderDetailViewModel(int orderID)
         {
             _orderID = orderID;
+
+            ExportBillCommand = new RelayCommand<OrderDetailWindow>(async (p) =>
+            {
+                // Khởi tạo hóa đơn
+                string fileName = $"Bill_{_orderID}_{DateTime.Now:yyyyMMddHHmmss}.xlsx";
+                string folderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Exports");
+                if (!Directory.Exists(folderPath)) Directory.CreateDirectory(folderPath);
+
+                string fullPath = Path.Combine(folderPath, fileName);
+
+                var exporter = new BillExporter(_orderID);
+                await exporter.ExportToExcel(fullPath);
+
+                // Tự động mở file Excel
+                Process.Start(new ProcessStartInfo(fullPath) { UseShellExecute = true });
+            });
 
             LoadOrderDetail();
         }
@@ -129,6 +149,8 @@ namespace CoffeeShop.ViewModels.GeneralVM
                 OnPropertyChanged();
             }
         }
+
+        public ICommand ExportBillCommand { get; set; } = null!;
 
         private void LoadOrderDetail()
         {
