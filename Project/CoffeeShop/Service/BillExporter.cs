@@ -39,8 +39,8 @@ namespace CoffeeShop.Service
                     var worksheet = workbook.Worksheets.Add("Bill");
 
                     // Thiết lập độ rộng cột 
-                    worksheet.Column(1).Width = 15; // Tên món
-                    worksheet.Column(2).Width = 8;  // Size
+                    worksheet.Column(1).Width = 18; // Tên món
+                    worksheet.Column(2).Width = 5;  // Size
                     worksheet.Column(3).Width = 5;  // Số lượng
                     worksheet.Column(4).Width = 12; // Đơn giá
                     worksheet.Column(5).Width = 12; // Thành tiền
@@ -65,30 +65,45 @@ namespace CoffeeShop.Service
                     var tableHeader = worksheet.Range(currentRow, 1, currentRow, 5);
                     tableHeader.Style.Font.SetBold().Border.SetBottomBorder(XLBorderStyleValues.Thin);
                     worksheet.Cell(currentRow, 1).Value = "Món ăn";
+                    worksheet.Cell(currentRow, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
                     worksheet.Cell(currentRow, 2).Value = "Size";
+                    worksheet.Cell(currentRow, 2).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
                     worksheet.Cell(currentRow, 3).Value = "SL";
+                    worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
                     worksheet.Cell(currentRow, 4).Value = "Đơn giá";
+                    worksheet.Cell(currentRow, 4).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                    worksheet.Cell(currentRow, 4).Style.NumberFormat.Format = "#,##0";
                     worksheet.Cell(currentRow, 5).Value = "T.Tiền";
+                    worksheet.Cell(currentRow, 5).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                    worksheet.Cell(currentRow, 5).Style.NumberFormat.Format = "#,##0";
 
                     // Đổ dữ liệu
                     foreach (var detail in order.OrderDetails)
                     {
                         currentRow++;
                         worksheet.Cell(currentRow, 1).Value = detail.Price?.Item?.ItemName ?? "N/A";
+                        worksheet.Cell(currentRow, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
                         worksheet.Cell(currentRow, 2).Value = detail.Price?.Size?.SizeName ?? "-";
+                        worksheet.Cell(currentRow, 2).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
                         worksheet.Cell(currentRow, 3).Value = detail.Quantity;
+                        worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
                         worksheet.Cell(currentRow, 4).Value = detail.UnitPrice;
+                        worksheet.Cell(currentRow, 4).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                        worksheet.Cell(currentRow, 4).Style.NumberFormat.Format = "#,##0";
                         worksheet.Cell(currentRow, 5).Value = detail.TotalPrice;
+                        worksheet.Cell(currentRow, 5).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                        worksheet.Cell(currentRow, 5).Style.NumberFormat.Format = "#,##0";
                     }
 
                     // Phần tổng tiền
                     currentRow += 2;
                     worksheet.Cell(currentRow, 4).Value = "Tạm tính:";
                     worksheet.Cell(currentRow, 5).Value = order.SubTotal;
-
+                    worksheet.Cell(currentRow, 5).Style.NumberFormat.Format = "#,##0";
                     currentRow++;
                     worksheet.Cell(currentRow, 4).Value = "Giảm giá:";
                     worksheet.Cell(currentRow, 5).Value = order.DiscountMoney;
+                    worksheet.Cell(currentRow, 5).Style.NumberFormat.Format = "#,##0";
 
                     currentRow++;
                     var finalRange = worksheet.Cell(currentRow, 4);
@@ -97,6 +112,7 @@ namespace CoffeeShop.Service
                     var finalTotal = worksheet.Cell(currentRow, 5);
                     finalTotal.Value = order.TotalAmount;
                     finalTotal.Style.Font.SetBold().Font.SetFontColor(XLColor.Red);
+                    finalTotal.Style.NumberFormat.Format = "#,##0";
 
                     // Wifi
                     currentRow += 2;
