@@ -26,12 +26,6 @@ namespace CoffeeShop.Service
             return insertMaterial.ShowDialog();
         }
 
-        public void OpenDepotHistoryWindow()
-        {
-            DepotHistory depotHistory = new DepotHistory();
-            depotHistory.ShowDialog();
-        }
-
         public void OpenReportDepotWindow()
         {
             ReportDepotWindow reportDepot = new ReportDepotWindow();

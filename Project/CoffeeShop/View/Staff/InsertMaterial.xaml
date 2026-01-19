@@ -9,47 +9,48 @@
         x:Name="InsertMaterialWindow"
         Title="{Binding WindowTitle}"
         Icon="/CoffeeShop;component/Assets/icoCoffee.ico"
-        Height="450" Width="550"
+        Height="500" Width="550"
         WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize"
         Background="#F6F9F0">
-    <Grid Margin="20,0">
+    <Grid Margin="30,0">
         <Grid.RowDefinitions>
             <RowDefinition/>
-            <RowDefinition/>
-            <RowDefinition/>
-            <RowDefinition/>
-            <RowDefinition/>
-            <RowDefinition Height="1.4*"/>
+            <RowDefinition Height="0.3*"/>
         </Grid.RowDefinitions>
 
-        <!-- Tên nguyên liệu -->
-        <TextBox materialDesign:HintAssist.Hint="Tên nguyên liệu" Grid.Row="0"
-                 
-                 Text="{Binding MaterialName, UpdateSourceTrigger=PropertyChanged}"
-                 Style="{StaticResource MaterialDesignOutlinedTextBox}" Margin="0,8"/>
+        <StackPanel Grid.Row="0">
+            <!-- Tiêu đề -->
+            <TextBlock Text="{Binding WindowTitle}" FontSize="24" FontWeight="Bold" 
+                Foreground="#340D05" HorizontalAlignment="Center" Margin="0,0,0,10"/>
 
-        <!-- Đơn vị -->
-        <ComboBox materialDesign:HintAssist.Hint="Đơn vị" Grid.Row="1"
-                  ItemsSource="{Binding Units, UpdateSourceTrigger=PropertyChanged}"
-                  SelectedItem="{Binding SelectedUnit}"
-                  IsEnabled="{Binding IsAddMode}"
-                  Style="{StaticResource MaterialDesignOutlinedComboBox}" Margin="0.8"/>
+            <!-- Tên nguyên liệu -->
+            <TextBox materialDesign:HintAssist.Hint="Tên nguyên liệu" Grid.Row="0"
+                     Text="{Binding MaterialName, UpdateSourceTrigger=PropertyChanged}"
+                     Style="{StaticResource MaterialDesignOutlinedTextBox}" Margin="0,8"/>
 
-        <!-- Số lượng -->
-        <TextBox materialDesign:HintAssist.Hint="Số lượng" Grid.Row="2"
-                 Text="{Binding Quantity, UpdateSourceTrigger=PropertyChanged, StringFormat='{}{0:#,##0.##}', TargetNullValue=''}"
-                 Style="{StaticResource MaterialDesignOutlinedTextBox}" Margin="0,8"/>
+            <!-- Đơn vị -->
+            <ComboBox materialDesign:HintAssist.Hint="Đơn vị" Grid.Row="1"
+                      ItemsSource="{Binding Units, UpdateSourceTrigger=PropertyChanged}"
+                      SelectedItem="{Binding SelectedUnit}"
+                      IsEnabled="{Binding IsAddMode}"
+                      Style="{StaticResource MaterialDesignOutlinedComboBox}" Margin="0.8"/>
 
-        <!-- Ngưỡng cảnh báo -->
-        <TextBox materialDesign:HintAssist.Hint="Ngưỡng cảnh báo" Grid.Row="3"
-                 Text="{Binding Threshold, UpdateSourceTrigger=PropertyChanged, StringFormat='{}{0:#,##0.##}', TargetNullValue=''}"
-                 Style="{StaticResource MaterialDesignOutlinedTextBox}" Margin="0,8"/>
+            <!-- Số lượng -->
+            <TextBox materialDesign:HintAssist.Hint="Số lượng" Grid.Row="2"
+                     Text="{Binding Quantity, UpdateSourceTrigger=PropertyChanged, StringFormat='{}{0:#,##0.##}', TargetNullValue=''}"
+                     Style="{StaticResource MaterialDesignOutlinedTextBox}" Margin="0,8"/>
 
-        <!-- Ghi chú -->
-        <TextBox materialDesign:HintAssist.Hint="Ghi chú" Grid.Row="4"
-                 Text="{Binding Note, UpdateSourceTrigger=PropertyChanged}"
-                 Style="{StaticResource MaterialDesignOutlinedTextBox}" Margin="0,8"/>
+            <!-- Ngưỡng cảnh báo -->
+            <TextBox materialDesign:HintAssist.Hint="Ngưỡng cảnh báo" Grid.Row="3"
+                     Text="{Binding Threshold, UpdateSourceTrigger=PropertyChanged, StringFormat='{}{0:#,##0.##}', TargetNullValue=''}"
+                     Style="{StaticResource MaterialDesignOutlinedTextBox}" Margin="0,8"/>
+
+            <!-- Ghi chú -->
+            <TextBox materialDesign:HintAssist.Hint="Ghi chú" Grid.Row="4"
+                     Text="{Binding Note, UpdateSourceTrigger=PropertyChanged}"
+                     Style="{StaticResource MaterialDesignOutlinedTextBox}" Margin="0,8"/>
+        </StackPanel>
 
         <Grid Grid.Row="5">
             <Button x:Name="btnQuitInput" Content="THOÁT"

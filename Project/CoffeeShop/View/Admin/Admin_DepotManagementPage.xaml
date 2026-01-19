@@ -83,7 +83,7 @@
                         </TextBox>
 
                         <ComboBox x:Name="cbUnits" Width="120" Margin="5"
-                            ItemsSource="{Binding units}" SelectedItem="{Binding SelectedUnit}" 
+                            ItemsSource="{Binding Units}" SelectedItem="{Binding SelectedUnit}" 
                             materialDesign:HintAssist.Hint="Đơn vị"
                             Style="{StaticResource MaterialDesignOutlinedComboBox}">
                             <ComboBox.ToolTip>
@@ -173,11 +173,28 @@
                 </Grid>
             </materialDesign:Card>
 
+            <!-- Items table & Item's History -->
             <Grid Grid.Row="2">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="0.6*"/>
                     <ColumnDefinition Width="0.4*"/>
                 </Grid.ColumnDefinitions>
+                
+                <!-- Loading Icon -->
+                <Grid Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <ProgressBar
+                        Style="{StaticResource MaterialDesignCircularProgressBar}"
+                        IsIndeterminate="True" 
+                        Width="30"
+                        Height="30"
+                        Value="0"
+                        Foreground="#340D05"
+                        VerticalAlignment="Center" 
+                        HorizontalAlignment="Center"/>
+                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,50,0,0">
+                        <TextBlock Text="Đang tải dữ liệu..." FontWeight="Bold" Foreground="Gray"/>
+                    </StackPanel>
+                </Grid>
 
                 <!-- Datagrid -->
                 <DataGrid x:Name="dgDepot" Grid.Column="0" Margin="0,10"
