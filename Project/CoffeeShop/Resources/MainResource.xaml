@@ -97,7 +97,7 @@
                                 <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
 
                                 <Path x:Name="PART_SortArrow"
-                                    Data="M0,0 L4,4 L8,0" 
+                                    Data="M4,0 L4,8 M0,5 L4,8 L8,5"
                                     Stroke="{TemplateBinding Foreground}"
                                     StrokeThickness="1.5"
                                     Visibility="Collapsed"

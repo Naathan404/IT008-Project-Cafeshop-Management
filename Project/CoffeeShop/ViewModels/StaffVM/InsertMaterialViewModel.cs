@@ -97,8 +97,8 @@ namespace CoffeeShop.ViewModels.StaffVM
         }
         #endregion
 
-        public string WindowTitle { get; private set; } // Title của cửa sổ Insert (Thêm mới/Sửa)
-        public string SaveButtonContent { get; private set; } // Nội dung nút Lưu/Cập nhật
+        public string WindowTitle { get; private set; } 
+        public string SaveButtonContent { get; private set; }
 
         private readonly ObservableCollection<DepotItemDTO> _depotItems;
         private DepotItemDTO? _itemToEdit; // Chỉ dùng cho chế độ sửa
@@ -148,16 +148,14 @@ namespace CoffeeShop.ViewModels.StaffVM
             return true;
         }
 
-        private void ExecuteSave(Window window)
+        private async void ExecuteSave(Window window)
         {
-            // Nếu dữ liệu ko hợp lệ
             if (!CanExecuteSave(window))
             {
                 MessageBox.Show("Vui lòng nhập đầy đủ Tên, Số lượng (>= 0) và Đơn vị hợp lệ.", "Lỗi nhập liệu", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
-            // Thao tác Thêm/Cập nhật dữ liệu
             using (var db = new CoffeeShopContext())
             {
                 if (_itemToEdit != null)
@@ -195,10 +193,11 @@ namespace CoffeeShop.ViewModels.StaffVM
                                 itemToUpdate.MaterialName = MaterialName;
                                 itemToUpdate.Quantity = Quantity;
                                 itemToUpdate.Unit = SelectedUnit;
+                                itemToUpdate.Threshold = Threshold;
                                 itemToUpdate.Note = Note;
 
                                 db.InventoryHistories.Add(newHistory);
-                                db.SaveChanges(); // Lưu
+                                await db.SaveChangesAsync(); // Lưu
                                 transaction.Commit(); // Hoàn tất cả hai
 
                                 // Cập nhật lại DG
@@ -231,6 +230,7 @@ namespace CoffeeShop.ViewModels.StaffVM
                                 MaterialName = MaterialName,
                                 Quantity = Quantity,
                                 Unit = SelectedUnit,
+                                Threshold = Threshold,
                                 Note = Note
                             };
 
@@ -243,13 +243,12 @@ namespace CoffeeShop.ViewModels.StaffVM
                                 MaterialId = newItem.MaterialId,
                                 ActionTypeId = actionType,
                                 Quantity = newItem.Quantity,
-                                //InputPrice = InputPrice,
                                 Date = DateTime.Now,
                                 StaffId = staffId
                             };
 
                             db.InventoryHistories.Add(inventoryHistory);
-                            db.SaveChanges(); // Lưu bản ghi lịch sử
+                            await db.SaveChangesAsync(); // Lưu bản ghi lịch sử
 
                             transaction.Commit(); // Hoàn tất cả hai
 
@@ -260,6 +259,7 @@ namespace CoffeeShop.ViewModels.StaffVM
                                 MaterialName = newItem.MaterialName,
                                 Quantity = newItem.Quantity,
                                 Unit = newItem.Unit,
+                                Threshold = newItem.Threshold,
                                 Note = newItem.Note
                             };
                             // Cập nhật item vào dg
@@ -273,6 +273,7 @@ namespace CoffeeShop.ViewModels.StaffVM
                     }
                 }
                 // Đóng cửa sổ sau khi thao tác xong
+                window.DialogResult = true;
                 window?.Close();
             }
         }
