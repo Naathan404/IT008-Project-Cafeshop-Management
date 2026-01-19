@@ -117,7 +117,7 @@ namespace CoffeeShop.ViewModels.StaffVM
                 {
                     TableId = t.TableId,
                     TableName = t.TableName,
-                    TableStatus = t.TableStatus, // 0: Trống, 1: Phục vụ
+                    TableStatus = t.TableStatus <= 1 ? t.TableStatus : 1, // 0: Trống, 1: Phục vụ
                     Note = t.Note
                 }).ToList();
 
