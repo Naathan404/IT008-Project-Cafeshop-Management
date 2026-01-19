@@ -588,7 +588,7 @@ namespace CoffeeShop.ViewModels.StaffVM
             // Mặc định chọn thanh toán bằng tiền mặt
             SelectedPaymentMethod = PaymentMethod.FirstOrDefault(p => p.Equals("Tiền mặt")) ?? PaymentMethod.First();
             // Mặc định không in bill
-            IsCheckedPrintBill = false;
+            IsCheckedPrintBill = true;
             // cập nhật discount sau khi reset
             LoadDiscountByCustomer();
             // Mặc định chọn không áp dụng mã giảm giá
@@ -791,7 +791,7 @@ namespace CoffeeShop.ViewModels.StaffVM
             IsLoading = true;
             try
             {
-                await Task.Run(() =>
+                await Task.Run(async () =>
                 {
                     using (var db = new CoffeeShopContext())
                     {
@@ -871,6 +871,22 @@ namespace CoffeeShop.ViewModels.StaffVM
                                 db.SaveChanges();
                                 transaction.Commit();
                                 EventAggregator.Instance.Publish(new OrderCompletedMessage { TableId = newOrder.TableId });
+                                /// Xử lý in hóa đơn nếu được chọn
+                                if(IsCheckedPrintBill)
+                                {
+                                    // Khởi tạo hóa đơn
+                                    string fileName = $"Bill_{newOrder.OrderId}_{DateTime.Now:yyyyMMddHHmmss}.xlsx";
+                                    string folderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Exports");
+                                    if (!Directory.Exists(folderPath)) Directory.CreateDirectory(folderPath);
+
+                                    string fullPath = Path.Combine(folderPath, fileName);
+
+                                    var exporter = new BillExporter(newOrder.OrderId);
+                                    await exporter.ExportToExcel(fullPath);
+
+                                    // Tự động mở file Excel
+                                    Process.Start(new ProcessStartInfo(fullPath) { UseShellExecute = true });
+                                }
                             }
                             catch (Exception ex)
                             {
@@ -882,6 +898,7 @@ namespace CoffeeShop.ViewModels.StaffVM
                 });
 
                 CustomMessageBox.Show("Thanh toán và lưu hóa đơn thành công!", "Thành công", MessageButtons.OK, MessageType.Success);
+
 
                 // Reset giao diện
                 CancelOrder(null);

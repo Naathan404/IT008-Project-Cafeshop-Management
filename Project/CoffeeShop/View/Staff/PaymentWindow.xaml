@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         Icon="/Assets/icoCoffee.ico"
-        Title="Thanh toán hóa đơn" 
+        Title="Xác nhận thanh toán" 
         Height="700" Width="650"
         WindowStartupLocation="CenterScreen">
     <Window.Background>
