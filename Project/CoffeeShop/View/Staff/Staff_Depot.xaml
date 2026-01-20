@@ -12,7 +12,7 @@
     Language="vi-VN">
 
     <Grid x:Name="MainGrid" Background="#E0CEB5">
-        <Grid Grid.Row="1" Margin="30">
+        <Grid Grid.Row="1" Margin="30 30 30 10">
             <Grid.RowDefinitions>
                 <!-- Title -->
                 <RowDefinition Height="auto"/>
@@ -198,7 +198,7 @@
                 </Grid>
                 
                 <!-- Datagrid -->
-                <DataGrid x:Name="dgDepot" Grid.Column="0" Margin="0,10"
+                <DataGrid x:Name="dgDepot" Grid.Column="0" Margin="0,10 0 0"
                     Style="{StaticResource CoffeeDataGridStyle}"
                     ItemsSource="{Binding DepotItems}"
                     SelectedItem="{Binding SelectedItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
@@ -225,7 +225,7 @@
                 </DataGrid>
 
                 <!-- History -->
-                <materialDesign:Card Grid.Column="1" Margin="10,10,0,10" UniformCornerRadius="7"
+                <materialDesign:Card Grid.Column="1" Margin="10,10,0,0" UniformCornerRadius="7"
                                  BorderThickness="3" BorderBrush="#462812">
                     <Grid Margin="10">
                         <Grid.RowDefinitions>
