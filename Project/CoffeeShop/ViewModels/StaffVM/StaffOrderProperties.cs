@@ -330,7 +330,8 @@ namespace CoffeeShop.ViewModels.StaffVM
         public ICommand PayOrderCommand { get; set; } = null!;
         public ICommand ChoosePaymentMethodCommand { get; set; } = null!;
         public ICommand ConfirmPayOrderCommand { get; set; } = null!;
-        public ICommand ChooseDiscountCommand { get; set; } = null!; 
+        public ICommand ChooseDiscountCommand { get; set; } = null!;
+        public ICommand CommitQuantityCommand { get; set; } = null!;
         #endregion
 
         #region Helper Classes
