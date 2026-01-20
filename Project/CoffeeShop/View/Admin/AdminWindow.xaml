@@ -109,7 +109,7 @@
                                             Height="35" Width="35"
                                             Margin="10"
                                             Foreground="#340D05"/>
-                            <TextBlock Text="Nhân viên"
+                            <TextBlock Text="Nhân sự"
                                    Margin="60 17 10 0"
                                    FontFamily="Cascadia Code"
                                    FontSize="20"
