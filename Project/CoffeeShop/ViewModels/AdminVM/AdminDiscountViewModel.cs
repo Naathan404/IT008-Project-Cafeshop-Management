@@ -52,7 +52,7 @@ namespace CoffeeShop.ViewModels.AdminVM
                             DiscountId = d.DiscountId,
                             DiscountCode = d.DiscountCode,
                             DiscountName = d.DiscountName,
-                            DiscountType = d.DiscountType == 0 ? "Tiền mặt" : "Phần trăm",
+                            DiscountType = d.DiscountType == 0 ? "Phần trăm" : "Tiền mặt",
                             DiscountValue = d.DiscountValue,
                             MinimumOrderValue = d.MinimumOrderValue,
                             MaximumDiscountAmount = d.MaximumDiscountAmount ?? d.DiscountValue,
