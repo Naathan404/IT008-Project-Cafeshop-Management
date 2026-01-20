@@ -334,7 +334,7 @@ namespace CoffeeShop.ViewModels.AdminVM
                             ImagePath = item.ImagePath ?? string.Empty,
                         };
 
-                        // SỬA TẠI ĐÂY: Chuyển đổi từ ItemPrice (Model) sang ItemPriceViewModel
+                        // Chuyển đổi từ ItemPrice (Model) sang ItemPriceViewModel
                         var viewModels = item.ItemPrices
                             .Where(ip => !ip.IsDeleted)
                             .Select(ip => new ItemPriceViewModel
@@ -351,7 +351,6 @@ namespace CoffeeShop.ViewModels.AdminVM
                         this.SelectedImagePath = item.ImagePath;
                         this.ImagePath = GetDisplayPath(item.ImagePath);
 
-                        // Sau khi gán ItemPrices xong mới load size lên UI
                         LoadAvailableSizes();
                     }
                 }

@@ -1,6 +1,7 @@
 ﻿using CoffeeShop.Models;
 using CoffeeShop.Service;
 using CoffeeShop.View.Controls;
+using CoffeeShop.View.Staff;
 using CoffeeShop.ViewModels.AdminVM;
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.EntityFrameworkCore;
@@ -35,7 +36,7 @@ namespace CoffeeShop.ViewModels.StaffVM
             Orders.CollectionChanged += Orders_CollectionChanged;
 
             WeakReferenceMessenger.Default.Register<ReloadMenuMessage>(this, (r, m) => {
-                _ = LoadOrderItemsFromDB(); 
+                _ = LoadOrderItemsFromDB();
             });
 
             _ = InitializeApplicationAsync();
@@ -93,8 +94,14 @@ namespace CoffeeShop.ViewModels.StaffVM
             SearchCustomerCommand = new RelayCommand<object>(SearchCustomer);
             AddCustomerCommand = new RelayCommand<object>(param =>
             {
-                if (param is Tuple<string, string, string> data)
-                    AddCustomer(data.Item1, data.Item2, data.Item3);
+                var window = string.IsNullOrWhiteSpace(SearchCustomerKeyword)
+                    ? new AddCustomerWindow(this)
+                    : new AddCustomerWindow(this, SearchCustomerKeyword);
+
+                window.ShowDialog();
+                SearchCustomerKeyword = string.Empty;
+                FilteredCustomers.Clear();
+                OnPropertyChanged(nameof(HasSearchResults));
             });
             ChooseCustomerCommand = new RelayCommand<Customer>(c =>
             {
@@ -113,6 +120,7 @@ namespace CoffeeShop.ViewModels.StaffVM
             CancelOrderCommand = new RelayCommand<object>(ConfirmCancelOrder);
             PayOrderCommand = new RelayCommand<object>(PayOrderWindow);
             ConfirmPayOrderCommand = new RelayCommand<object>(ConfirmPayOrder);
+            CommitQuantityCommand = new RelayCommand<OrderDetailItem>(CommitQuantity);
         }
         #endregion
 
@@ -160,13 +168,13 @@ namespace CoffeeShop.ViewModels.StaffVM
 
                     var newItem = new OrderItem
                     {
-                                ItemId = item.ItemId,
-                                ItemName = item.ItemName,
-                                CategoryId = item.CategoryId,
-                                IsAvailable = item.IsAvailable,
-                                ItemPrices = new ObservableCollection<ItemPrice>(item.ItemPrices.Where(ip => !ip.IsDeleted)),
-                                Info = item.Info ?? string.Empty,
-                                ImagePath = displayImagePath
+                        ItemId = item.ItemId,
+                        ItemName = item.ItemName,
+                        CategoryId = item.CategoryId,
+                        IsAvailable = item.IsAvailable,
+                        ItemPrices = new ObservableCollection<ItemPrice>(item.ItemPrices.Where(ip => !ip.IsDeleted)),
+                        Info = item.Info ?? string.Empty,
+                        ImagePath = displayImagePath
                     };
 
                     await Application.Current.Dispatcher.InvokeAsync(() =>
@@ -426,6 +434,21 @@ namespace CoffeeShop.ViewModels.StaffVM
             CalculateTotalAmount();
         }
 
+        private void CommitQuantity(OrderDetailItem item)
+        {
+            if (item == null) return;
+
+            // Kiểm tra quantity
+            if (!int.TryParse(item.Quantity.ToString(), out int qty) || qty < 0)
+            {
+                CustomMessageBox.Show("Số lượng không hợp lệ. Vui lòng nhập số nguyên dương!", "Lỗi", MessageButtons.OK, MessageType.Error);
+                return;
+            }
+            if (item.Quantity <= 0)
+            {
+                RemoveItemCommand?.Execute(item);
+            }
+        }
         private void OrderItem_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             // Khi total price thay đổi --> cập nhật total amount
@@ -579,7 +602,9 @@ namespace CoffeeShop.ViewModels.StaffVM
             Orders.Clear();
             CalculateTotalAmount();
             SelectedCustomer = null;
-            SearchCustomerKeyword = "";
+            SearchCustomerKeyword = string.Empty;
+            FilteredCustomers?.Clear();
+            OnPropertyChanged(nameof(HasSearchResults));
 
             // Mặc định chọn bàn có ID = 0 (mang về)
             SelectedTable = _availableTables.FirstOrDefault(t => t.TableId == 0);
@@ -748,7 +773,7 @@ namespace CoffeeShop.ViewModels.StaffVM
 
         #region PayOrder Methods
         PaymentWindow payWindow;
-        private void PayOrderWindow (object param)
+        private void PayOrderWindow(object param)
         {
             // Force commit edit trước khi refresh view hoặc mở window mới
             var view = CollectionViewSource.GetDefaultView(Orders);
@@ -807,7 +832,7 @@ namespace CoffeeShop.ViewModels.StaffVM
                                     OrderDate = DateTime.Now,
                                     SubTotal = TotalAmount,
                                     DiscountId = SelectedDiscount?.DiscountId != 0 ? SelectedDiscount?.DiscountId : null,
-                                    DiscountMoney = FinalDiscount, 
+                                    DiscountMoney = FinalDiscount,
                                     TotalAmount = FinalTotal,
                                     PaymentMethod = SelectedPaymentMethod ?? "Tiền mặt"
                                 };
@@ -834,7 +859,7 @@ namespace CoffeeShop.ViewModels.StaffVM
                                 {
                                     var table = db.CafeTables.Find(newOrder.TableId);
                                     if (table != null)
-                                    {   
+                                    {
                                         table.TableStatus = 1;
                                     }
                                 }
@@ -851,7 +876,7 @@ namespace CoffeeShop.ViewModels.StaffVM
                                 {
                                     var customer = db.Customers.Find(newOrder.CustomerId);
                                     if (customer != null) customer.Point += (int)(newOrder.TotalAmount / 2000);
-                                    switch(customer!.Point)
+                                    switch (customer!.Point)
                                     {
                                         case int points when points >= 3000:
                                             customer.Tier = "VIP100";
@@ -872,7 +897,7 @@ namespace CoffeeShop.ViewModels.StaffVM
                                 transaction.Commit();
                                 EventAggregator.Instance.Publish(new OrderCompletedMessage { TableId = newOrder.TableId });
                                 /// Xử lý in hóa đơn nếu được chọn
-                                if(IsCheckedPrintBill)
+                                if (IsCheckedPrintBill)
                                 {
                                     // Khởi tạo hóa đơn
                                     string fileName = $"Bill_{newOrder.OrderId}_{DateTime.Now:yyyyMMddHHmmss}.xlsx";
@@ -902,13 +927,15 @@ namespace CoffeeShop.ViewModels.StaffVM
 
                 // Reset giao diện
                 CancelOrder(null);
+                SearchCustomerKeyword = string.Empty;
+                FilteredCustomers.Clear();
+                OnPropertyChanged(nameof(HasSearchResults));
                 // Đóng cửa sổ thanh toán
                 payWindow.Close();
                 //
                 SelectedCustomer = Customers.FirstOrDefault(c => c.CustomerId == 0);
                 SelectedTable = AvailableTables.FirstOrDefault(t => t.TableId == 0);
                 SelectedDiscount = AvailableDiscounts.FirstOrDefault(d => d.DiscountId == 0);
-
             }
             catch (Exception ex)
             {

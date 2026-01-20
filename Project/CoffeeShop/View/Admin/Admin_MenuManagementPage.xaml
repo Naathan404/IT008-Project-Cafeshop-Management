@@ -226,186 +226,203 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        
-        <TextBlock Text="QUẢN LÝ MENU" 
-                   Grid.Row="0" Margin="30,10,0,10"
-                   FontSize="24" FontWeight="ExtraBlack" Foreground="#4E342E"
-                   FontFamily="Cascadia Code"/>
+        <Grid Grid.RowSpan="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
 
-        <Grid Grid.Row="1">
-            <Border Grid.Column="0" 
-                    Margin="30 0 30 10" 
-                    Background="#F9F6F0" 
-                    CornerRadius="15"
-                    BorderThickness="2"
-                    BorderBrush="#766839">
-                <Border.Effect>
-                    <DropShadowEffect BlurRadius="20"
-                       Opacity="0.3"
-                       Color="Black"
-                       ShadowDepth="8"/>
-                </Border.Effect>
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
+            <TextBlock Text="QUẢN LÝ MENU" 
+                       Grid.Row="0" Margin="30,10,0,10"
+                       FontSize="24" FontWeight="ExtraBlack" Foreground="#4E342E"
+                       FontFamily="Cascadia Code"/>
 
-                    <Grid Grid.Row="0" Margin="10 5 10 0">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
+            <Grid Grid.Row="1">
+                <Border Grid.Column="0" 
+                        Margin="30 0 30 10" 
+                        Background="#F9F6F0" 
+                        CornerRadius="15"
+                        BorderThickness="2"
+                        BorderBrush="#766839">
+                    <Border.Effect>
+                        <DropShadowEffect BlurRadius="20"
+                                           Opacity="0.3"
+                                           Color="Black"
+                                           ShadowDepth="8"/>
+                    </Border.Effect>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
 
-                        <StackPanel Grid.Column="1" 
-                                    Orientation="Horizontal" 
+                        <Grid Grid.Row="0" Margin="10 5 10 0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Border Grid.Column="1"
+                                    Margin="0,5,20,5" 
+                                    Background="White" 
+                                    CornerRadius="20"
+                                    BorderBrush="#BC9466"
+                                    BorderThickness="1"
                                     VerticalAlignment="Center"
-                                    Margin="0 5 10 10">
-                            <materialDesign:PackIcon Kind="Magnify" 
-                                                     Margin="0 0 5 0" 
-                                                     VerticalAlignment="Center" 
-                                                     Width="25" Height="25" 
-                                                     Foreground="#766839"/>
-                            <TextBox x:Name="txblSearchItem"
-                                     Text="{Binding SearchItemKeyword, UpdateSourceTrigger=PropertyChanged}"
-                                     Height="35" 
-                                     MinWidth="180"
-                                     FontSize="15"
-                                     FontWeight="Bold"
-                                     Foreground="#462812"
-                                     materialDesign:HintAssist.Hint="Tìm kiếm"
-                                     materialDesign:HintAssist.FontFamily="Cascadia Code"
-                                     Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
-                        </StackPanel>
-
-                        <!--Buttons-->
-                        <StackPanel Grid.Column="2" 
-                            Orientation="Horizontal"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Margin="0 0 0 0">
-                            <Border x:Name="bdrAddNewItem"
-                            BorderBrush="#766839"
-                            BorderThickness="2"
-                            Padding="2"
-                            CornerRadius="15"
-                            Cursor="Hand"
-                            Background="#EDE2D3"
-                            MouseEnter="border_MouseEnter"
-                            MouseLeave="border_MouseLeave"
-                            MouseDown="AddNewItem_Click">
-                                <Border.Effect>
-                                    <DropShadowEffect BlurRadius="20"
-                                        Opacity="0.3"
-                                        Color="Black"
-                                        ShadowDepth="8"/>
-                                </Border.Effect>
-                                <Border.InputBindings>
-                                    <MouseBinding Command="{Binding DataContext.SetIsAvailableForItem,
-                                            RelativeSource={RelativeSource AncestorType=Page}}"
-                                  CommandParameter="{Binding}"
-                                  MouseAction="LeftClick"/>
-                                </Border.InputBindings>
-                                <materialDesign:PackIcon
-                                    Foreground="#340D05"
-                                    Kind="Plus"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    Height="30"
-                                    Width="30">
-                                </materialDesign:PackIcon>
-                                <Border.ToolTip>
-                                    <ToolTip Style="{StaticResource CustomTooltip}">
-                                        <TextBlock Text="Thêm sản phẩm" FontFamily="Cascadia Code" FontWeight="Bold" Foreground="#FF340D05"/>
-                                    </ToolTip>
-                                </Border.ToolTip>
+                                    HorizontalAlignment="Right">
+                                <Grid Margin="15 5">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <materialDesign:PackIcon Kind="Magnify" 
+                                                             Foreground="#462812" 
+                                                             VerticalAlignment="Center" 
+                                                             Margin="0,0,10,0"/>
+                                    <TextBox x:Name="txblSearchItem"
+                                             Grid.Column="1"
+                                             Text="{Binding SearchItemKeyword, 
+                                                    UpdateSourceTrigger=PropertyChanged}"
+                                             FontSize="15"
+                                             Foreground="#462812"
+                                             BorderThickness="0"
+                                             VerticalAlignment="Center"
+                                             materialDesign:HintAssist.Hint="Tìm kiếm tên món..."
+                                             materialDesign:HintAssist.FontFamily="Cascadia Code"
+                                             Style="{StaticResource MaterialDesignTextBox}"/>
+                                </Grid>
                             </Border>
-                        </StackPanel>
 
-                        <TabControl x:Name="tabMain"
-                                    Grid.Column="0"
-                                    Background="Transparent"
-                                    BorderThickness="0"
-                                    HorizontalAlignment="Left"
-                                    SelectedItem="{Binding SelectedTabItem}">
+                            <!--Buttons-->
+                            <StackPanel Grid.Column="2" 
+                                        Orientation="Horizontal"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Margin="0 0 0 0">
+                                <Border x:Name="bdrAddNewItem"
+                                        BorderBrush="#766839"
+                                        BorderThickness="2"
+                                        Padding="2"
+                                        CornerRadius="15"
+                                        Cursor="Hand"
+                                        Background="#EDE2D3"
+                                        MouseEnter="border_MouseEnter"
+                                        MouseLeave="border_MouseLeave"
+                                        MouseDown="AddNewItem_Click">
+                                    <Border.Effect>
+                                        <DropShadowEffect BlurRadius="20"
+                                                            Opacity="0.3"
+                                                            Color="Black"
+                                                            ShadowDepth="8"/>
+                                    </Border.Effect>
+                                    <Border.InputBindings>
+                                        <MouseBinding Command="{Binding DataContext.SetIsAvailableForItem,
+                                                                RelativeSource={RelativeSource AncestorType=Page}}"
+                                                      CommandParameter="{Binding}"
+                                                      MouseAction="LeftClick"/>
+                                    </Border.InputBindings>
+                                    <materialDesign:PackIcon
+                                                        Foreground="#340D05"
+                                                        Kind="Plus"
+                                                        HorizontalAlignment="Center"
+                                                        VerticalAlignment="Center"
+                                                        Height="30"
+                                                        Width="30">
+                                    </materialDesign:PackIcon>
+                                    <Border.ToolTip>
+                                        <ToolTip Style="{StaticResource CustomTooltip}">
+                                            <TextBlock Text="Thêm sản phẩm mới" FontFamily="Cascadia Code" FontWeight="Bold" Foreground="#FF340D05"/>
+                                        </ToolTip>
+                                    </Border.ToolTip>
+                                </Border>
+                            </StackPanel>
 
-                            <TabControl.ItemContainerStyle>
-                                <Style TargetType="TabItem" BasedOn="{StaticResource MaterialDesignTabItem}">
-                                    <Setter Property="Height" Value="45"/>
-                                    <Setter Property="Padding" Value="10"/>
-                                    <Setter Property="MinWidth" Value="0"/>
-                                    <Setter Property="HeaderTemplate">
-                                        <Setter.Value>
-                                            <DataTemplate>
-                                                <TextBlock Text="{Binding}" 
-                                                           FontSize="15"
-                                                           FontFamily="Cascadia Code" 
-                                                           FontWeight="Bold"/>
-                                            </DataTemplate>
-                                        </Setter.Value>
-                                    </Setter>
-                                </Style>
-                            </TabControl.ItemContainerStyle>
+                            <TabControl x:Name="tabMain"
+                                        Grid.Column="0"
+                                        Background="Transparent"
+                                        BorderThickness="0"
+                                        HorizontalAlignment="Left"
+                                        SelectedItem="{Binding SelectedTabItem}">
 
-                            <TabItem Header="Tất cả" Tag="0"/>
-                            <TabItem Header="Cà phê" Tag="1"/>
-                            <TabItem Header="Trà sữa" Tag="2"/>
-                            <TabItem Header="Đá xay" Tag="3"/>
-                            <TabItem Header="Trà" Tag="4"/>
-                            <TabItem Header="Nước ép" Tag="5"/>
-                            <TabItem Header="Sinh tố" Tag="6"/>
-                            <TabItem Header="Food" Tag="7"/>
-                        </TabControl>
-                    </Grid>
-                    <Border Grid.Row="1" Margin="10 0 10 10">
-                        <ScrollViewer VerticalScrollBarVisibility="Auto"
-                                      CanContentScroll="True"
-                                      HorizontalContentAlignment="Stretch">
-                            <ItemsControl ItemsSource="{Binding FilteredItems}"
-                                        VirtualizingPanel.IsVirtualizing="True"
-                                        VirtualizingPanel.VirtualizationMode="Recycling"
-                                        ScrollViewer.CanContentScroll="True"
-                                          HorizontalAlignment="Stretch"
-                                          SizeChanged="ItemsContainer_SizeChanged">
-                                <ItemsControl.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <UniformGrid VerticalAlignment="Top" 
+                                <TabControl.ItemContainerStyle>
+                                    <Style TargetType="TabItem" BasedOn="{StaticResource MaterialDesignTabItem}">
+                                        <Setter Property="Height" Value="45"/>
+                                        <Setter Property="Padding" Value="10"/>
+                                        <Setter Property="MinWidth" Value="0"/>
+                                        <Setter Property="HeaderTemplate">
+                                            <Setter.Value>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding}" 
+                                                               FontSize="20"
+                                                               FontFamily="Cascadia Code" 
+                                                               FontWeight="Bold"/>
+                                                </DataTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </TabControl.ItemContainerStyle>
+
+                                <TabItem Header="Tất cả" Tag="0"/>
+                                <TabItem Header="Cà phê" Tag="1"/>
+                                <TabItem Header="Trà sữa" Tag="2"/>
+                                <TabItem Header="Đá xay" Tag="3"/>
+                                <TabItem Header="Trà" Tag="4"/>
+                                <TabItem Header="Nước ép" Tag="5"/>
+                                <TabItem Header="Sinh tố" Tag="6"/>
+                                <TabItem Header="Food" Tag="7"/>
+                            </TabControl>
+                        </Grid>
+                        <Border Grid.Row="1" Margin="10 0 10 10">
+                            <ScrollViewer VerticalScrollBarVisibility="Auto"
+                                          CanContentScroll="True"
+                                          HorizontalContentAlignment="Stretch">
+                                <ItemsControl ItemsSource="{Binding FilteredItems}"
+                                              VirtualizingPanel.IsVirtualizing="True"
+                                              VirtualizingPanel.VirtualizationMode="Recycling"
+                                              ScrollViewer.CanContentScroll="True"
+                                              HorizontalAlignment="Stretch"
+                                              SizeChanged="ItemsContainer_SizeChanged">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <UniformGrid VerticalAlignment="Top" 
                                                      HorizontalAlignment="Left"
                                                      Width="Auto"/>
-                                    </ItemsPanelTemplate>
-                                </ItemsControl.ItemsPanel>
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <ContentControl Style="{StaticResource AdminItemCard}" 
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <ContentControl Style="{StaticResource AdminItemCard}" 
                                                         Content="{Binding}" Margin="5"/>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-                        </ScrollViewer>
-                    </Border>
-                </Grid>
-            </Border>
-            <Grid x:Name="LoadingOverlay" 
-          Background="#AAEDE2D3" 
-          Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                    <StackPanel>
-                            <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}" 
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </ScrollViewer>
+                        </Border>
+                    </Grid>
+                </Border>
+            </Grid>
+        </Grid>
+        <Grid x:Name="LoadingOverlay" 
+              Grid.RowSpan="2"
+              Background="#AAEDE2D3" 
+              Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                <StackPanel>
+                    <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}" 
                                  Value="0" 
                                  IsIndeterminate="True" 
                                  Width="60" Height="60"
                                  Foreground="#462812"/>
-                            <TextBlock Text="Đang pha cà phê..." 
+                    <TextBlock Text="Đang pha cà phê..." 
                                Margin="0,15,0,0" 
                                FontSize="16"
                                FontWeight="Bold"
                                FontFamily="Cascadia Code"
                                Foreground="#462812"
                                HorizontalAlignment="Center"/>
-                        </StackPanel>
                 </StackPanel>
-            </Grid>
+            </StackPanel>
         </Grid>
     </Grid>
 </Page>
