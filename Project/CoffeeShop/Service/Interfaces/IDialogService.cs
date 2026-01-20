@@ -1,6 +1,7 @@
-﻿using CoffeeShop.View.Staff;
+﻿using CoffeeShop.Service.DTOs;
+using CoffeeShop.View.Staff;
+using CoffeeShop.ViewModels.AdminVM;
 using System.Collections.ObjectModel;
-using CoffeeShop.Service.DTOs;
 
 namespace CoffeeShop.Service.Interfaces
 {

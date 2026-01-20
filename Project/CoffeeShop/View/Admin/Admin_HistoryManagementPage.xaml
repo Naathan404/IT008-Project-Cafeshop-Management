@@ -11,7 +11,7 @@
       Background="#E0CEB5"
       Title="HistoryManagementPage">
 
-    <Grid>
+    <Grid Margin="30,10">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="75"></RowDefinition>
@@ -20,37 +20,34 @@
         </Grid.RowDefinitions>
 
         <TextBlock Text="QUẢN LÝ LỊCH SỬ BÁN HÀNG" 
-                   Grid.Row="0" Margin="30,10,0,10"
+                   Grid.Row="0" Margin="0,0,0,10"
                    FontSize="24" FontWeight="ExtraBlack" Foreground="#4E342E"
                    FontFamily="Cascadia Code"/>
-        <Border 
-            Grid.Row="1"
-            Margin="30 0 30 10"
-            Background="#f9f6f0"
-            BorderBrush="#766839"
-            BorderThickness="2"
-            CornerRadius="20">
-            <materialDesign:Card
+
+        <materialDesign:Card Grid.Row="1"
+                Background="#f9f6f0"
+                BorderBrush="#766839"
+                BorderThickness="2"
                 UniformCornerRadius="20">
-                <Grid
+            <Grid
                     VerticalAlignment="Center">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="5*"></ColumnDefinition>
+                    <ColumnDefinition Width="3*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+                <Grid Grid.Column="0"
+                          Margin="10 0 0 0">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="5*"></ColumnDefinition>
+                        <ColumnDefinition Width="1.5*"></ColumnDefinition>
+                        <ColumnDefinition Width="1.5*"></ColumnDefinition>
+                        <ColumnDefinition Width="2*"></ColumnDefinition>
+                        <ColumnDefinition Width="2*"></ColumnDefinition>
                         <ColumnDefinition Width="3*"></ColumnDefinition>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
 
-                    <Grid Grid.Column="0"
-                          Margin="10 0 0 0">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="1.5*"></ColumnDefinition>
-                            <ColumnDefinition Width="1.5*"></ColumnDefinition>
-                            <ColumnDefinition Width="2*"></ColumnDefinition>
-                            <ColumnDefinition Width="2*"></ColumnDefinition>
-                            <ColumnDefinition Width="3*"></ColumnDefinition>
-                            <ColumnDefinition Width="Auto"></ColumnDefinition>
-                        </Grid.ColumnDefinitions>
-
-                        <DatePicker
+                    <DatePicker
                             SelectedDate="{Binding FromDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                             Grid.Column="0"
                             xml:lang="vi-VN"
@@ -65,20 +62,20 @@
                             materialDesign:TextFieldAssist.OutlinedBorderActiveThickness="2"
                             BorderThickness="1"
                             Style="{StaticResource MaterialDesignOutlinedDatePicker}" >
-                            <DatePicker.ToolTip>
-                                <ToolTip Style="{StaticResource CustomTooltip}">
-                                    <TextBlock Text="Chọn thời gian bắt đầu" FontFamily="Cascadia Code" FontWeight="Bold" Foreground="#FF340D05"/>
-                                </ToolTip>
-                            </DatePicker.ToolTip>
-                            <DatePicker.Resources>
-                                <SolidColorBrush x:Key="PrimaryHueMidBrush" Color="#391B05"/>
-                                <SolidColorBrush x:Key="PrimaryHueMidForegroundBrush" Color="#E0CEB5"/>
-                                <SolidColorBrush x:Key="SecondaryAccentBrush" Color="#B18252"/>
-                                <SolidColorBrush x:Key="MaterialDesignPaper" Color="#F9F6F0"/>
-                            </DatePicker.Resources>
-                        </DatePicker>
-                        
-                        <DatePicker
+                        <DatePicker.ToolTip>
+                            <ToolTip Style="{StaticResource CustomTooltip}">
+                                <TextBlock Text="Chọn thời gian bắt đầu" FontFamily="Cascadia Code" FontWeight="Bold" Foreground="#FF340D05"/>
+                            </ToolTip>
+                        </DatePicker.ToolTip>
+                        <DatePicker.Resources>
+                            <SolidColorBrush x:Key="PrimaryHueMidBrush" Color="#391B05"/>
+                            <SolidColorBrush x:Key="PrimaryHueMidForegroundBrush" Color="#E0CEB5"/>
+                            <SolidColorBrush x:Key="SecondaryAccentBrush" Color="#B18252"/>
+                            <SolidColorBrush x:Key="MaterialDesignPaper" Color="#F9F6F0"/>
+                        </DatePicker.Resources>
+                    </DatePicker>
+
+                    <DatePicker
                             SelectedDate="{Binding ToDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                             Grid.Column="1"
                             xml:lang="vi-VN"
@@ -93,38 +90,38 @@
                             materialDesign:TextFieldAssist.OutlinedBorderActiveThickness="2"
                             BorderThickness="1"
                             Style="{StaticResource MaterialDesignOutlinedDatePicker}">
-                            <DatePicker.ToolTip>
-                                <ToolTip Style="{StaticResource CustomTooltip}">
-                                    <TextBlock Text="Chọn thời gian kết thúc" FontFamily="Cascadia Code" FontWeight="Bold" Foreground="#FF340D05"/>
-                                </ToolTip>
-                            </DatePicker.ToolTip>
-                            <DatePicker.Resources>
-                                <SolidColorBrush x:Key="PrimaryHueMidBrush" Color="#391B05"/>
-                                <SolidColorBrush x:Key="PrimaryHueMidForegroundBrush" Color="#E0CEB5"/>
-                                <SolidColorBrush x:Key="SecondaryAccentBrush" Color="#B18252"/>
-                                <SolidColorBrush x:Key="MaterialDesignPaper" Color="#F9F6F0"/>
-                            </DatePicker.Resources>
-                        </DatePicker>
+                        <DatePicker.ToolTip>
+                            <ToolTip Style="{StaticResource CustomTooltip}">
+                                <TextBlock Text="Chọn thời gian kết thúc" FontFamily="Cascadia Code" FontWeight="Bold" Foreground="#FF340D05"/>
+                            </ToolTip>
+                        </DatePicker.ToolTip>
+                        <DatePicker.Resources>
+                            <SolidColorBrush x:Key="PrimaryHueMidBrush" Color="#391B05"/>
+                            <SolidColorBrush x:Key="PrimaryHueMidForegroundBrush" Color="#E0CEB5"/>
+                            <SolidColorBrush x:Key="SecondaryAccentBrush" Color="#B18252"/>
+                            <SolidColorBrush x:Key="MaterialDesignPaper" Color="#F9F6F0"/>
+                        </DatePicker.Resources>
+                    </DatePicker>
 
-                        <ComboBox
+                    <ComboBox
                             Grid.Column="2"
                             FontFamily="Cascadia Code"
                             Height="48"
                             Margin="5 0 5 0"
-                            materialDesign:HintAssist.Hint="Thời giann"
+                            materialDesign:HintAssist.Hint="Thời gian"
                             HorizontalAlignment="Stretch"
                             Style="{StaticResource MaterialDesignOutlinedComboBox}"
                             ItemsSource="{Binding Periods, UpdateSourceTrigger=PropertyChanged}"
                             SelectedItem="{Binding SelectedPeriod, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                             >
-                            <ComboBox.ToolTip>
-                                <ToolTip Style="{StaticResource CustomTooltip}">
-                                    <TextBlock Text="Chọn khoảng thời gian" FontFamily="Cascadia Code" FontWeight="Bold" Foreground="#FF340D05"/>
-                                </ToolTip>
-                            </ComboBox.ToolTip>                            
-                        </ComboBox>
+                        <ComboBox.ToolTip>
+                            <ToolTip Style="{StaticResource CustomTooltip}">
+                                <TextBlock Text="Chọn khoảng thời gian" FontFamily="Cascadia Code" FontWeight="Bold" Foreground="#FF340D05"/>
+                            </ToolTip>
+                        </ComboBox.ToolTip>
+                    </ComboBox>
 
-                        <ComboBox
+                    <ComboBox
                             Grid.Column="3"
                             FontFamily="Cascadia Code"
                             Height="48"
@@ -134,14 +131,14 @@
                             Style="{StaticResource MaterialDesignOutlinedComboBox}"
                             ItemsSource="{Binding PaymentMethods, UpdateSourceTrigger=PropertyChanged}"
                             SelectedItem="{Binding SelectedPaymentMethod, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                            <ComboBox.ToolTip>
-                                <ToolTip Style="{StaticResource CustomTooltip}">
-                                    <TextBlock Text="Chọn hình thức thanh toán" FontFamily="Cascadia Code" FontWeight="Bold" Foreground="#FF340D05"/>
-                                </ToolTip>
-                            </ComboBox.ToolTip>
-                        </ComboBox>
+                        <ComboBox.ToolTip>
+                            <ToolTip Style="{StaticResource CustomTooltip}">
+                                <TextBlock Text="Chọn hình thức thanh toán" FontFamily="Cascadia Code" FontWeight="Bold" Foreground="#FF340D05"/>
+                            </ToolTip>
+                        </ComboBox.ToolTip>
+                    </ComboBox>
 
-                        <TextBox
+                    <TextBox
                             Text="{Binding CustomerNameFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                             Grid.Column="4"
                             Margin="5 0 15 0"
@@ -160,270 +157,111 @@
                             BorderThickness="1"
                             TextWrapping="Wrap"
                             VerticalScrollBarVisibility="Auto">
-                            <TextBox.ToolTip>
-                                <ToolTip Style="{StaticResource CustomTooltip}">
-                                    <TextBlock Text="Tìm kiếm theo họ tên khách hàng" FontFamily="Cascadia Code" FontWeight="Bold" Foreground="#FF340D05"/>
-                                </ToolTip>
-                            </TextBox.ToolTip>
-                        </TextBox>
+                        <TextBox.ToolTip>
+                            <ToolTip Style="{StaticResource CustomTooltip}">
+                                <TextBlock Text="Tìm kiếm theo họ tên khách hàng" FontFamily="Cascadia Code" FontWeight="Bold" Foreground="#FF340D05"/>
+                            </ToolTip>
+                        </TextBox.ToolTip>
+                    </TextBox>
 
-                        <Rectangle 
+                    <Rectangle 
                             Grid.Column="5"
                             Width="1" 
                             Fill="#462812"
                             Margin="0"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Stretch">
-                        </Rectangle>
-                    </Grid>
-
-                    <Grid
-                        Grid.Column="1">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"></ColumnDefinition>
-                            <ColumnDefinition Width="Auto"></ColumnDefinition>
-                            <ColumnDefinition Width="Auto"></ColumnDefinition>
-                            <ColumnDefinition Width="Auto"></ColumnDefinition>
-                            <ColumnDefinition Width="Auto"></ColumnDefinition>
-                        </Grid.ColumnDefinitions>
-
-                        <Button
-                            Grid.Column="0"
-                            Command="{Binding RefreshPageCommand}"
-                            materialDesign:ButtonAssist.CornerRadius="10"
-                            Padding="0"
-                            Margin="0 0 15 0"
-                            IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
-                            Background="#E0ceb5"
-                            HorizontalAlignment="Right"
-                            Height="50"
-                            Width="50"
-                            BorderBrush="#67582c"
-                            BorderThickness="2" >
-                            <Button.ToolTip>
-                                <ToolTip Style="{StaticResource CustomTooltip}">
-                                    <TextBlock Text="Làm mới trang" FontFamily="Cascadia Code" FontWeight="Bold" Foreground="#FF340D05"/>
-                                </ToolTip>
-                            </Button.ToolTip>
-                            <materialDesign:PackIcon
-                                    Foreground="#340D05"
-                                    Kind="Refresh"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    Height="40"
-                                    Width="40">
-                            </materialDesign:PackIcon>
-                        </Button>
-                        
-                        <Button
-                            Grid.Column="1"
-                            Command="{Binding ShowOrderDetailCommand}"
-                            materialDesign:ButtonAssist.CornerRadius="10"
-                            Padding="0"
-                            Margin="0 0 15 0"
-                            IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
-                            Background="#E0ceb5"
-                            HorizontalAlignment="Right"
-                            Height="50"
-                            Width="50"
-                            BorderBrush="#67582c"
-                            BorderThickness="2" >
-                            <Button.ToolTip>
-                                <ToolTip Style="{StaticResource CustomTooltip}">
-                                    <TextBlock Text="Xem chi tiết đơn hàng" FontFamily="Cascadia Code" FontWeight="Bold" Foreground="#FF340D05"/>
-                                </ToolTip>
-                            </Button.ToolTip>                            
-                            <materialDesign:PackIcon
-                                    Foreground="#340D05"
-                                    Kind="InformationSlabCircle"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    Height="40"
-                                    Width="40">
-                            </materialDesign:PackIcon>
-                        </Button>
-
-                        <Button
-                            Grid.Column="2"
-                            Command="{Binding PrintCommand}"
-                            materialDesign:ButtonAssist.CornerRadius="10"
-                            Padding="0"
-                            Margin="0 0 15 0"
-                            IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
-                            Background="#E0ceb5"
-                            HorizontalAlignment="Right"
-                            Height="50"
-                            Width="50"
-                            BorderBrush="#67582c"
-                            BorderThickness="2" >
-                            <Button.ToolTip>
-                                <ToolTip Style="{StaticResource CustomTooltip}">
-                                    <TextBlock Text="In hóa đơn" FontFamily="Cascadia Code" FontWeight="Bold" Foreground="#FF340D05"/>
-                                </ToolTip>
-                            </Button.ToolTip>
-                            <materialDesign:PackIcon
-                                    Foreground="#340D05"
-                                    Kind="Printer"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    Height="40"
-                                    Width="40">
-                            </materialDesign:PackIcon>
-                        </Button>
-                        
-                        <Button
-                            Grid.Column="3"
-                            Command="{Binding ExportExcelCommand}"
-                            materialDesign:ButtonAssist.CornerRadius="10"
-                            Padding="0"
-                            Margin="0 0 15 0"
-                            IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
-                            Background="#E0ceb5"
-                            HorizontalAlignment="Right"
-                            Height="50"
-                            Width="50"
-                            BorderBrush="#67582c"
-                            BorderThickness="2" >
-                            <Button.ToolTip>
-                                <ToolTip Style="{StaticResource CustomTooltip}">
-                                    <TextBlock Text="Xuất thành trang tính" FontFamily="Cascadia Code" FontWeight="Bold" Foreground="#FF340D05"/>
-                                </ToolTip>
-                            </Button.ToolTip>
-                            <materialDesign:PackIcon
-                                    Foreground="#340D05"
-                                    Kind="FileExport"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    Height="40"
-                                    Width="40">
-                            </materialDesign:PackIcon>
-                        </Button>
-
-                    </Grid>
+                    </Rectangle>
                 </Grid>
 
-            </materialDesign:Card>
-        </Border>
-        <Grid Grid.Row="2">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right"
+                    Grid.Column="1" Margin="10,0">
+                    <Button
+                            Command="{Binding RefreshPageCommand}"
+                            Style="{StaticResource SmallButton}" Tag="Reload"
+                            IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}">
+                        <Button.ToolTip>
+                            <ToolTip Style="{StaticResource CustomTooltip}">
+                                <TextBlock Text="Làm mới trang" FontFamily="Cascadia Code" FontWeight="Bold" Foreground="#FF340D05"/>
+                            </ToolTip>
+                        </Button.ToolTip>
+                    </Button>
+
+                    <Button
+                            Command="{Binding ShowOrderDetailCommand}"
+                            Style="{StaticResource SmallButton}" Tag="InformationSlabCircle"
+                            IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}">
+                        <Button.ToolTip>
+                            <ToolTip Style="{StaticResource CustomTooltip}">
+                                <TextBlock Text="Xem chi tiết đơn hàng" FontFamily="Cascadia Code" FontWeight="Bold" Foreground="#FF340D05"/>
+                            </ToolTip>
+                        </Button.ToolTip>
+                    </Button>
+
+                    <Button
+                            Command="{Binding PrintCommand}"
+                            Style="{StaticResource SmallButton}" Tag="Printer"
+                            IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}">
+                        <Button.ToolTip>
+                            <ToolTip Style="{StaticResource CustomTooltip}">
+                                <TextBlock Text="In hóa đơn" FontFamily="Cascadia Code" FontWeight="Bold" Foreground="#FF340D05"/>
+                            </ToolTip>
+                        </Button.ToolTip>
+                    </Button>
+
+                    <Button
+                            Command="{Binding ExportExcelCommand}"
+                            Style="{StaticResource SmallButton}" Tag="FileExport"
+                            IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}">
+                        <Button.ToolTip>
+                            <ToolTip Style="{StaticResource CustomTooltip}">
+                                <TextBlock Text="Xuất thành trang tính" FontFamily="Cascadia Code" FontWeight="Bold" Foreground="#FF340D05"/>
+                            </ToolTip>
+                        </Button.ToolTip>
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </materialDesign:Card>
+        
+        <Grid Grid.Row="2" Margin="0,10">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="5*"></ColumnDefinition>
                 <ColumnDefinition Width="3*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            <Border Grid.Column="0"
-                BorderBrush="#BC9466"   
-                BorderThickness="10"
-                CornerRadius="5"
-                Margin="30 0 15 20">
 
-                <DataGrid ItemsSource="{Binding Orders}"
+            <DataGrid Style="{StaticResource CoffeeDataGridStyle}" 
+                    ItemsSource="{Binding Orders}"
                     SelectedItem="{Binding SelectedOrder}"
                     IsEnabled="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
-                    Opacity="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
-                    AutoGenerateColumns="False" 
-                    CanUserAddRows="False"
-          
-                    CanUserSortColumns="True"
-                    CanUserResizeColumns="False" 
-                    CanUserReorderColumns="False"
-          
-                    HorizontalAlignment="Stretch"
-                    GridLinesVisibility="None"
-                    IsReadOnly="True"
-                    ScrollViewer.VerticalScrollBarVisibility="Visible">
+                    Opacity="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
 
-                    <DataGrid.ColumnHeaderStyle>
-                        <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource MaterialDesignDataGridColumnHeader}">
-                            <Setter Property="Background" Value="#E0CEB5"/>
-                            <Setter Property="Foreground" Value="#340D05"/>
-                            <Setter Property="FontWeight" Value="Bold"/>
-                            <Setter Property="FontFamily" Value="Cascadia Code"/>
-                            <Setter Property="FontSize" Value="14"/>
-                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
-                            <Setter Property="VerticalAlignment" Value="Center"/>
-                            <Setter Property="Padding" Value="5"/>
-                            <Setter Property="BorderThickness" Value="1"/>
-                            <Setter Property="BorderBrush" Value="#766839"/>
-                        </Style>
-                    </DataGrid.ColumnHeaderStyle>
-
-                    <DataGrid.CellStyle>
-                        <Style TargetType="DataGridCell">
-                            <Setter Property="Foreground" Value="#766839"/>
-                            <Setter Property="FontFamily" Value="Cascadia Code"/>
-                            <Setter Property="FontSize" Value="14"/>
-                            <Setter Property="Background" Value="#F9F6F0"/>
-                            <Setter Property="BorderBrush" Value="#A0A0A0"/>
-                            <Setter Property="BorderThickness" Value="1"/>
-                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
-                            <Setter Property="VerticalContentAlignment" Value="Center"/>
-                            <Style.Triggers>
-                                <Trigger Property="IsSelected" Value="True">
-                                    <Setter Property="Background" Value="#EDE2D3"/>
-                                    <Setter Property="Foreground" Value="#340D05"/>
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                    </DataGrid.CellStyle>
-
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Header=" Mã hóa đơn " Width="*" 
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header=" Mã hóa đơn " Width="*" 
                             Binding="{Binding DisplayID}"
-                            SortMemberPath="DisplayID">
-                            <DataGridTextColumn.ElementStyle>
-                                <Style TargetType="TextBlock">
-                                    <Setter Property="HorizontalAlignment" Value="Center"/>
-                                    <Setter Property="VerticalAlignment" Value="Center"/>
-                                </Style>
-                            </DataGridTextColumn.ElementStyle>
-                        </DataGridTextColumn>
+                            SortMemberPath="DisplayID"
+                            ElementStyle="{StaticResource CenterAlignStyle}"/>
 
-                        <DataGridTextColumn Header="Tên khách hàng" Width="2*" 
+                    <DataGridTextColumn Header="Tên khách hàng" Width="2*" 
                             Binding="{Binding CustomerName}"
-                            SortMemberPath="CustomerName">
-                            <DataGridTextColumn.ElementStyle>
-                                <Style TargetType="TextBlock">
-                                    <Setter Property="HorizontalAlignment" Value="Left"/>
-                                    <Setter Property="VerticalAlignment" Value="Center"/>
-                                    <Setter Property="Padding" Value="5 0 0 0"/>
-                                </Style>
-                            </DataGridTextColumn.ElementStyle>
-                        </DataGridTextColumn>
+                            SortMemberPath="CustomerName"
+                            ElementStyle="{StaticResource LeftAlignStyle}"/>
 
-                        <DataGridTextColumn Header=" Thời gian " Width="1.2*" 
+                    <DataGridTextColumn Header=" Thời gian " Width="1.2*" 
                             Binding="{Binding OrderDate}"
-                            SortMemberPath="OrderDate">
-                            <DataGridTextColumn.ElementStyle>
-                                <Style TargetType="TextBlock">
-                                    <Setter Property="HorizontalAlignment" Value="Center"/>
-                                    <Setter Property="VerticalAlignment" Value="Center"/>
-                                </Style>
-                            </DataGridTextColumn.ElementStyle>
-                        </DataGridTextColumn>
+                            SortMemberPath="OrderDate"
+                            ElementStyle="{StaticResource CenterAlignStyle}"/>
 
-                        <DataGridTextColumn Header=" Hình thức " Width="*" 
+                    <DataGridTextColumn Header=" Hình thức " Width="*" 
                             Binding="{Binding PaymentMethod}"
-                            SortMemberPath="PaymentMethod">
-                            <DataGridTextColumn.ElementStyle>
-                                <Style TargetType="TextBlock">
-                                    <Setter Property="HorizontalAlignment" Value="Center"/>
-                                    <Setter Property="VerticalAlignment" Value="Center"/>
-                                </Style>
-                            </DataGridTextColumn.ElementStyle>
-                        </DataGridTextColumn>
+                            SortMemberPath="PaymentMethod"
+                            ElementStyle="{StaticResource CenterAlignStyle}"/>
 
-                        <DataGridTextColumn Header=" Tổng tiền " Width="*" 
-                                            SortMemberPath="Total"
-                                            Binding="{Binding Total, StringFormat=N0}">
-                            <DataGridTextColumn.ElementStyle>
-                                <Style TargetType="TextBlock">
-                                    <Setter Property="HorizontalAlignment" Value="Center"/>
-                                    <Setter Property="VerticalAlignment" Value="Center"/>
-                                </Style>
-                            </DataGridTextColumn.ElementStyle>
-                        </DataGridTextColumn>
-                    </DataGrid.Columns>
-                </DataGrid>
-            </Border>
+                    <DataGridTextColumn Header=" Tổng tiền " Width="*" 
+                            SortMemberPath="Total"
+                            Binding="{Binding Total, StringFormat=N0}"
+                            ElementStyle="{StaticResource CenterAlignStyle}"/>
+                </DataGrid.Columns>
+            </DataGrid>
 
             <Grid Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <ProgressBar
@@ -443,7 +281,7 @@
 
             <Border
                 Grid.Column="1"
-                Margin="0 0 30 20"
+                Margin="10,0,0,0"
                 CornerRadius="20"
                 BorderBrush="#766839"
                 BorderThickness="2">
@@ -471,8 +309,8 @@
                                 FontFamily="Cascadia Code"
                                 FontSize="15"
                                 FontWeight="ExtraBlack"
-                                VerticalAlignment="Center"
-                            ></TextBlock>
+                                VerticalAlignment="Center">
+                            </TextBlock>
 
                             <TextBlock
                                 Text="{Binding SelectedOrder.DisplayID, Mode=TwoWay}"
@@ -500,8 +338,8 @@
                                     FontFamily="Cascadia Code"
                                     FontSize="15"
                                     FontWeight="ExtraBlack"
-                                    VerticalAlignment="Center"
-                                ></TextBlock>
+                                    VerticalAlignment="Center">
+                                </TextBlock>
                                 <TextBlock
                                     Text="{Binding SelectedOrder.OrderDate, Mode=TwoWay}"
                                     Foreground="#FF340D05"
@@ -522,8 +360,8 @@
                                     FontFamily="Cascadia Code"
                                     FontSize="15"
                                     FontWeight="ExtraBlack"
-                                    VerticalAlignment="Center"
-                                ></TextBlock>
+                                    VerticalAlignment="Center">
+                                </TextBlock>
                                 <TextBlock
                                     Text="{Binding SelectedOrder.TableName, Mode=TwoWay}"
                                     Foreground="#FF340D05"
@@ -545,8 +383,8 @@
                                 FontFamily="Cascadia Code"
                                 FontSize="15"
                                 FontWeight="ExtraBlack"
-                                VerticalAlignment="Center"
-                            ></TextBlock>
+                                VerticalAlignment="Center">
+                            </TextBlock>
 
                             <TextBlock
                                 Text="{Binding SelectedOrder.PaymentMethod, Mode=TwoWay}"
@@ -761,7 +599,6 @@
 
         <Border 
             Grid.Row="3"
-            Margin="30 -10 30 10"
             Background="#f9f6f0"
             BorderBrush="#766839"
             BorderThickness="2"
@@ -889,7 +726,6 @@
                         HorizontalAlignment="Left">
                     </TextBlock>
                 </StackPanel>
-                
             </Grid>
         </Border>
     </Grid>
