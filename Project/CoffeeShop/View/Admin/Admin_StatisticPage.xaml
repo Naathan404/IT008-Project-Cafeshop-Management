@@ -47,14 +47,30 @@
                             VerticalAlignment="Center"
                             FontFamily="Cascadia Code"
                             Style="{StaticResource MaterialDesignOutlinedDatePicker}"/>
-
+                    <!--
                     <Button x:Name="btnCurrentDay" 
                             Command="{Binding ResetToCurrentDayCommand}"
                             Content="Trong ngày" Margin="20,0,0,0"
                             Width="150"
                             Foreground="#FF340D05"
                             Style="{StaticResource BrownButtonStyle_1}" BorderBrush="#391B05"/>
-
+                    -->
+                    <ComboBox
+                            FontFamily="Cascadia Code"
+                            Height="48"
+                            Margin="20 0 20 0"
+                            materialDesign:HintAssist.Hint="Thời giann"
+                            HorizontalAlignment="Stretch"
+                            Style="{StaticResource MaterialDesignOutlinedComboBox}"
+                            ItemsSource="{Binding Periods, UpdateSourceTrigger=PropertyChanged}"
+                            SelectedItem="{Binding SelectedPeriod, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            >
+                        <ComboBox.ToolTip>
+                            <ToolTip Style="{StaticResource CustomTooltip}">
+                                <TextBlock Text="Chọn khoảng thời gian" FontFamily="Cascadia Code" FontWeight="Bold" Foreground="#FF340D05"/>
+                            </ToolTip>
+                        </ComboBox.ToolTip>
+                    </ComboBox>
                     <Button x:Name="btnShowCurrency"
                                 Command="{Binding ChangeChartValueCommand}"
                                 Style="{StaticResource BrownButtonStyle_1}">
