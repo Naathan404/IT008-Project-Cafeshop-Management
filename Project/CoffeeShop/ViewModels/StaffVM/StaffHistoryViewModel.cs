@@ -249,13 +249,22 @@ namespace CoffeeShop.ViewModels.StaffVM
 
             ShowOrderDetailCommand = new RelayCommand<object>((p) =>
             {
-                if (SelectedOrder == null) return;
+                if (SelectedOrder == null)
+                {
+                    CustomMessageBox.Show("Vui lòng chọn một đơn hàng để xem chi tiết.", "Thông báo", MessageButtons.OK, MessageType.Warning);
+                    return;
+                }
                 OrderDetailWindow orderDetailWindow = new OrderDetailWindow(SelectedOrder.OrderID);
                 orderDetailWindow.ShowDialog();
             });
 
             PrintCommand = new RelayCommand<object>(async (p) =>
             {
+                if(SelectedOrder == null)
+                {
+                    CustomMessageBox.Show("Vui lòng chọn một đơn hàng để in hóa đơn.", "Thông báo", MessageButtons.OK, MessageType.Warning);
+                    return;
+                }    
                 //CustomMessageBox.Show("Chức năng in hóa đơn đang được phát triển.", "Thông báo", MessageButtons.OK, MessageType.Info);
                 // Khởi tạo hóa đơn
                 string fileName = $"Bill_{SelectedOrder!.OrderID}_{DateTime.Now:yyyyMMddHHmmss}.xlsx";

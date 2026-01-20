@@ -1,6 +1,7 @@
 ﻿using CoffeeShop.Helper;
 using LiveCharts;
 using MaterialDesignThemes.Wpf;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -51,6 +52,9 @@ namespace CoffeeShop.ViewModels.AdminVM
                 }
                 _startDate = value;
                 OnPropertyChanged();
+
+                _selectedPeriod = "Tùy chọn";
+                OnPropertyChanged(nameof(SelectedPeriod));
                 _ = LoadPageAsync();
             }
         }
@@ -67,6 +71,9 @@ namespace CoffeeShop.ViewModels.AdminVM
                 }    
                 _endDate = value;
                 OnPropertyChanged();
+
+                _selectedPeriod = "Tùy chọn";
+                OnPropertyChanged(nameof(SelectedPeriod));
                 _ = LoadPageAsync();
             }
         }
@@ -351,6 +358,43 @@ namespace CoffeeShop.ViewModels.AdminVM
             {
                 _orderTotal = value;
                 OnPropertyChanged();
+            }
+        }
+
+        public ObservableCollection<string> Periods { get; } = new ObservableCollection<string>
+        {
+            "Hôm nay",
+            "Tuần này",
+            "Tháng này",
+            "Tùy chọn"
+        };
+
+        private string _selectedPeriod = "Hôm nay";
+        public string SelectedPeriod
+        {
+            get => _selectedPeriod;
+            set
+            {
+                _selectedPeriod = value;
+                OnPropertyChanged();
+
+                switch(value)
+                {
+                    case "Hôm nay":
+                        StartDate = DateTime.Today;
+                        EndDate = DateTime.Today;
+                        break;
+                    case "Tuần này":
+                        StartDate = DateTime.Today.AddDays(-(int)DateTime.Today.DayOfWeek + (int)DayOfWeek.Monday);
+                        EndDate = StartDate?.AddDays(6);
+                        break;
+                    case "Tháng này":
+                        StartDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
+                        EndDate = StartDate?.AddMonths(1).AddDays(-1);
+                        break;
+                    default:
+                        break;
+                }    
             }
         }
 
