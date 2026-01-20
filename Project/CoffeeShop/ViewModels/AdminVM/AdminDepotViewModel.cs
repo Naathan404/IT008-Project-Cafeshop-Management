@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using OfficeOpenXml;
 using OfficeOpenXml.Table;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Input;
@@ -23,7 +24,7 @@ namespace CoffeeShop.ViewModels.AdminVM
         public ICommand AddItemCommand { get; private set; } = null!;
         public ICommand UpdateItemCommand { get; private set; } = null!;
         public ICommand DeleteItemCommand { get; private set; } = null!;
-        public ICommand ExportFileCommand { get; private set; } = null!;
+        public ICommand ExportReportCommand { get; private set; } = null!;
 
         #region Properties
         private List<DepotItemDTO> _allDepotItems = new List<DepotItemDTO>();
@@ -318,22 +319,39 @@ namespace CoffeeShop.ViewModels.AdminVM
                 }
             }
         }
-
-        private void ExecuteReport(object? parameter)
-        {
-            if (DepotItems.Count == 0) { CustomMessageBox.Show("Không có dữ liệu."); return; }
-
-            _dialogService.OpenReportDepotWindow();
-        }
         #endregion
 
         private void LoadCommands()
         {
             ReloadCommand = new RelayCommand<object>(p => _ = LoadItem());
             AddItemCommand = new RelayCommand<object>(ExecuteAddItem);
-            DeleteItemCommand = new RelayCommand<DepotItemDTO>(ExecuteDeleteItem);
-            UpdateItemCommand = new RelayCommand<DepotItemDTO>(ExecuteUpdateItem);
-            ExportFileCommand = new RelayCommand<object>(ExecuteReport);
+            DeleteItemCommand = new RelayCommand<DepotItemDTO>(ExecuteDeleteItem, p => p != null);
+            UpdateItemCommand = new RelayCommand<DepotItemDTO>(ExecuteUpdateItem, p => p != null);
+            ExportReportCommand = new RelayCommand<object>(async (p) =>
+            {
+                var result = CustomMessageBox.Show("Xác nhận xuất file excel?", "Xác nhận", CustomMessageBox.MessageButtons.YesNo, CustomMessageBox.MessageType.Question);
+                if (result != CustomMessageBox.MessageBoxResult.Yes) return;
+
+                if (DepotItems.Count == 0 || DepotItems == null)
+                {
+                    CustomMessageBox.Show("Không có dữ liệu.", "Thông báo", CustomMessageBox.MessageButtons.OK, CustomMessageBox.MessageType.Info);
+                }
+                else
+                {
+                    // Khởi tạo hóa đơn
+                    string fileName = $"BAO_CAO_LICH_SU_BAN_HANG_{DateTime.Now:dd-MM-yyyy_HH-mm}.xlsx";
+                    string folderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Exports");
+                    if (!Directory.Exists(folderPath)) Directory.CreateDirectory(folderPath);
+
+                    string fullPath = Path.Combine(folderPath, fileName);
+
+                    var exporter = new ReportExporter(DepotItems);
+                    await exporter.ExportDepotItem(fullPath);
+
+                    // Tự động mở file Excel
+                    Process.Start(new ProcessStartInfo(fullPath) { UseShellExecute = true });
+                }
+            });
         }
     }
 }

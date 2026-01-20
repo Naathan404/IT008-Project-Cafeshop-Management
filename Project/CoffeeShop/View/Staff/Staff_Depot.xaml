@@ -120,10 +120,9 @@
                     <!-- Function Buttons -->
                     <StackPanel Grid.Column="2"
                         Orientation="Horizontal" HorizontalAlignment="Right">
-
                         <Button x:Name="btnReload"
-                        Command="{Binding ReloadCommand}"
-                        Style="{StaticResource SmallButton}" Tag="Reload">
+                            Command="{Binding ReloadCommand}"
+                            Style="{StaticResource SmallButton}" Tag="Reload">
                             <Button.ToolTip>
                                 <ToolTip Style="{StaticResource CustomTooltip}">
                                     <TextBlock Text="Tải lại danh sách nguyên liệu" TextWrapping="Wrap" Width="200"/>
@@ -131,8 +130,8 @@
                             </Button.ToolTip>
                         </Button>
                         <Button x:Name="btnAdd"
-                        Command="{Binding AddItemCommand}"
-                        Style="{StaticResource SmallButton}" Tag="Plus">
+                            Command="{Binding AddItemCommand}"
+                            Style="{StaticResource SmallButton}" Tag="Plus">
                             <Button.ToolTip>
                                 <ToolTip Style="{StaticResource CustomTooltip}">
                                     <TextBlock Text="Thêm nguyên liệu mới" TextWrapping="Wrap" Width="200"/>
@@ -141,9 +140,9 @@
                         </Button>
 
                         <Button x:Name="btnUpdate"
-                        Command="{Binding UpdateItemCommand}"
-                        CommandParameter="{Binding ElementName=dgDepot, Path=SelectedItem}"
-                        Style="{StaticResource SmallButton}" Tag="Pencil">
+                            Command="{Binding UpdateItemCommand}"
+                            CommandParameter="{Binding ElementName=dgDepot, Path=SelectedItem}"
+                            Style="{StaticResource SmallButton}" Tag="Pencil">
                             <Button.ToolTip>
                                 <ToolTip Style="{StaticResource CustomTooltip}">
                                     <TextBlock Text="Cập nhật nguyên liệu" TextWrapping="Wrap" Width="200"/>
@@ -163,8 +162,8 @@
                         </Button>-->
 
                         <Button x:Name="btnReport" 
-                        Command="{Binding ReportCommand}"
-                        Style="{StaticResource SmallButton}" Tag="FileExcel">
+                            Command="{Binding ReportCommand}"
+                            Style="{StaticResource SmallButton}" Tag="FileExcel">
                             <Button.ToolTip>
                                 <ToolTip Style="{StaticResource CustomTooltip}">
                                     <TextBlock Text="Xuất file excel" TextWrapping="Wrap" Width="200"/>

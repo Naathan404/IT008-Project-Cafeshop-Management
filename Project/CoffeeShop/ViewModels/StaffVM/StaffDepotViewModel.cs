@@ -1,10 +1,15 @@
-﻿using CoffeeShop.Models;
+﻿using CoffeeShop.Helper;
+using CoffeeShop.Models;
 using CoffeeShop.Service;
 using CoffeeShop.Service.DTOs;
 using CoffeeShop.Service.Interfaces;
 using CoffeeShop.View.Controls;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.EntityFrameworkCore;
+using MimeKit;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.IO;
 using System.Windows;
 using System.Windows.Input;
 
@@ -271,48 +276,94 @@ namespace CoffeeShop.ViewModels.StaffVM
                 OnPropertyChanged(nameof(SelectedItem));
             }
         }
-
-        //private async void ExecuteDeleteItem(DepotItemDTO? itemToDelete)
-        //{
-        //    if (itemToDelete == null) return;
-        //    if (MessageBox.Show($"Xác nhận xóa: {itemToDelete.MaterialName}?", "Xác nhận", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
-        //    {
-        //        using (var db = new CoffeeShopContext())
-        //        {
-        //            var itemInDb = await db.Inventories.FindAsync(itemToDelete.MaterialId);
-        //            if (itemInDb != null)
-        //            {
-        //                db.InventoryHistories.Add(new InventoryHistory
-        //                {
-        //                    MaterialId = itemInDb.MaterialId,
-        //                    ActionTypeId = 4,
-        //                    Quantity = itemInDb.Quantity,
-        //                    Date = DateTime.Now,
-        //                    StaffId = UserSession.Instance.StaffId
-        //                });
-        //                itemInDb.IsDeleted = true;
-        //                await db.SaveChangesAsync();
-        //                await LoadData();
-        //                await LoadHistory();
-        //            }
-        //        }
-        //    }
-        //}
-
-        private void ExecuteReport(object? parameter)
-        {
-            if (DepotItems.Count == 0) { CustomMessageBox.Show("Không có dữ liệu.", "Thông báo", CustomMessageBox.MessageButtons.OK, CustomMessageBox.MessageType.Info); return; }
-            _dialogService.OpenReportDepotWindow();
-        }
         #endregion
+        private async void SendReport(string filePath)
+        {
+            // Email Subject
+            string senderName = UserSession.Instance.StaffName ?? "Nhân viên";
+            string senderId = UserSession.Instance.StaffId.ToString();
+            string sendTime = DateTime.Now.ToString("HH:mm:ss - dd/MM/yyyy");
+            string subject = $"BAO_CAO_KHO_HANG_{DateTime.Now:dd-MM-yyyy}";
+            string body = $@"THÔNG BÁO GỬI BÁO CÁO KHO HÀNG
+            ----------------------------------------------
+            Người gửi: {senderName} (ID: {senderId})
+            Thời gian gửi: {sendTime}
+            Nội dung: Vui lòng xem file báo cáo kho hàng đính kèm để biết chi tiết tình trạng nguyên vật liệu trong kho.
 
+            Đây là email tự động từ hệ thống quản lý CoffeeShop 2G1G.";
+            string toEmail;
+            try
+            {
+                using (var db = new CoffeeShopContext())
+                {
+                    var admins = db.Staff.Where(p => p != null && p.StaffRole == "Admin");
+                    foreach (var admin in admins)
+                    {
+                        if (admin == null || string.IsNullOrEmpty(admin.Email))
+                        {
+                            CustomMessageBox.Show("Không tìm thấy email người dùng.", "Lỗi", CustomMessageBox.MessageButtons.OK, CustomMessageBox.MessageType.Error);
+                            return;
+                        }
+                        else
+                        {
+                            toEmail = admin.Email;
+                            await MailUtils.SendEmailAsync(toEmail, subject, body, filePath);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                CustomMessageBox.Show($"Gửi báo cáo thất bại. Lỗi: {ex.Message}", "Lỗi", CustomMessageBox.MessageButtons.OK, CustomMessageBox.MessageType.Error);
+                return;
+            }
+            finally
+            {
+                // Xóa file sau khi gửi
+                if (File.Exists(filePath))
+                {
+                    try
+                    {
+                        File.Delete(filePath);
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine($"Không thể xóa file tạm: {ex.Message}");
+                    }
+                }
+            }
+
+        }
         private void LoadCommands()
         {
             ReloadCommand = new RelayCommand<object>(p => _ = LoadData());
             AddItemCommand = new RelayCommand<object>(ExecuteAddItem);
-            //DeleteItemCommand = new RelayCommand<DepotItemDTO>(ExecuteDeleteItem, p => p != null);
             UpdateItemCommand = new RelayCommand<DepotItemDTO>(ExecuteUpdateItem, p => p != null);
-            ReportCommand = new RelayCommand<object>(ExecuteReport);
+            ReportCommand = new RelayCommand<object>(async (p) =>
+            {
+                var result = CustomMessageBox.Show("Xác nhận gửi báo cáo?", "Xác nhận", CustomMessageBox.MessageButtons.YesNo, CustomMessageBox.MessageType.Question);
+                if (result != CustomMessageBox.MessageBoxResult.Yes) return;
+
+                if (DepotItems.Count == 0 || DepotItems == null)
+                {
+                    CustomMessageBox.Show("Không có dữ liệu.", "Thông báo", CustomMessageBox.MessageButtons.OK, CustomMessageBox.MessageType.Info);
+                }
+                else
+                {
+                    // Khởi tạo hóa đơn
+                    string fileName = $"BAO_CAO_LICH_SU_BAN_HANG_{DateTime.Now:dd-MM-yyyy_HH-mm}.xlsx";
+                    string folderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Exports");
+                    if (!Directory.Exists(folderPath)) Directory.CreateDirectory(folderPath);
+
+                    string fullPath = Path.Combine(folderPath, fileName);
+
+                    var exporter = new ReportExporter(DepotItems);
+                    await exporter.ExportDepotItem(fullPath);
+
+                    // Gửi file qua mail và xóa file ở máy
+                    SendReport(fullPath);
+                }
+            });
         }
     }
 }

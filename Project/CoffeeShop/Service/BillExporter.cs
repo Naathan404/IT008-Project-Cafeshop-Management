@@ -142,7 +142,7 @@ namespace CoffeeShop.Service
 //string fullPath = Path.Combine(folderPath, fileName);
 
 //    var exporter = new BillExporter(newOrder.OrderId);
-//    await exporter.ExportToExcel(fullPath);
+//    await exporter.ExportOrderHistory(fullPath);
 
 //    Process.Start(new ProcessStartInfo(fullPath) { UseShellExecute = true });
 }

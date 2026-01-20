@@ -39,7 +39,7 @@ namespace CoffeeShop.ViewModels.AdminVM
             PrintCommand = new RelayCommand<object>(async (p) =>
             {
                 // Khởi tạo hóa đơn
-                string fileName = $"Bill_{SelectedOrder!.OrderID}_{DateTime.Now:yyyyMMddHHmmss}.xlsx";
+                string fileName = $"Bill_{SelectedOrder!.OrderID}_{DateTime.Now:dd-MM-yyyy_HH-mm}.xlsx";
                 string folderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Exports");
                 if (!Directory.Exists(folderPath)) Directory.CreateDirectory(folderPath);
 
@@ -58,14 +58,14 @@ namespace CoffeeShop.ViewModels.AdminVM
                 if (result != CustomMessageBox.MessageBoxResult.Yes) return;
 
                 // Khởi tạo hóa đơn
-                string fileName = $"Report_{SelectedOrder!.OrderID}_{DateTime.Now:yyyyMMddHHmmss}.xlsx";
+                string fileName = $"BAO_CAO_LICH_SU_BAN_HANG_{FromDate:dd-MM-yyyy_HH-mm} - {ToDate:dd-MM-yyyy_HH-mm}.xlsx";
                 string folderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Exports");
                 if (!Directory.Exists(folderPath)) Directory.CreateDirectory(folderPath);
 
                 string fullPath = Path.Combine(folderPath, fileName);
 
                 var exporter = new ReportExporter(Orders);
-                await exporter.ExportToExcel(fullPath);
+                await exporter.ExportOrderHistory(fullPath, FromDate, ToDate);
 
                 // Tự động mở file Excel
                 Process.Start(new ProcessStartInfo(fullPath) { UseShellExecute = true });
