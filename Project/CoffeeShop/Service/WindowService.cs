@@ -1,6 +1,8 @@
-﻿using CoffeeShop.Service.Interfaces;
-using CoffeeShop.View.Staff;    // Dùng InputWindow (View)
-using CoffeeShop.ViewModels.StaffVM;
+﻿using CoffeeShop.Service.DTOs;
+using CoffeeShop.Service.Interfaces;
+using CoffeeShop.View.Admin;
+using CoffeeShop.View.Staff; 
+using CoffeeShop.ViewModels.AdminVM;
 using System.Collections.ObjectModel;
 
 namespace CoffeeShop.Service
@@ -8,27 +10,34 @@ namespace CoffeeShop.Service
     public class WindowService : IDialogService
     {
         // Triển khai hàm theo đúng hợp đồng của Interface
-        public void OpenInsertMaterialWindow(ObservableCollection<StaffDepotViewModel.DepotItem> collection,
-                                 StaffDepotViewModel.DepotItem? itemToEdit)
+        public bool? OpenInsertMaterialWindow(ObservableCollection<DepotItemDTO> collection,
+                                             DepotItemDTO? itemToEdit)
         {
+            InsertMaterial insertMaterial;
             if (itemToEdit != null)
             {
-                // CHẾ ĐỘ CẬP NHẬT: Dùng constructor 2 (truyền đối tượng đang sửa)
-                InsertMaterial insertMaterial = new InsertMaterial(itemToEdit, collection);
-                insertMaterial.ShowDialog();
+                // CHẾ ĐỘ CẬP NHẬT
+                insertMaterial = new InsertMaterial(itemToEdit, collection);
             }
             else
             {
-                // CHẾ ĐỘ THÊM MỚI: Dùng constructor 1
-                InsertMaterial insertMaterial = new InsertMaterial(collection);
-                insertMaterial.ShowDialog();
+                // CHẾ ĐỘ THÊM MỚI
+                insertMaterial = new InsertMaterial(collection);
             }
+            return insertMaterial.ShowDialog();
         }
 
-        public void OpenDepotHistoryWindow()
+        public void OpenReportDepotWindow()
         {
-            DepotHistory depotHistory = new DepotHistory();
-            depotHistory.ShowDialog();
+            ReportDepotWindow reportDepot = new ReportDepotWindow();
+            reportDepot.ShowDialog();
+        }
+
+        public bool? OpenInsertCouponWindow(CouponDTO? itemToEdit = null)
+        {
+            // Truyền itemToEdit vào constructor của Window
+            InsertCouponWindow insertCoupon = new InsertCouponWindow(itemToEdit);
+            return insertCoupon.ShowDialog();
         }
     }
 }

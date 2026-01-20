@@ -1,0 +1,54 @@
+﻿<Window x:Class="CoffeeShop.View.Staff.ReportDepotWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CoffeeShop.View.Staff"
+        mc:Ignorable="d" 
+        x:Name="ReportWindow"
+        Icon="/CoffeeShop;component/Assets/icoCoffee.ico"
+        Title="{Binding WindowTitle}" Height="800" Width="1000"
+        WindowStartupLocation="CenterScreen">
+    <Grid Background="#F9F6F0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="0.15*"></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <!-- Preview datagrid -->
+        <DataGrid x:Name="dgDepot" Margin="20"
+            ItemsSource="{Binding ReportData}"
+            Style="{StaticResource CoffeeDataGridStyle}">
+            <DataGrid.Columns>
+
+                <DataGridTextColumn Header="ID"  Binding="{Binding MaterialId}" Width="0.7*"
+                                    ElementStyle="{StaticResource CenterAlignStyle}"/>
+                <DataGridTextColumn Header="Tên" Binding="{Binding MaterialName}" Width="1.4*"/>
+                <DataGridTextColumn Header="Số lượng" Binding="{Binding Quantity, StringFormat='{}{0:#,##0.##}'}" Width="0.7*"
+                                    ElementStyle="{StaticResource CenterAlignStyle}"/>
+                <DataGridTextColumn Header="Đơn vị" Binding="{Binding Unit}" Width="0.8*"
+                                    ElementStyle="{StaticResource CenterAlignStyle}"/>
+                <DataGridTextColumn Header="Ghi chú" Binding="{Binding Note}" Width="1.4*"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
+            <!-- Quit and Submit button -->
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="20,0"
+                    HorizontalAlignment="Right">
+            <Button x:Name="btnQuit" Content="Thoát" FontSize="30"
+                Style="{StaticResource MaterialDesignFlatButton}"
+                Width="180" Height="60"
+                FontFamily="Cascadia Code"
+                Command="{Binding CloseCommand}"
+                CommandParameter="{Binding ElementName=ReportWindow}">
+            </Button>
+
+            <Button x:Name="btnSubmit" Content="{Binding SubmitButtonText}" FontSize="30"
+                Style="{StaticResource BrownButtonStyle_1}"
+                Width="180" Height="60"
+                FontFamily="Cascadia Code"
+                Command="{Binding ExportCommand}">
+            </Button>
+        </StackPanel>
+    </Grid>
+</Window>

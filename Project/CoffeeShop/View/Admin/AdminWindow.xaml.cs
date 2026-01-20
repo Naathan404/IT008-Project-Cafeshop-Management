@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Media.Animation;
 
 namespace CoffeeShop.View.Admin
@@ -22,65 +23,119 @@ namespace CoffeeShop.View.Admin
         private CoffeeShop.Models.Staff _account;
 
         /// Tạo các trang
-        private CustomerManagementPage _customerManagementPage = new CustomerManagementPage();
+        private AdminCustomerManagementPage _customerManagementPage = new AdminCustomerManagementPage();
         private DepotManagementPage _depotManagementPage = new DepotManagementPage();
-        private EmployeeManagementPage _employeeManagementPage = new EmployeeManagementPage();
+        private StaffManagementPage _staffManagementPage = new StaffManagementPage();
         private HistoryManagementPage _historyManagementPage = new HistoryManagementPage();
         private MenuManagementPage _menuManagementPage = new MenuManagementPage();
         private StatisticPage _statisticPage = new StatisticPage();
+        private DiscountManagementPage _discountManagementPage = new DiscountManagementPage();
+
+        private readonly Brush _colorActive = (Brush)(new BrushConverter().ConvertFrom("#c7a57a") ?? Brushes.Transparent);
+        private readonly Brush _colorNormal = Brushes.Transparent;
 
         // Constructor
         public AdminWindow(CoffeeShop.Models.Staff account)
         {
             InitializeComponent();
-            StaffFrame.Navigate(_employeeManagementPage);
+            StaffFrame.Navigate(_statisticPage);
             bdrStaffWindowFunction.Width = _minimumNavigationBarWidth;
             _account = account;
+            SetActiveTabUI("Statistics");
         }
 
         #region Button Events
+        private void SetActiveTabUI(string tabName)
+        {
+            // 1. Gom nhóm các Border để xử lý hàng loạt
+            Border[] beforeBorders = { bdrAccount_Before, bdrCustomer_Before, bdrHistory_Before, bdrDepot_Before, bdrEmployee_Before, bdrStatistics_Before, bdrMenu_Before, bdrDiscount_Before };
+            Border[] afterBorders = { bdrAccount_After, bdrCustomer_After, bdrHistory_After, bdrDepot_After, bdrEmployee_After, bdrStatistics_After, bdrMenu_After, bdrDiscount_After };
+
+            // 2. Reset tất cả về trong suốt (Xóa dấu vết cũ)
+            foreach (var b in beforeBorders) if (b != null) b.Background = _colorNormal;
+            foreach (var b in afterBorders) if (b != null) b.Background = _colorNormal;
+
+            // 3. Highlight tab được chọn (Tô màu cho cả Before và After để đồng bộ khi thu phóng)
+            switch (tabName)
+            {
+                case "Account":
+                    bdrAccount_Before.Background = bdrAccount_After.Background = _colorActive;
+                    break;
+                case "Customer":
+                    bdrCustomer_Before.Background = bdrCustomer_After.Background = _colorActive;
+                    break;
+                case "History":
+                    bdrHistory_Before.Background = bdrHistory_After.Background = _colorActive;
+                    break;
+                case "Depot":
+                    bdrDepot_Before.Background = bdrDepot_After.Background = _colorActive;
+                    break;
+                case "Staff":
+                    bdrEmployee_After.Background = bdrEmployee_Before.Background = _colorActive;
+                    break;
+                case "Statistics":
+                    bdrStatistics_After.Background = bdrStatistics_Before.Background = _colorActive;
+                    break;
+                case "Menu":
+                    bdrMenu_After.Background = bdrMenu_Before.Background = _colorActive;
+                    break;
+                case "Discount":
+                    bdrDiscount_After.Background = bdrDiscount_Before.Background = _colorActive;
+                    break;
+            }
+        }
         private void bdrAccount_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            e.Handled = true;
             StaffFrame.Visibility = Visibility.Visible;
-            AccountWindow accountWindow = new AccountWindow(_account);
-            accountWindow.Owner = this;
-            accountWindow.ShowDialog();
+            StaffFrame.Navigate(new AccountPage(_account, this));
+            SetActiveTabUI("Account");
         }
         private void bdrCustomer_MouseDown(object sender, MouseButtonEventArgs e)
         {
             StaffFrame.Visibility = Visibility.Visible;
             StaffFrame.Navigate(_customerManagementPage);
+            SetActiveTabUI("Customer");
         }
 
         private void bdrDepot_MouseDown(object sender, MouseButtonEventArgs e)
         {
             StaffFrame.Visibility = Visibility.Visible;
             StaffFrame.Navigate(_depotManagementPage);
+            SetActiveTabUI("Depot");
         }
 
         private void bdrEmployee_MouseDown(object sender, MouseButtonEventArgs e)
         {
             StaffFrame.Visibility = Visibility.Visible;
-            StaffFrame.Navigate(_employeeManagementPage);
+            StaffFrame.Navigate(_staffManagementPage);
+            SetActiveTabUI("Staff");
         }
 
         private void bdrStatistics_MouseDown(object sender, MouseButtonEventArgs e)
         {
             StaffFrame.Visibility = Visibility.Visible;
             StaffFrame.Navigate(_statisticPage);
+            SetActiveTabUI("Statistics");
+        }
+        private void bdrDiscount_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            StaffFrame.Visibility = Visibility.Visible;
+            StaffFrame.Navigate(_discountManagementPage);
+            SetActiveTabUI("Discount");
         }
 
         private void bdrHistory_MouseDown(object sender, MouseButtonEventArgs e)
         {
             StaffFrame.Visibility = Visibility.Visible;
             StaffFrame.Navigate(_historyManagementPage);
+            SetActiveTabUI("History");
         }
 
         private void bdrMenu_MouseDown(object sender, MouseButtonEventArgs e)
         {
             StaffFrame.Visibility = Visibility.Visible;
             StaffFrame.Navigate(_menuManagementPage);
+            SetActiveTabUI("Menu");
         }
 
         private void bdrStaffWindowFunction_MouseDown(object sender, MouseButtonEventArgs e)
@@ -129,6 +184,7 @@ namespace CoffeeShop.View.Admin
             bdrMenu_Before.Visibility = Visibility.Collapsed;
             bdrDepot_Before.Visibility = Visibility.Collapsed;
             bdrStatistics_Before.Visibility = Visibility.Collapsed;
+            bdrDiscount_Before.Visibility = Visibility.Collapsed;
             bdrHistory_Before.Visibility = Visibility.Collapsed;
             bdrCustomer_Before.Visibility = Visibility.Collapsed;
 
@@ -138,6 +194,7 @@ namespace CoffeeShop.View.Admin
             bdrMenu_After.Visibility = Visibility.Visible;
             bdrDepot_After.Visibility = Visibility.Visible;
             bdrStatistics_After.Visibility = Visibility.Visible;
+            bdrDiscount_After.Visibility = Visibility.Visible;
             bdrHistory_After.Visibility = Visibility.Visible;
             bdrCustomer_After.Visibility = Visibility.Visible;
 
@@ -171,6 +228,7 @@ namespace CoffeeShop.View.Admin
                 bdrMenu_After.Visibility = Visibility.Collapsed;
                 bdrDepot_After.Visibility = Visibility.Collapsed;
                 bdrStatistics_After.Visibility = Visibility.Collapsed;
+                bdrDiscount_After.Visibility = Visibility.Collapsed;
                 bdrHistory_After.Visibility = Visibility.Collapsed;
                 bdrCustomer_After.Visibility = Visibility.Collapsed;
 
@@ -180,6 +238,7 @@ namespace CoffeeShop.View.Admin
                 bdrMenu_Before.Visibility = Visibility.Visible;
                 bdrDepot_Before.Visibility = Visibility.Visible;
                 bdrStatistics_Before.Visibility = Visibility.Visible;
+                bdrDiscount_Before.Visibility = Visibility.Visible;
                 bdrHistory_Before.Visibility = Visibility.Visible;
                 bdrCustomer_Before.Visibility = Visibility.Visible;
 

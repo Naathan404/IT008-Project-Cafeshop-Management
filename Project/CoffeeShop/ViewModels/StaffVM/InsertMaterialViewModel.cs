@@ -1,4 +1,8 @@
 ﻿using CoffeeShop.Models;
+using CoffeeShop.Service;
+using CoffeeShop.Service.DTOs;
+using CoffeeShop.View.Controls;
+using DocumentFormat.OpenXml.Math;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
@@ -11,7 +15,7 @@ namespace CoffeeShop.ViewModels.StaffVM
         public ICommand SaveCommand { get; set; } = null!;
         public ICommand CloseWindowCommand { get; set; } = null!;
 
-
+        #region Properties
         private string? _materialName;
         public string? MaterialName
         {
@@ -59,6 +63,20 @@ namespace CoffeeShop.ViewModels.StaffVM
             }
         }
 
+        private decimal _threshold;
+        public decimal Threshold
+        {
+            get => _threshold;
+            set
+            {
+                if (_threshold != value)
+                {
+                    _threshold = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         private string? _note;
         public string? Note
         {
@@ -73,14 +91,22 @@ namespace CoffeeShop.ViewModels.StaffVM
             }
         }
 
-        public string WindowTitle { get; private set; } // Title của cửa sổ Insert (Thêm mới/Sửa)
-        public string SaveButtonContent { get; private set; } // Nội dung nút Lưu/Cập nhật
+        private bool _isAddMode;
+        public bool IsAddMode
+        {
+            get => _isAddMode;
+            set { _isAddMode = value; OnPropertyChanged(); }
+        }
+        #endregion
 
-        private readonly ObservableCollection<StaffDepotViewModel.DepotItem> _depotItems;
-        private StaffDepotViewModel.DepotItem? _itemToEdit; // Chỉ dùng cho chế độ sửa
+        public string WindowTitle { get; private set; } 
+        public string SaveButtonContent { get; private set; }
+
+        private readonly ObservableCollection<DepotItemDTO> _depotItems;
+        private DepotItemDTO? _itemToEdit; // Chỉ dùng cho chế độ sửa
 
         // Constructor Add
-        public InsertMaterialViewModel(ObservableCollection<StaffDepotViewModel.DepotItem> itemsCollection)
+        public InsertMaterialViewModel(ObservableCollection<DepotItemDTO> itemsCollection)
         {
             _depotItems = itemsCollection;
             InitializeData();
@@ -89,58 +115,63 @@ namespace CoffeeShop.ViewModels.StaffVM
             // Setup cho chế độ Thêm mới
             this.WindowTitle = "Thêm vật tư mới";
             this.SaveButtonContent = "Thêm mới";
+            IsAddMode = true;
         }
 
         // Constructor Update
-        public InsertMaterialViewModel(StaffDepotViewModel.DepotItem selectedItem, ObservableCollection<StaffDepotViewModel.DepotItem> itemsCollection)
-            : this(itemsCollection) // Gọi constructor Thêm mới để khởi tạo chung
+        public InsertMaterialViewModel(DepotItemDTO selectedItem, ObservableCollection<DepotItemDTO> itemsCollection)
+            : this(itemsCollection)
         {
-            // Setup cho chế độ Cập nhật
             _itemToEdit = selectedItem;
             this.WindowTitle = $"Sửa vật tư: {selectedItem.MaterialName}";
             this.SaveButtonContent = "Cập nhật";
 
-            // Gán dữ liệu của item được chọn vào các ô dữ liệu của cửa sổ
             this.MaterialName = selectedItem.MaterialName;
             this.Quantity = selectedItem.Quantity;
             this.SelectedUnit = selectedItem.Unit;
+            this.Threshold = selectedItem.Threshold;
             this.Note = selectedItem.Note;
+            IsAddMode = false;
         }
 
         private void InitializeData()
         {
-            // Chọn giá trị mặc định cho đơn vị (Giá trị đầu tiên)
             if (Units.Any())
             {
                 SelectedUnit = Units.First();
             }
         }
 
-        private void LoadCommands()
-        {
-            SaveCommand = new RelayCommand<Window>(ExecuteSave);
-            CloseWindowCommand = new RelayCommand<Window>(p => { p?.Close(); });
-        }
-
-        // Kiểm tra dữ liệu nhập vào
         private bool CanExecuteSave(Window p)
         {
-            if (string.IsNullOrWhiteSpace(MaterialName) || Quantity <= 0 || string.IsNullOrWhiteSpace(SelectedUnit))
+            // Check Condition
+            if (string.IsNullOrWhiteSpace(MaterialName))
+            {
+                CustomMessageBox.Show("Tên vật tư không được để trống!", "Lỗi", CustomMessageBox.MessageButtons.OK, CustomMessageBox.MessageType.Error);
                 return false;
-
+            }
+            else if (Quantity < 0)
+            {
+                CustomMessageBox.Show("Số lượng phải lớn hơn hoặc bằng 0!", "Lỗi", CustomMessageBox.MessageButtons.OK, CustomMessageBox.MessageType.Error);
+                return false;
+            }
+            else if (Threshold < 0)
+            {
+                CustomMessageBox.Show("Ngưỡng cảnh báo phải lớn hơn hoặc bằng 0!", "Lỗi", CustomMessageBox.MessageButtons.OK, CustomMessageBox.MessageType.Error);
+                return false;
+            }
+            else if (string.IsNullOrWhiteSpace(SelectedUnit))
+            {
+                CustomMessageBox.Show("Chưa chọn đơn vị!", "Lỗi", CustomMessageBox.MessageButtons.OK, CustomMessageBox.MessageType.Error);
+                return false;
+            }
             return true;
         }
 
-        private void ExecuteSave(Window window)
+        private async void ExecuteSave(Window window)
         {
-            // Nếu dữ liệu ko hợp lệ
-            if (!CanExecuteSave(window))
-            {
-                MessageBox.Show("Vui lòng nhập đầy đủ Tên, Số lượng (> 0) và Đơn vị hợp lệ.", "Lỗi nhập liệu", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
+            if (!CanExecuteSave(window)) return;
 
-            // Thao tác Thêm/Cập nhật dữ liệu
             using (var db = new CoffeeShopContext())
             {
                 if (_itemToEdit != null)
@@ -150,55 +181,46 @@ namespace CoffeeShop.ViewModels.StaffVM
 
                     if (itemToUpdate != null)
                     {
-                        int ACTION_TYPE_NHAP; // 3 = Cập nhật
-                        if (itemToUpdate.Quantity >= Quantity)
+                        // Lấy actionType và staffId
+                        int actionType; // 3 = Cập nhật
+                        if (itemToUpdate.Quantity < Quantity) // Old < New
                         {
-                            ACTION_TYPE_NHAP = 3;
+                            actionType = 3;
                         }
-                        else ACTION_TYPE_NHAP = 2;
-                            const int STAFF_ID = 1; // ID nhân viên đang đăng nhập
-
-                        Inventory newItem = new Inventory()
-                                                {
-                                                    MaterialName = MaterialName,
-                                                    Quantity = Math.Abs(itemToUpdate.Quantity -  Quantity),
-                                                    Unit = SelectedUnit,
-                                                    Note = Note
-                                                };
-                        db.Inventories.Add(newItem); // Đưa vào bộ theo dõi
+                        else actionType = 2;
+                        int staffId = UserSession.Instance.StaffId; // ID nhân viên đang đăng nhập
 
                         // Bắt đầu Transaction
                         using (var transaction = db.Database.BeginTransaction()) // Transaction - All or nothing
                         {
                             try
                             {
+                                // Ghi lại hành động vào lịch sử kho
+                                InventoryHistory newHistory = new InventoryHistory
+                                {
+                                    MaterialId = itemToUpdate.MaterialId,
+                                    ActionTypeId = actionType,
+                                    Quantity = Math.Abs(itemToUpdate.Quantity - Quantity),
+                                    Date = DateTime.Now,
+                                    StaffId = staffId
+                                };
+
                                 // Cập nhật giá trị mới vào DB
                                 itemToUpdate.MaterialName = MaterialName;
                                 itemToUpdate.Quantity = Quantity;
                                 itemToUpdate.Unit = SelectedUnit;
+                                itemToUpdate.Threshold = Threshold;
                                 itemToUpdate.Note = Note;
-                                db.SaveChanges();
-
-                                // Ghi lại hành động cập nhật vào lịch sử kho
-                                InventoryHistory newHistory = new InventoryHistory
-                                {
-                                    MaterialId = newItem.MaterialId,
-                                    ActionTypeId = ACTION_TYPE_NHAP,
-                                    Quantity = newItem.Quantity,
-                                    //InputPrice = InputPrice,
-                                    Date = DateTime.Now,
-                                    StaffId = STAFF_ID
-                                };
 
                                 db.InventoryHistories.Add(newHistory);
-                                db.SaveChanges(); // Lưu bản ghi lịch sử
-
+                                await db.SaveChangesAsync(); // Lưu
                                 transaction.Commit(); // Hoàn tất cả hai
 
-                                // Cập nhật lại đối tượng trong ObservableCollection
+                                // Cập nhật lại DG
                                 _itemToEdit.MaterialName = MaterialName;
                                 _itemToEdit.Quantity = Quantity;
                                 _itemToEdit.Unit = SelectedUnit;
+                                _itemToEdit.Threshold = Threshold;
                                 _itemToEdit.Note = Note;
                             }
                             catch (Exception ex)
@@ -211,9 +233,8 @@ namespace CoffeeShop.ViewModels.StaffVM
                 }
                 else
                 {
-                    const int ACTION_TYPE_NHAP = 1; // 1 = Nhập
-                    const int STAFF_ID = 1; // ID nhân viên đang đăng nhập
-
+                    int actionType = 1; // 1 = Thêm mới
+                    int staffId = UserSession.Instance.StaffId; // ID nhân viên đang đăng nhập
                     // Bắt đầu Transaction
                     using (var transaction = db.Database.BeginTransaction()) // Transaction - All or nothing
                     {
@@ -225,35 +246,36 @@ namespace CoffeeShop.ViewModels.StaffVM
                                 MaterialName = MaterialName,
                                 Quantity = Quantity,
                                 Unit = SelectedUnit,
+                                Threshold = Threshold,
                                 Note = Note
                             };
 
                             db.Inventories.Add(newItem);
                             db.SaveChanges(); // Thêm item vào csdl
 
-                            // Ghi lại hành động cập nhật vào lịch sử kho
+                            // Ghi lại hành động vào lịch sử kho
                             InventoryHistory inventoryHistory = new InventoryHistory
                             {
                                 MaterialId = newItem.MaterialId,
-                                ActionTypeId = ACTION_TYPE_NHAP,
+                                ActionTypeId = actionType,
                                 Quantity = newItem.Quantity,
-                                //InputPrice = InputPrice,
                                 Date = DateTime.Now,
-                                StaffId = STAFF_ID
+                                StaffId = staffId
                             };
 
                             db.InventoryHistories.Add(inventoryHistory);
-                            db.SaveChanges(); // Lưu bản ghi lịch sử
+                            await db.SaveChangesAsync(); // Lưu bản ghi lịch sử
 
                             transaction.Commit(); // Hoàn tất cả hai
 
                             // Ánh xạ ngược và thêm vào ObservableCollection
-                            StaffDepotViewModel.DepotItem newDepotItem = new StaffDepotViewModel.DepotItem
+                            DepotItemDTO newDepotItem = new DepotItemDTO
                             {
                                 MaterialId = newItem.MaterialId, // Lấy ID từ DB
                                 MaterialName = newItem.MaterialName,
                                 Quantity = newItem.Quantity,
                                 Unit = newItem.Unit,
+                                Threshold = newItem.Threshold,
                                 Note = newItem.Note
                             };
                             // Cập nhật item vào dg
@@ -267,8 +289,15 @@ namespace CoffeeShop.ViewModels.StaffVM
                     }
                 }
                 // Đóng cửa sổ sau khi thao tác xong
+                window.DialogResult = true;
                 window?.Close();
             }
+        }
+
+        private void LoadCommands()
+        {
+            SaveCommand = new RelayCommand<Window>(ExecuteSave);
+            CloseWindowCommand = new RelayCommand<Window>(p => { p?.Close(); });
         }
     }
 }

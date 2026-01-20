@@ -47,14 +47,31 @@
                             VerticalAlignment="Center"
                             FontFamily="Cascadia Code"
                             Style="{StaticResource MaterialDesignOutlinedDatePicker}"/>
-
+                    <!--
                     <Button x:Name="btnCurrentDay" 
                             Command="{Binding ResetToCurrentDayCommand}"
                             Content="Trong ngày" Margin="20,0,0,0"
                             Width="150"
                             Foreground="#FF340D05"
                             Style="{StaticResource BrownButtonStyle_1}" BorderBrush="#391B05"/>
-
+                    -->
+                    <ComboBox
+                            FontFamily="Cascadia Code"
+                            Height="48"
+                            Margin="20 0 10 0"
+                            materialDesign:HintAssist.Hint="Thời giann"
+                            HorizontalAlignment="Stretch"
+                            Style="{StaticResource MaterialDesignOutlinedComboBox}"
+                            ItemsSource="{Binding Periods, UpdateSourceTrigger=PropertyChanged}"
+                            SelectedItem="{Binding SelectedPeriod, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            >
+                        <ComboBox.ToolTip>
+                            <ToolTip Style="{StaticResource CustomTooltip}">
+                                <TextBlock Text="Chọn khoảng thời gian" FontFamily="Cascadia Code" FontWeight="Bold" Foreground="#FF340D05"/>
+                            </ToolTip>
+                        </ComboBox.ToolTip>
+                    </ComboBox>
+                    <!--
                     <Button x:Name="btnShowCurrency"
                                 Command="{Binding ChangeChartValueCommand}"
                                 Style="{StaticResource BrownButtonStyle_1}">
@@ -65,6 +82,34 @@
                                 HorizontalAlignment="Center"
                                 Foreground="#FF340D05"
                                 ></materialDesign:PackIcon>
+                    </Button>
+                    -->
+                    <Button
+                            Grid.Column="0"
+                            Command="{Binding ChangeChartValueCommand}"
+                            materialDesign:ButtonAssist.CornerRadius="10"
+                            Padding="0"
+                            Margin="0 0 15 0"
+                            IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
+                            Background="#E0ceb5"
+                            HorizontalAlignment="Right"
+                            Height="48"
+                            Width="48"
+                            BorderBrush="#67582c"
+                            BorderThickness="2" >
+                        <Button.ToolTip>
+                            <ToolTip Style="{StaticResource CustomTooltip}">
+                                <TextBlock Text="Doanh thu/Số lượng" FontFamily="Cascadia Code" FontWeight="Bold" Foreground="#FF340D05"/>
+                            </ToolTip>
+                        </Button.ToolTip>
+                        <materialDesign:PackIcon
+                                    Foreground="#340D05"
+                                    Kind="{Binding ShowRevenueIcon}"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Height="40"
+                                    Width="40">
+                        </materialDesign:PackIcon>
                     </Button>
                 </StackPanel>
 

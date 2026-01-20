@@ -1,5 +1,9 @@
 ﻿using CoffeeShop.Models;
+using CoffeeShop.Service;
+using CoffeeShop.Service.DTOs;
 using CoffeeShop.Service.Interfaces;
+using CoffeeShop.View.Controls;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
@@ -8,95 +12,38 @@ namespace CoffeeShop.ViewModels.StaffVM
 {
     public class StaffDepotViewModel : BaseViewModel
     {
-        private readonly IDialogService _dialogService; // Dùng để mở cửa sổ InsertMaterial
-        // Commands
-        public ICommand ApplyFilterCommand { get; private set; } = null!;
-        public ICommand ClearFilterCommand { get; private set; } = null!;
+        private readonly IDialogService _dialogService;
+
+        public ICommand ReloadCommand { get; private set; } = null!;
         public ICommand AddItemCommand { get; private set; } = null!;
         public ICommand UpdateItemCommand { get; private set; } = null!;
-        public ICommand DeleteItemCommand { get; private set; } = null!;
-        public ICommand TogglePopupCommand { get; private set; } = null!;
-        public ICommand ShowDepotHistory { get; private set; } = null!;
+        //public ICommand DeleteItemCommand { get; private set; } = null!;
+        public ICommand ReportCommand { get; private set; } = null!;
 
-        // Class DepotItem
-        public class DepotItem : BaseViewModel
+        #region Properties
+        private List<DepotItemDTO> _allDepotItems = new List<DepotItemDTO>();
+        private ObservableCollection<DepotItemDTO> _depotItems = new ObservableCollection<DepotItemDTO>();
+        public ObservableCollection<DepotItemDTO> DepotItems
         {
-            // Backing field (nơi lưu giá trị thật sự) 
-            private int _materialId;
-            private string? _materialName;
-            private decimal _quantity;
-            private string _unit;
-            private string? _note;
-
-            // --- CÁC PROPERTY - Khi có sự thay đổi mới gián giá trị mới cho backing field ---
-            public int MaterialId { get; set; } /// Ko có sự thay đổi ID nên ko cần định nghĩa
-            // 1. MaterialName
-            public string? MaterialName
-            {
-                get => _materialName;
-                set
-                {
-                    if (_materialName != value)
-                    {
-                        _materialName = value;
-                        OnPropertyChanged();
-                    }
-                }
-            }
-
-            // 2. Quantity
-            public decimal Quantity
-            {
-                get => _quantity;
-                set
-                {
-                    if (_quantity != value)
-                    {
-                        _quantity = value;
-                        OnPropertyChanged();
-                    }
-                }
-            }
-
-            // 3. Unit
-            public string Unit
-            {
-                get => _unit;
-                set
-                {
-                    if (_unit != value)
-                    {
-                        _unit = value;
-                        OnPropertyChanged();
-                    }
-                }
-            }
-
-            // 4. Note
-            public string? Note
-            {
-                get => _note;
-                set
-                {
-                    if (_note != value)
-                    {
-                        _note = value;
-                        OnPropertyChanged();
-                    }
-                }
-            }
+            get => _depotItems;
+            set { _depotItems = value; OnPropertyChanged(); }
         }
 
-        // Data Collection
-        public ObservableCollection<DepotItem> depotItems { get; set; } = new ObservableCollection<DepotItem>();
-        public ObservableCollection<string> units { get; set; } = new ObservableCollection<string>()
+        private List<DepotHistoryItemDTO> _allHistoryRecord = new List<DepotHistoryItemDTO>();
+        private ObservableCollection<DepotHistoryItemDTO> _depotHistoryItems = new ObservableCollection<DepotHistoryItemDTO>();
+        public ObservableCollection<DepotHistoryItemDTO> DepotHistoryItems
+        {
+            get => _depotHistoryItems;
+            set { _depotHistoryItems = value; OnPropertyChanged(); }
+        }
+
+        public ObservableCollection<string> Units { get; set; } = new ObservableCollection<string>()
         {
             "Tất cả", "Kg", "Lon", "Chai", "Hộp", "Hộp 1L", "Hũ"
         };
 
-        #region Properties
-        private DepotItem? _selectedItem;
-        public DepotItem? SelectedItem
+        private DepotItemDTO? _selectedItem;
+        public DepotItemDTO? SelectedItem
         {
             get => _selectedItem;
             set
@@ -105,12 +52,22 @@ namespace CoffeeShop.ViewModels.StaffVM
                 {
                     _selectedItem = value;
                     OnPropertyChanged();
-                    CommandManager.InvalidateRequerySuggested(); // Cập nhật trạng thái CanExecute của các nút (Delete/Update)
+                    if (_selectedItem != null)
+                    {
+                        var filtered = _allHistoryRecord
+                            .Where(h => h.MaterialId == _selectedItem.MaterialId)
+                            .ToList();
+                        DepotHistoryItems = new ObservableCollection<DepotHistoryItemDTO>(filtered);
+                    }
+                    else
+                    {
+                        DepotHistoryItems = new ObservableCollection<DepotHistoryItemDTO>();
+                    }
+                    CommandManager.InvalidateRequerySuggested();
                 }
             }
         }
 
-        // Thuộc tính binding với TextBox Search
         private string _searchTerm = string.Empty;
         public string SearchTerm
         {
@@ -121,12 +78,11 @@ namespace CoffeeShop.ViewModels.StaffVM
                 {
                     _searchTerm = value;
                     OnPropertyChanged();
-                    ApplyFilterCommand.Execute(null);
+                    ApplyFilter();
                 }
             }
         }
 
-        // Thuộc tính cho ô lọc số lượng Min/Max
         private decimal? _minQuantity;
         public decimal? MinQuantity
         {
@@ -137,9 +93,11 @@ namespace CoffeeShop.ViewModels.StaffVM
                 {
                     _minQuantity = value;
                     OnPropertyChanged();
+                    ApplyFilter();
                 }
             }
         }
+
         private decimal? _maxQuantity;
         public decimal? MaxQuantity
         {
@@ -150,6 +108,7 @@ namespace CoffeeShop.ViewModels.StaffVM
                 {
                     _maxQuantity = value;
                     OnPropertyChanged();
+                    ApplyFilter();
                 }
             }
         }
@@ -164,248 +123,196 @@ namespace CoffeeShop.ViewModels.StaffVM
                 {
                     _selectedUnit = value;
                     OnPropertyChanged();
+                    ApplyFilter();
                 }
             }
         }
 
-        private string _popupVisibleState = "Collapsed";
-        public string PopupVisibleState
+        private bool _isLoading;
+        public bool IsLoading
         {
-            get => _popupVisibleState;
+            get => _isLoading;
             set
             {
-                if (_popupVisibleState != value)
-                {
-                    _popupVisibleState = value;
-                    OnPropertyChanged();
-                }
+                _isLoading = value;
+                OnPropertyChanged();
             }
         }
         #endregion
 
-        //Constructor
+        // Constructor
         public StaffDepotViewModel(IDialogService dialogService)
         {
             _dialogService = dialogService;
             LoadCommands();
-            // Load dữ liệu ban đầu
-            LoadDepotItem();
+            _ = LoadData();
+            _ = LoadHistory();
         }
 
-        #region Command Logic
-        private bool CanExecuteCrudOperation(DepotItem? selectedItem)
+        #region Logic
+        public async Task LoadData()
         {
-            // Chỉ được thực hiện khi có item được chọn
-            return selectedItem != null;
-        }
+            MinQuantity = null;
+            MaxQuantity = null;
+            SelectedUnit = Units.First();
+            SearchTerm = string.Empty;
+            IsLoading = true;
 
-        // Hàm lọc dữ liệu
-        private void ExecuteApplyFilter(object? parameter)
-        {
-            depotItems.Clear();
             try
             {
                 using (var db = new CoffeeShopContext())
                 {
-                    var query = db.Inventories.AsQueryable();
-
-                    // 1. LỌC THEO TÊN (Search Term)
-                    if (!string.IsNullOrEmpty(SearchTerm))
-                    {
-                        string searchLower = SearchTerm.ToLower();
-                        query = query.Where(o => o != null && o.MaterialName.ToLower().Contains(searchLower));
-                    }
-
-                    // 2. LỌC THEO SỐ LƯỢNG (Min/Max)
-
-                    // Lọc theo Min (Chỉ lọc nếu MinValue > 0)
-                    if (MinQuantity.HasValue && MinQuantity > 0)
-                    {
-                        // Kiểm tra Quantity trong DB >= MinValue
-                        query = query.Where(o => o != null && o.Quantity >= MinQuantity);
-                    }
-
-                    // Lọc theo Max (Chỉ lọc nếu MaxValue > 0, hoặc MaxValue > MinValue)
-                    if (MaxQuantity.HasValue && MaxQuantity > 0)
-                    {
-                        // Kiểm tra Quantity trong DB <= MaxValue
-                        query = query.Where(o => o != null && o.Quantity <= MaxQuantity);
-                    }
-
-                    // 3. LỌC THEO ĐƠN VỊ (Unit)
-                    if (SelectedUnit.ToLower() != "tất cả")
-                    {
-                        // Kiểm tra Unit trong DB khớp với SelectedUnit
-                        query = query.Where(o => o != null && o.Unit != null && o.Unit.ToLower() == SelectedUnit.ToLower());
-                    }
-
-                    // 4. THỰC THI TRUY VẤN VÀ CẬP NHẬT COLLECTION
-                    var items = query.ToList();
-
-                    foreach (var item in items)
-                    {
-                        // Ánh xạ an toàn
-                        depotItems.Add(new DepotItem
-                        {
-                            MaterialId = item.MaterialId,
-                            MaterialName = item.MaterialName ?? string.Empty,
-                            Quantity = item.Quantity,
-                            Unit = item.Unit ?? string.Empty,
-                            Note = item.Note ?? string.Empty
-                        });
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                // Hiển thị lỗi nếu có vấn đề DB
-                MessageBox.Show($"Lỗi lọc dữ liệu: {ex.Message}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
-        // Hàm bỏ lọc
-        private void ExecuteClearFilter(object? parameter)
-        {
-            // Reset các thuộc tính input về giá trị mặc định
-            SearchTerm = string.Empty;
-            MinQuantity = null;
-            MaxQuantity = null;
-
-            SelectedUnit = "tất cả"; 
-
-            // Chạy lại bộ lọc để hiển thị toàn bộ dữ liệu
-            ExecuteApplyFilter(null);
-        }
-
-        // Hàm thêm item mới
-        private void ExecuteAddItem(object? parameter)
-        {
-            // Gọi cửa sổ InsertMaterial ở chế độ Thêm mới
-            _dialogService.OpenInsertMaterialWindow(depotItems, null);
-        }
-
-        // Hàm cập nhật item
-        private void ExecuteUpdateItem(DepotItem? selectedItem)
-        {
-            // Gọi cửa sổ InsertMaterial ở chế độ Cập nhật
-            _dialogService.OpenInsertMaterialWindow(depotItems, selectedItem);
-        }
-
-        // Hàm xóa item
-        private void ExecuteDeleteItem(DepotItem? itemToDelete)
-        {
-            if (itemToDelete == null) return;
-            // Xác nhận hành động xóa
-            if (MessageBox.Show($"Bạn có chắc muốn xóa: {itemToDelete.MaterialName}?", "Xác nhận", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
-            {
-                // Xóa khi người dùng click yes
-                using (var db = new CoffeeShopContext())
-                {
-                    // Lấy item trong db (phải xóa trong db)
-                    Inventory deletedItem = db.Inventories.Find(itemToDelete.MaterialId);
-
-                    if (deletedItem != null) // Tim thay item
-                    {
-                        const int ACTION_TYPE_NHAP = 4; // 4 =  Hủy
-                        const int STAFF_ID = 1; // ID nhân viên đang đăng nhập
-                        using (var transaction = db.Database.BeginTransaction()) // Transaction - All or nothing
-                        {
-                            try
-                            {
-                                db.Inventories.Remove(deletedItem);
-                                // Lưu thay đổi -> chính thức bị xóa
-                                int recordsAffected = db.SaveChanges();
-                                
-                                // Ghi lại hành động cập nhật vào lịch sử kho
-                                InventoryHistory newHistory = new InventoryHistory
-                                {
-                                    MaterialId = deletedItem.MaterialId,
-                                    ActionTypeId = ACTION_TYPE_NHAP,
-                                    Quantity = deletedItem.Quantity,
-                                    //InputPrice = InputPrice,
-                                    Date = DateTime.Now,
-                                    StaffId = STAFF_ID
-                                };
-
-                                db.InventoryHistories.Add(newHistory);
-                                db.SaveChanges(); // Lưu bản ghi lịch sử
-
-                                transaction.Commit(); // Hoàn tất cả hai
-
-                                if (recordsAffected > 0) // Khi có thay đổi (bị xóa) -> xóa cả dữ liệu trong dg và thông báo
-                                {
-                                    depotItems.Remove(itemToDelete);
-                                    MessageBox.Show($"Đã xóa thành công {itemToDelete.MaterialName} khỏi DB!", "Thành công");
-                                }
-
-                                depotItems.Remove(itemToDelete);
-                            }
-                            catch (Exception ex)
-                            {
-                                transaction.Rollback(); // Hủy bỏ cả hai
-                                MessageBox.Show($"Lỗi: {ex.Message}");
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        // Hàm hỗ trợ bật tắt Popup Filter
-        private void ExecuteTogglePopup(object? parameter)
-        {
-            if (PopupVisibleState == "Collapsed")
-            {
-                PopupVisibleState = "Visible";
-            }
-            else
-            {
-                PopupVisibleState = "Collapsed";
-            }
-        }
-
-        private void ExecuteShowHistory(object? parameter)
-        {
-            _dialogService.OpenDepotHistoryWindow();
-        }
-        #endregion
-
-        // Load dữ liệu cho dg
-        private void LoadDepotItem()
-        {
-            depotItems.Clear();
-            using (var db = new CoffeeShopContext())
-            {
-                var items = db.Inventories.ToList();
-                foreach (var item in items)
-                {
-                    depotItems.Add(new DepotItem
+                    var dataFromDb = await db.Inventories.AsNoTracking().Where(i => !i.IsDeleted).ToListAsync();
+                    var result = dataFromDb.Select(item => new DepotItemDTO
                     {
                         MaterialId = item.MaterialId,
                         MaterialName = item.MaterialName ?? string.Empty,
                         Quantity = item.Quantity,
                         Unit = item.Unit ?? string.Empty,
-                        Note = item.Note ?? string.Empty
+                        Note = item.Note ?? string.Empty,
+                        Threshold = item.Threshold
+                    }).ToList();
+
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        _allDepotItems = result;
+                        ApplyFilter();
+                        OnPropertyChanged(nameof(DepotItems));
                     });
                 }
             }
+            catch (Exception ex)
+            {
+                CustomMessageBox.Show($"Lỗi: {ex.Message}", "Lỗi", CustomMessageBox.MessageButtons.OK, CustomMessageBox.MessageType.Error);
+            }
+            finally
+            {
+                IsLoading = false;
+            }
         }
 
-        // Load Commands
+        public async Task LoadHistory(int? forcedId = null)
+        {
+            int? idToFilter = forcedId ?? SelectedItem?.MaterialId;
+            try
+            {
+                using (var db = new CoffeeShopContext())
+                {
+                    var historyItems = await db.InventoryHistories
+                        .AsNoTracking()
+                        .Include(h => h.ActionType)
+                        .Include(h => h.Staff)
+                        .OrderByDescending(h => h.Date)
+                        .ToListAsync();
+
+                    var result = historyItems.Select(h => new DepotHistoryItemDTO
+                    {
+                        MaterialId = h.MaterialId,
+                        MaterialName = h.Material?.MaterialName ?? "N/A",
+                        ActionName = h.ActionType?.ActionName ?? "Không xác định",
+                        Quantity = h.Quantity,
+                        Date = h.Date,
+                        StaffName = h.Staff?.StaffName ?? "Ẩn danh"
+                    }).ToList();
+
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        _allHistoryRecord = result;
+                        if (idToFilter != null)
+                        {
+                            var filtered = _allHistoryRecord.Where(h => h.MaterialId == idToFilter).ToList();
+                            DepotHistoryItems = new ObservableCollection<DepotHistoryItemDTO>(filtered);
+                        }
+                        OnPropertyChanged(nameof(DepotHistoryItems));
+                    });
+                }
+            }
+            catch (Exception ex)
+            { 
+                CustomMessageBox.Show(ex.Message, "Lỗi", CustomMessageBox.MessageButtons.OK, CustomMessageBox.MessageType.Error);
+            }
+        }
+
+        public void ApplyFilter()
+        {
+            var filtered = _allDepotItems.AsEnumerable();
+            if (!string.IsNullOrEmpty(SearchTerm))
+                filtered = filtered.Where(x => x.MaterialName.ToLower().Contains(SearchTerm.ToLower()));
+            if (SelectedUnit != null && SelectedUnit != "Tất cả")
+                filtered = filtered.Where(x => x.Unit == SelectedUnit);
+            if (MinQuantity.HasValue && MinQuantity > 0)
+                filtered = filtered.Where(x => x.Quantity >= MinQuantity.Value);
+            if (MaxQuantity.HasValue && MaxQuantity > 0)
+                filtered = filtered.Where(x => x.Quantity <= MaxQuantity.Value);
+
+            DepotItems = new ObservableCollection<DepotItemDTO>(filtered);
+        }
+        #endregion
+
+        #region Execute Methods
+        private async void ExecuteAddItem(object? parameter)
+        {
+            if (_dialogService.OpenInsertMaterialWindow(DepotItems, null) == true)
+            {
+                await LoadData();
+                await LoadHistory();
+            }
+        }
+
+        private async void ExecuteUpdateItem(DepotItemDTO? selectedItem)
+        {
+            if (selectedItem == null) return;
+            int savedId = selectedItem.MaterialId;
+            if (_dialogService.OpenInsertMaterialWindow(DepotItems, selectedItem) == true)
+            {
+                await LoadData();
+                await LoadHistory(savedId);
+                SelectedItem = DepotItems.FirstOrDefault(x => x.MaterialId == savedId);
+                OnPropertyChanged(nameof(SelectedItem));
+            }
+        }
+
+        //private async void ExecuteDeleteItem(DepotItemDTO? itemToDelete)
+        //{
+        //    if (itemToDelete == null) return;
+        //    if (MessageBox.Show($"Xác nhận xóa: {itemToDelete.MaterialName}?", "Xác nhận", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+        //    {
+        //        using (var db = new CoffeeShopContext())
+        //        {
+        //            var itemInDb = await db.Inventories.FindAsync(itemToDelete.MaterialId);
+        //            if (itemInDb != null)
+        //            {
+        //                db.InventoryHistories.Add(new InventoryHistory
+        //                {
+        //                    MaterialId = itemInDb.MaterialId,
+        //                    ActionTypeId = 4,
+        //                    Quantity = itemInDb.Quantity,
+        //                    Date = DateTime.Now,
+        //                    StaffId = UserSession.Instance.StaffId
+        //                });
+        //                itemInDb.IsDeleted = true;
+        //                await db.SaveChangesAsync();
+        //                await LoadData();
+        //                await LoadHistory();
+        //            }
+        //        }
+        //    }
+        //}
+
+        private void ExecuteReport(object? parameter)
+        {
+            if (DepotItems.Count == 0) { CustomMessageBox.Show("Không có dữ liệu.", "Thông báo", CustomMessageBox.MessageButtons.OK, CustomMessageBox.MessageType.Info); return; }
+            _dialogService.OpenReportDepotWindow();
+        }
+        #endregion
+
         private void LoadCommands()
         {
-            // 1. COMMANDS LỌC/TÌM KIẾM
-            ApplyFilterCommand = new RelayCommand<object>(ExecuteApplyFilter);
-            ClearFilterCommand = new RelayCommand<object>(ExecuteClearFilter);
-
-            // 2. COMMANDS CRUD
+            ReloadCommand = new RelayCommand<object>(p => _ = LoadData());
             AddItemCommand = new RelayCommand<object>(ExecuteAddItem);
-            DeleteItemCommand = new RelayCommand<DepotItem>(ExecuteDeleteItem, CanExecuteCrudOperation);
-            UpdateItemCommand = new RelayCommand<DepotItem>(ExecuteUpdateItem, CanExecuteCrudOperation);
-
-            TogglePopupCommand = new RelayCommand<object>(ExecuteTogglePopup);
-
-            ShowDepotHistory = new RelayCommand<object>(ExecuteShowHistory);
+            //DeleteItemCommand = new RelayCommand<DepotItemDTO>(ExecuteDeleteItem, p => p != null);
+            UpdateItemCommand = new RelayCommand<DepotItemDTO>(ExecuteUpdateItem, p => p != null);
+            ReportCommand = new RelayCommand<object>(ExecuteReport);
         }
     }
 }

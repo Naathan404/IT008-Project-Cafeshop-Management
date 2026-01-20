@@ -11,11 +11,10 @@
       d:DesignHeight="700" d:DesignWidth="1310"
       MinHeight="0" MinWidth="1000"
       Title="Staff_Order">
-    <Page.DataContext>
-        <vm:StaffOrderViewModel/>
-    </Page.DataContext>
 
+    
     <Page.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         <local:IndexToNumberConverter x:Key="IndexToNumberConverter"/>
         <local:AndBooleanConverter x:Key="AndBooleanConverter"/>
 
@@ -411,7 +410,7 @@
                                                          Foreground="#766839"/>
                                 <TextBox x:Name="txblSearchItem"
                                          Grid.Column="1"
-                                         Text="{Binding SearchItemKeyword, UpdateSourceTrigger=PropertyChanged}"
+                                         Text="{Binding SearchItemKeyword, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
                                          Height="40" MinWidth="80"
                                          materialDesign:HintAssist.Hint="Tìm kiếm"
                                          materialDesign:HintAssist.IsFloating="False"
@@ -442,7 +441,7 @@
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="2.5*"/>
+                                <RowDefinition Height="2*"/>
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
 
@@ -789,7 +788,9 @@
                             </Border>
 
                             <!-- Total & Payment Section -->
-                            <StackPanel Grid.Row="2" Margin="0 10 0 10">
+                            <StackPanel Grid.Row="2" Margin="0 10 0 10"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Bottom">
                                 <StackPanel Orientation="Horizontal" 
                                             HorizontalAlignment="Right" 
                                             Margin="0 0 20 5">
@@ -801,6 +802,38 @@
                                                FontFamily="Cascadia Code" 
                                                FontSize="20" 
                                                Foreground="#340D05"/>
+                                </StackPanel>
+
+                                <StackPanel Orientation="Horizontal"
+                                            HorizontalAlignment="Right"
+                                            Margin=" 0 0 20 5">
+                                    <TextBlock Text="Chọn mã giảm giá: "
+                                               FontSize="20" 
+                                               FontFamily="Cascadia Code"
+                                               Foreground="#462812"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"/>
+                                    <ComboBox x:Name="cbDiscount"
+                                              Width="200" Height="30"
+                                              VerticalAlignment="Center"
+                                              FontFamily="Cascadia Code"
+                                              FontSize="15" 
+                                              Foreground="#766839"
+                                              ItemsSource="{Binding AvailableDiscounts}"
+                                              SelectedItem="{Binding SelectedDiscount}"
+                                              materialDesign:TextFieldAssist.UnderlineBrush="#766839">
+                                        <ComboBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="{Binding DiscountCode}" 
+                                                               FontWeight="Bold"
+                                                               Margin="0 0 5 0"/>
+                                                    <TextBlock Text=" - "/>
+                                                    <TextBlock Text="{Binding DiscountName}"/>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ComboBox.ItemTemplate>
+                                    </ComboBox>
                                 </StackPanel>
 
                                 <StackPanel Orientation="Horizontal" 
@@ -866,6 +899,9 @@
                                             Background="Transparent"
                                             MouseEnter="border_MouseEnter"
                                             MouseLeave="border_MouseLeave">
+                                        <Border.InputBindings>
+                                            <MouseBinding Command="{Binding PayOrderCommand}" MouseAction="LeftClick"/>
+                                        </Border.InputBindings>
                                         <TextBlock Text="Thanh toán"
                                                    FontSize="25"
                                                    FontWeight="Bold"
@@ -881,5 +917,27 @@
                 </Grid>
             </Grid>
         </Border>
+        <Grid x:Name="LoadingOverlay" 
+          Background="#AAEDE2D3" 
+          Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                <materialDesign:Card UniformCornerRadius="50" Padding="20" Background="White">
+                    <StackPanel>
+                        <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}" 
+                                 Value="0" 
+                                 IsIndeterminate="True" 
+                                 Width="60" Height="60"
+                                 Foreground="#462812"/>
+                        <TextBlock Text="Đang pha cà phê..." 
+                               Margin="0,15,0,0" 
+                               FontSize="16"
+                               FontWeight="Bold"
+                               FontFamily="Cascadia Code"
+                               Foreground="#462812"
+                               HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </materialDesign:Card>
+            </StackPanel>
+        </Grid>
     </Grid>
 </Page>

@@ -7,12 +7,37 @@
         xmlns:local="clr-namespace:CoffeeShop"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
-        Title="Coffee Shop" 
+        Title="2G1G Café" 
         Icon="/CoffeeShop;component/Assets/icoCoffee.ico"
         Height="520" Width="850"
         MinHeight="520" MinWidth="850"
         WindowStartupLocation="CenterScreen"
         FontFamily="{DynamicResource MaterialDesignFont}" >
+    <Window.Triggers>
+        <EventTrigger RoutedEvent="Window.Loaded">
+            <BeginStoryboard>
+                <Storyboard Timeline.DesiredFrameRate="60">
+
+                    <DoubleAnimation Storyboard.TargetName="MainBorder" 
+                                 Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                                 To="0" 
+                                 Duration="0:0:0.8"
+                                 BeginTime="0:0:0.2">
+                        <DoubleAnimation.EasingFunction>
+                            <CubicEase EasingMode="EaseOut"/>
+                        </DoubleAnimation.EasingFunction>
+                    </DoubleAnimation>
+
+                    <DoubleAnimation Storyboard.TargetName="MainBorder" 
+                                 Storyboard.TargetProperty="Opacity"
+                                 To="1" 
+                                 Duration="0:0:1.0"
+                                 BeginTime="0:0:0.2"/>
+                </Storyboard>
+            </BeginStoryboard>
+        </EventTrigger>
+    </Window.Triggers>
+
     <Grid >
         <Grid.Background>
             <LinearGradientBrush EndPoint="0.5,0.5" StartPoint="0.5,1">
@@ -20,9 +45,15 @@
                 <GradientStop Color="#FFE0CEB5" Offset="1"/>
             </LinearGradientBrush>
         </Grid.Background>
-        <Border Background="White"
-        CornerRadius="30"
-        Height="450" Width="800">
+        <Border
+            x:Name="MainBorder"
+            Background="White"
+            CornerRadius="30"
+            Height="450" Width="800"
+            Opacity="0">
+            <Border.RenderTransform>
+                <TranslateTransform Y="100"/>
+            </Border.RenderTransform>
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition></ColumnDefinition>
@@ -74,8 +105,10 @@
                                     x:Name="txbFloatingUsernameBox"
                                     VerticalAlignment="Center"
                                     materialDesign:HintAssist.Hint="Tên tài khoản"
+                                    Background="Transparent"
                                     materialDesign:HintAssist.Foreground="#392805"
                                     materialDesign:TextFieldAssist.UnderlineBrush="#B18252"
+                                    materialDesign:TextFieldAssist.LeadingIcon="Account"
                                     Style="{StaticResource MaterialDesignFloatingHintTextBox}"
                                     Height="39"
                                     Margin="3 0 2.7 0.5"
@@ -98,6 +131,7 @@
                                     Margin="3 0 2.7 0.5"
                                     Padding="5,5,0,0"
                                     materialDesign:HintAssist.Hint="Mật khẩu"
+                                    materialDesign:TextFieldAssist.LeadingIcon="Lock"
                                     Style="{StaticResource MaterialDesignFloatingHintPasswordBox}"
                                     KeyDown="txbFloatingPasswordBox_KeyDown"
                                     />
@@ -120,8 +154,41 @@
                                         FontSize="10"
                                         FontWeight="ExtraBold"
                                         Foreground="White" 
-                                        Click="btnEvt_LoginButtonClick"
-                                        />
+                                        Click="btnEvt_LoginButtonClick">
+                                        <Button.Style>
+                                            <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignRaisedButton}">
+                                                <Setter Property="Background" Value="#340D05"/>
+                                                <Setter Property="BorderBrush" Value="{x:Null}"/>
+                                                <Setter Property="RenderTransformOrigin" Value="0.5, 0.5"/>
+                                                <Setter Property="RenderTransform">
+                                                    <Setter.Value>
+                                                        <ScaleTransform ScaleX="1" ScaleY="1"/>
+                                                    </Setter.Value>
+                                                </Setter>
+                                                <Style.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter Property="Background" Value="#5E2C1B"/>
+                                                        <Trigger.EnterActions>
+                                                            <BeginStoryboard>
+                                                                <Storyboard>
+                                                                    <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)" To="1.05" Duration="0:0:0.1"/>
+                                                                    <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)" To="1.05" Duration="0:0:0.1"/>
+                                                                </Storyboard>
+                                                            </BeginStoryboard>
+                                                        </Trigger.EnterActions>
+                                                        <Trigger.ExitActions>
+                                                            <BeginStoryboard>
+                                                                <Storyboard>
+                                                                    <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)" To="1.0" Duration="0:0:0.1"/>
+                                                                    <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)" To="1.0" Duration="0:0:0.1"/>
+                                                                </Storyboard>
+                                                            </BeginStoryboard>
+                                                        </Trigger.ExitActions>
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Button.Style>
+                                    </Button>
                                 </Border>
                             </Grid>
                         </StackPanel>
@@ -129,7 +196,7 @@
                         <TextBlock FontSize="13"
                                TextAlignment="Center"
                                Margin="7">
-                            <Hyperlink NavigateUri="https://hehed.carrd.co/"
+                            <Hyperlink NavigateUri="https://2g1g-about.carrd.co/"
                                 RequestNavigate="Hyperlink_RequestNavigate"
                                 Foreground="Black"
                                 TextDecorations="{x:Null}">
@@ -157,6 +224,14 @@
                         Canvas.Bottom="5"/>
                 </Canvas>
             </Grid>
+            <Border.CacheMode>
+                <BitmapCache EnableClearType="False" 
+                     RenderAtScale="1" 
+                     SnapsToDevicePixels="False"/>
+            </Border.CacheMode>
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="20" ShadowDepth="5" Opacity="0.4" Color="Black"/>
+            </Border.Effect>
         </Border>
     </Grid>
 </Window>

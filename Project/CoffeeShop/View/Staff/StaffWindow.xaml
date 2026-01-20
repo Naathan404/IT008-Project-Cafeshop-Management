@@ -25,7 +25,7 @@
                NavigationUIVisibility="Hidden"/>
         <Grid>
             <Border x:Name="bdrStaffWindowFunction"
-                    Background="#C7A57A"
+                    Background="#e0ceb5"
                     Width="180"
                     HorizontalAlignment="Left"
                     Mouse.MouseDown="bdrStaffWindowFunction_MouseDown">
@@ -38,6 +38,7 @@
                 <Grid>
                     <!-- Hiện tên account nhân viên -->
                     <Border x:Name="bdrAccount_After"
+                            Cursor="Hand"
                             Background="#E0CEB5"
                             Height="55" 
                             CornerRadius="28"
@@ -46,13 +47,6 @@
                             VerticalAlignment="Top"
                             Visibility="Collapsed"
                             Mouse.MouseDown="bdrAccount_MouseDown">
-                        <Border.Effect>
-                            <DropShadowEffect Color="#462812"
-                                              Opacity="0.3"
-                                              BlurRadius="-10"
-                                              ShadowDepth="5"/>
-
-                        </Border.Effect>
                         <Grid>
                             <materialDesign:PackIcon Kind="AccountCircleOutline"
                                                      Margin="10 10 0 0"
@@ -71,17 +65,12 @@
                         </Grid>
                     </Border>
                     <Border x:Name="bdrAccount_Before"
+                            Cursor="Hand"
                             Background="#E0CEB5"
                             CornerRadius="30"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Top"
                             Margin="12,12,0,330">
-                        <Border.Effect>
-                            <DropShadowEffect Color="#462812"
-                                              Opacity="0.3"
-                                              BlurRadius="-10"
-                                              ShadowDepth="5"/>
-                        </Border.Effect>
                         <materialDesign:PackIcon Kind="AccountCircle"
                                                  Margin="10"
                                                  HorizontalAlignment="Left"
@@ -92,22 +81,26 @@
 
                     <!-- Tab Order -->
                     <Border x:Name="bdrOrder_Before"
+                            Cursor="Hand"
                             Background="#E0CEB5"
                             CornerRadius="30"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Bottom"
                             Margin="12,0,0,360">
+                        <!--
                         <Border.Effect>
                             <DropShadowEffect Color="#462812"
                                               Opacity="0.3"
                                               BlurRadius="-10"
                                               ShadowDepth="5"/>
                         </Border.Effect>
+                        -->
                         <Image Source="/Assets/Images/imgCoffeeOrder.jpg"
                                Height="35" Width="35"
                                Margin="10"/>
                     </Border>
                     <Border x:Name="bdrOrder_After"
+                            Cursor="Hand"
                             Background="#E0CEB5"
                             Height="55"
                             CornerRadius="28"
@@ -116,12 +109,6 @@
                             Margin="12,0,12,360"
                             Mouse.MouseDown="bdrOrder_MouseDown"
                             Visibility="Collapsed">
-                        <Border.Effect>
-                            <DropShadowEffect Color="#462812"
-                                              Opacity="0.3"
-                                              BlurRadius="-10"
-                                              ShadowDepth="5"/>
-                        </Border.Effect>
                         <Grid>
                             <Image Source="/Assets/Images/imgCoffeeOrder.jpg"
                                    Height="35" Width="35"
@@ -139,23 +126,19 @@
 
                     <!-- Tab Bàn -->
                     <Border x:Name="bdrTable_Before"
+                            Cursor="Hand"
                             Background="#E0CEB5"
                             CornerRadius="30"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Bottom"
                             Margin="12,0,0,290">
-                        <Border.Effect>
-                            <DropShadowEffect Color="#462812"
-                                              Opacity="0.3"
-                                              BlurRadius="-10"
-                                              ShadowDepth="5"/>
-                        </Border.Effect>
                         <materialDesign:PackIcon Kind="Seat"
                                                     Height="35" Width="35"
                                                     Margin="10"
                                                     Foreground="#340D05"/>
                     </Border>
                     <Border x:Name="bdrTable_After"
+                            Cursor="Hand"
                             Background="#E0CEB5"
                             Height="55"
                             CornerRadius="28"
@@ -164,12 +147,7 @@
                             Margin="12,0,12,290"
                             Mouse.MouseDown="bdrTable_MouseDown"
                             Visibility="Collapsed">
-                        <Border.Effect>
-                            <DropShadowEffect Color="#462812"
-                                              Opacity="0.3"
-                                              BlurRadius="-10"
-                                              ShadowDepth="5"/>
-                        </Border.Effect>
+
                         <Grid>
                             <materialDesign:PackIcon Kind="SeatOutline"
                                                      Height="35" Width="35"
@@ -187,23 +165,19 @@
 
                     <!-- Tab Menu -->
                     <Border x:Name="bdrMenu_Before"
+                            Cursor="Hand"
                             Background="#E0CEB5"
                             CornerRadius="30"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Bottom"
                             Margin="12,0,0,220">
-                        <Border.Effect>
-                            <DropShadowEffect Color="#462812"
-                                              Opacity="0.3"
-                                              BlurRadius="-10"
-                                              ShadowDepth="5"/>
-                        </Border.Effect>
                         <materialDesign:PackIcon Kind="Food"
                                                  Height="35" Width="35"
                                                  Margin="10"
                                                  Foreground="#340D05"/>
                     </Border>
                     <Border x:Name="bdrMenu_After"
+                            Cursor="Hand"
                             Background="#E0CEB5"
                             Height="55"               
                             CornerRadius="28"
@@ -212,12 +186,6 @@
                             Margin="12,0,12,220"
                             Mouse.MouseDown="bdrMenu_MouseDown"
                             Visibility="Collapsed">
-                        <Border.Effect>
-                            <DropShadowEffect Color="#462812"
-                                              Opacity="0.3"
-                                              BlurRadius="-10"
-                                              ShadowDepth="5"/>
-                        </Border.Effect>
                         <Grid>
                             <materialDesign:PackIcon Kind="FoodOutline"
                                                      Height="35" Width="35"
@@ -235,23 +203,19 @@
 
                     <!-- Tab khách hàng -->
                     <Border x:Name="bdrCustomer_Before"
+                            Cursor="Hand"
                             Background="#E0CEB5"
                             CornerRadius="30"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Bottom"
-                            Margin="12,0,0,150">     
-                        <Border.Effect>
-                            <DropShadowEffect Color="#462812"
-                          Opacity="0.3"
-                          BlurRadius="-10"
-                          ShadowDepth="5"/>
-                        </Border.Effect>
+                            Margin="12,0,0,150">
                         <materialDesign:PackIcon Kind="AccountGroup"
                              Height="35" Width="35"
                              Margin="10"
                              Foreground="#340D05"/>
                     </Border>
                     <Border x:Name="bdrCustomer_After"
+                            Cursor="Hand"
                             Background="#E0CEB5"
                             Height="55" 
                             CornerRadius="28"
@@ -260,12 +224,6 @@
                             Margin="12,0,12,150"
                             Mouse.MouseDown="bdrCustomer_MouseDown"
                             Visibility="Collapsed">
-                        <Border.Effect>
-                            <DropShadowEffect Color="#462812"
-                          Opacity="0.3"
-                          BlurRadius="-10"
-                          ShadowDepth="5"/>
-                        </Border.Effect>
                         <Grid>
 
                             <materialDesign:PackIcon Kind="AccountGroupOutline"
@@ -285,23 +243,19 @@
 
                     <!-- Tab Lịch sử mua hàng -->
                     <Border x:Name="bdrHistory_Before"
+                            Cursor="Hand"
                             Background="#E0CEB5"
                             CornerRadius="30"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Bottom"
                             Margin="12,0,0,80">
-                        <Border.Effect>
-                            <DropShadowEffect Color="#462812"
-                                              Opacity="0.3"
-                                              BlurRadius="-10"
-                                              ShadowDepth="5"/>
-                        </Border.Effect>
                         <materialDesign:PackIcon Kind="History"
                                                  Height="35" Width="35"
                                                  Margin="10"
                                                  Foreground="#340D05"/>
                     </Border>
                     <Border x:Name="bdrHistory_After"
+                            Cursor="Hand"
                             Background="#E0CEB5"
                             Height="55" 
                             CornerRadius="28"
@@ -310,12 +264,6 @@
                             Margin="12,0,12,80"
                             Mouse.MouseDown="bdrHistory_MouseDown"
                             Visibility="Collapsed">
-                        <Border.Effect>
-                            <DropShadowEffect Color="#462812"
-                                              Opacity="0.3"
-                                              BlurRadius="-10"
-                                              ShadowDepth="5"/>
-                        </Border.Effect>
                         <Grid>
 
                             <materialDesign:PackIcon Kind="History"
@@ -334,23 +282,19 @@
 
                     <!-- Tab Kho -->
                     <Border x:Name="bdrDepot_Before"
+                            Cursor="Hand"
                             Background="#E0CEB5"
                             CornerRadius="30"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Bottom"
                             Margin="12,0,0,10">
-                        <Border.Effect>
-                            <DropShadowEffect Color="#462812"
-                                              Opacity="0.3"
-                                              BlurRadius="-10"
-                                              ShadowDepth="5"/>
-                        </Border.Effect>
                         <materialDesign:PackIcon Kind="Archive"
                                                  Height="35" Width="35"
                                                  Margin="10"
                                                  Foreground="#340D05"/>
                     </Border>
                     <Border x:Name="bdrDepot_After"
+                            Cursor="Hand"
                             Background="#E0CEB5"
                             Height="55"
                             CornerRadius="28"
@@ -359,12 +303,6 @@
                             Margin="12,0,12,10"
                             Mouse.MouseDown="bdrDepot_MouseDown"
                             Visibility="Collapsed">
-                        <Border.Effect>
-                            <DropShadowEffect Color="#462812"
-                                              Opacity="0.3"
-                                              BlurRadius="-10"
-                                              ShadowDepth="5"/>
-                        </Border.Effect>
                         <Grid>
                             <materialDesign:PackIcon Kind="ArchiveOutline"
                                                      Height="35" Width="35"

@@ -1,14 +1,17 @@
-﻿using System.Collections.ObjectModel;
-using CoffeeShop.ViewModels.StaffVM;
-using Org.BouncyCastle.Bcpg.OpenPgp;
+﻿using CoffeeShop.Service.DTOs;
+using CoffeeShop.View.Staff;
+using CoffeeShop.ViewModels.AdminVM;
+using System.Collections.ObjectModel;
 
 namespace CoffeeShop.Service.Interfaces
 {
     public interface IDialogService
     {
-        public void OpenInsertMaterialWindow(ObservableCollection<StaffDepotViewModel.DepotItem> depotItems,
-            StaffDepotViewModel.DepotItem? itemToEdit);
+        public bool? OpenInsertMaterialWindow(ObservableCollection<DepotItemDTO> depotItems,
+            DepotItemDTO? itemToEdit);
 
-        public void OpenDepotHistoryWindow();
+        public void OpenReportDepotWindow();
+
+        public bool? OpenInsertCouponWindow(CouponDTO? itemToEdit = null);
     }
 }

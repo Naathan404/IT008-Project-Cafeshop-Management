@@ -8,7 +8,7 @@
         mc:Ignorable="d"
         Title="{Binding ItemName}"
         d:Title="Item Window"
-        Height="370" Width="600"
+        Height="450" Width="600"
         Icon="/Assets/icoCoffee.ico"
         WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize">
@@ -24,17 +24,18 @@
             Margin="10">
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1.7*"/>
+                <ColumnDefinition Width="2*"/>
                 <ColumnDefinition Width="2*"/>
             </Grid.ColumnDefinitions>
             <StackPanel x:Name="stpnItemInfo"
                         Grid.Column="0" 
-                        Margin="10 40 0 30">
+                        Margin="10">
                 <TextBlock x:Name="txblItemName"
                            Text="{Binding ItemName}"
                            d:Text="Cà phê sữa"
-                           HorizontalAlignment="Center" 
+                           HorizontalAlignment="Left" 
                            VerticalAlignment="Top"
+                           Margin="10 0 0 0"
                            TextWrapping="Wrap"
                            MaxWidth="250"
                            Foreground="#766839"
@@ -44,14 +45,13 @@
                 <!--Item Size-->
                 <StackPanel x:Name="stpnItemSize" 
                             Orientation="Horizontal"
-                            Margin="10 30 0 0"
+                            Margin="10 20 0 0"
                             d:Visibility="Visible"
                             Visibility="Collapsed"
                             Loaded="ItemSize_Loaded">
                     <TextBlock Text="Size:"
                                Foreground="#766839"
-                               FontSize="22" FontFamily="Cascadia Code" 
-                               FontStyle="Italic" 
+                               FontSize="20" FontFamily="Cascadia Code"
                                FontWeight="Bold"
                                VerticalAlignment="Center"/>
                     <Border x:Name="bdrItemSize0"
@@ -119,26 +119,28 @@
                 </StackPanel>
                 <StackPanel x:Name="stpnItemPrice" 
                             Orientation="Horizontal" 
-                            Margin="10 20 0 0">
+                            Margin="10 15 0 0">
                     <TextBlock Text="Giá:"
                                Foreground="#766839"
-                               FontSize="22" FontFamily="Cascadia Code"
-                               FontStyle="Italic"
-                               FontWeight="Bold"/>
+                               FontSize="20" 
+                               FontFamily="Cascadia Code"
+                               FontWeight="Bold"
+                               HorizontalAlignment="Center"/>
                     <TextBlock x:Name="txblItemPrice"
                                Text="{Binding ItemPrice, StringFormat={}{0:N0} VND}"
                                d:Text="45000 VND"
                                Foreground="#766839"
-                               FontSize="25" FontFamily="Cascadia Code"
+                               FontSize="22" FontFamily="Cascadia Code"
                                Margin="15 0 0 0"
                                Loaded="ItemPrice_Loaded"/>
                 </StackPanel>
 
-                <StackPanel x:Name="stpnNote" Orientation="Horizontal" Margin="10 20 0 0">
+                <StackPanel x:Name="stpnNote"
+                            Orientation="Horizontal" 
+                            Margin="10 15 0 0">
                     <TextBlock Text="Ghi chú:"
                                Foreground="#766839"
-                               FontSize="22" FontFamily="Cascadia Code"
-                               FontStyle="Italic"
+                               FontSize="20" FontFamily="Cascadia Code"
                                FontWeight="Bold"
                                VerticalAlignment="Center"/>
                     <TextBox x:Name="txblItemNote"
@@ -148,22 +150,64 @@
                              materialDesign:HintAssist.IsFloating="False"
                              FontFamily="Cascadia Code"
                              Foreground="#766839" 
-                             FontSize="15" 
-                             FontWeight="Bold"
+                             FontSize="15"
                              materialDesign:TextFieldAssist.UnderlineBrush="#766839"
                              Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
                 </StackPanel>
+                
+                <Grid x:Name="stpnInfo"
+                      Margin="10 15 10 0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="140"/>
+                    </Grid.RowDefinitions>
+                    
+                    <TextBlock Text="Mô tả:"
+                               Grid.Row="0"
+                               Foreground="#766839"
+                               FontSize="18" FontFamily="Cascadia Code"
+                               FontWeight="Bold"
+                               VerticalAlignment="Center"/>
+                    <ScrollViewer VerticalScrollBarVisibility="Auto"
+                                  MaxHeight="140"
+                                  MaxWidth="250"
+                                  Grid.Row="1"
+                                  Margin="0 10 0 0">
+                        <TextBlock x:Name="txblItemInfo"
+                                   Text="{Binding Info}"
+                                   FontFamily="Cascadia Code"
+                                   Foreground="#766839" 
+                                   FontSize="15"
+                                   TextWrapping="Wrap"
+                                   TextAlignment="Justify"
+                                   HorizontalAlignment="Left"
+                                   VerticalAlignment="Stretch"/>
+                    </ScrollViewer>
+                </Grid>
+
             </StackPanel>
 
-            <StackPanel Grid.Column="1" Orientation="Vertical">
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="2*"/>
+                    <RowDefinition Height="1.5*"/>
+                </Grid.RowDefinitions>
+                
                 <!--Item Image-->
-                <Border Width="270" Margin="10 10 0 0">
+                <Border Width="270" 
+                        Margin="10"
+                        Grid.Row="0">
                     <Image x:Name="imgItem"
                            Stretch="UniformToFill"
                            Source="{Binding ImagePath}"
                            d:Source="/Assets/Images/imgItemExample.jpg"/>
                 </Border>
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0 50 10 0">
+                
+                <StackPanel Orientation="Horizontal" 
+                            HorizontalAlignment="Right" 
+                            VerticalAlignment="Bottom" 
+                            Margin="0 50 20 20"
+                            Grid.Row="1">
                     <Border x:Name="bdrAddToOrder"
                             BorderBrush="#766839"
                             BorderThickness="2"
@@ -199,7 +243,7 @@
                                    Foreground="#766839"/>
                     </Border>
                 </StackPanel>
-            </StackPanel>
+            </Grid>
         </Grid>
     </Border>
 </Window>

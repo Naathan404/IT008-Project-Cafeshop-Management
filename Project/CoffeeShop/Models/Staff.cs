@@ -19,9 +19,17 @@ public partial class Staff
 
     public string Email { get; set; } = null!;
 
+    public DateTime Birthday { get; set; }
+
+    public DateTime StartDate { get; set; }
+
+    public string Gender { get; set; } = null!;
+
     public int? ShiftId { get; set; }
 
     public decimal? BaseSalary { get; set; }
+
+    public bool IsDeleted { get; set; }
 
     public virtual ICollection<InventoryHistory> InventoryHistories { get; set; } = new List<InventoryHistory>();
 
