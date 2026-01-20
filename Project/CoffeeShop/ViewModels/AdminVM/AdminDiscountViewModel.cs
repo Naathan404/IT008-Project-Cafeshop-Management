@@ -24,8 +24,8 @@ namespace CoffeeShop.ViewModels.AdminVM
 
             RefreshPageCommand = new RelayCommand<object>(p => _ = LoadData());
             InsertCouponCommand = new RelayCommand<object>(p => ExecuteInsert());
-            UpdateCouponCommand = new RelayCommand<object>(p => ExecuteUpdate());
-            DeleteCouponCommand = new RelayCommand<object>(p => ExecuteDelete());
+            UpdateCouponCommand = new RelayCommand<CouponDTO?>(ExecuteUpdate, (p) => p != null);
+            DeleteCouponCommand = new RelayCommand<CouponDTO?>(ExecuteDelete, (p) => p != null);
             ToggleStatusCommand = new RelayCommand<object>(p => ExecuteToggleStatus());
 
             _ = LoadData();
@@ -114,7 +114,7 @@ namespace CoffeeShop.ViewModels.AdminVM
             }
         }
 
-        private void ExecuteUpdate()
+        private void ExecuteUpdate(CouponDTO? p)
         {
             if (SelectedCoupon == null) return;
 
@@ -125,7 +125,7 @@ namespace CoffeeShop.ViewModels.AdminVM
             }
         }
 
-        private async void ExecuteDelete()
+        private async void ExecuteDelete(CouponDTO? p)
         {
             if (SelectedCoupon == null)
             {

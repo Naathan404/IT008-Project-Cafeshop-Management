@@ -338,7 +338,6 @@ namespace CoffeeShop.ViewModels.StaffVM
         {
             ReloadCommand = new RelayCommand<object>(p => _ = LoadData());
             AddItemCommand = new RelayCommand<object>(ExecuteAddItem);
-            //DeleteItemCommand = new RelayCommand<DepotItemDTO>(ExecuteDeleteItem, p => p != null);
             UpdateItemCommand = new RelayCommand<DepotItemDTO>(ExecuteUpdateItem, p => p != null);
             ReportCommand = new RelayCommand<object>(async (p) =>
             {

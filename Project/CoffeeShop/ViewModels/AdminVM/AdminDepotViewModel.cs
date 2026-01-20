@@ -325,8 +325,8 @@ namespace CoffeeShop.ViewModels.AdminVM
         {
             ReloadCommand = new RelayCommand<object>(p => _ = LoadItem());
             AddItemCommand = new RelayCommand<object>(ExecuteAddItem);
-            DeleteItemCommand = new RelayCommand<DepotItemDTO>(ExecuteDeleteItem);
-            UpdateItemCommand = new RelayCommand<DepotItemDTO>(ExecuteUpdateItem);
+            DeleteItemCommand = new RelayCommand<DepotItemDTO>(ExecuteDeleteItem, p => p != null);
+            UpdateItemCommand = new RelayCommand<DepotItemDTO>(ExecuteUpdateItem, p => p != null);
             ExportReportCommand = new RelayCommand<object>(async (p) =>
             {
                 var result = CustomMessageBox.Show("Xác nhận xuất file excel?", "Xác nhận", CustomMessageBox.MessageButtons.YesNo, CustomMessageBox.MessageType.Question);

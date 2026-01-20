@@ -118,7 +118,6 @@
                     <!-- Function Buttons -->
                     <StackPanel Grid.Column="2"
                             Orientation="Horizontal" HorizontalAlignment="Right">
-
                         <Button x:Name="btnReload"
                             Command="{Binding ReloadCommand}"
                             Style="{StaticResource SmallButton}" Tag="Reload">
@@ -152,7 +151,7 @@
                         <Button x:Name="btnDelete" 
                             Command="{Binding DeleteItemCommand}"
                             CommandParameter="{Binding ElementName=dgDepot, Path=SelectedItem}"
-                            Style="{StaticResource SmallButton}" Tag="Bin">
+                            Style="{StaticResource SmallButton}" Tag="Bin" Foreground="#B71C1C">
                             <Button.ToolTip>
                                 <ToolTip Style="{StaticResource CustomTooltip}">
                                     <TextBlock Text="Xóa nguyên liệu" TextWrapping="Wrap" Width="200"/>
