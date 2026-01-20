@@ -38,10 +38,10 @@ namespace CoffeeShop.View.Admin
         public AdminWindow(CoffeeShop.Models.Staff account)
         {
             InitializeComponent();
-            StaffFrame.Navigate(_menuManagementPage);
+            StaffFrame.Navigate(_statisticPage);
             bdrStaffWindowFunction.Width = _minimumNavigationBarWidth;
             _account = account;
-            SetActiveTabUI("Menu");
+            SetActiveTabUI("Statistics");
         }
 
         #region Button Events
