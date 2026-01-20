@@ -27,12 +27,6 @@ namespace CoffeeShop.Service
             return insertMaterial.ShowDialog();
         }
 
-        public void OpenReportDepotWindow()
-        {
-            ReportDepotWindow reportDepot = new ReportDepotWindow();
-            reportDepot.ShowDialog();
-        }
-
         public bool? OpenInsertCouponWindow(CouponDTO? itemToEdit = null)
         {
             // Truyền itemToEdit vào constructor của Window

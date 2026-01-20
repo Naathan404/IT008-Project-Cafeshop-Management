@@ -161,7 +161,7 @@
                         </Button>
 
                         <Button x:Name="btnReport" 
-                            Command="{Binding ExportFileCommand}"
+                            Command="{Binding ExportReportCommand}"
                             Style="{StaticResource SmallButton}" Tag="FileExcel">
                             <Button.ToolTip>
                                 <ToolTip Style="{StaticResource CustomTooltip}">
