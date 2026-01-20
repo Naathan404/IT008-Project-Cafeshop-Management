@@ -1,5 +1,6 @@
 ﻿using CoffeeShop.Models;
 using CoffeeShop.Service.DTOs;
+using CoffeeShop.Service.Interfaces;
 using CoffeeShop.View.General;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.ObjectModel;
@@ -13,6 +14,7 @@ namespace CoffeeShop.ViewModels.AdminVM
     {
         CultureInfo viVn = new CultureInfo("vn-VN");
         CancellationTokenSource _cts;
+        IDialogService _dialogService;
         public ICommand RefreshPageCommand { get; set; }
         public ICommand ShowOrderDetailCommand { get; set; }
         public ICommand PrintCommand { get; set; }

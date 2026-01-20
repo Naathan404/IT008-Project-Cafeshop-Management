@@ -291,8 +291,8 @@
 
     <!-- Small Button Style -->
     <Style x:Key="SmallButton" TargetType="Button">
-        <Setter Property="Width" Value="55"/>
-        <Setter Property="Height" Value="47"/>
+        <Setter Property="Width" Value="50"/>
+        <Setter Property="Height" Value="50"/>
         <Setter Property="Background" Value="#E0CEB5"/>
         <Setter Property="Foreground" Value="#340D05"/>
         <Setter Property="Margin" Value="5"/>
@@ -302,11 +302,11 @@
                 <ControlTemplate TargetType="Button">
                     <Border x:Name="border" 
                         Background="{TemplateBinding Background}" 
-                        BorderBrush="#340D05" BorderThickness="1" 
-                        CornerRadius="5">
+                        BorderBrush="#67582c" BorderThickness="3" 
+                        CornerRadius="10">
                         <!-- Icon -->
                         <materialDesign:PackIcon Kind="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}" 
-                             Width="30" Height="30"
+                             Width="40" Height="40"
                              HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Border>
 

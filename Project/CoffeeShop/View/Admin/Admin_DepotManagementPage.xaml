@@ -15,7 +15,7 @@
                 <!-- Title -->
                 <RowDefinition Height="auto"/>
                 <!-- Features -->
-                <RowDefinition Height="70"/>
+                <RowDefinition Height="75"/>
                 <!-- Datagrid -->
                 <RowDefinition Height="10*"/>
             </Grid.RowDefinitions>
@@ -141,7 +141,7 @@
                         <Button x:Name="btnUpdate"
                             Command="{Binding UpdateItemCommand}"
                             CommandParameter="{Binding ElementName=dgDepot, Path=SelectedItem}"
-                            Style="{StaticResource SmallButton}" Tag="Pen">
+                            Style="{StaticResource SmallButton}" Tag="Pencil">
                             <Button.ToolTip>
                                 <ToolTip Style="{StaticResource CustomTooltip}">
                                     <TextBlock Text="Cập nhật nguyên liệu" TextWrapping="Wrap" Width="200"/>
