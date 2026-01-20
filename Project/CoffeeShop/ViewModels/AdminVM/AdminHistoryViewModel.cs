@@ -1,6 +1,7 @@
 ﻿using CoffeeShop.Models;
 using CoffeeShop.Service;
 using CoffeeShop.Service.DTOs;
+using CoffeeShop.Service.Interfaces;
 using CoffeeShop.View.Controls;
 using CoffeeShop.View.General;
 using Microsoft.EntityFrameworkCore;
@@ -37,7 +38,6 @@ namespace CoffeeShop.ViewModels.AdminVM
 
             PrintCommand = new RelayCommand<object>(async (p) =>
             {
-                //CustomMessageBox.Show("Chức năng in hóa đơn đang được phát triển.", "Thông báo", MessageButtons.OK, MessageType.Info);
                 // Khởi tạo hóa đơn
                 string fileName = $"Bill_{SelectedOrder!.OrderID}_{DateTime.Now:yyyyMMddHHmmss}.xlsx";
                 string folderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Exports");
@@ -52,10 +52,24 @@ namespace CoffeeShop.ViewModels.AdminVM
                 Process.Start(new ProcessStartInfo(fullPath) { UseShellExecute = true });
             });
 
-            ExportExcelCommand = new RelayCommand<object>((p) =>
+            ExportExcelCommand = new RelayCommand<object>(async (p) =>
             {
-                CustomMessageBox.Show("Chức năng xuất excel đang được phát triển.", "Thông báo", MessageButtons.OK, MessageType.Info);
-            });
+                var result = CustomMessageBox.Show("Xác nhận xuất file excel?", "Xác nhận", CustomMessageBox.MessageButtons.YesNo, CustomMessageBox.MessageType.Question);
+                if (result != CustomMessageBox.MessageBoxResult.Yes) return;
+
+                // Khởi tạo hóa đơn
+                string fileName = $"Report_{SelectedOrder!.OrderID}_{DateTime.Now:yyyyMMddHHmmss}.xlsx";
+                string folderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Exports");
+                if (!Directory.Exists(folderPath)) Directory.CreateDirectory(folderPath);
+
+                string fullPath = Path.Combine(folderPath, fileName);
+
+                var exporter = new ReportExporter(Orders);
+                await exporter.ExportToExcel(fullPath);
+
+                // Tự động mở file Excel
+                Process.Start(new ProcessStartInfo(fullPath) { UseShellExecute = true });
+            }); 
 
             _ = LoadOrderHistory();
         }
