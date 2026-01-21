@@ -49,8 +49,7 @@
                     <Button
                             Grid.Column="0"
                             Command="{Binding RefreshPageCommand}"
-                            Style="{StaticResource SmallButton}" Tag="Reload"
-                            IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}">
+                            Style="{StaticResource SmallButton}" Tag="Reload">
                         <Button.ToolTip>
                             <ToolTip Style="{StaticResource CustomTooltip}">
                                 <TextBlock Text="Làm mới trang" FontFamily="Cascadia Code" FontWeight="Bold" Foreground="#FF340D05"/>
@@ -60,8 +59,7 @@
                     <Button
                             Grid.Column="0"
                             Command="{Binding InsertCouponCommand}"
-                            Style="{StaticResource SmallButton}" Tag="Add"
-                            IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}">
+                            Style="{StaticResource SmallButton}" Tag="Add">
                         <Button.ToolTip>
                             <ToolTip Style="{StaticResource CustomTooltip}">
                                 <TextBlock Text="Thêm mã giảm giá" FontFamily="Cascadia Code" FontWeight="Bold" Foreground="#FF340D05"/>
@@ -72,7 +70,7 @@
                             Grid.Column="0"
                             Command="{Binding UpdateCouponCommand}"
                             Style="{StaticResource SmallButton}" Tag="Pencil"
-                            IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}">
+                            CommandParameter="{Binding ElementName=dgCoupon, Path=SelectedItem}">
                         <Button.ToolTip>
                             <ToolTip Style="{StaticResource CustomTooltip}">
                                 <TextBlock Text="Chỉnh sửa mã giảm giá" FontFamily="Cascadia Code" FontWeight="Bold" Foreground="#FF340D05"/>
@@ -82,8 +80,8 @@
                     <Button
                             Grid.Column="0"
                             Command="{Binding DeleteCouponCommand}"
-                            Style="{StaticResource SmallButton}" Tag="Bin"
-                            IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}">
+                            Style="{StaticResource SmallButton}" Tag="Bin" Foreground="#B71C1C"
+                            CommandParameter="{Binding ElementName=dgCoupon, Path=SelectedItem}">
                         <Button.ToolTip>
                             <ToolTip Style="{StaticResource CustomTooltip}">
                                 <TextBlock Text="Xóa mã giảm giá" FontFamily="Cascadia Code" FontWeight="Bold" Foreground="#FF340D05"/>
@@ -93,8 +91,7 @@
                     <Button
                             Grid.Column="0"
                             Command="{Binding ToggleStatusCommand}"
-                            Style="{StaticResource SmallButton}" Tag="Power"
-                            IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}">
+                            Style="{StaticResource SmallButton}" Tag="Power">
                         <Button.ToolTip>
                             <ToolTip Style="{StaticResource CustomTooltip}">
                                 <TextBlock Text="Bật/tắt mã giảm giá" FontFamily="Cascadia Code" FontWeight="Bold" Foreground="#FF340D05"/>
@@ -106,7 +103,7 @@
         </materialDesign:Card>
 
         <!-- Datagrid -->
-        <DataGrid Grid.Row="2" Margin="0,10"
+        <DataGrid x:Name="dgCoupon" Grid.Row="2" Margin="0,10"
                   ItemsSource="{Binding Coupons}" 
                   SelectedItem="{Binding SelectedCoupon}"
                   Style="{StaticResource CoffeeDataGridStyle}"

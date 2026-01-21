@@ -10,7 +10,7 @@
       Title="DepotManagementPage">
 
     <Grid x:Name="MainGrid" Background="#E0CEB5">
-        <Grid Grid.Row="1" Margin="30">
+        <Grid Grid.Row="1" Margin="30 30 30 10">
             <Grid.RowDefinitions>
                 <!-- Title -->
                 <RowDefinition Height="auto"/>
@@ -118,7 +118,6 @@
                     <!-- Function Buttons -->
                     <StackPanel Grid.Column="2"
                             Orientation="Horizontal" HorizontalAlignment="Right">
-
                         <Button x:Name="btnReload"
                             Command="{Binding ReloadCommand}"
                             Style="{StaticResource SmallButton}" Tag="Reload">
@@ -152,7 +151,7 @@
                         <Button x:Name="btnDelete" 
                             Command="{Binding DeleteItemCommand}"
                             CommandParameter="{Binding ElementName=dgDepot, Path=SelectedItem}"
-                            Style="{StaticResource SmallButton}" Tag="Bin">
+                            Style="{StaticResource SmallButton}" Tag="Bin" Foreground="#B71C1C">
                             <Button.ToolTip>
                                 <ToolTip Style="{StaticResource CustomTooltip}">
                                     <TextBlock Text="Xóa nguyên liệu" TextWrapping="Wrap" Width="200"/>
@@ -161,7 +160,7 @@
                         </Button>
 
                         <Button x:Name="btnReport" 
-                            Command="{Binding ExportFileCommand}"
+                            Command="{Binding ExportReportCommand}"
                             Style="{StaticResource SmallButton}" Tag="FileExcel">
                             <Button.ToolTip>
                                 <ToolTip Style="{StaticResource CustomTooltip}">
@@ -197,7 +196,7 @@
                 </Grid>
 
                 <!-- Datagrid -->
-                <DataGrid x:Name="dgDepot" Grid.Column="0" Margin="0,10"
+                <DataGrid x:Name="dgDepot" Grid.Column="0" Margin="0 10 0 0"
                         Style="{StaticResource CoffeeDataGridStyle}"
                         ItemsSource="{Binding DepotItems}"
                         SelectedItem="{Binding SelectedItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
@@ -223,7 +222,7 @@
                     </DataGrid.Columns>
                 </DataGrid>
 
-                <materialDesign:Card Grid.Column="1" Margin="10,10,0,10" UniformCornerRadius="7"
+                <materialDesign:Card Grid.Column="1" Margin="10,10,0,0" UniformCornerRadius="7"
                                      BorderThickness="3" BorderBrush="#462812">
                     <Grid Margin="10">
                         <Grid.RowDefinitions>

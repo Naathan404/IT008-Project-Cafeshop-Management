@@ -297,26 +297,50 @@
         <Setter Property="Foreground" Value="#340D05"/>
         <Setter Property="Margin" Value="5"/>
         <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
                     <Border x:Name="border" 
                         Background="{TemplateBinding Background}" 
-                        BorderBrush="#67582c" BorderThickness="3" 
-                        CornerRadius="10">
-                        <!-- Icon -->
-                        <materialDesign:PackIcon Kind="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}" 
-                             Width="40" Height="40"
-                             HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        BorderBrush="#67582c" 
+                        BorderThickness="3" 
+                        CornerRadius="10"
+                        RenderTransformOrigin="0.5,0.5">
+                        <Border.RenderTransform>
+                            <ScaleTransform x:Name="buttonScale" ScaleX="1" ScaleY="1"/>
+                        </Border.RenderTransform>
+
+                        <materialDesign:PackIcon Kind="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}"
+                                             Foreground="{Binding Foreground, RelativeSource={RelativeSource TemplatedParent}}"
+                                             Width="35" Height="35"
+                                             HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Border>
 
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="border" Property="Background" Value="#E0CEB5"/>
-                            <Setter Property="Cursor" Value="Hand"/>
+                            <Setter TargetName="border" Property="Background" Value="#D4BC9C"/>
+                            <Setter TargetName="border" Property="Cursor" Value="Hand"/>
+                            <Setter TargetName="border" Property="RenderTransform">
+                                <Setter.Value>
+                                    <ScaleTransform ScaleX="1.03" ScaleY="1.03"/>
+                                </Setter.Value>
+                            </Setter>
                         </Trigger>
+
                         <Trigger Property="IsPressed" Value="True">
                             <Setter TargetName="border" Property="Background" Value="#8E6841"/>
+                            <Setter TargetName="border" Property="RenderTransform">
+                                <Setter.Value>
+                                    <ScaleTransform ScaleX="0.97" ScaleY="0.97"/>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="border" Property="Opacity" Value="0.5"/>
+                            <Setter TargetName="border" Property="Background" Value="#CCCCCC"/>
+                            <Setter TargetName="border" Property="BorderBrush" Value="#AAAAAA"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

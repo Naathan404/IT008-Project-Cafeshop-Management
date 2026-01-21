@@ -18,7 +18,7 @@
             <RowDefinition Height="50"></RowDefinition>
         </Grid.RowDefinitions>
 
-        <TextBlock Text="QUẢN LÝ TÀI KHOẢN NHÂN VIÊN" 
+        <TextBlock Text="QUẢN LÝ TÀI KHOẢN NHÂN SỰ" 
                    Grid.Row="0" Margin="30,10,0,10"
                    FontSize="24" FontWeight="ExtraBlack" Foreground="#4E342E"
                    FontFamily="Cascadia Code"/>
@@ -390,7 +390,7 @@
                 </Grid.ColumnDefinitions>
 
                 <StackPanel Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Center">
-                    <TextBlock Text="Tổng nhân viên: " Foreground="#FF340D05" FontFamily="Cascadia Code" FontSize="16" FontWeight="ExtraBlack" VerticalAlignment="Center"/>
+                    <TextBlock Text="Tổng nhân sự: " Foreground="#FF340D05" FontFamily="Cascadia Code" FontSize="16" FontWeight="ExtraBlack" VerticalAlignment="Center"/>
                     <TextBlock Text="{Binding TotalEmployees}" Foreground="#FF340D05" FontFamily="Cascadia Code" FontSize="16" FontWeight="Bold" VerticalAlignment="Center"/>
                 </StackPanel>
 

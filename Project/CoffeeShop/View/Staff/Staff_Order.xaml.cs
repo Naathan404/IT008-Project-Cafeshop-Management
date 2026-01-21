@@ -23,6 +23,12 @@ namespace CoffeeShop.View.Staff
             this.DataContext = _viewModel;
         }
 
+        protected override void OnMouseDown(MouseButtonEventArgs e)
+        {
+            base.OnMouseDown(e);
+            Keyboard.ClearFocus();
+        }
+
         #region Helper Methods
         // Hàm tìm kiếm phần tử cha trong Visual Tree
         public static T? FindParent<T>(DependencyObject child) where T : DependencyObject
@@ -56,37 +62,21 @@ namespace CoffeeShop.View.Staff
 
         #endregion
 
-        #region TabControl Methods
-        private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (sender is TabControl tabControl && tabControl.SelectedItem is TabItem tab)
-            {
-                if (DataContext is StaffOrderViewModel vm)
-                {
-                    if (tab.Tag != null && int.TryParse(tab.Tag.ToString(), out int categoryId))
-                    {
-                        vm.CurrentCategoryId = categoryId;
-                    }
-                }
-            }
-        }
-
-        #endregion
-
         #region Item Events
         private void ItemsContainer_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            if (sender is not ScrollViewer sv) return;
+            if (sender is ItemsControl itemsControl)
+            {
+                var grid = FindChild<UniformGrid>(itemsControl);
+                if (grid != null)
+                {
+                    double w = itemsControl.ActualWidth;
+                    int minItemWidth = 150;
 
-            // Tìm UniformGrid bên trong ScrollViewer
-            UniformGrid? ug = FindChild<UniformGrid>(sv);
-            if (ug == null) return;
-
-            double w = sv.ActualWidth;
-            int minItemWidth = 150;
-
-            int columns = Math.Max(1, (int)(w / minItemWidth));
-            ug.Columns = columns;
+                    int columns = Math.Max(1, (int)(w / minItemWidth));
+                    grid.Columns = columns;
+                }
+            }
         }
         private void Item_MouseDown(object sender, RoutedEventArgs e)
         {
@@ -159,19 +149,6 @@ namespace CoffeeShop.View.Staff
                 var stackPanel = FindParent<StackPanel>(bdrSize);
                 if (stackPanel == null) return;
 
-                // Reset tất cả border về trạng thái ban đầu
-                foreach (var bdr in stackPanel.Children.OfType<Border>())
-                {
-                    bdr.Background = Brushes.Transparent;
-                    if (bdr.Child is TextBlock t)
-                        t.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#766839"));
-                }
-
-                // Tô màu border đang click
-                bdrSize.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#766839"));
-                if (bdrSize.Child is TextBlock txt)
-                    txt.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#EDE2D3"));
-
                 // Lấy size được chọn
                 string selectedSize = (bdrSize.Child as TextBlock)?.Text.Trim() ?? "";
 
@@ -232,110 +209,7 @@ namespace CoffeeShop.View.Staff
 
         #endregion
 
-        #region Search Item
-        private void txblSearchItem_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            if (sender is TextBox tb)
-            {
-                _viewModel.SearchItemKeyword = tb.Text;
-            }
-        }
-        
-        #endregion
-
-        #region DataGrid Events
-        private void DeleteOrderItem_MouseDown(object sender, RoutedEventArgs e)
-        {
-            if (sender is FrameworkElement element && element.DataContext is OrderDetailItem item)
-            {
-                _viewModel.RemoveItemCommand?.Execute(item);
-            }
-        }
-        private void icPlusQuantity_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            if (sender is Border bdr && bdr.DataContext is OrderDetailItem item)
-            {
-                _viewModel.IncreaseQuantityCommand?.Execute(item);
-            }
-        }
-
-        private void icMinusQuantity_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            if (sender is Border bdr && bdr.DataContext is OrderDetailItem item)
-            {
-                _viewModel.DecreaseQuantityCommand?.Execute(item);
-            }
-        }
-        private void tbItemOrderedQuantity_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Enter)
-            {
-                if (sender is TextBox tb)
-                {
-                    tb.GetBindingExpression(TextBox.TextProperty)?.UpdateSource();
-
-                    if (tb.DataContext is OrderDetailItem item)
-                    {
-                        if (item.Quantity <= 0)
-                        {
-                            _viewModel.RemoveItemCommand?.Execute(item);
-                        }
-                    }
-                    Keyboard.ClearFocus();
-                }
-            }
-        }
-        private void tbItemOrderedNote_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Enter && sender is TextBox tb && tb.DataContext is OrderDetailItem item)
-            {
-                item.Note = tb.Text.Trim();
-            }
-        }
-        private void tbNote_LostFocus(object sender, RoutedEventArgs e)
-        {
-            if (sender is TextBox textBox && textBox.DataContext is OrderDetailItem modifiedItem)
-            {
-                modifiedItem.NoteChangedCallback?.Invoke(modifiedItem);
-            }
-        }
-        private static bool IsTextNumeric(string text)
-        {
-            return int.TryParse(text, out _);
-        }
-        private void tbItemOrderedQuantity_PreviewTextInput(object sender, TextCompositionEventArgs e)
-        {
-            e.Handled = !IsTextNumeric(e.Text);
-        }
-        #endregion
-
-        #region Customer Events
-        private void icSearchCustomer_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            if (sender is PackIcon ic)
-            {
-                _viewModel.SearchCustomerCommand?.Execute(tbCustomerPhone.Text);
-            }
-        }
-        private void icAddCustomer_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            AddCustomerWindow addCustomer;
-            if (string.IsNullOrEmpty(tbCustomerPhone.Text))
-                addCustomer = new AddCustomerWindow(_viewModel);
-            else
-                addCustomer = new AddCustomerWindow(_viewModel, tbCustomerPhone.Text);
-
-            addCustomer.Show();
-        }
-        private void CustomerItem_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            if (sender is Border border && border.DataContext is OrderCustomer customer)
-            {
-                _viewModel.SelectedCustomer = customer;
-                tbCustomerPhone.Text = customer.PhoneNumber;
-                popupCustomers.IsOpen = false;
-            }
-        }
+        #region Search Methods
         // Hiển thị popup khi có thay đổi text
         private void tbCustomerPhone_TextChanged(object sender, TextChangedEventArgs e)
         {
@@ -345,94 +219,14 @@ namespace CoffeeShop.View.Staff
                 popupCustomers.IsOpen = _viewModel.HasSearchResults;
             }
         }
-        #endregion
 
-        #region Button Events
-        private void bdrItemSize_MouseEnter(object sender, MouseEventArgs e)
+        private void CustomerItem_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (sender is Border border && !(border.Tag as bool? ?? false))
+            if (sender is Border border && border.DataContext is OrderCustomer customer)
             {
-                border.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#D4BA98"));
-                var txtb = border.Child as TextBlock;
-                if (txtb != null)
-                    txtb.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#340D05"));
-            }
-        }
-
-        private void bdrItemSize_MouseLeave(object sender, MouseEventArgs e)
-        {
-            if (sender is Border border && !(border.Tag as bool? ?? false))
-            {
-                border.Background = Brushes.Transparent;
-                var txtb = border.Child as TextBlock;
-                if (txtb != null)
-                    txtb.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#766839"));
-            }
-        }
-        private void icDeleteItem_MouseEnter(object sender, MouseEventArgs e)
-        {
-            if (sender is PackIcon icon)
-                icon.Kind = PackIconKind.Delete;
-        }
-
-        private void icDeleteItem_MouseLeave(object sender, MouseEventArgs e)
-        {
-            if (sender is PackIcon icon)
-                icon.Kind = PackIconKind.DeleteOutline;
-        }
-
-        private void bdrPlusQuantity_MouseEnter(object sender, MouseEventArgs e)
-        {
-            if (sender is Border border)
-            {
-                var icon = border.Child as PackIcon;
-                if (icon != null)
-                    icon.Kind = PackIconKind.PlusCircle;
-            }
-        }
-
-        private void bdrPlusQuantity_MouseLeave(object sender, MouseEventArgs e)
-        {
-            if (sender is Border border && !(border.Tag as bool? ?? false))
-            {
-                var icon = border.Child as PackIcon;
-                if (icon != null)
-                    icon.Kind = PackIconKind.PlusCircleOutline;
-            }
-        }
-
-        private void bdrMinusQuantity_MouseEnter(object sender, MouseEventArgs e)
-        {
-            if (sender is Border border)
-            {
-                var icon = border.Child as PackIcon;
-                if (icon != null)
-                    icon.Kind = PackIconKind.MinusCircle;
-            }
-        }
-
-        private void bdrMinusQuantity_MouseLeave(object sender, MouseEventArgs e)
-        {
-            if (sender is Border border && !(border.Tag as bool? ?? false))
-            {
-                var icon = border.Child as PackIcon;
-                if (icon != null)
-                    icon.Kind = PackIconKind.MinusCircleOutline;
-            }
-        }
-        private void icAddCustomer_MouseLeave(object sender, MouseEventArgs e)
-        {
-            if (sender is Border bdr && bdr.Child is PackIcon icon)
-            {
-                icon.Kind = PackIconKind.PlusCircleOutline;
-            }
-        }
-
-        private void icAddCustomer_MouseEnter(object sender, MouseEventArgs e)
-        {
-            if (sender is Border bdr && bdr.Child is PackIcon icon)
-            {
-                icon.Kind = PackIconKind.PlusCircle;
+                _viewModel.SelectedCustomer = customer;
+                tbCustomerPhone.Text = customer.PhoneNumber;
+                popupCustomers.IsOpen = false;
             }
         }
         private void CustomerItem_MouseEnter(object sender, MouseEventArgs e)
@@ -450,21 +244,26 @@ namespace CoffeeShop.View.Staff
                 border.Background = Brushes.Transparent;
             }
         }
-        private void icSearchCustomer_MouseEnter(object sender, MouseEventArgs e)
-        {
-            if(sender is PackIcon icon)
-            {
-                icon.Kind = PackIconKind.AccountSearch;
-            }
-        }
+        #endregion
 
-        private void icSearchCustomer_MouseLeave(object sender, MouseEventArgs e)
+        #region DataGrid Events
+        private void tbItemOrderedNote_KeyDown(object sender, KeyEventArgs e)
         {
-            if (sender is PackIcon icon)
+            if (e.Key == Key.Enter && sender is TextBox tb && tb.DataContext is OrderDetailItem item)
             {
-                icon.Kind = PackIconKind.AccountSearchOutline;
+                item.Note = tb.Text.Trim();
             }
         }
+        private void tbNote_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (sender is TextBox textBox && textBox.DataContext is OrderDetailItem modifiedItem)
+            {
+                modifiedItem.NoteChangedCallback?.Invoke(modifiedItem);
+            }
+        }
+        #endregion
+
+        #region Button Events
         private void border_MouseEnter(object sender, MouseEventArgs e)
         {
             if (sender is Border bdr)
@@ -497,8 +296,6 @@ namespace CoffeeShop.View.Staff
                 bdr.Effect = null;
             }
         }
-
-
         #endregion
     }
 

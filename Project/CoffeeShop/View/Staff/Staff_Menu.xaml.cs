@@ -23,16 +23,18 @@ namespace CoffeeShop.View.Staff
         #region Item Events
         private void ItemsContainer_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            if (sender is not ScrollViewer sv) return;
+            if (sender is ItemsControl itemsControl)
+            {
+                var grid = FindChild<UniformGrid>(itemsControl);
+                if (grid != null)
+                {
+                    double w = itemsControl.ActualWidth;
+                    int minItemWidth = 150;
 
-            UniformGrid? ug = FindChild<UniformGrid>(sv);
-            if (ug == null) return;
-
-            double w = sv.ActualWidth;
-            int minItemWidth = 150;
-
-            int columns = Math.Max(1, (int)(w / minItemWidth));
-            ug.Columns = columns;
+                    int columns = Math.Max(1, (int)(w / minItemWidth));
+                    grid.Columns = columns;
+                }
+            }
         }
 
         private void Item_MouseDown(object sender, RoutedEventArgs e)

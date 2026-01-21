@@ -99,7 +99,7 @@ namespace CoffeeShop.ViewModels.AdminVM
                 }
                 else
                 {
-                    Label = "THÔNG TIN NHÂN VIÊN";
+                    Label = "THÔNG TIN NHÂN SỰ";
                 }
             }
         }
@@ -190,7 +190,7 @@ namespace CoffeeShop.ViewModels.AdminVM
             }
             SelectedRoleFilter = RoleListFilter[0];
             SelectedShiftFilter = ShiftListFilter[0];
-            Label = "THÔNG TIN NHÂN VIÊN";
+            Label = "THÔNG TIN NHÂN SỰ";
 
             RefreshCommand = new RelayCommand<object>((p) =>
             {
@@ -201,7 +201,7 @@ namespace CoffeeShop.ViewModels.AdminVM
             {
                 if (SelectedEmployee == null || SelectedEmployee.StaffId == 0) return;
 
-                var result = CustomMessageBox.Show($"Bạn có chắc muốn xóa nhân viên {SelectedEmployee.StaffName}?", "Xác nhận", MessageButtons.YesNo, MessageType.Question);
+                var result = CustomMessageBox.Show($"Bạn có chắc muốn xóa nhân sự {SelectedEmployee.StaffName}?", "Xác nhận", MessageButtons.YesNo, MessageType.Question);
                 if (result == CustomMessageBox.MessageBoxResult.Yes)
                 {
                     using (var db = new CoffeeShopContext())
@@ -220,7 +220,7 @@ namespace CoffeeShop.ViewModels.AdminVM
 
             AddCommand = new RelayCommand<object>(p =>
             {
-                Label = "THÊM NHÂN VIÊN";
+                Label = "THÊM NHÂN SỰ";
                 SetUpAddNewEmployee();
             });
 
@@ -383,7 +383,7 @@ namespace CoffeeShop.ViewModels.AdminVM
             if (!Regex.IsMatch(SelectedEmployee.StaffName, @"^[a-zA-ZÀ-ỹ\s]+$"))
             {
                 CustomMessageBox.Show(
-                    "Tên nhân viên chỉ được chứa chữ cái tiếng Việt và khoảng trắng!",
+                    "Tên nhân sự chỉ được chứa chữ cái tiếng Việt và khoảng trắng!",
                     "Thông báo",
                     MessageButtons.OK,
                     MessageType.Warning);
@@ -491,7 +491,7 @@ namespace CoffeeShop.ViewModels.AdminVM
 
                     db.Staff.Add(staff);
                     await db.SaveChangesAsync();
-                    CustomMessageBox.Show("Thêm nhân viên thành công!", "Thành công", MessageButtons.OK, MessageType.Success);
+                    CustomMessageBox.Show("Thêm nhân sự thành công!", "Thành công", MessageButtons.OK, MessageType.Success);
                 }
                 else
                 {
@@ -515,7 +515,7 @@ namespace CoffeeShop.ViewModels.AdminVM
                     }
                     else
                     {
-                        CustomMessageBox.Show("Không tìm thấy nhân viên này (có thể đã bị xóa).", "Thông báo", MessageButtons.OK, MessageType.Warning);
+                        CustomMessageBox.Show("Không tìm thấy nhân sự này (có thể đã bị xóa).", "Thông báo", MessageButtons.OK, MessageType.Warning);
                     }    
                 }
             }
@@ -534,7 +534,7 @@ namespace CoffeeShop.ViewModels.AdminVM
             OnPropertyChanged(nameof(SearchName));
 
             _selectedEmployee = new StaffDTO();
-            Label = "THÔNG TIN NHÂN VIÊN";
+            Label = "THÔNG TIN NHÂN SỰ";
             _page.SetPasswordToPasswordBox("");
 
             _ = LoadEmployees();
