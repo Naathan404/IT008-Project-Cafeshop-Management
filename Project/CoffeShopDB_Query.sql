@@ -116,6 +116,7 @@ CREATE TABLE Discount
 	MinimumOrderValue MONEY DEFAULT 0,
 	MaximumDiscountAmount MONEY NULL,
 	IsActive BIT DEFAULT 1 NOT NULL,
+    IsDeleted BIT DEFAULT 0 NOT NULL,
 	UsedCount INT DEFAULT 0 NOT NULL,
     UseLimit INT DEFAULT 0 NOT NULL,
 )
@@ -428,7 +429,7 @@ VALUES
 (N'Tài Khoản Quản Lý', 'admin', N'bf0dbd74174039131b667de9f31b5d8012baaf82011b934b2cc0e3bd53a02a1f', N'Admin', '0865320821', N'coffeeshop2g1g@gmail.com', NULL, NULL, '2000-1-1', '2000-1-1', N'Nam'),
 (N'Nguyễn Chí Nguyên', N'ngnguyen', N'bf0dbd74174039131b667de9f31b5d8012baaf82011b934b2cc0e3bd53a02a1f', N'Admin', '0865320821', N'nathannguyen6002@gmail.com', NULL, NULL, '2006-3-10', '2024-9-5', N'Nam'),
 (N'Nguyễn Ngọc Lan Anh', N'ngnlananh', N'bf0dbd74174039131b667de9f31b5d8012baaf82011b934b2cc0e3bd53a02a1f', N'Employee', '0988888888', N'ngnlananh@gmail.com', 2, 25000, '2006-11-11', '2025-3-2', N'Nữ'),
-(N'Lê Thành Nghĩa', N'ltnghia', N'bf0dbd74174039131b667de9f31b5d8012baaf82011b934b2cc0e3bd53a02a1f', N'Employee', '0977778888', N'24521143@gm.uit.edu.vn', 1, 20000, '2006-11-15', '2025-10-1', N'Nam'),
+(N'Lê Thành Nghĩa', N'ltnghia', N'bf0dbd74174039131b667de9f31b5d8012baaf82011b934b2cc0e3bd53a02a1f', N'Employee', '0977778888', N'24521143@gm.uit.edu.vn', 1, 24000, '2006-11-15', '2025-10-1', N'Nam'),
 (N'Tài khoản nhân viên', '1', N'bf0dbd74174039131b667de9f31b5d8012baaf82011b934b2cc0e3bd53a02a1f', N'Employee', '0865320821', N'nathannguyen6002@gmail.com', 1, 20000, '2000-1-1', '2000-1-1', N'Nam')
 GO
 
@@ -468,20 +469,20 @@ GO
 
 INSERT INTO Inventory (MaterialName, Quantity, Unit, Threshold, Note) 
 VALUES 
-(N'Hạt Cà phê Robusta', 15.5, N'kg', 5.0, NULL),      
+(N'Hạt Cà phê Robusta', 15.5, N'Kg', 5.0, NULL),      
 (N'Sữa đặc Ngôi Sao', 48, N'Lon', 10.0, NULL),        
 (N'Sữa tươi không đường', 12, N'Hộp 1L', 6.0, N'Sắp hết hạn'),  
-(N'Trà đen (Hồng trà)', 4.5, N'kg', 2.0, NULL),
-(N'Trà lài (Lục trà)', 3.0, N'kg', 1.5, NULL),
-(N'Bột Matcha', 0.4, N'kg', 0.5, NULL),          
-(N'Đường cát trắng', 20, N'kg', 5.0, NULL),
+(N'Trà đen (Hồng trà)', 4.5, N'Kg', 2.0, NULL),
+(N'Trà lài (Lục trà)', 3.0, N'Kg', 1.5, NULL),
+(N'Bột Matcha', 0.4, N'Kg', 0.5, NULL),          
+(N'Đường cát trắng', 20, N'Kg', 5.0, NULL),
 (N'Syrup Đào', 5, N'Chai', 2.0, NULL),
 (N'Syrup Vải', 1, N'Chai', 2.0, NULL),                
 (N'Mứt Dâu', 3, N'Hũ', 1.0, NULL),
-(N'Trân châu đen', 8, N'kg', 3.0, N'Sắp hết hạn'),
+(N'Trân châu đen', 8, N'Kg', 3.0, N'Sắp hết hạn'),
 (N'Thạch trái cây', 5, N'Hộp', 2.0, NULL),
-(N'Cam vàng', 10, N'kg', 3.0, NULL),
-(N'Chanh tươi', 2.5, N'kg', 1.0, NULL)
+(N'Cam vàng', 10, N'Kg', 3.0, NULL),
+(N'Chanh tươi', 2.5, N'Kg', 1.0, NULL)
 GO
 
 INSERT INTO ActionType (ActionName) 
@@ -499,11 +500,11 @@ VALUES
 (2, 1, 50, 22000, DATEADD(day, -5, GETDATE()), 2),   -- Nhập 50 lon Sữa đặc, giá vốn 22k/lon
 (3, 1, 20, 30000, DATEADD(day, -5, GETDATE()), 2),   -- Nhập 20 hộp Sữa tươi, giá vốn 30k/hộp
 -- 2. Ghi nhận sử dụng nguyên liệu cách đây 2 ngày
-(1, 2, -2.5, NULL, DATEADD(day, -2, GETDATE()), 1),  -- Đã dùng 2.5kg Cà phê để bán
-(2, 2, -2, NULL, DATEADD(day, -2, GETDATE()), 1),    -- Đã khui 2 lon sữa đặc
+(1, 2, 2.5, NULL, DATEADD(day, -2, GETDATE()), 1),  -- Đã dùng 2.5kg Cà phê để bán
+(2, 2, 2, NULL, DATEADD(day, -2, GETDATE()), 1),    -- Đã khui 2 lon sữa đặc
 -- 3. Ghi nhận hàng hỏng hôm qua 
-(3, 3, -1, NULL, DATEADD(day, -1, GETDATE()), 2),    -- Hủy 1 hộp sữa tươi do bị rách bao bì
-(6, 3, -0.1, NULL, DATEADD(day, -1, GETDATE()), 2),  -- Hủy 0.1kg Matcha do ẩm mốc
+(3, 3, 1, NULL, DATEADD(day, -1, GETDATE()), 2),    -- Hủy 1 hộp sữa tươi do bị rách bao bì
+(6, 3, 0.1, NULL, DATEADD(day, -1, GETDATE()), 2),  -- Hủy 0.1kg Matcha do ẩm mốc
 -- 4. Nhập hàng bổ sung hôm nay
 (6, 1, 0.5, 450000, GETDATE(), 1)                    -- Nhập thêm 0.5kg Matcha xịn
 GO

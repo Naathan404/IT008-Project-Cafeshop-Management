@@ -303,7 +303,7 @@ namespace CoffeeShop.ViewModels.StaffVM
             {
                 using (var db = new CoffeeShopContext())
                 {
-                    var discounts = db.Discounts.Where(t => t.IsActive == true).ToList();
+                    var discounts = db.Discounts.Where(t => (t.IsActive == true && t.IsDeleted == false)).ToList();
                     foreach (var discount in discounts)
                     {
                         Discounts.Add(new OrderDiscount
