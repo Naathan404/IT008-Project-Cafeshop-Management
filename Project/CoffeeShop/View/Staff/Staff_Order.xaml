@@ -586,7 +586,8 @@
                                                                 Cursor="Hand"
                                                                 Padding="2"
                                                                 Command="{Binding DataContext.RemoveItemCommand,
-                                                                            RelativeSource={RelativeSource AncestorType=Page}}">
+                                                                            RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                                                CommandParameter="{Binding}">
                                                             <Button.ToolTip>
                                                                 <ToolTip Content="Xóa món" 
                                                                          Style="{StaticResource CustomTooltip}"

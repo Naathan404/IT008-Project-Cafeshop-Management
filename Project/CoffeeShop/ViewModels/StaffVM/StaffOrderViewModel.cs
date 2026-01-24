@@ -88,7 +88,7 @@ namespace CoffeeShop.ViewModels.StaffVM
                 if (param is Tuple<OrderItem, string, string, decimal, int> data)
                     AddItemToOrder(data.Item1, data.Item2, data.Item3, data.Item4, data.Item5);
             });
-            RemoveItemCommand = new RelayCommand<OrderDetailItem>(RemoveItemFromOrder);
+            RemoveItemCommand = new RelayCommand<OrderDetailItem>(item => RemoveItemFromOrder(item));
             IncreaseQuantityCommand = new RelayCommand<OrderDetailItem>(IncreaseQuantity);
             DecreaseQuantityCommand = new RelayCommand<OrderDetailItem>(DecreaseQuantity);
             SearchCustomerCommand = new RelayCommand<object>(SearchCustomer);
