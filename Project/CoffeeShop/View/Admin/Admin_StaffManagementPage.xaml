@@ -87,20 +87,10 @@
                         <Rectangle Grid.Column="3" Width="1" Fill="#462812" Margin="0" HorizontalAlignment="Center" VerticalAlignment="Stretch"/>
                     </Grid>
 
-                    <Grid Grid.Column="1">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"></ColumnDefinition>
-                            <ColumnDefinition Width="Auto"></ColumnDefinition>
-                            <ColumnDefinition Width="Auto"></ColumnDefinition>
-                            <ColumnDefinition Width="Auto"></ColumnDefinition>
-                            <ColumnDefinition Width="Auto"></ColumnDefinition>
-                        </Grid.ColumnDefinitions>
-
-                        <Button Grid.Column="1" Command="{Binding AddCommand}"
-                                materialDesign:ButtonAssist.CornerRadius="10" Padding="0" Margin="0 0 15 0"
-                                Background="#E0ceb5" Height="50" Width="50"
-                                BorderBrush="#67582c" BorderThickness="2">
-                            <materialDesign:PackIcon Foreground="#340D05" Kind="AccountPlus" Height="30" Width="30"/>
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right"
+                                Margin="10,0">
+                        <Button Command="{Binding AddCommand}"
+                                Style="{StaticResource SmallButton}" Tag="AccountPlus">
                             <Button.ToolTip>
                                 <ToolTip Style="{StaticResource CustomTooltip}">
                                     <TextBlock Text="Thêm nhân viên" FontFamily="Cascadia Code" FontWeight="Bold" Foreground="#FF340D05"/>
@@ -108,11 +98,8 @@
                             </Button.ToolTip>
                         </Button>
 
-                        <Button Grid.Column="2" Command="{Binding SaveCommand}"
-                                materialDesign:ButtonAssist.CornerRadius="10" Padding="0" Margin="0 0 15 0"
-                                Background="#E0ceb5" Height="50" Width="50"
-                                BorderBrush="#67582c" BorderThickness="2">
-                            <materialDesign:PackIcon Foreground="#340D05" Kind="ContentSave" Height="30" Width="30"/>
+                        <Button Command="{Binding SaveCommand}"
+                                Style="{StaticResource SmallButton}" Tag="ContentSave">
                             <Button.ToolTip>
                                 <ToolTip Style="{StaticResource CustomTooltip}">
                                     <TextBlock Text="Lưu thông tin" FontFamily="Cascadia Code" FontWeight="Bold" Foreground="#FF340D05"/>
@@ -120,11 +107,9 @@
                             </Button.ToolTip>
                         </Button>
 
-                        <Button Grid.Column="3" Command="{Binding DeleteCommand}"
-                                materialDesign:ButtonAssist.CornerRadius="10" Padding="0" Margin="0 0 15 0"
-                                Background="#E0ceb5" Height="50" Width="50"
-                                BorderBrush="#67582c" BorderThickness="2">
-                            <materialDesign:PackIcon Foreground="#B71C1C" Kind="TrashCan" Height="30" Width="30"/>
+                        <Button Command="{Binding DeleteCommand}"
+                                Style="{StaticResource SmallButton}" Tag="TrashCan" Foreground="#B71C1C"
+                                CommandParameter="{Binding ElementName=dgStaff, Path=SelectedItem}">
                             <Button.ToolTip>
                                 <ToolTip Style="{StaticResource CustomTooltip}">
                                     <TextBlock Text="Xóa nhân viên" FontFamily="Cascadia Code" FontWeight="Bold" Foreground="#FF340D05"/>
@@ -132,18 +117,15 @@
                             </Button.ToolTip>
                         </Button>
 
-                        <Button Grid.Column="4" Command="{Binding RefreshCommand}"
-                                materialDesign:ButtonAssist.CornerRadius="10" Padding="0" Margin="0 0 15 0"
-                                Background="#E0ceb5" Height="50" Width="50"
-                                BorderBrush="#67582c" BorderThickness="2">
-                            <materialDesign:PackIcon Foreground="#340D05" Kind="Refresh" Height="30" Width="30"/>
+                        <Button Command="{Binding RefreshCommand}"
+                                Style="{StaticResource SmallButton}" Tag="Reload">
                             <Button.ToolTip>
                                 <ToolTip Style="{StaticResource CustomTooltip}">
                                     <TextBlock Text="Làm mới trang" FontFamily="Cascadia Code" FontWeight="Bold" Foreground="#FF340D05"/>
                                 </ToolTip>
                             </Button.ToolTip>
                         </Button>
-                    </Grid>
+                    </StackPanel>
                 </Grid>
             </materialDesign:Card>
         </Border>
@@ -154,98 +136,26 @@
                 <ColumnDefinition Width="3*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
 
-            <Border Grid.Column="0"
-                    BorderBrush="#BC9466" BorderThickness="10" CornerRadius="5"
-                    Margin="30 0 15 20">
+            <DataGrid x:Name="dgStaff" Margin="30 0 10 20"
+                    Style="{StaticResource CoffeeDataGridStyle}"
+                    ItemsSource="{Binding EmployeeList}"
+                    SelectedItem="{Binding SelectedEmployee}"
+                    IsEnabled="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
+                    Opacity="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
 
-                <DataGrid ItemsSource="{Binding EmployeeList}"
-                          SelectedItem="{Binding SelectedEmployee}"
-                          IsEnabled="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
-                          Opacity="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
-                          AutoGenerateColumns="False" CanUserAddRows="False"
-                          CanUserResizeColumns="False" CanUserReorderColumns="False"
-                          HorizontalAlignment="Stretch" GridLinesVisibility="None"
-                          IsReadOnly="True" ScrollViewer.VerticalScrollBarVisibility="Visible">
-
-                    <DataGrid.ColumnHeaderStyle>
-                        <Style TargetType="DataGridColumnHeader">
-                            <Setter Property="Background" Value="#E0CEB5"/>
-                            <Setter Property="Foreground" Value="#340D05"/>
-                            <Setter Property="FontWeight" Value="Bold"/>
-                            <Setter Property="FontFamily" Value="Cascadia Code"/>
-                            <Setter Property="FontSize" Value="15"/>
-                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
-                            <Setter Property="VerticalAlignment" Value="Center"/>
-                            <Setter Property="Padding" Value="5"/>
-                            <Setter Property="BorderThickness" Value="1"/>
-                            <Setter Property="BorderBrush" Value="#766839"/>
-                        </Style>
-                    </DataGrid.ColumnHeaderStyle>
-
-                    <DataGrid.CellStyle>
-                        <Style TargetType="DataGridCell">
-                            <Setter Property="Foreground" Value="#766839"/>
-                            <Setter Property="FontSize" Value="15"/>
-                            <Setter Property="FontFamily" Value="Cascadia Code"/>
-                            <Setter Property="Background" Value="#F9F6F0"/>
-                            <Setter Property="BorderBrush" Value="#A0A0A0"/>
-                            <Setter Property="BorderThickness" Value="1"/>
-                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
-                            <Setter Property="VerticalContentAlignment" Value="Center"/>
-                            <Style.Triggers>
-                                <Trigger Property="IsSelected" Value="True">
-                                    <Setter Property="Background" Value="#EDE2D3"/>
-                                    <Setter Property="Foreground" Value="#340D05"/>
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                    </DataGrid.CellStyle>
-
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Header="Mã nhân viên" Binding="{Binding DisplayID}" Width="Auto">
-                            <DataGridTextColumn.ElementStyle>
-                                <Style TargetType="TextBlock">
-                                    <Setter Property="HorizontalAlignment" Value="Center"></Setter>
-                                    <Setter Property="VerticalAlignment" Value="Center"/>
-                                </Style>
-                            </DataGridTextColumn.ElementStyle>
-                        </DataGridTextColumn>
-                        <DataGridTextColumn Header="Họ và Tên" Binding="{Binding StaffName}" Width="2*">
-                            <DataGridTextColumn.ElementStyle>
-                                <Style TargetType="TextBlock">
-                                    <Setter Property="HorizontalAlignment" Value="Left"/>
-                                    <Setter Property="VerticalAlignment" Value="Center"/>
-                                    <Setter Property="Padding" Value="5 0 0 0"/>
-                                </Style>
-                            </DataGridTextColumn.ElementStyle>
-                        </DataGridTextColumn>
-                        <DataGridTextColumn Header="Chức vụ" Binding="{Binding StaffRole}" Width="*">
-                            <DataGridTextColumn.ElementStyle>
-                                <Style TargetType="TextBlock">
-                                    <Setter Property="HorizontalAlignment" Value="Center"></Setter>
-                                    <Setter Property="VerticalAlignment" Value="Center"/>
-                                </Style>
-                            </DataGridTextColumn.ElementStyle>
-                        </DataGridTextColumn>
-                        <DataGridTextColumn Header="SĐT" Binding="{Binding Phonenumber}" Width="*">
-                            <DataGridTextColumn.ElementStyle>
-                                <Style TargetType="TextBlock">
-                                    <Setter Property="HorizontalAlignment" Value="Center"></Setter>
-                                    <Setter Property="VerticalAlignment" Value="Center"/>
-                                </Style>
-                            </DataGridTextColumn.ElementStyle>
-                        </DataGridTextColumn>
-                        <DataGridTextColumn Header="Ca" Binding="{Binding ShiftName}" Width="*">
-                            <DataGridTextColumn.ElementStyle>
-                                <Style TargetType="TextBlock">
-                                    <Setter Property="HorizontalAlignment" Value="Center"></Setter>
-                                    <Setter Property="VerticalAlignment" Value="Center"/>
-                                </Style>
-                            </DataGridTextColumn.ElementStyle>
-                        </DataGridTextColumn>
-                    </DataGrid.Columns>
-                </DataGrid>
-            </Border>
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Mã nhân viên" Binding="{Binding DisplayID}" Width="Auto"
+                                            ElementStyle="{StaticResource CenterAlignStyle}"/>
+                    <DataGridTextColumn Header="Họ và Tên" Binding="{Binding StaffName}" Width="2*"
+                                            ElementStyle="{StaticResource LeftAlignStyle}"/>
+                    <DataGridTextColumn Header="Chức vụ" Binding="{Binding StaffRole}" Width="*"
+                                            ElementStyle="{StaticResource CenterAlignStyle}"/>
+                    <DataGridTextColumn Header="SĐT" Binding="{Binding Phonenumber}" Width="*"
+                                            ElementStyle="{StaticResource CenterAlignStyle}"/>
+                    <DataGridTextColumn Header="Ca" Binding="{Binding ShiftName}" Width="*"
+                                            ElementStyle="{StaticResource CenterAlignStyle}"/>
+                </DataGrid.Columns>
+            </DataGrid>
 
             <Grid Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <ProgressBar

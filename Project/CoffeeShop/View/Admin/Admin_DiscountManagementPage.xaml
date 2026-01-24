@@ -80,7 +80,7 @@
                     <Button
                             Grid.Column="0"
                             Command="{Binding DeleteCouponCommand}"
-                            Style="{StaticResource SmallButton}" Tag="Bin" Foreground="#B71C1C"
+                            Style="{StaticResource SmallButton}" Tag="TrashCan" Foreground="#B71C1C"
                             CommandParameter="{Binding ElementName=dgCoupon, Path=SelectedItem}">
                         <Button.ToolTip>
                             <ToolTip Style="{StaticResource CustomTooltip}">
@@ -128,21 +128,12 @@
                                     </ToolTip>
                                 </Setter.Value>
                             </Setter>
-
-                            <Setter Property="HorizontalAlignment" Value="Left"/>
-                            <Setter Property="VerticalAlignment" Value="Center"/>
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
 
-                <DataGridTextColumn Header="Loại" Binding="{Binding DiscountType}" Width="0.5*">
-                    <DataGridTextColumn.ElementStyle>
-                        <Style TargetType="TextBlock">
-                            <Setter Property="HorizontalAlignment" Value="Center"></Setter>
-                            <Setter Property="VerticalAlignment" Value="Center"/>
-                        </Style>
-                    </DataGridTextColumn.ElementStyle>
-                </DataGridTextColumn>
+                <DataGridTextColumn Header="Loại" Binding="{Binding DiscountType}" Width="0.5*"
+                                    ElementStyle="{StaticResource CenterAlignStyle}"/>
 
                 <DataGridTemplateColumn Header="Hiệu suất" Width="0.6*" 
                                             CanUserSort="True" SortMemberPath="UsagePercentage">
@@ -174,16 +165,8 @@
 
                 <DataGridTextColumn Header="Giảm tối đa" Binding="{Binding MaximumDiscountAmount, StringFormat={}{0:N0}}" Width="0.7*"/>
 
-                <DataGridTemplateColumn Header="Trạng thái" Width="0.7*">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding DiscountStatus}" 
-                               VerticalAlignment="Center" 
-                               HorizontalAlignment="Center"
-                               FontWeight="SemiBold"/>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
+                <DataGridTextColumn Header="Trạng thái" Width="0.7*" Binding="{Binding DiscountStatus}"
+                                    ElementStyle="{StaticResource CenterAlignStyle}"/>
 
             </DataGrid.Columns>
         </DataGrid>

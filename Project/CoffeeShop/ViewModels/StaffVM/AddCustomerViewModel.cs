@@ -1,4 +1,6 @@
-﻿using CoffeeShop.View.Controls;
+﻿using CoffeeShop.Service;
+using CoffeeShop.View.Controls;
+using CoffeeShop.ViewModels.AdminVM;
 using System.ComponentModel;
 using System.Text.RegularExpressions;
 using System.Windows;
@@ -17,7 +19,11 @@ namespace CoffeeShop.ViewModels.StaffVM
         public string? CustomerName
         {
             get => _customerName;
-            set { _customerName = value; OnPropertyChanged(nameof(CustomerName)); }
+            set 
+            {
+                _customerName = value;
+                OnPropertyChanged(nameof(CustomerName)); 
+            }
         }
 
         private string? _customerPhoneNumber;
@@ -59,35 +65,54 @@ namespace CoffeeShop.ViewModels.StaffVM
                 return;
             }
 
-            string namePattern = @"^[\p{L} ]+$";
-            // Tên KH chỉ được chứa chữ cái
-            if (!Regex.IsMatch(CustomerName, namePattern))
+            if (!Regex.IsMatch(CustomerName, @"^[a-zA-ZÀ-ỹ\s]+$"))
             {
-                CustomMessageBox.Show("Tên khách hàng không được chứa chữ số và ký tự đặc biệt!", "Lỗi định dạng", MessageButtons.OK, MessageType.Error);
+                CustomMessageBox.Show("Tên không được chứa số hay kí tự đặc biệt!",
+                                      "Thông báo", MessageButtons.OK, MessageType.Warning);
                 return;
             }
 
             // Số điện thoại chỉ được chứa chữ số
-            if (!Regex.IsMatch(CustomerPhoneNumber, @"^[0-9]+$"))
+            if (!Regex.IsMatch(CustomerPhoneNumber, @"^0(3|5|7|8|9)[0-9]{8}$"))
             {
-                CustomMessageBox.Show("Số điện thoại chỉ được chứa các chữ số!", "Lỗi định dạng", MessageButtons.OK, MessageType.Error);
+                CustomMessageBox.Show("Số điện thoại không hợp lệ! Vui lòng nhập đúng 10 số (đầu 03, 05, 07, 08, 09).",
+                                      "Thông báo", MessageButtons.OK, MessageType.Warning);
                 return;
             }
 
             // Email phải có '@' nếu được nhập
             if (!string.IsNullOrWhiteSpace(CustomerEmail))
             {
-                if (!CustomerEmail.Contains("@"))
+                string emailPattern = @"^[a-zA-Z0-9]+([\.\-][a-zA-Z0-9]+)*@[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)+$";
+                if (!Regex.IsMatch(CustomerEmail, emailPattern))
                 {
-                    CustomMessageBox.Show("Email không hợp lệ (thiếu ký tự @)!", "Lỗi định dạng", MessageButtons.OK, MessageType.Error);
+                    CustomMessageBox.Show("Email không đúng định dạng (Vd: abc@gmail.com).",
+                                          "Thông báo", MessageButtons.OK, MessageType.Warning);
                     return;
                 }
             }
+
+            CustomerName = CleanName(CustomerName);
             var newCustomer = _parentVM.AddCustomer(CustomerName, CustomerPhoneNumber, CustomerEmail);
+            EventAggregator.Instance.Publish(new CustomerChangedMessage { CustomerId = newCustomer.CustomerId });
             // Cập nhật SelectedCustomer tại StaffOrderViewModel
             _parentVM.SelectedCustomer = newCustomer;
             CloseWindowAction?.Invoke();
         }
-    }
 
+        // Chỉnh sửa lại tên cho đúng định dạng
+        public string CleanName(string? name)
+        {
+            if (string.IsNullOrWhiteSpace(name)) return "";
+
+            name = name.Trim().ToLower();
+
+            name = Regex.Replace(name, @"\s+", " ");
+
+            System.Globalization.CultureInfo cultureInfo = Thread.CurrentThread.CurrentCulture;
+            System.Globalization.TextInfo textInfo = cultureInfo.TextInfo;
+
+            return textInfo.ToTitleCase(name);
+        }
+    }
 }

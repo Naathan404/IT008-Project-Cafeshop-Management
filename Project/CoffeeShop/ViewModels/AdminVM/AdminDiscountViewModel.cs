@@ -45,7 +45,9 @@ namespace CoffeeShop.ViewModels.AdminVM
                 {
                     var dataFromDb = await db.Discounts.ToListAsync();
 
-                    var result = dataFromDb.Select(d =>
+                    var result = dataFromDb
+                        .Where(d => !d.IsDeleted)
+                        .Select(d =>
                     {
                         var dto = new CouponDTO
                         {
@@ -143,7 +145,7 @@ namespace CoffeeShop.ViewModels.AdminVM
                     var couponInDb = await db.Discounts.FindAsync(SelectedCoupon.DiscountId);
                     if (couponInDb != null)
                     {
-                        db.Discounts.Remove(couponInDb);
+                        couponInDb.IsDeleted = true;
                         await db.SaveChangesAsync();
                         await LoadData(); // Cập nhật lại danh sách và thống kê
                     }
@@ -169,19 +171,27 @@ namespace CoffeeShop.ViewModels.AdminVM
             }
         }
 
-        public void RefreshStatistics()
+        public async void RefreshStatistics()
         {
-            if (AllCoupons != null)
+            using (var db = new CoffeeShopContext())
             {
-                decimal total = AllCoupons.Sum(x => {
-                    decimal count = (decimal)x.UsedCount;
-                    decimal amount = x.MaximumDiscountAmount ?? x.DiscountValue;
-                    return count * amount;
-                });
+                decimal totalRealDiscount = await db.Orders
+                    .Where(o => o.DiscountId != null)
+                    .SumAsync(o => o.DiscountMoney ?? 0);
 
-                TotalDiscountAmount = total;
+                TotalDiscountAmount = totalRealDiscount;
+
+                var couponStats = await db.Orders
+                    .Where(o => o.DiscountId != null)
+                    .GroupBy(o => o.DiscountId)
+                    .Select(g => new {
+                        DiscountId = g.Key,
+                        TotalSaved = g.Sum(o => o.DiscountMoney ?? 0)
+                    })
+                    .ToListAsync();
             }
 
+            OnPropertyChanged(nameof(TotalDiscountAmount));
             OnPropertyChanged(nameof(ActiveCouponsCount));
             OnPropertyChanged(nameof(BestPerformanceCoupon));
         }

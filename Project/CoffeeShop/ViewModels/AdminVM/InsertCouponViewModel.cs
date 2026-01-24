@@ -81,6 +81,11 @@ namespace CoffeeShop.ViewModels.AdminVM
                     CustomMessageBox.Show("Mã giảm giá không được để trống!", "Thông báo", MessageButtons.OK, MessageType.Warning);
                     return;
                 }
+                if (string.IsNullOrWhiteSpace(Coupon.DiscountName))
+                {
+                    CustomMessageBox.Show("Tên chương trình không được để trống!", "Thông báo", MessageButtons.OK, MessageType.Warning);
+                    return;
+                }    
                 // kiểm thử
                 if (Coupon.DiscountValue <= 0)
                 {
@@ -118,7 +123,6 @@ namespace CoffeeShop.ViewModels.AdminVM
                                 discountInDb.MinimumOrderValue = Coupon.MinimumOrderValue;
                                 discountInDb.MaximumDiscountAmount = Coupon.MaximumDiscountAmount ?? Coupon.DiscountValue;
                                 discountInDb.IsActive = Coupon.IsActive;
-
                                 discountInDb.UseLimit = Coupon.UseLimit;
                             }
                         }
@@ -136,7 +140,8 @@ namespace CoffeeShop.ViewModels.AdminVM
                                 MaximumDiscountAmount = Coupon.MaximumDiscountAmount ?? Coupon.DiscountValue,
                                 UsedCount = 0,
                                 UseLimit = Coupon.UseLimit,
-                                IsActive = true
+                                IsDeleted = false,
+                                IsActive = Coupon.IsActive
                             };
                             db.Discounts.Add(newDiscount);
                         }
