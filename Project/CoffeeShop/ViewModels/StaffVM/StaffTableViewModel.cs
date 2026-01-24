@@ -147,24 +147,52 @@ namespace CoffeeShop.ViewModels.StaffVM
         // Hàm lọc bàn (Kết hợp cả Lọc theo Tab và Lọc theo Tên)
         private void FilterTables()
         {
+            //if (_allTables == null) return;
+
+            //var filtered = _allTables.AsEnumerable();
+
+            //// Lọc theo Tab (Trạng thái)
+            //if (SelectedTabItem != null && int.TryParse(SelectedTabItem.Tag?.ToString(), out int status))
+            //{
+            //    if (status != -1)
+            //    {
+            //        filtered = filtered.Where(t => t.TableStatus == status);
+            //    }
+            //}
+
+            //// Lọc theo Tên (Tìm kiếm)
+            //if (!string.IsNullOrEmpty(SearchTableKeyWords))
+            //{
+            //    filtered = filtered.Where(t => t.TableName.ToLower().Contains(SearchTableKeyWords.ToLower()));
+            //}
+
+            //FilteredTables = new ObservableCollection<VMTable>(filtered);
             if (_allTables == null) return;
 
-            var filtered = _allTables.AsEnumerable();
+            var query = _allTables.AsEnumerable();
 
-            // Lọc theo Tab (Trạng thái)
-            if (SelectedTabItem != null && SelectedTabItem.Tag.ToString() != "-1")
+            // Dùng Dispatcher để đọc SelectedTabItem vì nó thuộc UI Thread
+            App.Current.Dispatcher.Invoke(() =>
             {
-                int status = int.Parse(SelectedTabItem.Tag.ToString());
-                filtered = filtered.Where(t => t.TableStatus == status);
+                if (SelectedTabItem?.Tag != null && int.TryParse(SelectedTabItem.Tag.ToString(), out int status))
+                {
+                    if (status != -1)
+                    {
+                        query = query.Where(t => t.TableStatus == status);
+                    }
+                }
+            });
+
+            if (!string.IsNullOrWhiteSpace(SearchTableKeyWords))
+            {
+                string searchLower = SearchTableKeyWords.ToLower();
+                query = query.Where(t => t.TableName != null && t.TableName.ToLower().Contains(searchLower));
             }
 
-            // Lọc theo Tên (Tìm kiếm)
-            if (!string.IsNullOrEmpty(SearchTableKeyWords))
+            App.Current.Dispatcher.Invoke(() =>
             {
-                filtered = filtered.Where(t => t.TableName.ToLower().Contains(SearchTableKeyWords.ToLower()));
-            }
-
-            FilteredTables = new ObservableCollection<VMTable>(filtered);
+                FilteredTables = new ObservableCollection<VMTable>(query);
+            });
         }
         #endregion
 

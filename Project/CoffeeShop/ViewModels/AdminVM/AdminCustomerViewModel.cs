@@ -2,6 +2,7 @@
 using CoffeeShop.Service.DTOs;
 using CoffeeShop.View.Controls;
 using CoffeeShop.View.General;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Win32; // Cần cái này cho SaveFileDialog
 using System;
@@ -10,10 +11,10 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using System.Text.RegularExpressions;
 using static CoffeeShop.View.Controls.CustomMessageBox;
 
 namespace CoffeeShop.ViewModels.AdminVM
@@ -202,21 +203,28 @@ namespace CoffeeShop.ViewModels.AdminVM
             {
                 CustomMessageBox.Show("Vui lòng nhập Tên và Số điện thoại!", "Thông báo", MessageButtons.OK, MessageType.Warning); return;
             }
-            if (!Regex.IsMatch(SelectedCustomer.CustomerName, @"^[\p{L} ]+$"))
+
+            if (!Regex.IsMatch(SelectedCustomer.CustomerName, @"^[a-zA-ZÀ-ỹ\s]+$"))
             {
-                CustomMessageBox.Show("Tên khách hàng chỉ được chứa chữ cái và khoảng trắng!", "Thông báo", MessageButtons.OK, MessageType.Warning);
+                CustomMessageBox.Show("Tên không được chứa số hay kí tự đặc biệt!",
+                                      "Thông báo", MessageButtons.OK, MessageType.Warning);
                 return;
             }
-            if (!SelectedCustomer.PhoneNumber.All(char.IsDigit))
+
+            if (!Regex.IsMatch(SelectedCustomer.PhoneNumber, @"^0(3|5|7|8|9)[0-9]{8}$"))
             {
-                CustomMessageBox.Show("Số điện thoại chỉ được chứa các chữ số!", "Thông báo", MessageButtons.OK, MessageType.Warning);
+                CustomMessageBox.Show("Số điện thoại không hợp lệ! Vui lòng nhập đúng 10 số (đầu 03, 05, 07, 08, 09).",
+                                      "Thông báo", MessageButtons.OK, MessageType.Warning);
                 return;
             }
+
             if (!string.IsNullOrWhiteSpace(SelectedCustomer.Email))
             {
-                if (!SelectedCustomer.Email.Contains("@"))
+                string emailPattern = @"^[a-zA-Z0-9]+([\.\-][a-zA-Z0-9]+)*@[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)+$";
+                if (!Regex.IsMatch(SelectedCustomer.Email, emailPattern))
                 {
-                    CustomMessageBox.Show("Email không hợp lệ!", "Thông báo", MessageButtons.OK, MessageType.Warning);
+                    CustomMessageBox.Show("Email không đúng định dạng(Vd: abc@gmail.com).",
+                                          "Thông báo", MessageButtons.OK, MessageType.Warning);
                     return;
                 }
             }

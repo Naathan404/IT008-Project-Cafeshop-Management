@@ -151,7 +151,7 @@
                         <Button x:Name="btnDelete" 
                             Command="{Binding DeleteItemCommand}"
                             CommandParameter="{Binding ElementName=dgDepot, Path=SelectedItem}"
-                            Style="{StaticResource SmallButton}" Tag="Bin" Foreground="#B71C1C">
+                            Style="{StaticResource SmallButton}" Tag="TrashCan" Foreground="#B71C1C">
                             <Button.ToolTip>
                                 <ToolTip Style="{StaticResource CustomTooltip}">
                                     <TextBlock Text="Xóa nguyên liệu" TextWrapping="Wrap" Width="200"/>
@@ -201,7 +201,19 @@
                         ItemsSource="{Binding DepotItems}"
                         SelectedItem="{Binding SelectedItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="Tên nguyên liệu" Binding="{Binding MaterialName}" Width="1.2*"/>
+                        <DataGridTextColumn Header="Tên nguyên liệu" Binding="{Binding MaterialName}" Width="1.2*">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="ToolTip">
+                                        <Setter.Value>
+                                            <ToolTip Style="{StaticResource CustomTooltip}">
+                                                <TextBlock Text="{Binding MaterialName}"/>
+                                            </ToolTip>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
                         <DataGridTemplateColumn Header="Số lượng" Width="*" SortMemberPath="Quantity">
                             <DataGridTemplateColumn.CellStyle>
                                 <Style TargetType="DataGridCell" BasedOn="{StaticResource CoffeeDataGridCellStyle}">
@@ -218,7 +230,19 @@
                         </DataGridTemplateColumn>
                         <DataGridTextColumn Header="Đơn vị" Binding="{Binding Unit}" Width="0.7*"
                                             ElementStyle="{StaticResource CenterAlignStyle}"/>
-                        <DataGridTextColumn Header="Ghi chú" Binding="{Binding Note}" Width="2*"/>
+                        <DataGridTextColumn Header="Ghi chú" Binding="{Binding Note}" Width="2*">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="ToolTip">
+                                        <Setter.Value>
+                                            <ToolTip Style="{StaticResource CustomTooltip}">
+                                                <TextBlock Text="{Binding Note}"/>
+                                            </ToolTip>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
                     </DataGrid.Columns>
                 </DataGrid>
 

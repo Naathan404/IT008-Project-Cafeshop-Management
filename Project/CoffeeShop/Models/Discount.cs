@@ -18,8 +18,10 @@ public partial class Discount
     public decimal? MinimumOrderValue { get; set; }
 
     public decimal? MaximumDiscountAmount { get; set; }
-
+            
     public bool IsActive { get; set; }
+
+    public bool IsDeleted { get; set; }
 
     public int UsedCount { get; set; }
 
