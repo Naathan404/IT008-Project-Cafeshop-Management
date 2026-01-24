@@ -82,6 +82,11 @@ namespace CoffeeShop.ViewModels.StaffVM
 
         public CustomerViewModel()
         {
+            EventAggregator.Instance.Subscribe<CustomerChangedMessage>(async (msg) =>
+            {
+                await LoadCustomers();
+            });
+
             CustomerList = new ObservableCollection<CustomerDTO>();
             SelectedCustomer = new CustomerDTO(); // Tránh null reference
 
@@ -131,7 +136,7 @@ namespace CoffeeShop.ViewModels.StaffVM
                         PhoneNumber = c.PhoneNumber ?? "---",
                         Email = c.Email ?? "",
                         Point = c.Point,
-                        Tier = c.Tier ?? "VIP1",
+                        Tier = CalculateTier(c.Point) ?? "MEMBER",
                         JoinDate = c.JoinDate
                     }).ToList();
 
@@ -199,27 +204,34 @@ namespace CoffeeShop.ViewModels.StaffVM
                 CustomMessageBox.Show("Vui lòng nhập Tên và Số điện thoại!", "Thông báo", MessageButtons.OK, MessageType.Warning); 
                 return;
             }
-            
+
             if (!Regex.IsMatch(SelectedCustomer.CustomerName, @"^[a-zA-ZÀ-ỹ\s]+$"))
             {
-                CustomMessageBox.Show("Tên khách hàng chỉ được chứa chữ cái và khoảng trắng!", "Thông báo", MessageButtons.OK, MessageType.Warning);
+                CustomMessageBox.Show("Tên không được chứa số hay kí tự đặc biệt!",
+                                      "Thông báo", MessageButtons.OK, MessageType.Warning);
                 return;
             }
 
-            if (!Regex.IsMatch(SelectedCustomer.PhoneNumber, @"^[0-9]{10,11}$"))
+            if (!Regex.IsMatch(SelectedCustomer.PhoneNumber, @"^0(3|5|7|8|9)[0-9]{8}$"))
             {
-                CustomMessageBox.Show("Số điện thoại không hợp lệ (chỉ chứa số, từ 10-11 chữ số)!", "Thông báo", MessageButtons.OK, MessageType.Warning);
+                CustomMessageBox.Show("Số điện thoại không hợp lệ! Vui lòng nhập đúng 10 số (đầu 03, 05, 07, 08, 09).",
+                                      "Thông báo", MessageButtons.OK, MessageType.Warning);
                 return;
             }
-            if (!string.IsNullOrEmpty(SelectedCustomer.Email))
+
+            if (!string.IsNullOrWhiteSpace(SelectedCustomer.Email))
             {
-                if (!SelectedCustomer.Email.Contains("@") || !Regex.IsMatch(SelectedCustomer.Email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
+                string emailPattern = @"^[a-zA-Z0-9]+([\.\-][a-zA-Z0-9]+)*@[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)+$";
+                if (!Regex.IsMatch(SelectedCustomer.Email, emailPattern))
                 {
-                    CustomMessageBox.Show("Email không đúng định dạng!", "Thông báo", MessageButtons.OK, MessageType.Warning);
+                    CustomMessageBox.Show("Email không đúng định dạng (Vd: abc@gmail.com).",
+                                          "Thông báo", MessageButtons.OK, MessageType.Warning);
                     return;
                 }
             }
 
+
+            SelectedCustomer.CustomerName = CleanName(SelectedCustomer.CustomerName);
             using (var db = new CoffeeShopContext())
             {
                 if (SelectedCustomer.CustomerID == 0) // Thêm mới
@@ -228,14 +240,14 @@ namespace CoffeeShop.ViewModels.StaffVM
                     {
                         CustomMessageBox.Show("Số điện thoại này đã tồn tại!", "Lỗi", MessageButtons.OK, MessageType.Error); return;
                     }
-
+                    string newTier = CalculateTier(SelectedCustomer.Point);
                     var newCus = new Customer
                     {
                         CustomerName = SelectedCustomer.CustomerName,
                         PhoneNumber = SelectedCustomer.PhoneNumber,
                         Email = SelectedCustomer.Email,
                         Point = 0,
-                        Tier = "VIP1",
+                        Tier = newTier,
                         JoinDate = DateTime.Now,
                         IsDeleted = false
                     };
@@ -257,6 +269,32 @@ namespace CoffeeShop.ViewModels.StaffVM
                 }
             }
             Refresh();
+        }
+
+        // Chỉnh sửa lại tên cho đúng định dạng
+        public string CleanName(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name)) return "";
+
+            name = name.Trim().ToLower();
+
+            name = Regex.Replace(name, @"\s+", " ");
+
+            System.Globalization.CultureInfo cultureInfo = Thread.CurrentThread.CurrentCulture;
+            System.Globalization.TextInfo textInfo = cultureInfo.TextInfo;
+
+            return textInfo.ToTitleCase(name);
+        }
+
+
+        // tính hạng thành viên
+        private string CalculateTier(int? point)
+        {
+            if (point == null) return "MEMBER";
+            if (point >= 3000) return "VIP100";
+            if (point >= 1500) return "VIP10";
+            if (point >= 500) return "VIP1";
+            return "MEMBER";
         }
 
         private void ShowOrderDetail()

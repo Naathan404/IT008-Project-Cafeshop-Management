@@ -141,7 +141,7 @@ namespace CoffeeShop.ViewModels.AdminVM
                                 UsedCount = 0,
                                 UseLimit = Coupon.UseLimit,
                                 IsDeleted = false,
-                                IsActive = true
+                                IsActive = Coupon.IsActive
                             };
                             db.Discounts.Add(newDiscount);
                         }
