@@ -72,7 +72,7 @@ CREATE TABLE Customer
 	PhoneNumber NVARCHAR(20) UNIQUE NULL,
 	Email NVARCHAR(200) NULL,
 	Point INT NOT NULL DEFAULT 0,
-	Tier NVARCHAR(10) DEFAULT 'VIP1',		-- VIP1, VIP10, VIP100
+	Tier NVARCHAR(10) DEFAULT 'MEMBER',		-- VIP1, VIP10, VIP100
     JoinDate DATETIME NOT NULL,
     IsDeleted BIT NOT NULL DEFAULT 0
 );
@@ -370,22 +370,22 @@ VALUES
 (N'Nguyễn Văn An', '0901234567', 'annguyen@gmail.com', 3350, 'VIP100', '2024-12-20'),
 (N'Trần Thị Bích', '0918889999', 'bichtran@gmail.com', 1200, 'VIP10', '2025-2-28'),
 (N'Lê Hoàng Nam', '0987654321', 'namle@gmail.com', 600, 'VIP1', '2025-8-13'),
-(N'Phạm Minh Tuấn', '0933445566', 'tuanpham@gmail.com', 150, 'VIP1', '2025-11-28'), 
-(N'Võ Thị Mai', '0912341234', 'maivo@gmail.com', 50, 'VIP1', '2026-1-4'),
+(N'Phạm Minh Tuấn', '0933445566', 'tuanpham@gmail.com', 150, 'MEMBER', '2025-11-28'), 
+(N'Võ Thị Mai', '0912341234', 'maivo@gmail.com', 50, 'MEMBER', '2026-1-4'),
 (N'Đặng Thu Thảo', '0909112233', 'thuthao.dang@gmail.com', 3200, 'VIP100', '2025-4-5'),
 (N'Hoàng Văn Minh', '0913556677', 'minh.hoang123@gmail.com', 850, 'VIP1', '2025-7-12'),
-(N'Lý Gia Hân', '0988776655', 'hanly.cute@gmail.com', 100, 'VIP1', '2025-11-16'),
+(N'Lý Gia Hân', '0988776655', 'hanly.cute@gmail.com', 100, 'MEMBER', '2025-11-16'),
 (N'Phan Thanh Tâm', '0933998877', 'tamphan.dev@gmail.com', 1800, 'VIP10', '2025-6-21'),
 (N'Bùi Quốc Đạt', '0977445566', 'datbui.quoc@gmail.com', 4500, 'VIP100', '2024-8-30'),
-(N'Trương Mỹ Lan', '0905123456', 'lantruong.my@gmail.com', 50, 'VIP1', '2026-1-10'),
-(N'Vũ Đức Đam', '0912345678', 'damvu.duc@gmail.com', 1100, 'VIP10', '2025-5-14'),
-(N'Đỗ Thị Hồng', '0966889900', 'hongdo.thi88@gmail.com', 200, 'VIP1', '2025-11-11'),
+(N'Trương Mỹ Lan', '0905123456', 'lantruong.my@gmail.com', 50, 'MEMBER', '2026-1-10'),
+(N'Vũ Đức Đam', '0912345678', 'damvu.duc@gmail.com', 1100, 'VIP1', '2025-5-14'),
+(N'Đỗ Thị Hồng', '0966889900', 'hongdo.thi88@gmail.com', 200, 'MEMBER', '2025-11-11'),
 (N'Ngô Bảo Châu', '0944556677', 'chau.ngo.math@gmail.com', 5600, 'VIP100', '2025-3-10'),
 (N'Lâm Chấn Huy', '0932112233', 'huychanlam.singer@gmail.com', 950, 'VIP1', '2025-9-7'),
-(N'Phạm Thu Hà', '0909998877', 'phamthuha.joy@gmail.com', 2100, 'VIP100', '2024-12-15'),
-(N'Đinh Văn Hùng', '0912223344', 'hungdinh.sport@gmail.com', 1300, 'VIP10', '2025-5-17'),
+(N'Phạm Thu Hà', '0909998877', 'phamthuha.joy@gmail.com', 2100, 'VIP10', '2024-12-15'),
+(N'Đinh Văn Hùng', '0912223344', 'hungdinh.sport@gmail.com', 1300, 'VIP1', '2025-5-17'),
 (N'Nguyễn Thị Lan', '0988665544', 'lanthi.nguyen99@gmail.com', 500, 'VIP1', '2025-10-12'),
-(N'Hoàng Quốc Việt', '0977112233', 'viethoang.tech@gmail.com', 80, 'VIP1', '2026-1-1'),
+(N'Hoàng Quốc Việt', '0977112233', 'viethoang.tech@gmail.com', 80, 'MEMBER', '2026-1-1'),
 (N'Lê Bảo Ngọc', '0933557799', 'ngocle.bao@gmail.com', 530, 'VIP1', '2025-12-13')
 GO
 

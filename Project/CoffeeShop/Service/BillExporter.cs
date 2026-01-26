@@ -1,9 +1,6 @@
 ﻿using ClosedXML.Excel;
 using CoffeeShop.Models;
-using DocumentFormat.OpenXml.Wordprocessing;
 using Microsoft.EntityFrameworkCore;
-using System.Diagnostics;
-using System.IO;
 
 namespace CoffeeShop.Service
 {

@@ -97,7 +97,7 @@ public partial class CoffeeShopContext : DbContext
             entity.Property(e => e.PhoneNumber).HasMaxLength(20);
             entity.Property(e => e.Tier)
                 .HasMaxLength(10)
-                .HasDefaultValue("VIP1");
+                .HasDefaultValue("MEMBER");
         });
 
         modelBuilder.Entity<Discount>(entity =>

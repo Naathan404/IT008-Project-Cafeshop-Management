@@ -478,7 +478,7 @@ namespace CoffeeShop.ViewModels.AdminVM
                         StaffName = SelectedEmployee.StaffName,
                         StaffRole = SelectedEmployee.StaffRole == "Quản lý" ? "Admin" : "Employee",
                         Username = SelectedEmployee.Username,
-                        PasswordHash = HashHelper.SHA256_Encode(HashHelper.Base64_Encode("12345678")),
+                        PasswordHash = !string.IsNullOrEmpty(_page.GetPasswordFromPasswordBox()) ? HashHelper.SHA256_Encode(HashHelper.Base64_Encode(_page.GetPasswordFromPasswordBox())) : HashHelper.SHA256_Encode(HashHelper.Base64_Encode("12345678")),
                         Phonenumber = SelectedEmployee.Phonenumber ?? "",
                         Email = SelectedEmployee.Email ?? "",
                         BaseSalary = finalSalary,
